@@ -1,3 +1,11 @@
+"""Точка входа для Amvera.
+
+Команда запуска вынесена сюда, а не в amvera.yml, потому что YAML-поле command
+Amvera разбирает без шелла: цепочка через && и кавычки там не работают.
+Логи пишутся без буферизации, иначе при падении контейнера трейсбек
+не успевает долететь до логов Amvera.
+"""
+
 import os
 import subprocess
 import sys
@@ -14,6 +22,12 @@ def run(*args):
 
 
 def ensure_superuser():
+    """Создаёт админа из переменных окружения при первом запуске.
+
+    Консоли у приложения на Amvera нет, вручную createsuperuser не выполнить.
+    Если пользователь уже существует, команда падает — это штатная ситуация,
+    её глушим, чтобы не ронять контейнер на каждом перезапуске.
+    """
     if not os.environ.get("DJANGO_SUPERUSER_USERNAME"):
         return
     print("[start] проверяю суперпользователя", flush=True)
@@ -30,6 +44,7 @@ def ensure_superuser():
 
 run("manage.py", "migrate", "--noinput")
 ensure_superuser()
+run("manage.py", "setup_roles")
 run("manage.py", "collectstatic", "--noinput")
 
 print("[start] запускаю gunicorn", flush=True)
