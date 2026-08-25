@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{# ВРЕМЕННАЯ ЗАГЛУШКА. Настоящая вёрстка — Фаза 3–5 по 05-arhitektura-i-plan.md. #}
+
+{% block content %}
+<h1>{{ page.title }}</h1>
+
+{{ page.intro|richtext }}
+
+<ul>
+  {% for house in houses %}
+    <li>
+      {% if house.hero_image %}
+        {% image house.hero_image fill-320x214 alt=house.title %}
+      {% endif %}
+      <a href="{% pageurl house %}">{{ house.title }}</a>
+      {% if house.short_description %} — {{ house.short_description }}{% endif %}
+      {% if house.price_from %} — от {{ house.price_from }} ₽/сутки{% endif %}
+    </li>
+  {% empty %}
+    <li>Домики пока не добавлены.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

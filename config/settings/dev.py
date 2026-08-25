@@ -3,8 +3,9 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-hupqv4j^cl5^skcrf7&w825c^3y%mzcc)85hr$j1ewh)^ow4oy"
+# Ключ для локальной разработки берётся из .env (SECRET_KEY) через base.py.
+# Хардкод убран: Amvera помечала файл как содержащий секрет, а в проде
+# всё равно используется production.py с ключом из секретов Amvera.
 
 # SECURITY WARNING: define the correct hosts in production!
 ALLOWED_HOSTS = ["*"]

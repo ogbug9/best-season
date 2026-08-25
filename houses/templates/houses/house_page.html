@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{# ВРЕМЕННАЯ ЗАГЛУШКА. Порядок блоков здесь уже соответствует п. 4.1 ТЗ,
+   чтобы при вёрстке (Фаза 5) не пересобирать структуру заново. #}
+
+{% block content %}
+{# 1. Первый экран #}
+{% if page.hero_image %}
+  {% image page.hero_image fill-1200x800 alt=page.title %}
+{% endif %}
+<h1>{{ page.title }}</h1>
+{% if page.short_description %}<p>{{ page.short_description }}</p>{% endif %}
+<p><button type="button">Забронировать</button>
+{% if page.pms_name %}<small>{{ page.pms_name }}</small>{% endif %}</p>
+
+{# 2. Галерея #}
+<h2>Галерея</h2>
+{% for item in page.gallery_images.all %}
+  {% image item.image fill-800x533 loading="lazy" alt=item.caption|default:page.title %}
+{% endfor %}
+
+{# 3. Описание #}
+{{ page.description|richtext }}
+
+{# 4. Характеристики #}
+<h2>Характеристики</h2>
+<ul>
+  <li>Вместимость: {{ page.capacity }} чел.</li>
+  {% if page.area %}<li>Площадь: {{ page.area }} м²</li>{% endif %}
+  {% if page.highlight %}<li>Особенность: {{ page.highlight }}</li>{% endif %}
+  {% if page.price_from %}<li>Цена от {{ page.price_from }} ₽/сутки</li>{% endif %}
+</ul>
+
+{# 5. Что входит #}
+<h2>Что входит</h2>
+{% for group, items in page.amenities_by_group.items %}
+  <h3>{{ group }}</h3>
+  <ul>{% for item in items %}<li>{{ item.name }}</li>{% endfor %}</ul>
+{% endfor %}
+
+{# 6. Как добраться — компактный блок, Фаза 6 #}
+
+{# 7. Отзывы о домике #}
+{% if page.house_reviews %}
+  <h2>Отзывы</h2>
+  {% for review in page.house_reviews %}
+    <blockquote><p>{{ review.text }}</p><cite>{{ review.author_name }}</cite></blockquote>
+  {% endfor %}
+{% endif %}
+
+{# 8. Точка входа в бронирование #}
+<p><button type="button">Забронировать</button>
+{% if page.pms_name %}<small>{{ page.pms_name }}</small>{% endif %}</p>
+
+{# 9. Другие дома #}
+<h2>Другие дома</h2>
+<ul>
+  {% for other in page.other_houses %}
+    <li><a href="{% pageurl other %}">{{ other.title }}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
