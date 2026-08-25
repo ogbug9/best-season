@@ -1,63 +1,115 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags media_tags %}
 
-{# ВРЕМЕННАЯ ЗАГЛУШКА. Порядок блоков здесь уже соответствует п. 4.1 ТЗ,
-   чтобы при вёрстке (Фаза 5) не пересобирать структуру заново. #}
+{# Черновая вёрстка. Порядок блоков — по п. 4.1 ТЗ, дизайн доводится в Фазе 5. #}
+
+{% block og_image %}
+  {% if page.hero_image %}
+    {% image page.hero_image fill-1200x630 as og %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og.url }}">
+  {% endif %}
+{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Accommodation",
+  "name": "{{ page.title }}",
+  "occupancy": { "@type": "QuantitativeValue", "maxValue": {{ page.capacity }} }
+  {% if page.area %}, "floorSize": { "@type": "QuantitativeValue", "value": {{ page.area }}, "unitCode": "MTK" }{% endif %}
+}
+</script>
+{% endblock %}
 
 {% block content %}
-{# 1. Первый экран #}
-{% if page.hero_image %}
-  {% image page.hero_image fill-1200x800 alt=page.title %}
-{% endif %}
-<h1>{{ page.title }}</h1>
-{% if page.short_description %}<p>{{ page.short_description }}</p>{% endif %}
-<p><button type="button">Забронировать</button>
-{% if page.pms_name %}<small>{{ page.pms_name }}</small>{% endif %}</p>
 
-{# 2. Галерея #}
-<h2>Галерея</h2>
-{% for item in page.gallery_images.all %}
-  {% image item.image fill-800x533 loading="lazy" alt=item.caption|default:page.title %}
-{% endfor %}
+{# 1. Первый экран. loading=eager — картинка участвует в замере LCP #}
+<section class="section">
+  <div class="container">
+    {% picture page.hero_image preset="hero" alt=page.title loading="eager" %}
+    <h1>{{ page.title }}</h1>
+    {% if page.short_description %}<p>{{ page.short_description }}</p>{% endif %}
+    {% include "includes/booking_cta.html" %}
+  </div>
+</section>
+
+{# 2. Галерея — п. 4.1.2, не меньше 15 фото #}
+{% if page.gallery_images.all %}
+<section class="section">
+  <div class="container">
+    <h2>Галерея</h2>
+    {% for item in page.gallery_images.all %}
+      {% picture item.image preset="gallery" alt=item.caption|default:page.title %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 
 {# 3. Описание #}
-{{ page.description|richtext }}
+{% if page.description %}
+<section class="section">
+  <div class="container container--narrow">{{ page.description|richtext }}</div>
+</section>
+{% endif %}
 
 {# 4. Характеристики #}
-<h2>Характеристики</h2>
-<ul>
-  <li>Вместимость: {{ page.capacity }} чел.</li>
-  {% if page.area %}<li>Площадь: {{ page.area }} м²</li>{% endif %}
-  {% if page.highlight %}<li>Особенность: {{ page.highlight }}</li>{% endif %}
-  {% if page.price_from %}<li>Цена от {{ page.price_from }} ₽/сутки</li>{% endif %}
-</ul>
+<section class="section">
+  <div class="container">
+    <h2>Характеристики</h2>
+    <ul>
+      <li>Вместимость: {{ page.capacity }} чел.</li>
+      {% if page.area %}<li>Площадь: {{ page.area }} м²</li>{% endif %}
+      {% if page.highlight %}<li>{{ page.highlight }}</li>{% endif %}
+      {% if page.price_from %}<li>Цена от {{ page.price_from }} ₽/сутки</li>{% endif %}
+    </ul>
+  </div>
+</section>
 
 {# 5. Что входит #}
-<h2>Что входит</h2>
-{% for group, items in page.amenities_by_group.items %}
-  <h3>{{ group }}</h3>
-  <ul>{% for item in items %}<li>{{ item.name }}</li>{% endfor %}</ul>
-{% endfor %}
+{% if page.amenities_by_group %}
+<section class="section section--deep">
+  <div class="container">
+    <h2>Что входит</h2>
+    {% for group, items in page.amenities_by_group.items %}
+      <h3>{{ group }}</h3>
+      <ul>{% for item in items %}<li>{{ item.name }}</li>{% endfor %}</ul>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 
 {# 6. Как добраться — компактный блок, Фаза 6 #}
 
-{# 7. Отзывы о домике #}
+{# 7. Отзывы о домике — п. 4.1.7 #}
 {% if page.house_reviews %}
-  <h2>Отзывы</h2>
-  {% for review in page.house_reviews %}
-    <blockquote><p>{{ review.text }}</p><cite>{{ review.author_name }}</cite></blockquote>
-  {% endfor %}
+<section class="section">
+  <div class="container">
+    <h2>Отзывы</h2>
+    {% for review in page.house_reviews %}
+      <blockquote><p>{{ review.text }}</p><cite>{{ review.author_name }}</cite></blockquote>
+    {% endfor %}
+  </div>
+</section>
 {% endif %}
 
 {# 8. Точка входа в бронирование #}
-<p><button type="button">Забронировать</button>
-{% if page.pms_name %}<small>{{ page.pms_name }}</small>{% endif %}</p>
+<section class="section">
+  <div class="container">{% include "includes/booking_cta.html" %}</div>
+</section>
 
-{# 9. Другие дома #}
-<h2>Другие дома</h2>
-<ul>
-  {% for other in page.other_houses %}
-    <li><a href="{% pageurl other %}">{{ other.title }}</a></li>
-  {% endfor %}
-</ul>
+{# 9. Ссылки на 3 других дома — п. 4.1.9 #}
+{% if page.other_houses %}
+<section class="section">
+  <div class="container">
+    <h2>Другие дома</h2>
+    <ul>
+      {% for other in page.other_houses %}
+        <li><a href="{% pageurl other %}">{{ other.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
 {% endblock %}

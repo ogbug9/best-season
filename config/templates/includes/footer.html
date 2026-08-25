@@ -1,0 +1,53 @@
+{% load wagtailcore_tags %}
+{% wagtail_site as current_site %}
+{% with s=settings.core.SiteSettings %}
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+
+      <div>
+        <p class="footer__title">{{ current_site.site_name }}</p>
+        {% if s.address %}<p>{{ s.address }}</p>{% endif %}
+        {% if s.yandex_map_url %}<p><a href="{{ s.yandex_map_url }}" rel="noopener" target="_blank">Смотреть на карте</a></p>{% endif %}
+      </div>
+
+      <div>
+        {% if s.phone %}<p><a href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a></p>{% endif %}
+        {% if s.email %}<p><a href="mailto:{{ s.email }}">{{ s.email }}</a></p>{% endif %}
+        <p>
+          {% if s.telegram_url %}<a href="{{ s.telegram_url }}" rel="noopener" target="_blank">Telegram</a>{% endif %}
+          {% if s.whatsapp_url %}<a href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">WhatsApp</a>{% endif %}
+          {% if s.vk_url %}<a href="{{ s.vk_url }}" rel="noopener" target="_blank">ВКонтакте</a>{% endif %}
+        </p>
+      </div>
+
+      <nav aria-label="Правовая информация">
+        <ul class="nav__list" style="flex-direction: column; gap: var(--s-2);">
+          {% for item in current_site.root_page.get_children.live.in_menu %}
+            <li><a class="nav__link" href="{% pageurl item %}">{{ item.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+    </div>
+
+    {# Реквизиты ИП в подвале — требование раздела 11 ТЗ #}
+    <div class="footer__legal">
+      {% if s.legal_name %}{{ s.legal_name }}{% endif %}
+      {% if s.inn %} · ИНН {{ s.inn }}{% endif %}
+      {% if s.ogrnip %} · ОГРНИП {{ s.ogrnip }}{% endif %}
+      {% if s.legal_address %}<br>{{ s.legal_address }}{% endif %}
+
+      {# Обязательное указание авторства по лицензии Creative Commons
+         Attribution 4.0, под которой распространяется шрифт Etude Noire.
+         Убирать нельзя — без него использование шрифта неправомерно. #}
+      <p class="footer__credits">
+        Шрифт Etude Noire — Дмитрий Антонов / Blue Curve Designstudio,
+        лицензия <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" target="_blank">CC BY 4.0</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+{% endwith %}

@@ -1,0 +1,318 @@
+/* =========================================================================
+   Лучший Сезон — фундамент стилей (Фаза 3)
+
+   ВАЖНО про ресет. Контур официально запрещает на сайте глобальные
+   селекторы `* {}` и `div {}` — иначе не гарантирует работу виджета
+   и снимает поддержку (см. 03-kontur-widget.md). Поэтому здесь:
+     - нет ни одного `*` и ни одного голого `div`;
+     - нормализация элементов живёт только внутри `.site` через :where();
+     - контейнер виджета `.kontur-host` откатывает нашу нормализацию,
+       чтобы разметка Контура рендерилась в своём исходном виде.
+   ========================================================================= */
+
+/* ---------- Токены ---------- */
+:root {
+  /* Палитра из макетов Figma (канвас COMPONENTS) */
+  --c-cream:        #F7F0E6;  /* основной фон */
+  --c-olive:        #847F57;  /* акцент, ТОЛЬКО крупный текст и фоны */
+  --c-terra:        #9B5026;  /* акцент действия, кнопки, ссылки */
+  --c-dark:         #494949;  /* основной текст */
+  --c-deep:         #3A3C15;  /* заголовки, тёмные секции */
+  --c-white:        #FFFFFF;
+
+  /* Прозрачные заливки из макетов — идут с рамкой 1px тёмно-серым */
+  --c-olive-soft:   #847F574D;
+  --c-terra-soft:   #9B50264D;
+  --c-dark-soft:    #4949494D;
+  --c-border:       var(--c-dark);
+
+  /* Семантика: пользуемся этими именами, не сырыми цветами */
+  --bg:             var(--c-cream);
+  --bg-deep:        var(--c-deep);
+  --text:           var(--c-dark);
+  --text-heading:   var(--c-deep);
+  --text-on-dark:   var(--c-cream);
+  --accent:         var(--c-terra);
+  --accent-hover:   #7F401E;
+
+  /* Типографика. Шрифты из макетов, подключены локально — см. fonts.css.
+     Третий шрифт макета (Berold) не подключён: его лицензия запрещает
+     коммерческое использование, до решения заказчика роль акцентного
+     заголовка играет Etude Noire. */
+  --font-heading: "Etude Noire", ui-serif, Georgia, serif;
+  --font-body:    "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --fs-base: 1.25rem;   /* 20px — как в макете */
+  /* В макете line-height 100%. Для текста это слишком тесно и бьёт по
+     читаемости, поэтому здесь 1.55; для крупных заголовков оставлен 1.0,
+     как нарисовано. Уточняется у Анастасии. */
+  --lh-base: 1.55;
+  --lh-heading: 1.0;
+
+  /* Шкала отступов */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+
+  --radius: 8px;
+  --radius-lg: 16px;
+
+  --container: 1200px;
+  --container-narrow: 760px;
+
+  /* Минимальный размер интерактивного элемента — п. 10.13 ТЗ */
+  --tap-min: 44px;
+}
+
+html {
+  box-sizing: border-box;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Скоупленная нормализация ---------- */
+.site :where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) {
+  margin: 0;
+}
+
+.site :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-heading);
+  line-height: var(--lh-heading);
+  color: var(--text-heading);
+  text-wrap: balance;
+}
+
+/* Верхняя граница — размеры из макета (h1 90px, h2 44px),
+   нижняя подобрана так, чтобы на 360px заголовок не разъезжался. */
+.site :where(h1) {
+  font-size: clamp(2.25rem, 1.2rem + 4.8vw, 5.625rem);
+  font-weight: 500;
+}
+.site :where(h2) {
+  font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+.site :where(h3) { font-size: clamp(1.375rem, 1.1rem + 1.2vw, 1.75rem); font-weight: 400; }
+
+.site :where(ul, ol) { margin: 0; padding-left: 1.25em; }
+
+.site :where(img, picture, video, canvas, svg) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.site :where(button, input, select, textarea) {
+  font: inherit;
+  color: inherit;
+}
+
+.site :where(a) {
+  color: var(--accent);
+  text-underline-offset: 0.15em;
+}
+.site :where(a:hover) { color: var(--accent-hover); }
+
+.site :where(p + p) { margin-top: var(--s-4); }
+
+/* Фокус виден всегда — п. 10.13 ТЗ, работа с клавиатуры */
+.site :where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--c-terra);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ---------- Контейнер виджета Контура ----------
+   Откатывает нашу нормализацию: внутри виджет рисует свою разметку,
+   и наши правила не должны на неё влиять. */
+.kontur-host :where(h1, h2, h3, h4, h5, h6, p, ul, ol, li, a, button, input, label, img, svg) {
+  all: revert;
+}
+
+/* ---------- Раскладка ---------- */
+.container {
+  width: min(100% - 2 * var(--s-4), var(--container));
+  margin-inline: auto;
+}
+.container--narrow { max-width: var(--container-narrow); }
+
+.section { padding-block: var(--s-7); }
+@media (min-width: 768px) {
+  .section { padding-block: var(--s-9); }
+}
+
+.section--deep {
+  background: var(--bg-deep);
+  color: var(--text-on-dark);
+}
+.section--deep :where(h1, h2, h3, h4, h5, h6) { color: var(--text-on-dark); }
+
+/* Место под фоновый SVG-паттерн.
+   Паттерн приклеен к своей секции: едет вместе с ней при скролле,
+   не имеет собственного движения и не наезжает на текст.
+   Сам файл вставляется в --pattern, когда Настя передаст исходники. */
+.section--pattern {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.section--pattern > .section__pattern {
+  position: absolute;
+  z-index: -1;
+  inset-block: 0;
+  inline-size: min(60%, 640px);
+  pointer-events: none;
+  opacity: 0.35;
+}
+.section--pattern > .section__pattern--right { inset-inline-end: 0; }
+.section--pattern > .section__pattern--left  { inset-inline-start: 0; }
+@media (max-width: 767px) {
+  /* На узком экране места под рисунок нет — решение подтвердить с Настей */
+  .section--pattern > .section__pattern { display: none; }
+}
+
+/* ---------- Кнопки ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: var(--tap-min);
+  padding: var(--s-3) var(--s-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.btn--primary {
+  background: var(--c-terra);
+  color: var(--c-cream);
+}
+.btn--primary:hover { background: var(--accent-hover); color: var(--c-cream); }
+
+.btn--outline {
+  background: transparent;
+  border-color: var(--c-border);
+  color: var(--c-dark);
+}
+.btn--outline:hover { background: var(--c-dark-soft); color: var(--c-dark); }
+
+/* ---------- Шапка ---------- */
+.header {
+  border-bottom: 1px solid var(--c-dark-soft);
+  background: var(--bg);
+}
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  min-height: 72px;
+}
+.header__logo { font-family: var(--font-heading); font-size: 1.25rem; text-decoration: none; color: var(--text-heading); }
+
+.nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  text-decoration: none;
+  color: var(--c-dark);
+}
+.nav__link:hover,
+.nav__link[aria-current="page"] { color: var(--c-terra); }
+
+.header__phone { font-weight: 600; text-decoration: none; white-space: nowrap; }
+
+/* Мобильное меню — раскрытие на Alpine.js, без своего JS */
+.nav--mobile { display: none; }
+@media (max-width: 899px) {
+  .nav--desktop { display: none; }
+  .nav--mobile { display: block; }
+  .nav--mobile .nav__list { flex-direction: column; gap: var(--s-2); padding-block: var(--s-4); }
+}
+
+/* ---------- Подвал ---------- */
+.footer {
+  margin-top: var(--s-8);
+  padding-block: var(--s-7);
+  background: var(--bg-deep);
+  color: var(--text-on-dark);
+}
+.footer :where(a) { color: var(--text-on-dark); }
+.footer__grid {
+  display: grid;
+  gap: var(--s-6);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.footer__legal {
+  margin-top: var(--s-6);
+  padding-top: var(--s-4);
+  border-top: 1px solid rgba(247, 240, 230, 0.2);
+  font-size: 0.875rem;
+  opacity: 0.85;
+}
+
+/* ---------- Служебное ---------- */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--s-4);
+  top: calc(-1 * var(--tap-min) - var(--s-4));
+  z-index: 100;
+  padding: var(--s-3) var(--s-4);
+  background: var(--c-terra);
+  color: var(--c-cream);
+  transition: top 0.15s ease;
+}
+.skip-link:focus { top: var(--s-4); color: var(--c-cream); }
+
+/* Список элементов перечислен явно: `*` здесь использовать нельзя,
+   даже под .site — он дотянулся бы до разметки виджета Контура. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .site :where(a, button, .btn, .nav__link, .skip-link, .section__pattern, img, picture) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.footer__credits {
+  margin-top: var(--s-3);
+  font-size: 0.8125rem;
+  opacity: 0.7;
+}

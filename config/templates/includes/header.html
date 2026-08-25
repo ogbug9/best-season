@@ -1,0 +1,38 @@
+{% load wagtailcore_tags %}
+{% wagtail_site as current_site %}
+
+<header class="header">
+  <div class="container header__inner">
+    <a class="header__logo" href="/">{{ current_site.site_name }}</a>
+
+    <nav class="nav nav--desktop" aria-label="Основное меню">
+      <ul class="nav__list">
+        {% for item in current_site.root_page.get_children.live.in_menu %}
+          <li>
+            <a class="nav__link" href="{% pageurl item %}"
+               {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    {% if settings.core.SiteSettings.phone %}
+      <a class="header__phone nav__link" href="tel:{{ settings.core.SiteSettings.phone }}">
+        {{ settings.core.SiteSettings.phone_display|default:settings.core.SiteSettings.phone }}
+      </a>
+    {% endif %}
+  </div>
+
+  {# Мобильное меню появится на Alpine.js в Фазе 4 вместе с главной,
+     сейчас пункты доступны списком, чтобы навигация работала без JS. #}
+  <nav class="nav nav--mobile container" aria-label="Меню">
+    <ul class="nav__list">
+      {% for item in current_site.root_page.get_children.live.in_menu %}
+        <li>
+          <a class="nav__link" href="{% pageurl item %}"
+             {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+</header>
