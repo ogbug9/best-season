@@ -316,3 +316,180 @@ body {
   font-size: 0.8125rem;
   opacity: 0.7;
 }
+
+/* =========================================================================
+   Главная (Фаза 4)
+   ========================================================================= */
+
+/* ---------- Первый экран ---------- */
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: end;
+  min-height: min(88svh, 760px);
+  padding-block: var(--s-8) var(--s-7);
+  color: var(--c-cream);
+}
+
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  background: var(--c-deep);
+}
+.hero__media::after {
+  /* Затемнение: без него белый текст не проходит по контрасту
+     на светлых кадрах — п. 10.13 ТЗ требует 4.5:1 */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(58,60,21,0.25) 0%, rgba(58,60,21,0.75) 100%);
+}
+
+.hero__slide {
+  position: absolute;
+  inset: 0;
+}
+.hero__slide picture,
+.hero__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Слайд-шоу на CSS, без JavaScript: скрипт на первом экране утяжелил бы
+   LCP, а скорость на мобильных — предмет приёмки (п. 1.2 ТЗ).
+   Наборы кадров описаны отдельно, потому что проценты в @keyframes
+   не считаются через var(). */
+.hero__slide:not(:first-child) { opacity: 0; }
+
+.hero__media[data-count="3"] .hero__slide {
+  animation: hero-fade-3 21s infinite;
+  animation-delay: calc(var(--i) * 7s);
+  opacity: 0;
+}
+.hero__media[data-count="4"] .hero__slide {
+  animation: hero-fade-4 28s infinite;
+  animation-delay: calc(var(--i) * 7s);
+  opacity: 0;
+}
+.hero__media[data-count="5"] .hero__slide {
+  animation: hero-fade-5 35s infinite;
+  animation-delay: calc(var(--i) * 7s);
+  opacity: 0;
+}
+
+@keyframes hero-fade-3 {
+  0%, 33.33% { opacity: 1; }
+  38.33%, 95% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes hero-fade-4 {
+  0%, 25% { opacity: 1; }
+  30%, 95% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes hero-fade-5 {
+  0%, 20% { opacity: 1; }
+  25%, 95% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__slide { animation: none !important; opacity: 0; }
+  .hero__slide:first-child { opacity: 1; }
+}
+
+.hero__inner { position: relative; }
+.hero__title { color: var(--c-cream); }
+.hero__subtitle {
+  max-width: 46ch;
+  margin-top: var(--s-4);
+  font-size: 1.125rem;
+}
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  margin-top: var(--s-6);
+}
+.btn--on-media {
+  border-color: var(--c-cream);
+  color: var(--c-cream);
+  background: rgba(247, 240, 230, 0.08);
+}
+.btn--on-media:hover {
+  background: var(--c-cream);
+  color: var(--c-deep);
+}
+
+/* ---------- Карточки ---------- */
+.cards {
+  display: grid;
+  gap: var(--s-5);
+  margin: 0 0 var(--s-6);
+  padding: 0;
+  list-style: none;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 600px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.card__link { text-decoration: none; color: inherit; display: block; }
+.card__link picture { border-radius: var(--radius-lg); overflow: hidden; }
+.card__title { margin-top: var(--s-3); }
+.card__link:hover .card__title { color: var(--c-terra); }
+.card__meta { font-size: 0.9375rem; opacity: 0.85; }
+
+.card--quote blockquote { margin: 0; }
+.card--quote p { font-style: italic; }
+
+/* ---------- Двухколоночный блок ---------- */
+.split {
+  display: grid;
+  gap: var(--s-6);
+  align-items: center;
+}
+@media (min-width: 900px) { .split { grid-template-columns: 1fr 1fr; } }
+.split__media picture { border-radius: var(--radius-lg); overflow: hidden; }
+
+.center { text-align: center; }
+
+/* ---------- Липкая кнопка на мобильном ----------
+   Точка входа №6 из таблицы п. 5.1 ТЗ: появляется после прокрутки
+   первого экрана, не перекрывает контент и не мешает прокрутке. */
+.sticky-cta {
+  position: fixed;
+  z-index: 20;
+  inset-inline: var(--s-4);
+  bottom: var(--s-4);
+  display: none;
+  opacity: 0;
+  transform: translateY(120%);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 6px 24px rgba(73, 73, 73, 0.35);
+}
+.sticky-cta[data-visible="true"] { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 899px) {
+  .sticky-cta { display: inline-flex; }
+  /* Запас снизу, чтобы кнопка не накрывала конец страницы */
+  .footer { padding-bottom: calc(var(--s-7) + var(--tap-min)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sticky-cta { transition: none; }
+}
+
+/* ---------- Подпись у кнопки бронирования ---------- */
+.booking-cta__note {
+  margin-top: var(--s-2);
+  font-size: 0.9375rem;
+  opacity: 0.85;
+}

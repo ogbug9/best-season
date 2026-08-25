@@ -1,21 +1,166 @@
 {% extends "base.html" %}
-{% load static %}
-
-{% block body_class %}template-homepage{% endblock %}
-
-{% block extra_css %}
+{% load wagtailcore_tags wagtailimages_tags media_tags %}
 
 {% comment %}
-Delete the line below if you're just getting started and want to remove the welcome screen!
+  Главная. Состав первого экрана — п. 9.2.1 ТЗ.
+  Кнопка бронирования здесь — точка входа №2 из таблицы п. 5.1.
 {% endcomment %}
-<link rel="stylesheet" href="{% static 'css/welcome_page.css' %}">
-{% endblock extra_css %}
+
+{% block body_class %}page-home{% endblock %}
+
+{% block og_image %}
+  {% with first=page.slides.first %}
+    {% if first %}
+      {% image first.image fill-1200x630 as og %}
+      <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og.url }}">
+    {% endif %}
+  {% endwith %}
+{% endblock %}
 
 {% block content %}
 
-{% comment %}
-Delete the line below if you're just getting started and want to remove the welcome screen!
-{% endcomment %}
-{% include 'home/welcome_page.html' %}
+{# ---------- Первый экран ---------- #}
+<section class="hero">
+  <div class="hero__media" aria-hidden="true" data-count="{{ page.slides.count }}">
+    {% for slide in page.slides.all %}
+      <div class="hero__slide" style="--i: {{ forloop.counter0 }}">
+        {% if forloop.first %}
+          {% picture slide.image preset="hero" alt=slide.alt loading="eager" %}
+        {% else %}
+          {% picture slide.image preset="hero" alt=slide.alt %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
 
-{% endblock content %}
+  <div class="container hero__inner">
+    <h1 class="hero__title">{{ page.hero_title|default:page.title }}</h1>
+    {% if page.hero_subtitle %}
+      <p class="hero__subtitle">{{ page.hero_subtitle }}</p>
+    {% endif %}
+
+    <div class="hero__actions">
+      {% if page.hero_cta_page %}
+        <a class="btn btn--primary" href="{% pageurl page.hero_cta_page %}">{{ page.hero_cta_text }}</a>
+      {% elif houses_index %}
+        <a class="btn btn--primary" href="{% pageurl houses_index %}">{{ page.hero_cta_text }}</a>
+      {% endif %}
+      <button type="button" class="btn btn--outline btn--on-media" data-booking-open data-entry-point="2">
+        Забронировать
+      </button>
+    </div>
+  </div>
+</section>
+
+{# ---------- Дома ---------- #}
+{% if houses %}
+<section class="section section--pattern" id="houses">
+  <div class="container">
+    <h2>Наши домики</h2>
+    <ul class="cards">
+      {% for house in houses %}
+        <li class="card">
+          <a class="card__link" href="{% pageurl house %}">
+            {% picture house.hero_image preset="card" alt=house.title %}
+            <h3 class="card__title">{{ house.title }}</h3>
+          </a>
+          {% if house.short_description %}<p>{{ house.short_description }}</p>{% endif %}
+          <p class="card__meta">
+            до {{ house.capacity }} чел.{% if house.area %} · {{ house.area }} м²{% endif %}{% if house.price_from %} · от {{ house.price_from }} ₽/сутки{% endif %}
+          </p>
+        </li>
+      {% endfor %}
+    </ul>
+    {% if houses_index %}
+      <p><a class="btn btn--outline" href="{% pageurl houses_index %}">Все домики</a></p>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{# ---------- О ферме ---------- #}
+{% if page.about_text or page.about_title %}
+<section class="section section--deep">
+  <div class="container split">
+    <div class="split__text">
+      {% if page.about_title %}<h2>{{ page.about_title }}</h2>{% endif %}
+      {{ page.about_text|richtext }}
+    </div>
+    {% if page.about_image %}
+      <div class="split__media">{% picture page.about_image preset="gallery" alt=page.about_title %}</div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{# ---------- Допуслуги ---------- #}
+{% if services %}
+<section class="section">
+  <div class="container">
+    <h2>Услуги</h2>
+    <ul class="cards">
+      {% for service in services %}
+        <li class="card">
+          {% picture service.image preset="card" alt=service.name %}
+          <h3 class="card__title">{{ service.name }}</h3>
+          {% if service.short_description %}<p>{{ service.short_description }}</p>{% endif %}
+          {% if service.price %}
+            <p class="card__meta">{{ service.price }} ₽ {{ service.get_price_unit_display }}
+            {% if service.price_note %}<br><small>{{ service.price_note }}</small>{% endif %}</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{# ---------- Акции ---------- #}
+{% if promotions %}
+<section class="section">
+  <div class="container">
+    <h2>Акции</h2>
+    <ul class="cards">
+      {% for promo in promotions %}
+        <li class="card">
+          {% picture promo.image preset="card" alt=promo.title %}
+          <h3 class="card__title">{{ promo.title }}</h3>
+          {% if promo.short_description %}<p>{{ promo.short_description }}</p>{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{# ---------- Как добраться ---------- #}
+{% if page.directions_teaser %}
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>{{ page.directions_title }}</h2>
+    <p>{{ page.directions_teaser }}</p>
+    {% if page.directions_page %}
+      <p><a class="btn btn--primary" href="{% pageurl page.directions_page %}">Как доехать</a></p>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{# ---------- Отзывы ---------- #}
+{% if reviews %}
+<section class="section">
+  <div class="container">
+    <h2>Отзывы</h2>
+    <ul class="cards">
+      {% for review in reviews %}
+        <li class="card card--quote">
+          <blockquote><p>{{ review.text }}</p></blockquote>
+          <p class="card__meta">{{ review.author_name }}{% if review.visit_date %} · {{ review.visit_date|date:"F Y" }}{% endif %}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

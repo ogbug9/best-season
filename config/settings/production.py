@@ -15,6 +15,11 @@ WAGTAILADMIN_BASE_URL = config(
     "WAGTAILADMIN_BASE_URL", default="https://best-season.online"
 )
 
+# Загруженные картинки должны лежать в постоянном хранилище Amvera (/data).
+# Иначе каждая пересборка стирает всё, что залил редактор: репозиторий
+# при деплое разворачивается заново, а /data переживает пересборку.
+MEDIA_ROOT = config("MEDIA_ROOT", default="/data/media")
+
 # ManifestStaticFilesStorage is recommended in production, to prevent
 # outdated JavaScript / CSS assets being served from cache
 # (e.g. after a Wagtail upgrade).

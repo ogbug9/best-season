@@ -3,7 +3,7 @@
 
 <header class="header">
   <div class="container header__inner">
-    <a class="header__logo" href="/">{{ current_site.site_name }}</a>
+    <a class="header__logo" href="/" aria-label="{{ current_site.site_name|default:'Лучший Сезон' }} — на главную">{{ current_site.site_name|default:"Лучший Сезон" }}</a>
 
     <nav class="nav nav--desktop" aria-label="Основное меню">
       <ul class="nav__list">
