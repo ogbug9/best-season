@@ -24,8 +24,8 @@
 
     <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
 
-    {# Предзагрузка кириллических поднаборов: на русской странице грузятся
-       именно они, и без preload текст успевает мигнуть системным шрифтом. #}
+    {% comment %} Предзагрузка кириллических поднаборов: на русской странице грузятся
+       именно они, и без preload текст успевает мигнуть системным шрифтом. {% endcomment %}
     <link rel="preload" href="{% static 'fonts/montserrat-400-cyrillic.woff2' %}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{% static 'fonts/etude-noire-500-cyrillic.woff2' %}" as="font" type="font/woff2" crossorigin>
 

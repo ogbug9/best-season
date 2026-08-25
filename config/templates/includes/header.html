@@ -23,8 +23,8 @@
     {% endif %}
   </div>
 
-  {# Мобильное меню появится на Alpine.js в Фазе 4 вместе с главной,
-     сейчас пункты доступны списком, чтобы навигация работала без JS. #}
+  {% comment %} Мобильное меню появится на Alpine.js в Фазе 4 вместе с главной,
+     сейчас пункты доступны списком, чтобы навигация работала без JS. {% endcomment %}
   <nav class="nav nav--mobile container" aria-label="Меню">
     <ul class="nav__list">
       {% for item in current_site.root_page.get_children.live.in_menu %}

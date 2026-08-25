@@ -39,9 +39,9 @@
       {% if s.ogrnip %} · ОГРНИП {{ s.ogrnip }}{% endif %}
       {% if s.legal_address %}<br>{{ s.legal_address }}{% endif %}
 
-      {# Обязательное указание авторства по лицензии Creative Commons
+      {% comment %} Обязательное указание авторства по лицензии Creative Commons
          Attribution 4.0, под которой распространяется шрифт Etude Noire.
-         Убирать нельзя — без него использование шрифта неправомерно. #}
+         Убирать нельзя — без него использование шрифта неправомерно. {% endcomment %}
       <p class="footer__credits">
         Шрифт Etude Noire — Дмитрий Антонов / Blue Curve Designstudio,
         лицензия <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" target="_blank">CC BY 4.0</a>
