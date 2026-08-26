@@ -1,30 +1,71 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags media_tags %}
+{% load wagtailcore_tags wagtailimages_tags media_tags %}
+
+{% comment %}
+  Каталог домов. Карточка повторяет карточку главной (п. 9.2 ТЗ — единый
+  визуальный язык), но здесь показывается полный набор характеристик:
+  на главной блок обрезан до четырёх домов и служит витриной.
+{% endcomment %}
+
+{% block body_class %}page-houses{% endblock %}
+
+{% block og_image %}
+  {% if page.hero_image %}
+    {% image page.hero_image fill-1200x630 as og %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og.url }}">
+  {% endif %}
+{% endblock %}
 
 {% block content %}
-<section class="section">
-  <div class="container">
+
+<section class="page-hero{% if page.hero_image %} page-hero--media{% endif %}">
+  {% if page.hero_image %}
+    <div class="page-hero__media" aria-hidden="true">
+      {% picture page.hero_image preset="hero" alt="" loading="eager" %}
+    </div>
+  {% endif %}
+  <div class="container page-hero__inner">
     <h1>{{ page.title }}</h1>
-    {% if page.intro %}<div class="container--narrow">{{ page.intro|richtext }}</div>{% endif %}
+    {% if page.intro %}
+      <div class="page-hero__intro">{{ page.intro|richtext }}</div>
+    {% endif %}
   </div>
 </section>
 
-<section class="section">
+<section class="section section--pattern">
   <div class="container">
     <ul class="cards">
       {% for house in houses %}
         <li class="card">
-          <a href="{% pageurl house %}">
+          <a class="card__link" href="{% pageurl house %}">
             {% picture house.hero_image preset="card" alt=house.title %}
-            <h2>{{ house.title }}</h2>
+            <h2 class="card__title">{{ house.title }}</h2>
           </a>
           {% if house.short_description %}<p>{{ house.short_description }}</p>{% endif %}
-          <p>До {{ house.capacity }} чел.{% if house.price_from %} · от {{ house.price_from }} ₽/сутки{% endif %}</p>
+          <p class="card__meta">
+            до {{ house.capacity }} чел.{% if house.area %} · {{ house.area }} м²{% endif %}{% if house.highlight %} · {{ house.highlight }}{% endif %}
+          </p>
+          <p class="card__foot">
+            {% if house.price_from %}
+              <span class="price">от {{ house.price_from }} ₽<span class="price__unit"> / сутки</span></span>
+            {% endif %}
+            <a class="btn btn--outline btn--sm" href="{% pageurl house %}">Подробнее</a>
+          </p>
         </li>
       {% empty %}
-        <li>Домики пока не добавлены.</li>
+        <li class="card"><p>Домики пока не добавлены.</p></li>
       {% endfor %}
     </ul>
   </div>
 </section>
+
+{# Точка входа в бронирование в конце каталога — таблица п. 5.1 ТЗ #}
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Выбрали домик?</h2>
+    <p>Свободные даты и стоимость — в системе бронирования.</p>
+    {% include "includes/booking_cta.html" %}
+  </div>
+</section>
+
 {% endblock %}

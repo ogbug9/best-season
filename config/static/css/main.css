@@ -493,3 +493,281 @@ body {
   font-size: 0.9375rem;
   opacity: 0.85;
 }
+
+/* =========================================================================
+   Страницы домов (Фаза 5)
+   ========================================================================= */
+
+/* ---------- Первый экран внутренней страницы ----------
+   Ниже главной: на внутренней странице пользователь пришёл за содержимым,
+   и полноэкранная картинка только отодвигала бы его вниз. */
+.page-hero,
+.house-hero {
+  position: relative;
+  isolation: isolate;
+  padding-block: var(--s-7);
+}
+@media (min-width: 768px) {
+  .page-hero,
+  .house-hero { padding-block: var(--s-8); }
+}
+
+.page-hero--media,
+.house-hero--media {
+  display: grid;
+  align-items: end;
+  min-height: min(58svh, 520px);
+  color: var(--c-cream);
+}
+.page-hero--media :where(h1, h2, h3),
+.house-hero--media :where(h1, h2, h3) { color: var(--c-cream); }
+.page-hero--media :where(a),
+.house-hero--media :where(a) { color: var(--c-cream); }
+
+.page-hero__media,
+.house-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  background: var(--c-deep);
+}
+.page-hero__media picture,
+.page-hero__media img,
+.house-hero__media picture,
+.house-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Затемнение: без него светлый кадр не даёт кремовому тексту 4.5:1 — п. 10.13 ТЗ */
+.page-hero__media::after,
+.house-hero__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(58, 60, 21, 0.3) 0%, rgba(58, 60, 21, 0.8) 100%);
+}
+
+.page-hero__inner,
+.house-hero__inner { position: relative; }
+
+.page-hero__intro { max-width: var(--container-narrow); margin-top: var(--s-4); }
+
+.house-hero__eyebrow {
+  margin-bottom: var(--s-3);
+  font-size: 0.9375rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.house-hero__lead {
+  max-width: 52ch;
+  margin-top: var(--s-4);
+  font-size: 1.125rem;
+}
+
+.house-hero__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-3);
+  margin-top: var(--s-5);
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+}
+.house-hero__facts > li {
+  padding: var(--s-1) var(--s-3);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+}
+
+.house-hero .booking-cta { margin-top: var(--s-6); }
+
+/* ---------- Галерея ---------- */
+.gallery {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 600px) { .gallery { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1000px) { .gallery { grid-template-columns: repeat(4, 1fr); } }
+
+/* Первый кадр крупнее: даёт галерее композицию вместо ровной сетки плиток */
+@media (min-width: 600px) {
+  .gallery__item:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}
+
+.gallery__link {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius);
+  aspect-ratio: 1;
+}
+.gallery__link picture,
+.gallery__link img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+.gallery__link:hover img { transform: scale(1.04); }
+
+/* Свёрнутое состояние ставит скрипт: без JS показываются все кадры сразу,
+   иначе часть галереи была бы недоступна. */
+.gallery[data-collapsed="true"] .gallery__item--rest { display: none; }
+
+.gallery__more { margin-top: var(--s-5); }
+
+/* ---------- Просмотрщик фото ---------- */
+.lightbox {
+  width: min(96vw, 1200px);
+  max-width: none;
+  max-height: 94svh;
+  padding: var(--s-4);
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--c-deep);
+  color: var(--c-cream);
+  overflow: hidden;
+}
+.lightbox::backdrop { background: rgba(58, 60, 21, 0.9); }
+
+.lightbox__image {
+  width: 100%;
+  max-height: 78svh;
+  margin-inline: auto;
+  object-fit: contain;
+}
+.lightbox__caption {
+  margin-top: var(--s-3);
+  text-align: center;
+  font-size: 0.9375rem;
+  min-height: 1.5em;
+}
+
+.lightbox__close,
+.lightbox__nav {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  border: 1px solid rgba(247, 240, 230, 0.4);
+  border-radius: 999px;
+  background: rgba(58, 60, 21, 0.6);
+  color: var(--c-cream);
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.lightbox__close:hover,
+.lightbox__nav:hover { background: var(--c-terra); border-color: var(--c-terra); }
+
+.lightbox__close { top: var(--s-3); right: var(--s-3); font-size: 1.5rem; }
+.lightbox__nav { top: 50%; transform: translateY(-50%); }
+.lightbox__nav--prev { left: var(--s-3); }
+.lightbox__nav--next { right: var(--s-3); }
+
+/* ---------- Описание ---------- */
+.prose :where(p + p, ul, ol) { margin-top: var(--s-4); }
+.prose :where(li + li) { margin-top: var(--s-2); }
+
+/* ---------- Характеристики ---------- */
+.specs {
+  display: grid;
+  gap: var(--s-4);
+  margin: 0;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.specs__item {
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--c-dark-soft);
+  border-radius: var(--radius);
+  background: var(--c-olive-soft);
+}
+.specs__item dt {
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.specs__item dd {
+  margin: var(--s-2) 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  line-height: 1.15;
+  color: var(--text-heading);
+}
+.specs__note {
+  margin-top: var(--s-4);
+  font-size: 0.9375rem;
+  opacity: 0.85;
+}
+
+/* ---------- Что входит ---------- */
+.amenities {
+  display: grid;
+  gap: var(--s-6);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.amenities__title {
+  padding-bottom: var(--s-2);
+  border-bottom: 1px solid rgba(247, 240, 230, 0.25);
+  font-size: 1.25rem;
+}
+.amenities__list {
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--s-3);
+}
+.amenities__item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: 1rem;
+}
+.icon {
+  display: block;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  color: inherit;
+}
+
+/* ---------- Карточка в каталоге ---------- */
+.card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: auto;
+  padding-top: var(--s-3);
+}
+.price {
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+  color: var(--text-heading);
+}
+.price__unit { font-family: var(--font-body); font-size: 0.9375rem; opacity: 0.8; }
+
+.btn--sm {
+  min-height: var(--tap-min);
+  padding: var(--s-2) var(--s-4);
+  font-size: 0.9375rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery__link img { transition: none; }
+  .gallery__link:hover img { transform: none; }
+}

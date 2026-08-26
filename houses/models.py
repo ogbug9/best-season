@@ -16,9 +16,20 @@ BODY_FEATURES = ["bold", "italic", "link", "ul", "ol"]
 class HouseIndexPage(Page):
     """Раздел «Наши домики» / «Размещение» — родитель для страниц домов."""
 
+    hero_image = models.ForeignKey(
+        "wagtailimages.Image",
+        verbose_name="Фото первого экрана",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
     intro = RichTextField("Вступительный текст", blank=True, features=BODY_FEATURES)
 
-    content_panels = Page.content_panels + [FieldPanel("intro")]
+    content_panels = Page.content_panels + [
+        FieldPanel("hero_image"),
+        FieldPanel("intro"),
+    ]
 
     subpage_types = ["houses.HousePage"]
     max_count = 1
@@ -29,7 +40,10 @@ class HouseIndexPage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         context["houses"] = (
-            HousePage.objects.child_of(self).live().order_by("sort_order_index", "title")
+            HousePage.objects.child_of(self)
+            .live()
+            .select_related("hero_image")
+            .order_by("sort_order_index", "title")
         )
         return context
 
@@ -155,6 +169,7 @@ class HousePage(Page):
         return (
             HousePage.objects.live()
             .exclude(pk=self.pk)
+            .select_related("hero_image")
             .order_by("sort_order_index", "title")[:3]
         )
 

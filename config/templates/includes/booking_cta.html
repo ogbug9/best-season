@@ -10,7 +10,8 @@
    Контура рендерилась в исходном виде. {% endcomment %}
 
 <div class="booking-cta">
-  <button type="button" class="btn btn--primary" data-booking-open>
+  <button type="button" class="btn btn--primary" data-booking-open
+          {% if entry_point %}data-entry-point="{{ entry_point }}"{% endif %}>
     Забронировать
   </button>
 
