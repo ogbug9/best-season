@@ -6,6 +6,7 @@
 """
 
 from django import template
+from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
 register = template.Library()
@@ -24,7 +25,7 @@ PRESETS = {
 
 
 @register.simple_tag
-def picture(image, preset="card", alt="", loading="lazy", css_class="", sizes=None):
+def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=None):
     """Отдаёт <picture> с WebP-источником и JPEG-фолбэком.
 
     loading="eager" ставить только для картинки первого экрана — она
@@ -55,8 +56,12 @@ def picture(image, preset="card", alt="", loading="lazy", css_class="", sizes=No
     if fallback is None:
         return ""
 
-    alt_text = alt or getattr(image, "title", "") or ""
-    class_attr = f' class="{css_class}"' if css_class else ""
+    # Пустая строка в alt — осознанный выбор для декоративных картинок
+    # (фон первого экрана), её нельзя подменять названием файла: имя вида
+    # b5dedcca94a6... как подпись бесполезно и мешает читалкам экрана.
+    # Название подставляется только если alt вообще не передан.
+    alt_text = escape(alt if alt is not None else getattr(image, "title", ""))
+    class_attr = f' class="{escape(css_class)}"' if css_class else ""
     # width/height обязательны: без них браузер не резервирует место
     # и уезжает CLS, а он предмет приёмки (п. 1.2, ≤0,1)
     html = (
