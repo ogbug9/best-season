@@ -99,6 +99,27 @@ class SiteSettings(BaseSiteSetting):
     address = models.CharField("Адрес", max_length=255, blank=True)
     yandex_map_url = models.URLField("Ссылка на Яндекс.Карты", blank=True)
 
+    # Компактный блок «Как добраться» на странице дома — п. 4.1.6 ТЗ.
+    # Текст общий для всех домов: маршрут до глэмпинга от выбора домика
+    # не зависит, дублировать его на четырёх страницах смысла нет.
+    directions_short = models.TextField(
+        "Как добраться — краткий текст",
+        blank=True,
+        help_text=(
+            "2–3 строки для компактного блока на странице дома. "
+            "Полный маршрут — на отдельной странице «Как добраться»."
+        ),
+    )
+    directions_page = models.ForeignKey(
+        "wagtailcore.Page",
+        verbose_name="Страница «Как добраться»",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Куда ведёт ссылка «Подробный маршрут» из блока на странице дома.",
+    )
+
     legal_name = models.CharField("Наименование ИП", max_length=255, blank=True)
     inn = models.CharField("ИНН", max_length=16, blank=True)
     ogrnip = models.CharField("ОГРНИП", max_length=24, blank=True)
@@ -138,8 +159,10 @@ class SiteSettings(BaseSiteSetting):
             [
                 FieldPanel("address"),
                 FieldPanel("yandex_map_url"),
+                FieldPanel("directions_short"),
+                FieldPanel("directions_page"),
             ],
-            heading="Адрес",
+            heading="Адрес и маршрут",
         ),
         MultiFieldPanel(
             [

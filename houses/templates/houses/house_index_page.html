@@ -29,6 +29,19 @@
     {% if page.intro %}
       <div class="page-hero__intro">{{ page.intro|richtext }}</div>
     {% endif %}
+
+    {% comment %}
+      Точка входа №1 из таблицы п. 5.1 ТЗ. Визуально это поля поиска,
+      технически — одна кнопка: виджет Контура не принимает даты при
+      инициализации (см. 03-kontur-widget.md), настоящие инпуты были бы
+      ловушкой — гость заполнил бы их, а в модалку они бы не попали.
+    {% endcomment %}
+    <button type="button" class="searchbar" data-booking-open data-entry-point="1">
+      <span class="searchbar__field">Дата въезда</span>
+      <span class="searchbar__field">Дата выезда</span>
+      <span class="searchbar__field">Гости</span>
+      <span class="searchbar__cta btn btn--primary">Забронировать даты</span>
+    </button>
   </div>
 </section>
 
@@ -59,12 +72,42 @@
   </div>
 </section>
 
+{% comment %}
+  Доп услуги — вторая половина раздела «Размещение» по п. 9.2.2 ТЗ:
+  домики и доп услуги показываются одной страницей. Почасовые объекты
+  (баня, беседка) бронируются только через отдельный виджет
+  hourlyObjectsList (см. 03-kontur-widget.md), он подключается в Фазе 7 —
+  здесь только витринное описание.
+{% endcomment %}
+{% if services %}
+<section class="section section--pattern">
+  <div class="container">
+    <h2>Доп услуги</h2>
+    <ul class="cards">
+      {% for service in services %}
+        <li class="card">
+          {% if service.image %}{% picture service.image preset="card" alt=service.name %}{% endif %}
+          <h3 class="card__title">{{ service.name }}</h3>
+          {% if service.short_description %}<p>{{ service.short_description }}</p>{% endif %}
+          {% if service.price %}
+            <p class="card__foot">
+              <span class="price">{{ service.price }} ₽ {{ service.get_price_unit_display }}</span>
+              {% if service.price_note %}<span class="card__meta">{{ service.price_note }}</span>{% endif %}
+            </p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
 {# Точка входа в бронирование в конце каталога — таблица п. 5.1 ТЗ #}
 <section class="section section--deep">
   <div class="container container--narrow center">
     <h2>Выбрали домик?</h2>
     <p>Свободные даты и стоимость — в системе бронирования.</p>
-    {% include "includes/booking_cta.html" %}
+    {% include "includes/booking_cta.html" with entry_point="5" %}
   </div>
 </section>
 

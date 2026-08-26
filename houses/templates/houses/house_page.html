@@ -33,8 +33,8 @@
 
 {% block content %}
 
-{# ---------- 1. Первый экран (п. 4.1.1) ----------
-   loading=eager: картинка участвует в замере LCP, ленивая загрузка его портит. #}
+{% comment %} ---------- 1. Первый экран (п. 4.1.1) ----------
+   loading=eager: картинка участвует в замере LCP, ленивая загрузка его портит. {% endcomment %}
 <section class="house-hero{% if page.hero_image %} house-hero--media{% endif %}">
   {% if page.hero_image %}
     <div class="house-hero__media" aria-hidden="true">
@@ -62,9 +62,9 @@
   </div>
 </section>
 
-{# ---------- 2. Галерея (п. 4.1.2, не меньше 15 фото) ----------
+{% comment %} ---------- 2. Галерея (п. 4.1.2, не меньше 15 фото) ----------
    Без JS каждое фото — обычная ссылка на полный размер; скрипт перехватывает
-   клик и открывает просмотрщик, поэтому галерея работает и с выключенным JS. #}
+   клик и открывает просмотрщик, поэтому галерея работает и с выключенным JS. {% endcomment %}
 {% if page.gallery_images.all %}
 <section class="section" id="gallery">
   <div class="container">
@@ -162,7 +162,27 @@
 </section>
 {% endif %}
 
-{# ---------- 6. Как добраться — компактный блок, Фаза 6 ---------- #}
+{# ---------- 6. Компактный блок «Как добраться» (п. 4.1.6) ---------- #}
+{% if settings.core.SiteSettings.directions_short %}
+<section class="section">
+  <div class="container">
+    <div class="directions">
+      <div class="directions__text">
+        <h2>Как добраться</h2>
+        <p>{{ settings.core.SiteSettings.directions_short|linebreaksbr }}</p>
+      </div>
+      <p class="directions__actions">
+        {% if settings.core.SiteSettings.directions_page %}
+          <a class="btn btn--outline" href="{% pageurl settings.core.SiteSettings.directions_page %}">Подробный маршрут</a>
+        {% endif %}
+        {% if settings.core.SiteSettings.yandex_map_url %}
+          <a class="btn btn--outline" href="{{ settings.core.SiteSettings.yandex_map_url }}" target="_blank" rel="noopener">Маршрут в Яндекс.Картах</a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</section>
+{% endif %}
 
 {# ---------- 7. Отзывы о домике (п. 4.1.7) ---------- #}
 {% if page.house_reviews %}
@@ -213,8 +233,8 @@
 </section>
 {% endif %}
 
-{# Просмотрщик галереи. Разметка лежит в странице пустой: скрипт только
-   подставляет в неё кадр, а <dialog> сам держит фокус и закрывается по Esc. #}
+{% comment %} Просмотрщик галереи. Разметка лежит в странице пустой: скрипт только
+   подставляет в неё кадр, а <dialog> сам держит фокус и закрывается по Esc. {% endcomment %}
 {% if page.gallery_images.all %}
 <dialog class="lightbox" data-lightbox aria-label="Просмотр фото">
   <button type="button" class="lightbox__close" data-lightbox-close aria-label="Закрыть">×</button>

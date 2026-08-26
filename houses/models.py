@@ -38,6 +38,8 @@ class HouseIndexPage(Page):
         verbose_name = "Раздел «Наши домики»"
 
     def get_context(self, request):
+        from services.models import Service
+
         context = super().get_context(request)
         context["houses"] = (
             HousePage.objects.child_of(self)
@@ -45,6 +47,9 @@ class HouseIndexPage(Page):
             .select_related("hero_image")
             .order_by("sort_order_index", "title")
         )
+        # П. 9.2.2 ТЗ: «Размещение» = раздел с домиками + доп услуги —
+        # одна страница, а не две.
+        context["services"] = Service.objects.filter(is_published=True)
         return context
 
 

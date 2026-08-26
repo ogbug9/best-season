@@ -771,3 +771,47 @@ body {
   .gallery__link img { transition: none; }
   .gallery__link:hover img { transform: none; }
 }
+
+/* =========================================================================
+   Довеска к Фазе 5: недостающие блоки п. 4.1.6 и п. 9.2.2 ТЗ
+   ========================================================================= */
+
+/* ---------- Полоса поиска на каталоге домов ----------
+   Визуально поля, технически одна кнопка — виджет Контура не принимает
+   даты при инициализации, настоящие инпуты были бы ловушкой. */
+.searchbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.searchbar__field {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  padding: var(--s-3) var(--s-5);
+  border-radius: 999px;
+  background: rgba(247, 240, 230, 0.14);
+  border: 1px solid rgba(247, 240, 230, 0.4);
+  color: var(--c-cream);
+  font-size: 0.9375rem;
+}
+.searchbar__cta { border-radius: 999px; }
+
+/* ---------- Компактный блок «Как добраться» на странице дома ---------- */
+.directions {
+  display: grid;
+  gap: var(--s-5);
+  align-items: center;
+  padding: var(--s-6);
+  border-radius: var(--radius-lg);
+  background: var(--c-olive-soft);
+  border: 1px solid var(--c-dark-soft);
+}
+@media (min-width: 900px) { .directions { grid-template-columns: 1fr auto; } }
+.directions__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin: 0; }
