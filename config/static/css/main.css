@@ -815,3 +815,164 @@ body {
 }
 @media (min-width: 900px) { .directions { grid-template-columns: 1fr auto; } }
 .directions__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin: 0; }
+
+/* =========================================================================
+   Блоки главной по макету (разбор состава — 04-makety-figma.md)
+   ========================================================================= */
+
+.section__title { margin-bottom: var(--s-5); }
+.section__lead { max-width: 60ch; margin-bottom: var(--s-5); }
+
+/* ---------- Блок «О нас»: фото и текст ---------- */
+.split__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+}
+
+/* ---------- Блок-цитата ---------- */
+.quote {
+  display: grid;
+  gap: var(--s-6);
+  align-items: center;
+}
+@media (min-width: 900px) { .quote { grid-template-columns: 1.4fr 1fr; } }
+
+.quote__text {
+  margin: 0;
+  padding-left: var(--s-5);
+  border-left: 3px solid var(--c-terra);
+  font-size: 1.125rem;
+}
+.quote__text cite {
+  display: block;
+  margin-top: var(--s-4);
+  font-style: normal;
+  font-weight: 600;
+}
+.quote__media picture { border-radius: var(--radius-lg); overflow: hidden; }
+
+/* ---------- Слоган ---------- */
+.slogan {
+  padding-block: var(--s-7);
+  background: var(--c-olive-soft);
+  border-block: 1px solid var(--c-dark-soft);
+  text-align: center;
+}
+.slogan p {
+  margin: 0;
+  font-family: var(--font-heading);
+  /* Оливковый по контрасту годится только на крупном кегле — п. 10.13 ТЗ */
+  font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+  line-height: 1.2;
+  color: var(--c-deep);
+}
+
+/* ---------- Карточки домов ---------- */
+@media (min-width: 600px) { .cards--houses { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .cards--houses { grid-template-columns: repeat(2, 1fr); } }
+
+.card__body { display: flex; flex-direction: column; gap: var(--s-2); }
+.card__price { font-weight: 600; font-size: 1.125rem; }
+.card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+}
+
+/* ---------- Карточки «Интересное рядом» ---------- */
+@media (min-width: 900px) { .cards--nearby { grid-template-columns: repeat(3, 1fr); } }
+
+.card--nearby picture { border-radius: var(--radius-lg); overflow: hidden; }
+.card__number {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--c-terra);
+}
+
+/* ---------- Мозаика: территория и фотогалерея ---------- */
+.mosaic {
+  display: grid;
+  gap: var(--s-4);
+  margin: 0 0 var(--s-6);
+  padding: 0;
+  list-style: none;
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 700px) { .mosaic { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1100px) { .mosaic { grid-template-columns: repeat(4, 1fr); } }
+
+.mosaic__item {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  min-height: 180px;
+}
+.mosaic__item--large { grid-column: span 2; }
+
+.mosaic__item picture,
+.mosaic__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mosaic__caption {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: var(--s-4);
+  color: var(--c-cream);
+  /* Градиент, а не сплошная плашка: без него светлые кадры
+     не дают нужного контраста под текстом (п. 10.13 ТЗ) */
+  background: linear-gradient(180deg, rgba(58,60,21,0) 0%, rgba(58,60,21,0.85) 100%);
+}
+.mosaic__caption h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--c-cream);
+}
+.mosaic__caption p {
+  margin-top: var(--s-1);
+  font-size: 0.875rem;
+}
+
+.mosaic--photos .mosaic__item { min-height: 160px; }
+
+/* ---------- Аккордеон вопросов ---------- */
+.faq { display: grid; gap: var(--s-3); }
+
+.faq__item {
+  border: 1px solid var(--c-dark-soft);
+  border-radius: var(--radius);
+  background: var(--c-white);
+}
+
+.faq__question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  min-height: var(--tap-min);
+  padding: var(--s-3) var(--s-4);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.faq__question::-webkit-details-marker { display: none; }
+.faq__question::after {
+  content: "+";
+  flex: 0 0 auto;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--c-terra);
+}
+.faq__item[open] .faq__question::after { content: "−"; }
+
+.faq__answer {
+  padding: 0 var(--s-4) var(--s-4);
+}

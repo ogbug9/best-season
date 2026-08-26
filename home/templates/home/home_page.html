@@ -2,8 +2,9 @@
 {% load wagtailcore_tags wagtailimages_tags media_tags %}
 
 {% comment %}
-  Главная. Состав первого экрана — п. 9.2.1 ТЗ.
-  Кнопка бронирования здесь — точка входа №2 из таблицы п. 5.1.
+  Главная. Порядок блоков — по макету Figma, канвас SITE DESKTOP
+  (разбор состава — в 04-makety-figma.md).
+  Кнопка бронирования на первом экране — точка входа №2 из таблицы п. 5.1 ТЗ.
 {% endcomment %}
 
 {% block body_class %}page-home{% endblock %}
@@ -19,7 +20,7 @@
 
 {% block content %}
 
-{# ---------- Первый экран ---------- #}
+{% comment %} 1. Первый экран {% endcomment %}
 <section class="hero">
   <div class="hero__media" aria-hidden="true" data-count="{{ page.slides.count }}">
     {% for slide in page.slides.all %}
@@ -35,9 +36,7 @@
 
   <div class="container hero__inner">
     <h1 class="hero__title">{{ page.hero_title|default:page.title }}</h1>
-    {% if page.hero_subtitle %}
-      <p class="hero__subtitle">{{ page.hero_subtitle }}</p>
-    {% endif %}
+    {% if page.hero_subtitle %}<p class="hero__subtitle">{{ page.hero_subtitle }}</p>{% endif %}
 
     <div class="hero__actions">
       {% if page.hero_cta_page %}
@@ -52,62 +51,143 @@
   </div>
 </section>
 
-{# ---------- Дома ---------- #}
+{% comment %} 2. О ферме — фото слева, текст справа {% endcomment %}
+{% if page.about_text or page.about_title %}
+<section class="section">
+  <div class="container split">
+    {% if page.about_image %}
+      <div class="split__media">{% picture page.about_image preset="gallery" alt=page.about_title %}</div>
+    {% endif %}
+    <div class="split__text">
+      {% if page.about_title %}<h2>{{ page.about_title }}</h2>{% endif %}
+      {{ page.about_text|richtext }}
+      <p class="split__actions">
+        <button type="button" class="btn btn--primary" data-booking-open data-entry-point="2">Забронировать</button>
+        {% if page.about_page %}
+          <a class="btn btn--outline" href="{% pageurl page.about_page %}">Подробнее</a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 3. Блок-цитата {% endcomment %}
+{% if page.quote_text %}
+<section class="section">
+  <div class="container quote">
+    <blockquote class="quote__text">
+      <p>{{ page.quote_text|linebreaksbr }}</p>
+      {% if page.quote_author %}<cite>{{ page.quote_author }}</cite>{% endif %}
+    </blockquote>
+    {% if page.quote_image %}
+      <div class="quote__media">{% picture page.quote_image preset="card" alt=page.quote_author %}</div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 4. Слоган {% endcomment %}
+{% if page.slogan %}
+<section class="slogan">
+  <div class="container"><p>{{ page.slogan }}</p></div>
+</section>
+{% endif %}
+
+{% comment %} 5. Наши домики — сетка карточек {% endcomment %}
 {% if houses %}
-<section class="section section--pattern" id="houses">
+<section class="section" id="houses">
   <div class="container">
-    <h2>Наши домики</h2>
-    <ul class="cards">
+    <h2 class="section__title">Наши домики</h2>
+    <ul class="cards cards--houses">
       {% for house in houses %}
-        <li class="card">
+        <li class="card card--house">
           <a class="card__link" href="{% pageurl house %}">
             {% picture house.hero_image preset="card" alt=house.title %}
-            <h3 class="card__title">{{ house.title }}</h3>
           </a>
-          {% if house.short_description %}<p>{{ house.short_description }}</p>{% endif %}
-          <p class="card__meta">
-            до {{ house.capacity }} чел.{% if house.area %} · {{ house.area }} м²{% endif %}{% if house.price_from %} · от {{ house.price_from }} ₽/сутки{% endif %}
-          </p>
+          <div class="card__body">
+            <h3 class="card__title"><a class="card__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
+            {% if house.short_description %}<p>{{ house.short_description }}</p>{% endif %}
+            <p class="card__meta">
+              до {{ house.capacity }} чел.{% if house.area %} · {{ house.area }} м²{% endif %}
+            </p>
+            {% if house.price_from %}<p class="card__price">от {{ house.price_from }} ₽/сутки</p>{% endif %}
+            <p class="card__actions">
+              <button type="button" class="btn btn--primary" data-booking-open data-entry-point="3">Забронировать</button>
+              <a class="btn btn--outline" href="{% pageurl house %}">Подробнее</a>
+            </p>
+          </div>
         </li>
       {% endfor %}
     </ul>
     {% if houses_index %}
-      <p><a class="btn btn--outline" href="{% pageurl houses_index %}">Все домики</a></p>
+      <p class="center"><a class="btn btn--outline" href="{% pageurl houses_index %}">Все домики</a></p>
     {% endif %}
   </div>
 </section>
 {% endif %}
 
-{# ---------- О ферме ---------- #}
-{% if page.about_text or page.about_title %}
-<section class="section section--deep">
-  <div class="container split">
-    <div class="split__text">
-      {% if page.about_title %}<h2>{{ page.about_title }}</h2>{% endif %}
-      {{ page.about_text|richtext }}
-    </div>
-    {% if page.about_image %}
-      <div class="split__media">{% picture page.about_image preset="gallery" alt=page.about_title %}</div>
-    {% endif %}
+{% comment %} 6. Наша территория — мозаика плиток {% endcomment %}
+{% if territory %}
+<section class="section section--pattern">
+  <div class="container">
+    <h2 class="section__title">Наша территория</h2>
+    <ul class="mosaic">
+      {% for item in territory %}
+        <li class="mosaic__item{% if item.is_large %} mosaic__item--large{% endif %}">
+          {% picture item.image preset="card" alt=item.title %}
+          <div class="mosaic__caption">
+            <h3>{{ item.title }}</h3>
+            {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
   </div>
 </section>
 {% endif %}
 
-{# ---------- Допуслуги ---------- #}
+{% comment %} 7. Интересное рядом — три карточки с номерами {% endcomment %}
+{% if nearby %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title">Интересное рядом</h2>
+    <ul class="cards cards--nearby">
+      {% for place in nearby %}
+        <li class="card card--nearby">
+          {% picture place.image preset="card" alt=place.title %}
+          <div class="card__body">
+            <p class="card__number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</p>
+            <h3 class="card__title">{{ place.title }}</h3>
+            {% if place.description %}<p>{{ place.description }}</p>{% endif %}
+            {% if place.link_url %}
+              <p><a class="btn btn--outline" href="{{ place.link_url }}" rel="noopener" target="_blank">Подробнее</a></p>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 8. Услуги {% endcomment %}
 {% if services %}
 <section class="section">
   <div class="container">
-    <h2>Услуги</h2>
+    <h2 class="section__title">Услуги</h2>
     <ul class="cards">
       {% for service in services %}
         <li class="card">
           {% picture service.image preset="card" alt=service.name %}
-          <h3 class="card__title">{{ service.name }}</h3>
-          {% if service.short_description %}<p>{{ service.short_description }}</p>{% endif %}
-          {% if service.price %}
-            <p class="card__meta">{{ service.price }} ₽ {{ service.get_price_unit_display }}
-            {% if service.price_note %}<br><small>{{ service.price_note }}</small>{% endif %}</p>
-          {% endif %}
+          <div class="card__body">
+            <h3 class="card__title">{{ service.name }}</h3>
+            {% if service.short_description %}<p>{{ service.short_description }}</p>{% endif %}
+            {% if service.price %}
+              <p class="card__price">{{ service.price }} ₽ {{ service.get_price_unit_display }}</p>
+              {% if service.price_note %}<p class="card__meta">{{ service.price_note }}</p>{% endif %}
+            {% endif %}
+          </div>
         </li>
       {% endfor %}
     </ul>
@@ -115,17 +195,19 @@
 </section>
 {% endif %}
 
-{# ---------- Акции ---------- #}
+{% comment %} 9. Акции {% endcomment %}
 {% if promotions %}
 <section class="section">
   <div class="container">
-    <h2>Акции</h2>
+    <h2 class="section__title">Акции</h2>
     <ul class="cards">
       {% for promo in promotions %}
         <li class="card">
           {% picture promo.image preset="card" alt=promo.title %}
-          <h3 class="card__title">{{ promo.title }}</h3>
-          {% if promo.short_description %}<p>{{ promo.short_description }}</p>{% endif %}
+          <div class="card__body">
+            <h3 class="card__title">{{ promo.title }}</h3>
+            {% if promo.short_description %}<p>{{ promo.short_description }}</p>{% endif %}
+          </div>
         </li>
       {% endfor %}
     </ul>
@@ -133,7 +215,27 @@
 </section>
 {% endif %}
 
-{# ---------- Как добраться ---------- #}
+{% comment %} 10. Фотогалерея — мозаика {% endcomment %}
+{% if page.gallery_images.all %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title">{{ page.gallery_title }}</h2>
+    {% if page.gallery_text %}<p class="section__lead">{{ page.gallery_text }}</p>{% endif %}
+    <ul class="mosaic mosaic--photos">
+      {% for item in page.gallery_images.all %}
+        <li class="mosaic__item{% if item.is_large %} mosaic__item--large{% endif %}">
+          {% picture item.image preset="card" alt=item.alt %}
+        </li>
+      {% endfor %}
+    </ul>
+    {% if page.gallery_page %}
+      <p class="center"><a class="btn btn--outline" href="{% pageurl page.gallery_page %}">Подробнее</a></p>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 11. Как добраться — короткий блок {% endcomment %}
 {% if page.directions_teaser %}
 <section class="section section--deep">
   <div class="container container--narrow center">
@@ -146,11 +248,11 @@
 </section>
 {% endif %}
 
-{# ---------- Отзывы ---------- #}
+{% comment %} 12. Отзывы {% endcomment %}
 {% if reviews %}
 <section class="section">
   <div class="container">
-    <h2>Отзывы</h2>
+    <h2 class="section__title">Отзывы</h2>
     <ul class="cards">
       {% for review in reviews %}
         <li class="card card--quote">
@@ -159,6 +261,27 @@
         </li>
       {% endfor %}
     </ul>
+  </div>
+</section>
+{% endif %}
+
+{% comment %}
+  13. Ответы на вопросы. Аккордеон на <details>, без JavaScript:
+  тег раскрывается сам, работает с клавиатуры и читалками экрана,
+  и не тянет вес на страницу — скорость на мобильных предмет приёмки (п. 1.2).
+{% endcomment %}
+{% if faq %}
+<section class="section">
+  <div class="container container--narrow">
+    <h2 class="section__title">Ответы на вопросы</h2>
+    <div class="faq">
+      {% for item in faq %}
+        <details class="faq__item">
+          <summary class="faq__question">{{ item.question }}</summary>
+          <div class="faq__answer">{{ item.answer|richtext }}</div>
+        </details>
+      {% endfor %}
+    </div>
   </div>
 </section>
 {% endif %}

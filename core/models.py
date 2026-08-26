@@ -185,3 +185,118 @@ class SiteSettings(BaseSiteSetting):
 
     class Meta:
         verbose_name = "Настройки сайта"
+
+
+@register_snippet
+class TerritoryItem(models.Model):
+    """Плитка блока «Наша территория».
+
+    Отдельным справочником, а не полями на главной: по макету этот же
+    набор идёт и на отдельную страницу «Территория», а редактор не
+    должен заводить одно и то же дважды.
+    """
+
+    title = models.CharField("Название", max_length=120)
+    image = models.ForeignKey(
+        "wagtailimages.Image", verbose_name="Фото",
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+    description = models.CharField("Краткое описание", max_length=255, blank=True)
+    is_large = models.BooleanField(
+        "Крупная плитка", default=False,
+        help_text="Занимает две ячейки в мозаике. Отмечать не больше двух-трёх.",
+    )
+    is_published = models.BooleanField("Показывать на сайте", default=True)
+    sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("image"),
+        FieldPanel("description"),
+        FieldPanel("is_large"),
+        FieldPanel("is_published"),
+        FieldPanel("sort_order"),
+    ]
+
+    class Meta:
+        verbose_name = "Плитка территории"
+        verbose_name_plural = "Наша территория"
+        ordering = ["sort_order", "title"]
+
+    def __str__(self):
+        return self.title
+
+
+@register_snippet
+class NearbyPlace(models.Model):
+    """Карточка блока «Интересное рядом».
+
+    В макете их три, с номерами 01/02/03. Номер считается по порядку
+    вывода, вручную его никто не проставляет — иначе при удалении
+    средней карточки нумерация поедет.
+    """
+
+    title = models.CharField("Название", max_length=120)
+    image = models.ForeignKey(
+        "wagtailimages.Image", verbose_name="Фото",
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+    description = models.TextField("Описание", blank=True)
+    link_url = models.URLField(
+        "Ссылка «Подробнее»", blank=True,
+        help_text="Внешний адрес: сайт музея, статья. Пусто — кнопки не будет.",
+    )
+    is_published = models.BooleanField("Показывать на сайте", default=True)
+    sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
+
+    panels = [
+        FieldPanel("title"),
+        FieldPanel("image"),
+        FieldPanel("description"),
+        FieldPanel("link_url"),
+        FieldPanel("is_published"),
+        FieldPanel("sort_order"),
+    ]
+
+    class Meta:
+        verbose_name = "Место рядом"
+        verbose_name_plural = "Интересное рядом"
+        ordering = ["sort_order", "title"]
+
+    def __str__(self):
+        return self.title
+
+
+@register_snippet
+class FaqItem(models.Model):
+    """Вопрос-ответ.
+
+    По макету аккордеон стоит и на главной, и на отдельной странице FAQ,
+    поэтому справочник общий. На главной показываются отмеченные галочкой.
+    """
+
+    question = models.CharField("Вопрос", max_length=255)
+    answer = RichTextField(
+        "Ответ", features=["bold", "italic", "link", "ul", "ol"]
+    )
+    show_on_home = models.BooleanField(
+        "Показывать на главной", default=True,
+    )
+    is_published = models.BooleanField("Показывать на сайте", default=True)
+    sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
+
+    panels = [
+        FieldPanel("question"),
+        FieldPanel("answer"),
+        FieldPanel("show_on_home"),
+        FieldPanel("is_published"),
+        FieldPanel("sort_order"),
+    ]
+
+    class Meta:
+        verbose_name = "Вопрос и ответ"
+        verbose_name_plural = "Ответы на вопросы"
+        ordering = ["sort_order", "question"]
+
+    def __str__(self):
+        return self.question

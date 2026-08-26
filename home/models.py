@@ -43,6 +43,38 @@ class HomePage(Page):
         null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
     )
 
+    about_page = models.ForeignKey(
+        "wagtailcore.Page",
+        verbose_name="Страница «О нас»",
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+        help_text="Куда ведёт кнопка «Подробнее» из блока о ферме.",
+    )
+
+    quote_text = models.TextField(
+        "Текст блока-цитаты", blank=True,
+        help_text="Крупная выдержка между блоками «О нас» и «Наши домики».",
+    )
+    quote_author = models.CharField("Подпись под цитатой", max_length=120, blank=True)
+    quote_image = models.ForeignKey(
+        "wagtailimages.Image", verbose_name="Фото к цитате",
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+
+    slogan = models.CharField(
+        "Слоган", max_length=200, blank=True,
+        help_text="Одна строка во всю ширину. По макету: «Не ждите подходящего момента…».",
+    )
+
+    gallery_title = models.CharField(
+        "Заголовок фотогалереи", max_length=120, blank=True, default="Фотогалерея",
+    )
+    gallery_text = models.TextField("Текст под заголовком галереи", blank=True)
+    gallery_page = models.ForeignKey(
+        "wagtailcore.Page",
+        verbose_name="Страница «Галерея»",
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+
     directions_title = models.CharField(
         "Заголовок блока «Как добраться»", max_length=120, blank=True,
         default="Как добраться",
@@ -78,8 +110,32 @@ class HomePage(Page):
                 FieldPanel("about_title"),
                 FieldPanel("about_text"),
                 FieldPanel("about_image"),
+                FieldPanel("about_page"),
             ],
             heading="О ферме",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("quote_text"),
+                FieldPanel("quote_author"),
+                FieldPanel("quote_image"),
+            ],
+            heading="Блок-цитата",
+        ),
+        FieldPanel("slogan"),
+        MultiFieldPanel(
+            [
+                FieldPanel("gallery_title"),
+                FieldPanel("gallery_text"),
+                FieldPanel("gallery_page"),
+            ],
+            heading="Фотогалерея",
+        ),
+        InlinePanel(
+            "gallery_images",
+            label="Фото галереи",
+            help_text="От 6 до 10 фото для мозаики на главной.",
+            max_num=10,
         ),
         MultiFieldPanel(
             [
@@ -108,6 +164,12 @@ class HomePage(Page):
         context["services"] = Service.objects.filter(is_published=True)[:6]
         context["promotions"] = [p for p in Promotion.objects.all() if p.is_active][:3]
         context["reviews"] = Review.objects.filter(is_published=True)[:3]
+
+        from core.models import FaqItem, NearbyPlace, TerritoryItem
+
+        context["territory"] = TerritoryItem.objects.filter(is_published=True)
+        context["nearby"] = NearbyPlace.objects.filter(is_published=True)[:3]
+        context["faq"] = FaqItem.objects.filter(is_published=True, show_on_home=True)
         return context
 
 
@@ -134,3 +196,24 @@ class HomeSlide(Orderable):
     class Meta(Orderable.Meta):
         verbose_name = "Фото слайд-шоу"
         verbose_name_plural = "Фото слайд-шоу"
+
+
+class HomeGalleryImage(Orderable):
+    """Фото мозаики «Фотогалерея» на главной."""
+
+    page = ParentalKey(HomePage, on_delete=models.CASCADE, related_name="gallery_images")
+    image = models.ForeignKey(
+        "wagtailimages.Image", verbose_name="Фото",
+        on_delete=models.CASCADE, related_name="+",
+    )
+    alt = models.CharField("Описание фото", max_length=200, blank=True)
+    is_large = models.BooleanField(
+        "Крупная плитка", default=False,
+        help_text="Занимает две ячейки. Отмечать одну-две.",
+    )
+
+    panels = [FieldPanel("image"), FieldPanel("alt"), FieldPanel("is_large")]
+
+    class Meta(Orderable.Meta):
+        verbose_name = "Фото галереи"
+        verbose_name_plural = "Фото галереи"
