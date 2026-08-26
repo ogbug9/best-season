@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError
 from django.db import models
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
@@ -124,21 +123,23 @@ class HousePage(Page):
         verbose_name = "Страница дома"
         verbose_name_plural = "Страницы домов"
 
-    def clean(self):
-        super().clean()
-        # Мягкая проверка: блокируем только публикацию неполной галереи,
-        # черновик сохранить можно.
-        if self.live and self.pk:
-            count = self.gallery_images.count()
-            if 0 < count < MIN_GALLERY_IMAGES:
-                raise ValidationError(
-                    {
-                        "title": (
-                            f"По п. 4.1.2 ТЗ в галерее дома нужно не меньше "
-                            f"{MIN_GALLERY_IMAGES} фото, сейчас {count}."
-                        )
-                    }
-                )
+    @property
+    def gallery_is_short(self):
+        """Не добрана ли галерея до требования п. 4.1.2 ТЗ.
+
+        Публикацию это не блокирует: на этапе разработки фото добираются
+        постепенно, и жёсткий запрет мешал бы собирать страницы. Вместо
+        запрета при публикации показывается предупреждение, а полный
+        список недобранных домов виден в отчёте «Галереи домов».
+        Требование остаётся в силе — к приёмке недобор должен быть закрыт.
+        """
+        if not self.pk:
+            return False
+        return self.gallery_images.count() < MIN_GALLERY_IMAGES
+
+    @property
+    def gallery_count(self):
+        return self.gallery_images.count() if self.pk else 0
 
     @property
     def amenities_by_group(self):

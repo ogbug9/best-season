@@ -34,3 +34,25 @@ def deny_bulk_page_delete_for_editors(request, action_type, objects, action_clas
         return None
     messages.error(request, DELETE_DENIED)
     return redirect(reverse("wagtailadmin_home"))
+
+
+@hooks.register("after_publish_page")
+def warn_short_gallery(request, page):
+    """Напоминание о недоборе галереи — п. 4.1.2 ТЗ требует ≥15 фото.
+
+    Публикацию не блокируем: на этапе разработки фото добираются
+    постепенно. Но молча пропускать нельзя — иначе недобор всплывёт
+    на приёмке. Полный список — в отчёте «Галереи домов».
+    """
+    from houses.models import MIN_GALLERY_IMAGES, HousePage
+
+    page = page.specific
+    if not isinstance(page, HousePage):
+        return
+    if page.gallery_is_short:
+        messages.warning(
+            request,
+            f"В галерее «{page.title}» {page.gallery_count} фото из "
+            f"{MIN_GALLERY_IMAGES}, которые требует п. 4.1.2 ТЗ. "
+            f"Страница опубликована, но к приёмке галерею нужно добрать.",
+        )
