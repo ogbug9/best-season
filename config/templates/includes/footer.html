@@ -4,47 +4,78 @@
 
 <footer class="footer">
   <div class="container">
-    <div class="footer__grid">
+    <div class="footer__top">
 
-      <div>
-        <p class="footer__title">{{ current_site.site_name }}</p>
-        {% if s.address %}<p>{{ s.address }}</p>{% endif %}
-        {% if s.yandex_map_url %}<p><a href="{{ s.yandex_map_url }}" rel="noopener" target="_blank">Смотреть на карте</a></p>{% endif %}
-      </div>
+      <div class="footer__brand">
+        <span class="footer__mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="20" cy="20" r="18.4"/>
+            <path d="M12 24V17l8-6 8 6v7"/>
+            <path d="M20 24v-5"/>
+            <path d="M10 29c3-2 5-2 8 0s5 2 8 0 5-2 8 0" stroke-width="1.3"/>
+          </svg>
+        </span>
+        <span class="footer__name">{{ current_site.site_name|default:"Лучший сезон" }}</span>
 
-      <div>
         {% if s.phone %}<p><a href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a></p>{% endif %}
         {% if s.email %}<p><a href="mailto:{{ s.email }}">{{ s.email }}</a></p>{% endif %}
-        <p>
+
+        <p class="footer__social">
           {% if s.telegram_url %}<a href="{{ s.telegram_url }}" rel="noopener" target="_blank">Telegram</a>{% endif %}
           {% if s.whatsapp_url %}<a href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">WhatsApp</a>{% endif %}
           {% if s.vk_url %}<a href="{{ s.vk_url }}" rel="noopener" target="_blank">ВКонтакте</a>{% endif %}
         </p>
+
+        <p>
+          <button type="button" class="btn btn--primary btn--pill" data-booking-open data-entry-point="1">
+            Забронировать даты
+          </button>
+        </p>
       </div>
 
-      <nav aria-label="Правовая информация">
-        <ul class="nav__list" style="flex-direction: column; gap: var(--s-2);">
-          {% for item in current_site.root_page.get_children.live.in_menu %}
-            <li><a class="nav__link" href="{% pageurl item %}">{{ item.title }}</a></li>
-          {% endfor %}
-        </ul>
+      {% comment %}
+        Колонки подвала собираются из дерева страниц: разделы верхнего уровня
+        и их подстраницы. Так подвал не расходится с меню при добавлении
+        новой страницы — редактору не нужно править его отдельно (п. 8 ТЗ).
+      {% endcomment %}
+      <nav class="footer__columns" aria-label="Разделы сайта">
+        {% for item in current_site.root_page.get_children.live.in_menu %}
+          <div class="footer__column">
+            <p class="footer__column-title"><a href="{% pageurl item %}">{{ item.title }}</a></p>
+            {% with children=item.get_children.live.in_menu %}
+              {% if children %}
+                <ul>
+                  {% for child in children %}
+                    <li><a href="{% pageurl child %}">{{ child.title }}</a></li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+          </div>
+        {% endfor %}
       </nav>
-
     </div>
 
-    {# Реквизиты ИП в подвале — требование раздела 11 ТЗ #}
     <div class="footer__legal">
-      {% if s.legal_name %}{{ s.legal_name }}{% endif %}
-      {% if s.inn %} · ИНН {{ s.inn }}{% endif %}
-      {% if s.ogrnip %} · ОГРНИП {{ s.ogrnip }}{% endif %}
-      {% if s.legal_address %}<br>{{ s.legal_address }}{% endif %}
+      <div class="footer__requisites">
+        {% if s.legal_name %}{{ s.legal_name }}{% endif %}
+        {% if s.inn %} · ИНН {{ s.inn }}{% endif %}
+        {% if s.ogrnip %} · ОГРНИП {{ s.ogrnip }}{% endif %}
+        {% if s.legal_address %}<br>{{ s.legal_address }}{% endif %}
 
-      {% comment %} Обязательное указание авторства по лицензии Creative Commons
-         Attribution 4.0, под которой распространяется шрифт Etude Noire.
-         Убирать нельзя — без него использование шрифта неправомерно. {% endcomment %}
-      <p class="footer__credits">
-        Шрифт Etude Noire — Дмитрий Антонов / Blue Curve Designstudio,
-        лицензия <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" target="_blank">CC BY 4.0</a>
+        {% comment %}
+          Указание автора обязательно по лицензии CC BY 4.0, под которой
+          распространяется шрифт Etude Noire. Убирать нельзя — без него
+          использование шрифта неправомерно.
+        {% endcomment %}
+        <p class="footer__credits">
+          Шрифт Etude Noire — Дмитрий Антонов / Blue Curve Designstudio,
+          лицензия <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" target="_blank">CC BY 4.0</a>
+        </p>
+      </div>
+
+      <p class="footer__pay" aria-label="Принимаем карты Visa, Mastercard и Мир">
+        <span>VISA</span><span>MC</span><span>МИР</span>
       </p>
     </div>
   </div>

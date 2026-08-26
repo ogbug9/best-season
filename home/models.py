@@ -50,6 +50,28 @@ class HomePage(Page):
         help_text="Куда ведёт кнопка «Подробнее» из блока о ферме.",
     )
 
+    territory_lead = models.CharField(
+        "Подпись под заголовком «Наша территория»", max_length=200, blank=True,
+        help_text="По макету: «Большой лесной массив для уединённого отдыха».",
+    )
+    territory_more_label = models.CharField(
+        "Текст плитки-ссылки в мозаике", max_length=80, blank=True,
+        default="Больше развлечений и услуг",
+    )
+    territory_more_page = models.ForeignKey(
+        "wagtailcore.Page", verbose_name="Куда ведёт плитка-ссылка",
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+
+    nearby_more_label = models.CharField(
+        "Текст кнопки под блоком «Интересное рядом»", max_length=80, blank=True,
+        default="Больше интересных мест рядом",
+    )
+    nearby_more_page = models.ForeignKey(
+        "wagtailcore.Page", verbose_name="Куда ведёт кнопка",
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+
     quote_text = models.TextField(
         "Текст блока-цитаты", blank=True,
         help_text="Крупная выдержка между блоками «О нас» и «Наши домики».",
@@ -100,6 +122,12 @@ class HomePage(Page):
             heading="Первый экран",
         ),
         InlinePanel(
+            "hero_links",
+            label="Кнопки-разделы на первом экране",
+            help_text="По макету их три. Пусто — ряд не показывается.",
+            max_num=4,
+        ),
+        InlinePanel(
             "slides",
             label="Фото для слайд-шоу",
             help_text="От 3 до 5 фото. Первое — самое важное, оно грузится сразу.",
@@ -123,6 +151,21 @@ class HomePage(Page):
             heading="Блок-цитата",
         ),
         FieldPanel("slogan"),
+        MultiFieldPanel(
+            [
+                FieldPanel("territory_lead"),
+                FieldPanel("territory_more_label"),
+                FieldPanel("territory_more_page"),
+            ],
+            heading="Наша территория",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("nearby_more_label"),
+                FieldPanel("nearby_more_page"),
+            ],
+            heading="Интересное рядом",
+        ),
         MultiFieldPanel(
             [
                 FieldPanel("gallery_title"),
@@ -217,3 +260,20 @@ class HomeGalleryImage(Orderable):
     class Meta(Orderable.Meta):
         verbose_name = "Фото галереи"
         verbose_name_plural = "Фото галереи"
+
+
+class HeroLink(Orderable):
+    """Кнопка-раздел в ряду на первом экране — по макету их три."""
+
+    page = ParentalKey(HomePage, on_delete=models.CASCADE, related_name="hero_links")
+    label = models.CharField("Подпись", max_length=60)
+    link_page = models.ForeignKey(
+        "wagtailcore.Page", verbose_name="Куда ведёт",
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+    )
+
+    panels = [FieldPanel("label"), FieldPanel("link_page")]
+
+    class Meta(Orderable.Meta):
+        verbose_name = "Кнопка-раздел"
+        verbose_name_plural = "Кнопки-разделы"

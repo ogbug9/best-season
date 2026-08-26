@@ -18,6 +18,28 @@
   {% endwith %}
 {% endblock %}
 
+{% block extra_css %}
+  {% comment %}
+    Предзагрузка первого кадра героя. Это элемент LCP, а он предмет
+    приёмки (п. 1.2 ТЗ, ≤2,5 с). Без preload браузер находит картинку
+    только после разбора CSS, и замер уходит к границе нормы.
+    imagesrcset повторяет набор из тега picture, чтобы браузер выбрал
+    ту же ширину и не скачал файл дважды.
+  {% endcomment %}
+  {% with first=page.slides.first %}
+    {% if first %}
+      {% image first.image fill-768x432 format-webp as w768 %}
+      {% image first.image fill-1024x576 format-webp as w1024 %}
+      {% image first.image fill-1440x810 format-webp as w1440 %}
+      {% image first.image fill-1920x1080 format-webp as w1920 %}
+      <link rel="preload" as="image" type="image/webp"
+            href="{{ w1024.url }}"
+            imagesrcset="{{ w768.url }} 768w, {{ w1024.url }} 1024w, {{ w1440.url }} 1440w, {{ w1920.url }} 1920w"
+            imagesizes="100vw" fetchpriority="high">
+    {% endif %}
+  {% endwith %}
+{% endblock %}
+
 {% block content %}
 
 {% comment %} 1. Первый экран {% endcomment %}
@@ -37,6 +59,16 @@
   <div class="container hero__inner">
     <h1 class="hero__title">{{ page.hero_title|default:page.title }}</h1>
     {% if page.hero_subtitle %}<p class="hero__subtitle">{{ page.hero_subtitle }}</p>{% endif %}
+
+    {% if page.hero_links.all %}
+      <ul class="hero__links">
+        {% for link in page.hero_links.all %}
+          {% if link.link_page %}
+            <li><a class="hero__link" href="{% pageurl link.link_page %}">{{ link.label }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
 
     <div class="hero__actions">
       {% if page.hero_cta_page %}
@@ -102,19 +134,15 @@
     <ul class="cards cards--houses">
       {% for house in houses %}
         <li class="card card--house">
-          <a class="card__link" href="{% pageurl house %}">
-            {% picture house.hero_image preset="card" alt=house.title %}
-          </a>
-          <div class="card__body">
-            <h3 class="card__title"><a class="card__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
+          {% picture house.hero_image preset="card" alt=house.title %}
+          {% if house.price_from %}<p class="card__badge">от {{ house.price_from }} ₽</p>{% endif %}
+          <h3 class="card__title"><a class="card__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
+          <p class="card__meta">до {{ house.capacity }} чел.{% if house.area %} · {{ house.area }} м²{% endif %}</p>
+          <div class="card__reveal">
             {% if house.short_description %}<p>{{ house.short_description }}</p>{% endif %}
-            <p class="card__meta">
-              до {{ house.capacity }} чел.{% if house.area %} · {{ house.area }} м²{% endif %}
-            </p>
-            {% if house.price_from %}<p class="card__price">от {{ house.price_from }} ₽/сутки</p>{% endif %}
             <p class="card__actions">
-              <button type="button" class="btn btn--primary" data-booking-open data-entry-point="3">Забронировать</button>
               <a class="btn btn--outline" href="{% pageurl house %}">Подробнее</a>
+              <button type="button" class="btn btn--primary" data-booking-open data-entry-point="3">Забронировать</button>
             </p>
           </div>
         </li>
@@ -132,6 +160,7 @@
 <section class="section section--pattern">
   <div class="container">
     <h2 class="section__title">Наша территория</h2>
+    {% if page.territory_lead %}<p class="section__lead">{{ page.territory_lead }}</p>{% endif %}
     <ul class="mosaic">
       {% for item in territory %}
         <li class="mosaic__item{% if item.is_large %} mosaic__item--large{% endif %}">
@@ -142,6 +171,14 @@
           </div>
         </li>
       {% endfor %}
+      {% if page.territory_more_page %}
+        <li class="mosaic__item">
+          <a class="mosaic__more" href="{% pageurl page.territory_more_page %}">
+            {{ page.territory_more_label }}
+            <span aria-hidden="true">→</span>
+          </a>
+        </li>
+      {% endif %}
     </ul>
   </div>
 </section>
@@ -167,6 +204,9 @@
         </li>
       {% endfor %}
     </ul>
+    {% if page.nearby_more_page %}
+      <p class="center"><a class="btn btn--outline" href="{% pageurl page.nearby_more_page %}">{{ page.nearby_more_label }}</a></p>
+    {% endif %}
   </div>
 </section>
 {% endif %}

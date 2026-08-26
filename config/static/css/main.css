@@ -976,3 +976,445 @@ body {
 .faq__answer {
   padding: 0 var(--s-4) var(--s-4);
 }
+
+/* =========================================================================
+   Соответствие макету: COMPONENTS + главная (доводка 26.08)
+   ========================================================================= */
+
+:root {
+  /* Дополнительные цвета из COMPONENTS */
+  --c-hover-warm:  #E4D9C9;  /* заливка вторичной кнопки при наведении */
+  --c-hover-terra: #B0663C;  /* первичная кнопка при наведении */
+  --c-focus:       #7FA8E8;  /* фокус нарисован синим — вне палитры, см. 04-makety-figma.md */
+  --c-focus-soft:  #D8E4F7;
+  --c-muted:       #C9C9C4;  /* состояние загрузки */
+  --header-h: 68px;
+}
+
+/* ---------- Кнопки: 6 состояний по COMPONENTS ---------- */
+.btn--pill { border-radius: 999px; }
+.btn { border-radius: 999px; }
+
+.btn--primary:hover { background: var(--c-hover-terra); }
+.btn--primary:active,
+.btn--primary.is-pressed { background: var(--c-dark); }
+
+.btn--outline {
+  background: var(--c-white);
+  border-color: var(--c-dark-soft);
+}
+.btn--outline:hover { background: var(--c-hover-warm); }
+.btn--outline:active,
+.btn--outline.is-pressed { background: var(--c-muted); }
+
+/* Третий тип из макета — текстовая кнопка без рамки */
+.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--c-dark);
+}
+.btn--ghost:hover { background: var(--c-hover-warm); color: var(--c-dark); }
+
+/* Фокус: в макете он синий во всех трёх типах кнопок */
+.site :where(.btn):focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+  background: var(--c-focus-soft);
+  color: var(--c-dark);
+}
+
+.btn[data-state="loading"],
+.btn.is-loading {
+  background: var(--c-muted);
+  color: var(--c-dark);
+  border-color: transparent;
+  pointer-events: none;
+}
+.btn.is-loading::after {
+  content: "";
+  width: 1em; height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.8s linear infinite;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .btn.is-loading::after { animation-duration: 3s; }
+}
+
+.btn.is-success {
+  background: var(--c-olive);
+  color: var(--c-cream);
+  border-color: transparent;
+}
+.btn.is-success::after { content: "✓"; font-weight: 700; }
+
+/* ---------- Шапка-пилюля поверх первого экрана ---------- */
+.header {
+  position: absolute;
+  z-index: 30;
+  inset-inline: 0;
+  top: var(--s-4);
+  background: transparent;
+  border: 0;
+}
+.page-home .hero { padding-top: calc(var(--header-h) + var(--s-7)); }
+
+.header__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  min-height: var(--header-h);
+  padding: var(--s-2) var(--s-3) var(--s-2) var(--s-4);
+  border-radius: 999px;
+  background: var(--c-cream);
+  box-shadow: 0 6px 24px rgba(73, 73, 73, 0.18);
+}
+
+.header__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  text-decoration: none;
+  color: var(--c-deep);
+  flex: 0 0 auto;
+}
+.header__mark { display: inline-flex; color: var(--c-deep); }
+.header__name {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  line-height: 1.1;
+  max-width: 7ch;
+}
+
+.header__aside {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-inline-start: auto;
+  flex: 0 0 auto;
+}
+.header__paw { font-size: 1.1rem; }
+.header__phone {
+  color: var(--c-dark);
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 0.9375rem;
+}
+
+.nav--desktop .nav__list { gap: var(--s-4); }
+.nav--desktop .nav__link { font-size: 0.9375rem; }
+
+/* ---------- Выпадающие списки ---------- */
+.nav__item { position: relative; }
+
+.nav__dropdown {
+  position: absolute;
+  top: 100%;
+  inset-inline-start: 0;
+  z-index: 5;
+  min-width: 190px;
+  margin: 0;
+  padding: var(--s-2);
+  list-style: none;
+  border-radius: var(--radius);
+  background: var(--c-cream);
+  box-shadow: 0 8px 24px rgba(73, 73, 73, 0.22);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+}
+/* :focus-within обязателен — без него меню недоступно с клавиатуры (п. 10.13 ТЗ) */
+.nav__item--has-children:hover > .nav__dropdown,
+.nav__item--has-children:focus-within > .nav__dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav__sublink {
+  display: block;
+  min-height: var(--tap-min);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--s-3);
+  border-radius: 6px;
+  color: var(--c-dark);
+  text-decoration: none;
+  font-size: 0.9375rem;
+}
+.nav__sublink:hover { background: var(--c-hover-warm); color: var(--c-dark); }
+
+/* ---------- Мобильное меню ---------- */
+.nav-toggle { display: none; }
+.nav-toggle__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border-radius: 999px;
+  cursor: pointer;
+  list-style: none;
+}
+.nav-toggle__button::-webkit-details-marker { display: none; }
+.nav-toggle[open] .nav--mobile {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + var(--s-2));
+  padding: var(--s-4);
+  border-radius: var(--radius-lg);
+  background: var(--c-cream);
+  box-shadow: 0 8px 24px rgba(73, 73, 73, 0.22);
+}
+.nav__sublist {
+  margin: 0 0 0 var(--s-4);
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 1099px) {
+  .nav--desktop { display: none; }
+  .nav-toggle { display: block; }
+  .header__bar { position: relative; }
+  .header__phone { display: none; }
+}
+@media (min-width: 1100px) {
+  .nav--mobile, .nav-toggle { display: none; }
+}
+
+/* ---------- Тёмные карточки по COMPONENTS ---------- */
+.card--house,
+.card--nearby,
+.card--tile {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  min-height: 320px;
+  padding: var(--s-5);
+  color: var(--c-cream);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--s-2);
+}
+.card--house > picture,
+.card--nearby > picture,
+.card--tile > picture {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.card--house > picture img,
+.card--nearby > picture img,
+.card--tile > picture img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.card--house::before,
+.card--nearby::before,
+.card--tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* Градиент, а не сплошная плашка: на светлых кадрах иначе не хватает
+     контраста под белым текстом (п. 10.13 ТЗ, 4.5:1) */
+  background: linear-gradient(180deg, rgba(58,60,21,0.15) 0%, rgba(58,60,21,0.82) 70%);
+  transition: background 0.2s ease;
+}
+.card--house:hover::before,
+.card--nearby:hover::before,
+.card--tile:hover::before {
+  background: linear-gradient(180deg, rgba(58,60,21,0.55) 0%, rgba(58,60,21,0.92) 70%);
+}
+
+.card--house .card__title,
+.card--nearby .card__title,
+.card--tile .card__title { color: var(--c-cream); margin: 0; }
+.card--house .card__link { color: var(--c-cream); }
+
+/* Цена углом, как в макете */
+.card__badge {
+  position: absolute;
+  z-index: 1;
+  top: var(--s-4);
+  inset-inline-end: var(--s-4);
+  padding: var(--s-2) var(--s-3);
+  border-radius: 999px;
+  background: var(--c-cream);
+  color: var(--c-deep);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.card--nearby .card__number {
+  order: -1;
+  color: var(--c-cream);
+  opacity: 0.9;
+}
+
+/* Описание и кнопка появляются при наведении — состояние из COMPONENTS.
+   На тач-устройствах наведения нет, поэтому там показываем сразу. */
+@media (hover: hover) and (min-width: 900px) {
+  .card--house .card__reveal,
+  .card--tile .card__reveal {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.2s ease, max-height 0.2s ease;
+  }
+  .card--house:hover .card__reveal,
+  .card--house:focus-within .card__reveal,
+  .card--tile:hover .card__reveal,
+  .card--tile:focus-within .card__reveal {
+    opacity: 1;
+    max-height: 16rem;
+  }
+}
+
+/* ---------- Плитка-ссылка в мозаике ---------- */
+.mosaic__more {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border-radius: var(--radius-lg);
+  background: var(--c-olive);
+  color: var(--c-cream);
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+.mosaic__more:hover { background: var(--c-deep); color: var(--c-cream); }
+.mosaic__more span[aria-hidden] { font-size: 1.5rem; }
+
+/* ---------- Фотогалерея масонри ---------- */
+.mosaic--photos {
+  display: block;
+  columns: 2;
+  column-gap: var(--s-4);
+}
+@media (min-width: 700px) { .mosaic--photos { columns: 3; } }
+@media (min-width: 1100px) { .mosaic--photos { columns: 4; } }
+.mosaic--photos .mosaic__item {
+  break-inside: avoid;
+  margin-bottom: var(--s-4);
+  min-height: 0;
+}
+.mosaic--photos .mosaic__item picture,
+.mosaic--photos .mosaic__item img { height: auto; }
+
+/* ---------- Аккордеон оливковыми полосами ---------- */
+.faq__item {
+  border: 0;
+  background: transparent;
+}
+.faq__question {
+  border-radius: var(--radius);
+  background: var(--c-olive);
+  /* Кремовый на оливковом даёт 3.0 — для полужирного от 18.66px это норма
+     по п. 10.13, поэтому кегль ниже не опускаем */
+  color: var(--c-cream);
+  font-size: 1.125rem;
+}
+.faq__question::after { color: var(--c-cream); }
+.faq__item[open] .faq__question { border-end-start-radius: 0; border-end-end-radius: 0; }
+.faq__answer {
+  border: 1px solid var(--c-dark-soft);
+  border-top: 0;
+  border-end-start-radius: var(--radius);
+  border-end-end-radius: var(--radius);
+  padding: var(--s-4);
+  background: var(--c-white);
+}
+
+/* ---------- Ряд кнопок-разделов на первом экране ---------- */
+.hero__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+}
+.hero__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  padding: var(--s-2) var(--s-5);
+  border: 1px solid rgba(247, 240, 230, 0.55);
+  border-radius: 999px;
+  background: rgba(247, 240, 230, 0.12);
+  color: var(--c-cream);
+  text-decoration: none;
+  font-size: 0.9375rem;
+}
+.hero__link:hover { background: var(--c-cream); color: var(--c-deep); }
+
+/* ---------- Подвал по макету ---------- */
+.footer__top {
+  display: grid;
+  gap: var(--s-6);
+  margin-bottom: var(--s-6);
+}
+@media (min-width: 900px) { .footer__top { grid-template-columns: 1fr 2fr; } }
+
+.footer__brand { display: grid; gap: var(--s-2); align-content: start; }
+.footer__name { font-family: var(--font-heading); font-size: 1.25rem; }
+.footer__social { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+
+.footer__columns {
+  display: grid;
+  gap: var(--s-5);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+.footer__column-title { font-weight: 600; margin-bottom: var(--s-2); }
+.footer__column ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s-1); }
+.footer__column a { font-size: 0.9375rem; opacity: 0.9; }
+
+.footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  align-items: end;
+  justify-content: space-between;
+}
+.footer__pay { display: flex; gap: var(--s-2); }
+.footer__pay span {
+  padding: var(--s-1) var(--s-3);
+  border: 1px solid rgba(247, 240, 230, 0.35);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Правки контраста после замера (п. 10.13 ТЗ, 4.5:1) ---------- */
+
+/* Кнопка на фоне первого экрана: новое правило .btn--outline задало белый фон,
+   и кремовый текст на нём давал 1.13. Возвращаем полупрозрачную тёмную
+   подложку — на фото она читается, на белом не появляется. */
+.btn--on-media,
+.btn--on-media:hover {
+  background: rgba(58, 60, 21, 0.55);
+  border-color: var(--c-cream);
+  color: var(--c-cream);
+}
+.btn--on-media:hover { background: var(--c-cream); color: var(--c-deep); }
+
+/* Кремовый на оливковом даёт 3.6 — для обычного текста мало, но для
+   крупного полужирного (от 18.66px) норма 3.0, и он проходит.
+   Поэтому не перекрашиваем оливковый, а поднимаем кегль и насыщенность:
+   так сохраняется вид макета и выполняется требование. */
+/* Ровно 700: проверка доступности считает полужирным только 700,
+   при 600 текст остаётся «обычным» и требует 4.5 вместо 3.0 */
+.mosaic__more {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.faq__question {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
