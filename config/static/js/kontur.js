@@ -94,6 +94,15 @@
     if (noteBox) noteBox.hidden = true;
     if (fallback) fallback.hidden = false;
 
+    // «Ещё не подключено» и «сломалось» — разные ситуации, и гостю они
+    // должны читаться по-разному. Пустой hotelId это штатное состояние
+    // до запуска, а не сбой.
+    var broken = reason !== "hotel_id_missing";
+    var idleNote = modal.querySelector("[data-fallback-note-idle]");
+    var errorNote = modal.querySelector("[data-fallback-note-error]");
+    if (idleNote) idleNote.hidden = broken;
+    if (errorNote) errorNote.hidden = !broken;
+
     track("booking_fallback_shown", { reason: reason });
     reportFailure(reason);
   }

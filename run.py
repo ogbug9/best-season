@@ -45,6 +45,10 @@ def ensure_superuser():
 run("manage.py", "migrate", "--noinput")
 ensure_superuser()
 run("manage.py", "setup_roles")
+# Досоздаёт недостающие страницы по карте сайта. Идемпотентно: то, что уже
+# есть, не трогается — ни текст, ни порядок, ни настройки. Консоли у Amvera
+# нет, поэтому разовые команды вызываются отсюда.
+run("manage.py", "seed_pages")
 run("manage.py", "collectstatic", "--noinput")
 
 print("[start] запускаю gunicorn", flush=True)

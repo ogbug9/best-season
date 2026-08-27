@@ -42,8 +42,18 @@
 
     {% comment %} ---- Резервный блок, п. 5.6.2 ---- {% endcomment %}
     <div class="booking-fallback" data-booking-fallback hidden>
-      <p class="booking-fallback__note" role="status">
-        Онлайн-бронирование сейчас недоступно. Оставьте заявку — подберём
+      {% comment %}
+        Два разных текста. Пока hotelId не заведён, ничего не сломано —
+        онлайн-бронирование просто ещё не подключено, и пугать гостя
+        словом «недоступно» незачем. Второй текст показывается, когда
+        виджет действительно не поднялся.
+      {% endcomment %}
+      <p class="booking-fallback__note" data-fallback-note-idle role="status">
+        Оставьте заявку — подберём свободный домик на ваши даты,
+        назовём цену и ответим лично.
+      </p>
+      <p class="booking-fallback__note" data-fallback-note-error role="status" hidden>
+        Онлайн-бронирование временно недоступно. Оставьте заявку — подберём
         свободный домик на ваши даты и ответим лично.
       </p>
 
