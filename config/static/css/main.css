@@ -344,10 +344,13 @@ body {
   position: relative;
   isolation: isolate;
   display: grid;
-  align-items: end;
+  /* По макету первый экран центрирован по вертикали и горизонтали,
+     а не прижат к нижнему краю. */
+  align-items: center;
   min-height: min(88svh, 760px);
   padding-block: var(--s-8) var(--s-7);
   color: var(--c-cream);
+  text-align: center;
 }
 
 .hero__media {
@@ -423,16 +426,20 @@ body {
 .hero__inner { position: relative; }
 .hero__title { color: var(--c-cream); }
 .hero__subtitle {
-  max-width: 46ch;
-  margin-top: var(--s-4);
+  /* Центрируем сам блок, а не только текст: без auto по бокам
+     ограничение ширины прижало бы подзаголовок влево. */
+  max-width: 60ch;
+  margin: var(--s-4) auto 0;
   font-size: 1.125rem;
 }
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--s-4);
-  margin-top: var(--s-6);
+  margin-top: var(--s-4);
 }
+.hero .hero__links { justify-content: center; }
 .btn--on-media {
   border-color: var(--c-cream);
   color: var(--c-cream);
@@ -814,7 +821,12 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--s-3);
+  /* Кнопка сжимается по содержимому, поэтому justify-content внутри неё
+     ничего не двигает — центрировать нужно саму кнопку. Без auto по бокам
+     полоса поиска прижималась к левому краю и на главной, и в каталоге. */
+  width: fit-content;
   margin-top: var(--s-6);
+  margin-inline: auto;
   padding: 0;
   border: 0;
   background: none;

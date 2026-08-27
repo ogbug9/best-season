@@ -172,6 +172,13 @@ LEGAL = [
 ]
 
 
+def walk(nodes):
+    """Разворачивает дерево в плоский список — по нему проверяем дубли."""
+    for node in nodes:
+        yield node
+        yield from walk(node[4])
+
+
 def get_model(path):
     from django.apps import apps
 
@@ -210,6 +217,7 @@ class Command(BaseCommand):
             for node in TREE:
                 self.create_node(home, node)
             self.create_legal(home)
+            self.hide_duplicates()
 
             if self.dry:
                 transaction.set_rollback(True)
@@ -229,24 +237,77 @@ class Command(BaseCommand):
         if not hasattr(page, "hero_title"):
             return
 
+        # Тексты первого экрана взяты из макета: там крупно стоит название
+        # бренда, а описание уходит в подзаголовок — не наоборот.
+        HERO_TITLE = "Лучший сезон"
+        HERO_SUBTITLE = (
+            "Мы создаём место, где можно замедлиться, восстановиться "
+            "и прожить простые моменты радости в окружении природы, "
+            "тепла и настоящей жизни."
+        )
+        # Заголовки, которые команда писала сама в прошлых версиях. Их
+        # перезаписываем, чужой текст — никогда.
+        OURS = {"", "Глэмпинг на берегу, в двух часах от города"}
+        OURS_SUB = {
+            "",
+            "Четыре дома с панорамными окнами, баней и камином — "
+            "для отдыха вдвоём и с семьёй.",
+        }
+
         changed = False
         if page.title in ("Home", "Домашняя страница", "Homepage"):
             page.title = "Лучший Сезон"
             changed = True
-        if not page.hero_title:
-            page.hero_title = "Глэмпинг на берегу, в двух часах от города"
+        if page.hero_title in OURS:
+            page.hero_title = HERO_TITLE
             changed = True
-        if not page.hero_subtitle:
-            page.hero_subtitle = (
-                "Четыре дома с панорамными окнами, баней и камином — "
-                "для отдыха вдвоём и с семьёй."
-            )
+        if page.hero_subtitle in OURS_SUB:
+            page.hero_subtitle = HERO_SUBTITLE
             changed = True
 
         if changed and not self.dry:
             page.save()
             page.save_revision().publish()
             self.stdout.write("  главная: заполнены заголовок и подзаголовок")
+
+    def hide_duplicates(self):
+        """Убирает из меню лишние копии одиночных страниц.
+
+        Такая копия могла появиться до того, как команда научилась искать
+        по типу: в меню было два пункта «Наши домики». Страницу НЕ удаляем —
+        только снимаем с публикации и убираем из меню. Действие обратимо,
+        а с удалением ошибиться нельзя.
+
+        Оставляем ту копию, у которой есть дочерние страницы, а при равенстве —
+        созданную раньше. Пустышку без детей и трогать не жалко.
+        """
+        seen = set()
+        for node in walk(TREE):
+            seen.add(node[0])
+
+        for model_path in seen:
+            model = get_model(model_path)
+            if getattr(model, "max_count", None) != 1:
+                continue
+
+            pages = list(model.objects.all().order_by("path"))
+            if len(pages) < 2:
+                continue
+
+            keep = max(pages, key=lambda p: (p.get_children().count(), -p.pk))
+            for page in pages:
+                if page.pk == keep.pk or page.get_children().exists():
+                    continue
+                if not page.show_in_menus and not page.live:
+                    continue
+                page.show_in_menus = False
+                if not self.dry:
+                    page.save()
+                    page.unpublish()
+                self.stdout.write(
+                    f"  дубль «{page.title}» (/{page.slug}/) убран из меню, "
+                    f"оставлена «{keep.title}» (/{keep.slug}/)"
+                )
 
     def create_node(self, parent, node):
         model_path, slug, title, fields, children = node
@@ -272,6 +333,19 @@ class Command(BaseCommand):
         if existing is not None:
             self.skipped += 1
             return existing
+
+        # Страница такого типа может уже быть заведена вручную под другим
+        # адресом. Wagtail проверяет max_count только в админке и молча
+        # пропускает программное создание — на этом мы получили в меню два
+        # пункта «Наши домики». Для одиночных типов ищем по типу, а не по слагу.
+        if getattr(model, "max_count", None) == 1:
+            existing = model.objects.first()
+            if existing is not None:
+                self.skipped += 1
+                self.stdout.write(
+                    f"  «{existing.title}» уже есть (/{existing.slug}/), вторую не создаю"
+                )
+                return existing
 
         # Слаг может быть занят страницей другого типа — тогда создавать
         # вторую с тем же адресом нельзя, Wagtail просто не даст.

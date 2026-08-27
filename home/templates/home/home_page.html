@@ -70,16 +70,29 @@
       </ul>
     {% endif %}
 
-    <div class="hero__actions">
-      {% if page.hero_cta_page %}
-        <a class="btn btn--primary" href="{% pageurl page.hero_cta_page %}">{{ page.hero_cta_text }}</a>
-      {% elif houses_index %}
-        <a class="btn btn--primary" href="{% pageurl houses_index %}">{{ page.hero_cta_text }}</a>
-      {% endif %}
-      <button type="button" class="btn btn--outline btn--on-media" data-booking-open data-entry-point="2">
-        Забронировать
-      </button>
-    </div>
+    {% comment %}
+      Точка входа №2 из таблицы п. 5.1 ТЗ. По макету это полоса поиска,
+      технически — одна кнопка: виджет Контура не принимает даты при
+      инициализации (см. 03-kontur-widget.md). Настоящие поля были бы
+      ловушкой — гость заполнил бы их, а в окно бронирования они бы
+      не попали, и он вводил бы даты второй раз.
+    {% endcomment %}
+    <button type="button" class="searchbar" data-booking-open data-entry-point="2">
+      <span class="searchbar__field">Дата въезда</span>
+      <span class="searchbar__field">Дата выезда</span>
+      <span class="searchbar__field">1 гость</span>
+      <span class="searchbar__cta btn btn--primary">Забронировать даты</span>
+    </button>
+
+    {% if page.hero_cta_page or houses_index %}
+      <p class="hero__actions">
+        {% if page.hero_cta_page %}
+          <a class="btn btn--outline btn--on-media" href="{% pageurl page.hero_cta_page %}">{{ page.hero_cta_text }}</a>
+        {% else %}
+          <a class="btn btn--outline btn--on-media" href="{% pageurl houses_index %}">{{ page.hero_cta_text }}</a>
+        {% endif %}
+      </p>
+    {% endif %}
   </div>
 </section>
 
