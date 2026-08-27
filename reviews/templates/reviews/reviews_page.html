@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+
+{% if page.body %}
+<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
+{% endif %}
+
+{% if reviews %}
+<section class="section">
+  <div class="container">
+    <ul class="cards">
+      {% for review in reviews %}
+        <li class="card card--quote">
+          <blockquote><p>{{ review.text }}</p></blockquote>
+          <p class="card__meta">
+            {{ review.author_name }}
+            {% if review.house %} · {{ review.house.title }}{% endif %}
+            {% if review.visit_date %} · {{ review.visit_date|date:"F Y" }}{% endif %}
+          </p>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% else %}
+<section class="section">
+  <div class="container container--narrow"><p>Отзывы пока не опубликованы.</p></div>
+</section>
+{% endif %}
+{% endblock %}

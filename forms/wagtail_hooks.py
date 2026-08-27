@@ -1,6 +1,11 @@
+from django.urls import path, reverse
+from wagtail import hooks
+from wagtail.admin.menu import MenuItem
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
+
+from .admin_views import export_csv
 
 from .models import FormSubmission
 
@@ -73,3 +78,19 @@ class FormSubmissionViewSet(SnippetViewSet):
 
 
 register_snippet(FormSubmissionViewSet)
+
+
+@hooks.register("register_admin_urls")
+def forms_admin_urls():
+    return [path("zayavki/export/", export_csv, name="forms_export_csv")]
+
+
+@hooks.register("register_admin_menu_item")
+def forms_export_menu():
+    """Отдельный пункт меню: выгрузка заявок в CSV — требование п. 7.5 ТЗ."""
+    return MenuItem(
+        "Выгрузить заявки",
+        reverse("forms_export_csv"),
+        icon_name="download",
+        order=210,
+    )

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+
+{% if faq %}
+<section class="section">
+  <div class="container container--narrow">
+    <div class="faq">
+      {% for item in faq %}
+        <details class="faq__item">
+          <summary class="faq__question">{{ item.question }}</summary>
+          <div class="faq__answer">{{ item.answer|richtext }}</div>
+        </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block structured_data %}
+{% comment %}
+  Микроразметка FAQPage: поисковики показывают такие вопросы прямо
+  в выдаче, а страница у нас как раз построена на них (п. 10.5 ТЗ).
+{% endcomment %}
+{% if faq %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for item in faq %}
+    {
+      "@type": "Question",
+      "name": "{{ item.question|escapejs }}",
+      "acceptedAnswer": { "@type": "Answer", "text": "{{ item.answer|striptags|escapejs }}" }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+{% endblock %}

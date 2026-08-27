@@ -1,5 +1,7 @@
 from django.db import models
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.fields import RichTextField
+from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
 
@@ -79,3 +81,25 @@ class Review(models.Model):
     def __str__(self):
         target = self.house.title if self.house else "общий"
         return f"{self.author_name} ({target})"
+
+
+class ReviewsPage(Page):
+    """Страница «Отзывы». Показывает общий пул: и отзывы без привязки
+    к дому, и привязанные — по разделу 2 ТЗ публикация только ручная,
+    так что сюда попадает лишь проверенное."""
+
+    intro = models.CharField("Вступление", max_length=255, blank=True)
+    body = RichTextField(
+        "Текст", blank=True, features=["bold", "italic", "link", "ul", "ol"]
+    )
+
+    content_panels = Page.content_panels + [FieldPanel("intro"), FieldPanel("body")]
+    max_count = 1
+
+    class Meta:
+        verbose_name = "Страница «Отзывы»"
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        context["reviews"] = Review.objects.filter(is_published=True)
+        return context

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags %}
+
+{% comment %}
+  «Как добраться» — п. 4.2 ТЗ. Порядок блоков повторяет пункты требования:
+  маршрут на авто, маршрут без авто, трансфер, форма заявки, карта,
+  кнопка возврата к бронированию. По п. 12.3 без этой страницы нельзя
+  запускаться, поэтому состав менять только вместе с ТЗ.
+{% endcomment %}
+
+{% block content %}
+
+<section class="section page-head">
+  <div class="container container--narrow">
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+
+{% comment %} 4.2.1 На автомобиле {% endcomment %}
+{% if page.car_route or page.car_distance %}
+<section class="section">
+  <div class="container container--narrow">
+    <h2>На автомобиле</h2>
+    {% if page.car_distance or page.car_time %}
+      <ul class="facts">
+        {% if page.car_distance %}<li><b>Расстояние:</b> {{ page.car_distance }}</li>{% endif %}
+        {% if page.car_time %}<li><b>Время в пути:</b> {{ page.car_time }}</li>{% endif %}
+      </ul>
+    {% endif %}
+    {{ page.car_route|richtext }}
+    {% if page.yandex_route_url %}
+      <p><a class="btn btn--outline" href="{{ page.yandex_route_url }}" rel="noopener" target="_blank">
+        Открыть маршрут в Яндекс.Картах
+      </a></p>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 4.2.2 Без автомобиля {% endcomment %}
+{% if page.transit_route %}
+<section class="section section--deep">
+  <div class="container container--narrow">
+    <h2>На электричке или автобусе</h2>
+    {{ page.transit_route|richtext }}
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 4.2.3 Трансфер {% endcomment %}
+{% if page.transfer_price or page.transfer_note %}
+<section class="section">
+  <div class="container container--narrow">
+    <h2>Трансфер</h2>
+    {% if page.transfer_price %}<p class="card__price">{{ page.transfer_price }}</p>{% endif %}
+    {{ page.transfer_note|richtext }}
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 4.2.4 Форма заявки на трансфер {% endcomment %}
+<section class="section">
+  <div class="container container--narrow">
+    {% include "forms/request_form.html" with form=transfer_form form_type="transfer" title="Заказать трансфер" lead="Оставьте заявку — подберём время и назовём точную стоимость." submit_label="Заказать трансфер" %}
+
+    {% with s=settings.core.SiteSettings %}
+      <p class="split__actions">
+        {% if s.phone %}<a class="btn btn--outline" href="tel:{{ s.phone }}">Позвонить</a>{% endif %}
+        {% if s.telegram_url %}<a class="btn btn--outline" href="{{ s.telegram_url }}" rel="noopener" target="_blank">Telegram</a>{% endif %}
+        {% if s.whatsapp_url %}<a class="btn btn--outline" href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">WhatsApp</a>{% endif %}
+      </p>
+    {% endwith %}
+  </div>
+</section>
+
+{% comment %}
+  4.2.5 Карта. Загружается по клику, а не сразу: iframe Яндекс.Карт тянет
+  чужие скрипты, портит замер скорости (п. 1.2) и отдаёт IP посетителя
+  стороннему сервису ещё до его согласия (раздел 11).
+{% endcomment %}
+{% if page.map_embed_url %}
+<section class="section">
+  <div class="container">
+    <h2>Мы на карте</h2>
+    <div class="map" data-map data-map-src="{{ page.map_embed_url }}">
+      {% if page.map_image %}
+        {% picture page.map_image preset="gallery" alt="Карта проезда" %}
+      {% endif %}
+      <button type="button" class="btn btn--primary map__button" data-map-load>
+        Показать карту
+      </button>
+      <p class="map__note">Карта загрузится с сервера Яндекса по нажатию.</p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 4.2.6 Кнопка возврата к бронированию {% endcomment %}
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Готовы приехать?</h2>
+    <p>Выберите даты — свободные номера покажет система бронирования.</p>
+    <p>
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="8">
+        Забронировать даты
+      </button>
+    </p>
+  </div>
+</section>
+
+{% endblock %}

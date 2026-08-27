@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags %}
+{% with s=settings.core.SiteSettings %}
+
+{% block content %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="split__text">
+      {% comment %}
+        Контакты и реквизиты берутся из настроек сайта, а не дублируются
+        полями страницы: иначе они разойдутся с подвалом, а реквизиты ИП
+        обязаны совпадать (раздел 11 ТЗ).
+      {% endcomment %}
+      <ul class="facts">
+        {% if s.phone %}<li><b>Телефон:</b> <a href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a></li>{% endif %}
+        {% if s.email %}<li><b>Почта:</b> <a href="mailto:{{ s.email }}">{{ s.email }}</a></li>{% endif %}
+        {% if s.address %}<li><b>Адрес:</b> {{ s.address }}</li>{% endif %}
+      </ul>
+
+      <p class="split__actions">
+        {% if s.telegram_url %}<a class="btn btn--outline" href="{{ s.telegram_url }}" rel="noopener" target="_blank">Telegram</a>{% endif %}
+        {% if s.whatsapp_url %}<a class="btn btn--outline" href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">WhatsApp</a>{% endif %}
+        {% if s.vk_url %}<a class="btn btn--outline" href="{{ s.vk_url }}" rel="noopener" target="_blank">ВКонтакте</a>{% endif %}
+      </p>
+
+      {% if page.body %}<div class="prose">{{ page.body|richtext }}</div>{% endif %}
+
+      <p class="footer__requisites">
+        {% if s.legal_name %}{{ s.legal_name }}{% endif %}
+        {% if s.inn %} · ИНН {{ s.inn }}{% endif %}
+        {% if s.ogrnip %} · ОГРНИП {{ s.ogrnip }}{% endif %}
+        {% if s.legal_address %}<br>{{ s.legal_address }}{% endif %}
+      </p>
+    </div>
+
+    {% if page.map_embed_url %}
+      <div class="split__media">
+        <div class="map" data-map data-map-src="{{ page.map_embed_url }}">
+          {% if page.map_image %}{% picture page.map_image preset="gallery" alt="Карта проезда" %}{% endif %}
+          <button type="button" class="btn btn--primary map__button" data-map-load>Показать карту</button>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    {% include "forms/request_form.html" with form=feedback_form form_type="feedback" title="Написать нам" lead="Ответим на почту или в мессенджер." %}
+  </div>
+</section>
+{% endblock %}
+
+{% endwith %}

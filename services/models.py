@@ -1,5 +1,6 @@
 from django.db import models
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.models import Page
 from wagtail.fields import RichTextField
 from wagtail.snippets.models import register_snippet
 
@@ -89,3 +90,25 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ServicesPage(Page):
+    """«Услуги и завтраки» / «Доп услуги». Список берётся из справочника,
+    тот же, что показывается блоком на главной и на странице дома."""
+
+    intro = models.CharField("Вступление", max_length=255, blank=True)
+    body = RichTextField("Текст", blank=True, features=BODY_FEATURES)
+
+    content_panels = Page.content_panels + [FieldPanel("intro"), FieldPanel("body")]
+    max_count = 1
+
+    class Meta:
+        verbose_name = "Страница «Услуги»"
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        context["services"] = Service.objects.filter(is_published=True)
+        # Почасовые объекты Контура выделяются отдельно: их нельзя
+        # забронировать иначе как через виджет (см. 03-kontur-widget.md)
+        context["hourly"] = context["services"].filter(is_hourly=True)
+        return context

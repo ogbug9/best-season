@@ -22,3 +22,5 @@ staticfiles/
 .vscode/
 .idea/
 *.swp
+.venv/
+.env

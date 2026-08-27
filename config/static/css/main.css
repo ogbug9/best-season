@@ -42,28 +42,36 @@
   --font-heading: "Etude Noire", ui-serif, Georgia, serif;
   --font-body:    "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  --fs-base: 1.25rem;   /* 20px — как в макете */
-  /* В макете line-height 100%. Для текста это слишком тесно и бьёт по
-     читаемости, поэтому здесь 1.55; для крупных заголовков оставлен 1.0,
-     как нарисовано. Уточняется у Анастасии. */
-  --lh-base: 1.55;
-  --lh-heading: 1.0;
+  /* Значения сняты из выгрузки всех слоёв макета (css all layers main desktop).
+     Основной текст в макете — Montserrat 18/22, это и есть базовый кегль.
+     Межстрочный по макету 1.22, а не 100%: цифра «100%» в инспекторе
+     относилась к отдельному слою, массово в макете 1.20–1.25. */
+  --fs-base: 1.125rem;      /* 18px */
+  --lh-base: 1.22;          /* 22/18 */
+  --lh-heading: 1.06;       /* 95/90 у h1, 42/40 у h2 */
+
+  --fs-small: 1rem;         /* 16/20 — подписи, мета */
+  --fs-lead: 1.25rem;       /* 20/24 */
+  --fs-sub: 1.5rem;         /* 24/29, Montserrat 600 */
 
   /* Шкала отступов */
-  --s-1: 0.25rem;
-  --s-2: 0.5rem;
-  --s-3: 0.75rem;
-  --s-4: 1rem;
-  --s-5: 1.5rem;
-  --s-6: 2rem;
-  --s-7: 3rem;
-  --s-8: 4rem;
-  --s-9: 6rem;
+  /* Зазоры в макете кратны 10: чаще всего 10, 20, 40 и 60 */
+  --s-1: 6px;
+  --s-2: 10px;
+  --s-3: 14px;
+  --s-4: 20px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 40px;
+  --s-8: 60px;
+  --s-9: 91px;
 
-  --radius: 8px;
-  --radius-lg: 16px;
+  /* Скругления из макета: 10px основное, 20px крупное, 100px пилюли */
+  --radius: 10px;
+  --radius-lg: 20px;
+  --radius-pill: 100px;
 
-  --container: 1200px;
+  --container: 1360px;
   --container-narrow: 760px;
 
   /* Минимальный размер интерактивного элемента — п. 10.13 ТЗ */
@@ -99,16 +107,25 @@ body {
 
 /* Верхняя граница — размеры из макета (h1 90px, h2 44px),
    нижняя подобрана так, чтобы на 360px заголовок не разъезжался. */
+/* Верхние границы — размеры макета: h1 90/95 Etude Noire 500,
+   h2 40/42 Etude Noire 400. Нижние подобраны так, чтобы на 360px
+   заголовок не разъезжался. */
 .site :where(h1) {
-  font-size: clamp(2.25rem, 1.2rem + 4.8vw, 5.625rem);
+  font-size: clamp(2.5rem, 1.4rem + 5vw, 5.625rem);
   font-weight: 500;
+  line-height: 1.06;
 }
 .site :where(h2) {
-  font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.75rem);
+  font-size: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
   font-weight: 400;
-  line-height: 1.1;
+  line-height: 1.05;
 }
-.site :where(h3) { font-size: clamp(1.375rem, 1.1rem + 1.2vw, 1.75rem); font-weight: 400; }
+.site :where(h3) {
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  font-weight: 600;
+  font-family: var(--font-body);
+  line-height: 1.21;
+}
 
 .site :where(ul, ol) { margin: 0; padding-left: 1.25em; }
 
@@ -194,9 +211,10 @@ body {
   justify-content: center;
   gap: var(--s-2);
   min-height: var(--tap-min);
-  padding: var(--s-3) var(--s-5);
+  /* padding 14px 40px — самый частый вариант кнопки в макете */
+  padding: 14px 40px;
   border: 1px solid transparent;
-  border-radius: var(--radius);
+  border-radius: var(--radius-pill);
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
@@ -473,10 +491,22 @@ body {
   display: none;
   opacity: 0;
   transform: translateY(120%);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  /* Одной прозрачности мало: невидимая кнопка всё равно ловит нажатия и
+     попадает в обход по Tab. На мобильном она висит у нижнего края, то
+     есть гость может нажать «Забронировать», не видя кнопки. Убираем её
+     из разметки по-настоящему, пока первый экран не ушёл. */
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s 0.2s;
   box-shadow: 0 6px 24px rgba(73, 73, 73, 0.35);
 }
-.sticky-cta[data-visible="true"] { opacity: 1; transform: translateY(0); }
+.sticky-cta[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
 
 @media (max-width: 899px) {
   .sticky-cta { display: inline-flex; }
@@ -992,8 +1022,7 @@ body {
 }
 
 /* ---------- Кнопки: 6 состояний по COMPONENTS ---------- */
-.btn--pill { border-radius: 999px; }
-.btn { border-radius: 999px; }
+.btn--pill { border-radius: var(--radius-pill); }
 
 .btn--primary:hover { background: var(--c-hover-terra); }
 .btn--primary:active,
@@ -1417,4 +1446,268 @@ body {
 .faq__question {
   font-weight: 700;
   font-size: 1.25rem;
+}
+
+/* =========================================================================
+   Страницы второй очереди (Фаза 6)
+   ========================================================================= */
+
+.page-head { padding-bottom: 0; }
+.page-head h1 { margin-bottom: var(--s-4); }
+
+.prose :where(p, ul, ol) + :where(p, ul, ol, h2, h3) { margin-top: var(--s-4); }
+.prose :where(h2, h3) { margin-top: var(--s-6); }
+
+/* Список фактов: расстояние, время, адрес */
+.facts {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-5);
+  padding: 0;
+  list-style: none;
+}
+.facts li {
+  padding-bottom: var(--s-2);
+  border-bottom: 1px solid var(--c-dark-soft);
+}
+
+.mosaic__title { margin: 0; font-size: 1.125rem; color: var(--c-cream); }
+
+/* ---------- Карта, загружаемая по нажатию ---------- */
+.map {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--c-dark-soft);
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  gap: var(--s-3);
+}
+.map picture { position: absolute; inset: 0; z-index: 0; }
+.map picture img { width: 100%; height: 100%; object-fit: cover; }
+.map__button { position: relative; z-index: 1; }
+.map__note {
+  position: relative;
+  z-index: 1;
+  padding: var(--s-1) var(--s-3);
+  border-radius: var(--radius);
+  background: rgba(247, 240, 230, 0.92);
+  color: var(--c-dark);
+  font-size: 0.875rem;
+}
+.map__frame {
+  width: 100%;
+  min-height: 420px;
+  border: 0;
+  display: block;
+}
+
+/* ---------- Страницы ошибок ---------- */
+.error-code {
+  font-family: var(--font-heading);
+  font-size: clamp(4rem, 2rem + 10vw, 9rem);
+  line-height: 1;
+  color: var(--c-olive);
+  margin-bottom: var(--s-3);
+}
+
+/* =========================================================================
+   Формы заявок (Фаза 8, раздел 7 ТЗ)
+   ========================================================================= */
+
+.form {
+  padding: var(--s-6);
+  border-radius: var(--radius-lg);
+  background: var(--c-white);
+  border: 1px solid var(--c-dark-soft);
+}
+.form__title { margin-bottom: var(--s-4); }
+
+.form__grid {
+  display: grid;
+  gap: var(--s-4);
+  margin-top: var(--s-5);
+}
+@media (min-width: 700px) { .form__grid { grid-template-columns: repeat(2, 1fr); } }
+.form__field--wide { grid-column: 1 / -1; }
+
+.form__field { display: grid; gap: var(--s-1); }
+.form__label { font-size: 0.9375rem; font-weight: 600; }
+
+.form :where(input[type="text"], input[type="tel"], input[type="email"],
+              input[type="date"], input[type="number"], textarea) {
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--c-dark-soft);
+  border-radius: var(--radius);
+  background: var(--c-cream);
+  color: var(--c-dark);
+}
+.form textarea { min-height: 7rem; resize: vertical; }
+
+.form :where(input, textarea):focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 1px;
+}
+
+/* Ловушка для ботов: убрана с экрана, но остаётся в разметке.
+   display:none боты часто распознают, поэтому прячем смещением. */
+.form__trap-wrap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form__consent { margin-top: var(--s-2); }
+.form__checkbox {
+  display: flex;
+  align-items: start;
+  gap: var(--s-3);
+  cursor: pointer;
+}
+.form__checkbox input {
+  /* ≥44px — требование п. 10.13 к размеру интерактивных элементов */
+  width: 24px;
+  height: 24px;
+  margin: 10px;
+  flex: 0 0 auto;
+}
+
+.form__error { color: #A32C1B; font-size: 0.875rem; }
+
+.form__note {
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  margin-bottom: var(--s-4);
+}
+/* Кремовый на оливковом даёт 3.6:1. Порог 3.0 действует только для
+   крупного текста — от 18.66px, — а здесь кегль 18px, и проверка требует
+   4.5:1. Берём тёмный фон палитры: 10.1:1 с запасом. */
+.form__note--ok { background: var(--c-deep); color: var(--c-cream); font-weight: 700; }
+.form__note--error { background: #F6E0DA; color: #7A1F12; font-weight: 700; }
+
+.form__actions { margin-top: var(--s-5); }
+.form__legal { margin-top: var(--s-4); font-size: 0.875rem; opacity: 0.8; }
+
+
+/* ============================================================
+   Модальное окно бронирования — п. 5.2 ТЗ
+   ============================================================ */
+
+/* На <dialog> браузер сам даёт фокус-ловушку, закрытие по Esc и подложку.
+   Своя реализация на div потребовала бы всего этого руками и почти
+   наверняка потеряла бы клавиатуру. */
+.booking-modal {
+  width: min(760px, calc(100vw - var(--s-7)));
+  max-height: calc(100vh - var(--s-7));
+  padding: 0;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  /* Обрамление бренда обязательно по п. 5.4.2 и 5.4.4: виджет не ставится
+     на страницу голым. Фон «лён», рамка, заголовок фирменной гарнитурой. */
+  background: var(--c-cream);
+  color: var(--text);
+  overflow: auto;
+}
+
+.booking-modal::backdrop {
+  background: rgba(58, 60, 21, 0.6);
+}
+
+.booking-modal__inner {
+  position: relative;
+  padding: var(--s-7);
+}
+
+.booking-modal__title {
+  font-family: var(--font-display, inherit);
+  margin-right: var(--s-7);
+}
+
+.booking-modal__lead {
+  margin-top: var(--s-3);
+  max-width: 52ch;
+}
+
+.booking-modal__loading {
+  margin-top: var(--s-5);
+  color: var(--c-dark);
+}
+
+.booking-modal__close {
+  position: absolute;
+  top: var(--s-4);
+  right: var(--s-4);
+  width: 44px;   /* цель нажатия не меньше 44px — п. 10.13 */
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--c-dark);
+  background: transparent;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.booking-modal__close:hover { background: var(--c-olive-soft); }
+
+#BookingFormWidget { margin-top: var(--s-5); }
+
+/* Резервный блок — п. 5.6 ТЗ */
+.booking-fallback { margin-top: var(--s-5); }
+
+.booking-fallback__note {
+  padding: var(--s-4);
+  border-radius: var(--radius);
+  /* Тот же случай, что и у .form__note--ok: вес 700 не спасает, потому
+     что порог 3.0 начинается с 18.66px, а здесь базовые 18px. Замер: на
+     оливковом 3.6:1, на тёмном 10.1:1. */
+  background: var(--c-deep);
+  color: var(--c-cream);
+  font-weight: 700;
+}
+
+.booking-fallback__contacts {
+  margin-top: var(--s-5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* Полный экран ниже 768px — прямое требование п. 5.2 ТЗ.
+   Кнопка закрытия остаётся в фиксированной позиции. */
+@media (max-width: 767px) {
+  .booking-modal {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .booking-modal__inner { padding: var(--s-6) var(--s-4) var(--s-8); }
+
+  .booking-modal__close {
+    position: fixed;
+    top: var(--s-2);
+    right: var(--s-2);
+    background: var(--c-cream);
+  }
+}
+
+/* Пока окно открыто, фон не прокручивается. Положение страницы скрипт
+   запоминает и возвращает при закрытии — п. 5.2 требует вернуть гостя
+   на то же место. */
+body[data-modal-open] {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
 }

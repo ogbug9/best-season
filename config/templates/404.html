@@ -1,11 +1,24 @@
 {% extends "base.html" %}
+{% load wagtailcore_tags %}
 
-{% block title %}Page not found{% endblock %}
+{% comment %}
+  404 входит в карту сайта первой очередью (п. 12.3 ТЗ), целевое действие —
+  возврат на главную или к домам.
+{% endcomment %}
 
-{% block body_class %}template-404{% endblock %}
+{% block title %}Страница не найдена{% endblock %}
+{% block meta_description %}Такой страницы нет. Вернитесь на главную или посмотрите домики.{% endblock %}
 
 {% block content %}
-<h1>Page not found</h1>
-
-<h2>Sorry, this page could not be found.</h2>
+<section class="section page-head">
+  <div class="container container--narrow center">
+    <p class="error-code" aria-hidden="true">404</p>
+    <h1>Такой страницы нет</h1>
+    <p class="section__lead">Возможно, адрес набран с опечаткой или страницу переместили.</p>
+    <p class="split__actions" style="justify-content: center;">
+      <a class="btn btn--primary" href="/">На главную</a>
+      <button type="button" class="btn btn--outline" data-booking-open data-entry-point="1">Забронировать даты</button>
+    </p>
+  </div>
+</section>
 {% endblock %}

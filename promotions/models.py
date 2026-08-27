@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.models import Page
 from wagtail.fields import RichTextField
 from wagtail.snippets.models import register_snippet
 
@@ -75,3 +76,22 @@ class Promotion(models.Model):
         if self.date_to and today > self.date_to:
             return False
         return True
+
+
+class PromotionsPage(Page):
+    """Страница «Акции». Показывает только те, у которых период показа
+    не истёк, — логика в свойстве is_active самой акции."""
+
+    intro = models.CharField("Вступление", max_length=255, blank=True)
+    body = RichTextField("Текст", blank=True, features=BODY_FEATURES)
+
+    content_panels = Page.content_panels + [FieldPanel("intro"), FieldPanel("body")]
+    max_count = 1
+
+    class Meta:
+        verbose_name = "Страница «Акции»"
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        context["promotions"] = [p for p in Promotion.objects.all() if p.is_active]
+        return context

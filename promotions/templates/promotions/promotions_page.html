@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags %}
+
+{% block content %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+
+{% if page.body %}
+<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
+{% endif %}
+
+{% if promotions %}
+<section class="section">
+  <div class="container">
+    <ul class="cards">
+      {% for promo in promotions %}
+        <li class="card">
+          {% picture promo.image preset="card" alt=promo.title %}
+          <div class="card__body">
+            <h2 class="card__title">{{ promo.title }}</h2>
+            {% if promo.short_description %}<p>{{ promo.short_description }}</p>{% endif %}
+            {% if promo.description %}<div class="prose">{{ promo.description|richtext }}</div>{% endif %}
+            {% if promo.date_to %}<p class="card__meta">Действует до {{ promo.date_to|date:"d.m.Y" }}</p>{% endif %}
+            <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="7">Забронировать</button></p>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% else %}
+<section class="section">
+  <div class="container container--narrow"><p>Сейчас действующих акций нет.</p></div>
+</section>
+{% endif %}
+{% endblock %}

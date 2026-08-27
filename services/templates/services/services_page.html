@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags %}
+
+{% block content %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+
+{% if page.body %}
+<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
+{% endif %}
+
+{% if services %}
+<section class="section">
+  <div class="container">
+    <ul class="cards">
+      {% for service in services %}
+        <li class="card">
+          {% picture service.image preset="card" alt=service.name %}
+          <div class="card__body">
+            <h2 class="card__title">{{ service.name }}</h2>
+            {% if service.short_description %}<p>{{ service.short_description }}</p>{% endif %}
+            {% if service.description %}<div class="prose">{{ service.description|richtext }}</div>{% endif %}
+            {% if service.price %}
+              <p class="card__price">{{ service.price }} ₽ {{ service.get_price_unit_display }}</p>
+              {% if service.price_note %}<p class="card__meta">{{ service.price_note }}</p>{% endif %}
+            {% endif %}
+            {% if service.is_hourly %}
+              {% comment %}
+                Почасовые объекты продаются в Контуре только через виджет —
+                отдельной формы для них у нас нет (см. 03-kontur-widget.md).
+              {% endcomment %}
+              <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="7">Забронировать</button></p>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

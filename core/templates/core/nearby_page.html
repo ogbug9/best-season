@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags %}
+
+{% block content %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+
+{% if page.body %}
+<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
+{% endif %}
+
+{% if places %}
+<section class="section">
+  <div class="container">
+    <ul class="cards cards--nearby">
+      {% for place in places %}
+        <li class="card card--nearby">
+          {% picture place.image preset="card" alt=place.title %}
+          <div class="card__body">
+            <p class="card__number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</p>
+            <h2 class="card__title">{{ place.title }}</h2>
+            {% if place.description %}<p>{{ place.description }}</p>{% endif %}
+            {% if place.link_url %}
+              <p><a class="btn btn--outline" href="{{ place.link_url }}" rel="noopener" target="_blank">Подробнее</a></p>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

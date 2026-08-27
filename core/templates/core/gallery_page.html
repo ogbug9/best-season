@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags %}
+
+{% block content %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+
+{% if page.body %}
+<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
+{% endif %}
+
+{% if page.photos.all %}
+<section class="section">
+  <div class="container">
+    <ul class="mosaic mosaic--photos">
+      {% for photo in page.photos.all %}
+        <li class="mosaic__item{% if photo.is_large %} mosaic__item--large{% endif %}">
+          {% picture photo.image preset="gallery" alt=photo.alt %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

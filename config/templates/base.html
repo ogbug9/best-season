@@ -75,7 +75,10 @@
       Забронировать
     </button>
 
+    {% include "includes/booking_modal.html" %}
+
     <script src="{% static 'js/site.js' %}" defer></script>
+    <script src="{% static 'js/kontur.js' %}" defer></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

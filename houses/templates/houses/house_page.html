@@ -210,6 +210,13 @@
   </div>
 </section>
 
+{% comment %} Вопрос о доме — одна из четырёх форм раздела 7 ТЗ {% endcomment %}
+<section class="section">
+  <div class="container container--narrow">
+    {% include "forms/request_form.html" with form=question_form form_type="house_question" title="Задать вопрос о доме" lead="Ответим на почту или в мессенджер." submit_label="Отправить вопрос" %}
+  </div>
+</section>
+
 {# ---------- 9. Ссылки на 3 других дома (п. 4.1.9) ---------- #}
 {% if page.other_houses %}
 <section class="section">

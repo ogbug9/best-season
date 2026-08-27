@@ -1,0 +1,79 @@
+{% load wagtailcore_tags %}
+{% with s=settings.core.SiteSettings %}
+
+{% comment %}
+  Модальное окно бронирования — п. 5.2 ТЗ. Одно на всю страницу: любая из
+  восьми точек входа таблицы п. 5.1 открывает именно его, поэтому виджет
+  инициализируется один раз, а не по разу на кнопку.
+
+  Внутри три состояния, переключает их js/kontur.js:
+    1. ожидание — пока грузится виджет;
+    2. виджет — контейнер .kontur-host, внутри него наша нормализация
+       стилей откатывается, чтобы разметка Контура рендерилась как задумано;
+    3. резервный блок — п. 5.6, показывается при сбое или по таймеру 5 с.
+
+  Резервный блок лежит в разметке всегда и не зависит от кода Контура:
+  на приёмке его проверяют принудительной блокировкой домена виджета
+  (п. 5.6.5), и он обязан работать, когда от виджета не осталось ничего.
+{% endcomment %}
+
+<dialog class="booking-modal" data-booking-modal aria-labelledby="booking-modal-title">
+  <div class="booking-modal__inner">
+
+    <button type="button" class="booking-modal__close" data-booking-close
+            aria-label="Закрыть окно бронирования">×</button>
+
+    <h2 class="booking-modal__title" id="booking-modal-title">Бронирование</h2>
+
+    {% comment %} Подводящий текст обязателен по п. 5.4.3 и п. 5.4.4 {% endcomment %}
+    <p class="booking-modal__lead" data-booking-note>
+      {{ s.booking_lead_text|default:"Выберите даты и количество гостей — система покажет свободные домики и стоимость." }}
+    </p>
+
+    <p class="booking-modal__loading" data-booking-loading hidden role="status">
+      Загружаем систему бронирования…
+    </p>
+
+    {% comment %}
+      id нужен самому Контуру: контейнер передаётся ему по имени
+      в appearance.container.
+    {% endcomment %}
+    <div class="kontur-host" id="BookingFormWidget" data-booking-host hidden></div>
+
+    {% comment %} ---- Резервный блок, п. 5.6.2 ---- {% endcomment %}
+    <div class="booking-fallback" data-booking-fallback hidden>
+      <p class="booking-fallback__note" role="status">
+        Онлайн-бронирование сейчас недоступно. Оставьте заявку — подберём
+        свободный домик на ваши даты и ответим лично.
+      </p>
+
+      <div data-fallback-form>
+        {% include "forms/request_form.html" with form=fallback_booking_form form_type="fallback" submit_label="Отправить заявку" %}
+      </div>
+
+      <p class="booking-fallback__contacts">
+        {% if s.telegram_url %}
+          <a class="btn btn--outline" href="{{ s.telegram_url }}" rel="noopener" target="_blank">Написать в Telegram</a>
+        {% endif %}
+        {% if s.whatsapp_url %}
+          <a class="btn btn--outline" href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">Написать в WhatsApp</a>
+        {% endif %}
+        {% if s.phone %}
+          <a class="btn btn--outline" href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a>
+        {% endif %}
+      </p>
+    </div>
+
+  </div>
+</dialog>
+
+{% comment %}
+  Настройки для скрипта. hotelId не секрет — он и так уходит в браузер
+  каждому посетителю, — но хранится в настройках сайта, чтобы включить
+  бронирование можно было правкой в админке, без пересборки контейнера.
+
+  json_script экранирует значения сам: вставлять их в инлайновый JS руками
+  нельзя, иначе кавычка в тексте настроек ломает страницу.
+{% endcomment %}
+{{ booking_config|json_script:"booking-config" }}
+{% endwith %}

@@ -24,6 +24,25 @@
     return;
   }
 
+  // Короткая страница (контакты, правовые, 404) прокручивается меньше чем
+  // на экран — «после прокрутки первого экрана» на ней не наступает никогда,
+  // и точка входа №6 из таблицы п. 5.1 просто пропала бы. Показываем сразу:
+  // прокрутке кнопка не мешает, а запас снизу у подвала уже заложен в стилях.
+  // Считаем не «мало ли прокрутки», а может ли первый экран вообще уйти из
+  // вида: если он выше, чем экран плюс вся доступная прокрутка, наблюдатель
+  // не сработает никогда и кнопка не появится ни разу.
+  function heroCannotLeaveView() {
+    var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    var heroBottom = hero.getBoundingClientRect().bottom + window.scrollY;
+    // 10% — тот же запас, что в rootMargin наблюдателя ниже: именно
+    // столько первому экрану нужно недокрутить, чтобы считаться ушедшим.
+    return heroBottom > maxScroll + window.innerHeight * 0.1;
+  }
+  if (heroCannotLeaveView()) {
+    cta.setAttribute("data-visible", "true");
+    return;
+  }
+
   new IntersectionObserver(
     function (entries) {
       // Кнопка появляется, когда первый экран ушёл из вида
@@ -109,5 +128,37 @@
   // части галереи и фокус тогда просто потеряется.
   dialog.addEventListener("close", function () {
     if (opener) opener.focus();
+  });
+})();
+
+/* Отложенная загрузка карты.
+
+   Карта Яндекса подставляется только по нажатию: iframe тянет чужие
+   скрипты, портит замер скорости (п. 1.2 ТЗ) и отдаёт IP посетителя
+   стороннему сервису ещё до того, как тот согласился (раздел 11 ТЗ).
+   До нажатия на месте карты лежит обычная картинка-превью.
+*/
+(function () {
+  "use strict";
+
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-map-load]");
+    if (!button) return;
+
+    var box = button.closest("[data-map]");
+    if (!box) return;
+
+    var src = box.getAttribute("data-map-src");
+    if (!src) return;
+
+    var frame = document.createElement("iframe");
+    frame.src = src;
+    frame.loading = "lazy";
+    frame.title = "Карта проезда";
+    frame.setAttribute("allowfullscreen", "");
+    frame.className = "map__frame";
+
+    box.innerHTML = "";
+    box.appendChild(frame);
   });
 })();

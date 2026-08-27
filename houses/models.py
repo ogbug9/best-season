@@ -178,6 +178,16 @@ class HousePage(Page):
             .order_by("sort_order_index", "title")[:3]
         )
 
+    def get_context(self, request):
+        from core.models import _consent_page
+        from forms.forms import HouseQuestionForm
+
+        context = super().get_context(request)
+        # Дом подставляется сразу, чтобы владелец видел, о чём вопрос (п. 7 ТЗ)
+        context["question_form"] = HouseQuestionForm(initial={"house": self.pk})
+        context["consent_page"] = _consent_page()
+        return context
+
     @property
     def house_reviews(self):
         """2–3 отзыва о домике — п. 4.1.7 ТЗ."""
