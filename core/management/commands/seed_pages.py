@@ -31,8 +31,15 @@ TREE = [
     (
         "houses.HouseIndexPage",
         "razmeshchenie",
-        "Наши домики",
+        "Размещение",
         {"intro": "Четыре дома на берегу, каждый со своей баней или камином."},
+        [],
+    ),
+    (
+        "promotions.PromotionsPage",
+        "akcii",
+        "Акции",
+        {"intro": "Специальные предложения на ближайшие даты."},
         [],
     ),
     (
@@ -48,29 +55,43 @@ TREE = [
         },
         [
             (
-                "core.NearbyPage",
-                "interesnoe-ryadom",
-                "Интересное рядом",
-                {"intro": "Куда съездить и что посмотреть в округе."},
+                "core.ContentPage",
+                "razvlecheniya",
+                "Развлечения",
+                {"intro": "Чем занять себя на территории.", "body": rich(PLACEHOLDER)},
+                [],
+            ),
+            (
+                "core.ContentPage",
+                "chem-zanyatsya",
+                "Чем заняться",
+                {"intro": "Маршруты, прогулки и активности.", "body": rich(PLACEHOLDER)},
                 [],
             ),
             (
                 "services.ServicesPage",
                 "uslugi",
-                "Дополнительные услуги",
+                "Доп услуги",
                 {
                     "intro": "Баня, беседка, завтраки и другие услуги.",
                 },
                 [],
             ),
             (
-                "promotions.PromotionsPage",
-                "akcii",
-                "Акции",
-                {"intro": "Специальные предложения на ближайшие даты."},
+                "core.ContentPage",
+                "meropriyatiya",
+                "Мероприятия",
+                {"intro": "Праздники, съёмки, корпоративные заезды.", "body": rich(PLACEHOLDER)},
                 [],
             ),
         ],
+    ),
+    (
+        "core.NearbyPage",
+        "interesnoe-ryadom",
+        "Интересное рядом",
+        {"intro": "Куда съездить и что посмотреть в округе."},
+        [],
     ),
     (
         "core.DirectionsPage",
@@ -172,6 +193,30 @@ LEGAL = [
 ]
 
 
+# «Как добраться» в макете шапки нет, но по п. 4.2 ТЗ страница обязательна
+# и «не может быть сокращена в первой очереди». Поэтому страница есть, а из
+# верхнего меню убрана — ссылки на неё стоят в подвале, в компактном блоке
+# на страницах домов и в точке входа №8. Расхождение макета с ТЗ — вопрос
+# к заказчику, молча выкидывать страницу нельзя.
+NOT_IN_MENU = {"kak-dobratsya"}
+
+# Порядок пунктов в шапке — точно как в макете. Ключ None означает верхний
+# уровень, остальные ключи — слаги разделов с выпадающими списками.
+MENU_ORDER = {
+    None: ["razmeshchenie", "akcii", "territoriya", "interesnoe-ryadom", "o-nas"],
+    "territoriya": ["razvlecheniya", "chem-zanyatsya", "uslugi", "meropriyatiya"],
+    "o-nas": ["galereya", "otzyvy", "kontakty", "voprosy", "partneram"],
+}
+
+# Заголовки, под которыми страница могла быть заведена раньше. Переименовываем
+# только их: если заказчик назвал страницу по-своему, его вариант не трогаем.
+RENAME = {
+    "razmeshchenie": (["Наши домики", "Размещение и цены"], "Размещение"),
+    "uslugi": (["Дополнительные услуги"], "Доп услуги"),
+    "voprosy": (["Вопросы и ответы"], "FAQ"),
+}
+
+
 def walk(nodes):
     """Разворачивает дерево в плоский список — по нему проверяем дубли."""
     for node in nodes:
@@ -218,6 +263,7 @@ class Command(BaseCommand):
                 self.create_node(home, node)
             self.create_legal(home)
             self.hide_duplicates()
+            self.order_menu(home)
 
             if self.dry:
                 transaction.set_rollback(True)
@@ -270,6 +316,47 @@ class Command(BaseCommand):
             page.save_revision().publish()
             self.stdout.write("  главная: заполнены заголовок и подзаголовок")
 
+    def order_menu(self, home):
+        """Расставляет пункты меню в порядке макета.
+
+        Wagtail отдаёт детей в порядке дерева, поэтому порядок в шапке — это
+        порядок страниц в разделе. Переставляем только если он уже не такой:
+        каждый move меняет пути в дереве, дёргать его на каждом деплое зря
+        не стоит.
+        """
+        for parent_slug, order in MENU_ORDER.items():
+            parent = home if parent_slug is None else Page.objects.filter(slug=parent_slug).first()
+            if parent is None:
+                continue
+
+            children = list(parent.get_children())
+            current = [p.slug for p in children if p.slug in order]
+            if current == order:
+                continue
+
+            # Каждый move переписывает пути в дереве, поэтому объект нужно
+            # перечитывать прямо перед перемещением. На устаревших копиях
+            # Wagtail расставляет страницы не туда — проверено.
+            ids = {p.slug: p.pk for p in children}
+            previous_pk = None
+            for slug in order:
+                pk = ids.get(slug)
+                if pk is None:
+                    continue
+                if self.dry:
+                    previous_pk = pk
+                    continue
+                page = Page.objects.get(pk=pk)
+                if previous_pk is None:
+                    page.move(parent, pos="first-child")
+                else:
+                    page.move(Page.objects.get(pk=previous_pk), pos="right")
+                previous_pk = pk
+
+            self.stdout.write(
+                f"  порядок меню «{parent.title}»: {' → '.join(order)}"
+            )
+
     def hide_duplicates(self):
         """Убирает из меню лишние копии одиночных страниц.
 
@@ -311,9 +398,46 @@ class Command(BaseCommand):
 
     def create_node(self, parent, node):
         model_path, slug, title, fields, children = node
-        page = self.ensure(parent, get_model(model_path), slug, title, fields)
+        page = self.ensure(
+            parent, get_model(model_path), slug, title, fields,
+            in_menu=slug not in NOT_IN_MENU,
+        )
+        self.reconcile(page, parent, slug)
         for child in children:
             self.create_node(page, child)
+
+    def reconcile(self, page, parent, slug):
+        """Приводит уже существующую страницу к структуре из макета.
+
+        Только две вещи: родитель и заголовок из списка известных старых
+        названий. Тексты, адреса и всё остальное не трогаем — их мог
+        поправить заказчик.
+        """
+        page = page.specific
+        changed = False
+
+        old_titles, new_title = RENAME.get(slug, ([], None))
+        if new_title and page.title in old_titles:
+            page.title = new_title
+            changed = True
+
+        want_in_menu = slug not in NOT_IN_MENU
+        if page.show_in_menus != want_in_menu:
+            page.show_in_menus = want_in_menu
+            changed = True
+
+        if changed and not self.dry:
+            page.save()
+            if page.live:
+                page.save_revision().publish()
+            self.stdout.write(f"  обновлена: {page.title} (/{page.slug}/)")
+
+        # Перенос в правильный раздел: в макете «Акции» и «Интересное рядом»
+        # стоят на верхнем уровне, а не внутри «Территории», куда их положила
+        # первая версия этой команды.
+        if page.get_parent().pk != parent.pk and not self.dry:
+            page.move(parent, pos="last-child")
+            self.stdout.write(f"  перенесена: {page.title} → «{parent.title}»")
 
     def create_legal(self, home):
         model = get_model("core.ContentPage")
