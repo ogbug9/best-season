@@ -49,6 +49,9 @@ run("manage.py", "setup_roles")
 # есть, не трогается — ни текст, ни порядок, ни настройки. Консоли у Amvera
 # нет, поэтому разовые команды вызываются отсюда.
 run("manage.py", "seed_pages")
+# Наполняет справочники текстами из макета. Тоже идемпотентно: то, что
+# уже заведено, не трогается.
+run("manage.py", "seed_content")
 run("manage.py", "collectstatic", "--noinput")
 
 print("[start] запускаю gunicorn", flush=True)

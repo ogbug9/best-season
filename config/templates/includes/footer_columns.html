@@ -1,0 +1,34 @@
+{% load wagtailcore_tags %}
+{% comment %}
+  Колонки подвала. Собираются из дерева страниц, но группировка своя:
+  в макете подвал устроен не так, как шапка — «Акции» стоят внутри
+  «Размещения», а «Интересное рядом» внутри «Территории». Поэтому список
+  разделов задаётся в контексте (core/context_processors.py), а не берётся
+  напрямую из меню. Страницы, которых ещё нет, просто не выводятся —
+  подвал не ломается.
+{% endcomment %}
+
+<nav class="footer__columns" aria-label="Разделы сайта">
+  {% for column in footer_columns %}
+    <div class="footer__column">
+      <p class="footer__column-title">{{ column.title }}</p>
+      {% if column.links %}
+        <ul>
+          {% for link in column.links %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% comment %} Правовые документы висят под первой колонкой — так в макете {% endcomment %}
+      {% if column.legal %}
+        <p class="footer__column-title footer__column-title--second">Правовые документы</p>
+        <ul class="footer__legal-links">
+          {% for link in column.legal %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  {% endfor %}
+</nav>

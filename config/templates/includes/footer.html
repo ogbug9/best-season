@@ -2,67 +2,96 @@
 {% wagtail_site as current_site %}
 {% with s=settings.core.SiteSettings %}
 
+{% comment %}
+  Подвал по макету. Своей заливки у него нет — фон наследуется от страницы,
+  то есть кремовый. Заголовки колонок оливковые, ссылки тёмно-серые.
+
+  Состав колонок задаётся в core/context_processors.py: в подвале
+  группировка не такая, как в шапке, из дерева страниц её не вывести.
+{% endcomment %}
+
 <footer class="footer">
   <div class="container">
     <div class="footer__top">
 
       <div class="footer__brand">
-        <span class="footer__mark" aria-hidden="true">
-          <svg viewBox="0 0 40 40" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.6">
-            <circle cx="20" cy="20" r="18.4"/>
-            <path d="M12 24V17l8-6 8 6v7"/>
-            <path d="M20 24v-5"/>
-            <path d="M10 29c3-2 5-2 8 0s5 2 8 0 5-2 8 0" stroke-width="1.3"/>
+        <a class="footer__logo" href="/" aria-label="{{ current_site.site_name|default:"Лучший сезон" }} — на главную">
+          <span class="footer__mark" aria-hidden="true">
+            <svg viewBox="0 0 180 180" fill="none" aria-hidden="true" focusable="false">
+            <path d="M0.00074425 89.9707C-0.0384341 44.6647 33.8606 6.25769 78.8129 0.690527C126.973 -5.27324 171.333 28.071 178.869 76.0357C181.72 94.1767 179.149 111.618 171.44 128.304C170.74 129.827 169.829 130.655 168.125 131.105C150.72 135.678 134.01 133.695 117.82 126.121C114.867 124.74 111.826 123.545 108.877 122.155C96.0905 116.122 83.4555 116.46 70.5952 122.262C62.6665 125.837 54.5174 129.098 46.192 131.57C34.4826 135.047 22.5969 133.872 10.907 130.792C10.0108 130.557 9.09502 129.465 8.65916 128.544C2.85587 116.347 -0.0825097 103.494 0.00074425 89.9707ZM31.8968 127.785C32.3327 127.854 32.6461 127.952 32.9546 127.947C40.1488 127.849 47.005 126.106 53.6408 123.486C54.2872 123.232 54.8651 121.9 54.87 121.063C54.9533 110.864 54.914 81.6861 54.8504 71.487C54.8406 70.0034 55.4976 69.1074 56.8093 69.1074L88.4605 69.0976L122.678 69.1074C124.147 69.0976 124.896 69.7977 124.882 71.487C124.808 81.5245 125.083 110.795 124.999 120.828C124.985 122.576 125.504 123.374 127.169 123.991C139.309 128.5 151.66 129.088 164.256 126.341C165.96 125.969 166.856 125.122 167.522 123.54C174.619 106.618 176.372 89.1775 172.288 71.2911C158.551 11.11 86.9865 -14.4392 38.1311 23.3313C7.73357 46.8338 -2.92784 88.6096 12.5378 123.746C12.9002 124.568 13.5467 125.709 14.247 125.866C18.0962 126.733 22.0043 127.34 26.0348 128.06V98.7205C22.8662 102.452 19.9866 105.835 16.9944 109.355C15.535 108.112 14.247 107.02 12.817 105.801C16.9111 100.939 20.824 96.1451 24.9182 91.518C26.4118 89.8288 26.3531 88.1738 25.9613 85.9361C23.6694 88.6194 21.6272 91.0137 19.4675 93.55C17.9934 92.3112 16.7005 91.2291 15.2656 90.0246C18.4244 86.2789 21.3529 82.5675 24.5558 79.1008C26.26 77.2549 26.4363 75.3502 26.0054 72.8188C24.7517 74.1898 23.6792 75.3649 22.5332 76.6184C21.1473 75.4384 19.8593 74.3465 18.3999 73.1028C21.9896 68.8528 25.4275 64.7888 29.0221 60.5338C32.6804 64.872 36.1134 68.9507 39.6394 73.1322C38.1213 74.4101 36.8382 75.4873 35.462 76.6429C34.272 75.2866 33.3023 74.2143 32.0731 72.8188C31.5344 75.5167 31.8332 77.299 33.5178 79.1302C36.706 82.5919 39.6247 86.2985 42.759 90.0197C41.2898 91.2536 40.0067 92.3357 38.5669 93.5451C36.3729 90.9696 34.3063 88.541 32.0731 85.9166C31.3826 88.4823 31.9311 90.1862 33.4297 91.8803C37.4112 96.3899 41.2164 101.051 45.2077 105.796C43.763 107.035 42.4799 108.136 41.0352 109.37C38.0331 105.825 35.129 102.398 31.9017 98.5932V127.785H31.8968ZM119.025 121.068L119.495 121.307C119.529 112.332 119.593 85.6032 119.495 76.6282C119.495 75.1593 119.005 74.4248 117.536 74.4248H88.4605H62.1963C60.972 74.4199 60.2178 75.1593 60.2374 76.6282C60.3158 82.9102 60.4627 106.207 60.4627 112.489C60.4627 115.133 60.4627 117.782 60.4627 121.307C80.1841 109.292 99.6117 109.287 119.025 121.068Z" fill="currentColor"/>
+            <path d="M129.681 170.898C103.079 182.987 76.9959 183.031 50.6338 171.084C50.9325 170.697 51.0207 170.462 51.1823 170.393C58.2442 167.431 65.3012 164.454 72.3827 161.536C84.1264 156.703 95.8897 156.713 107.614 161.575C114.823 164.562 121.992 167.642 129.681 170.893V170.898ZM65.6881 170.756C80.7717 176 102.281 175.349 114.098 170.643C98.0886 161.237 81.9226 161.154 65.6881 170.756Z" fill="currentColor"/>
+            <path d="M156.126 151.293C154.486 152.835 152.914 154.47 151.16 155.876C150.558 156.36 149.505 156.439 148.658 156.449C139.03 156.556 129.95 154.093 121.145 150.436C116.106 148.345 111.12 146.117 106.096 143.982C95.2383 139.375 84.4153 139.527 73.5433 144.056C65.5019 147.41 57.5144 150.974 49.2429 153.638C43.9685 155.337 38.2191 155.543 32.6852 156.463C30.1728 156.879 26.7105 154.064 26.7105 154.064L23.5713 151.435C23.5713 151.435 23.9043 150.945 24.0708 150.7C25.1482 150.759 26.2256 150.808 27.303 150.876C38.1456 151.562 48.3222 148.947 58.1756 144.692C63.2639 142.499 68.3228 140.232 73.4747 138.205C84.6846 133.793 95.9239 133.964 107.09 138.435C110.493 139.796 113.887 141.191 117.212 142.729C129.436 148.384 142.003 152.316 155.759 150.573C155.877 150.813 155.999 151.048 156.117 151.288L156.126 151.293Z" fill="currentColor"/>
+            <path d="M70.0316 121.919V86.1759C70.0316 85.0943 70.9086 84.2174 71.9905 84.2174H107.741C108.823 84.2174 109.7 85.0943 109.7 86.1759V121.919H112.883H114.597V81.7692C114.597 80.6875 113.72 79.8107 112.638 79.8107H67.5829C66.5011 79.8107 65.624 80.6875 65.624 81.7692V121.919C65.624 121.919 66.5011 121.919 67.5829 121.919H70.0316Z" fill="currentColor"/>
           </svg>
-        </span>
-        <span class="footer__name">{{ current_site.site_name|default:"Лучший сезон" }}</span>
+          </span>
+          <span class="footer__name">{{ current_site.site_name|default:"Лучший сезон" }}</span>
+        </a>
 
-        {% if s.phone %}<p><a href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a></p>{% endif %}
-        {% if s.email %}<p><a href="mailto:{{ s.email }}">{{ s.email }}</a></p>{% endif %}
+        <div class="footer__contacts">
+          {% if s.phone %}<p><a class="footer__phone" href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a></p>{% endif %}
+          {% if s.email %}<p><a href="mailto:{{ s.email }}">{{ s.email }}</a></p>{% endif %}
+          {% if s.work_hours %}<p class="footer__hours">{{ s.work_hours }}</p>{% endif %}
+        </div>
 
-        <p class="footer__social">
-          {% if s.telegram_url %}<a href="{{ s.telegram_url }}" rel="noopener" target="_blank">Telegram</a>{% endif %}
-          {% if s.whatsapp_url %}<a href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">WhatsApp</a>{% endif %}
-          {% if s.vk_url %}<a href="{{ s.vk_url }}" rel="noopener" target="_blank">ВКонтакте</a>{% endif %}
-        </p>
+        {% comment %}
+          Иконки соцсетей. У каждой ссылки есть текстовая подпись для
+          скринридера: без неё это кружок без содержимого (п. 10.13 ТЗ).
+        {% endcomment %}
+        <ul class="socials">
+          {% if s.telegram_url %}
+            <li><a class="socials__item" href="{{ s.telegram_url }}" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 3.3 11.5c-1.1.4-1.1 1.1-.2 1.4l4.7 1.5 1.8 5.5c.2.6.4.8.8.8.4 0 .6-.2.9-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.2-.5-1.8-1.2-1.3z"/></svg>
+              <span class="visually-hidden">Telegram</span></a></li>
+          {% endif %}
+          {% if s.vk_url %}
+            <li><a class="socials__item" href="{{ s.vk_url }}" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.8 16.9c-5 0-8.2-3.5-8.3-9.3h2.6c.1 4.3 2.1 6.1 3.5 6.5V7.6h2.4v3.8c1.4-.2 2.9-1.8 3.4-3.8h2.4c-.4 2.4-2 4-3.1 4.7 1.1.5 3 2 3.7 4.6h-2.6c-.6-1.8-1.9-3.2-3.8-3.4v3.4h-.2z"/></svg>
+              <span class="visually-hidden">ВКонтакте</span></a></li>
+          {% endif %}
+          {% if s.tiktok_url %}
+            <li><a class="socials__item" href="{{ s.tiktok_url }}" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.2 3h-2.6v11.4a2.3 2.3 0 1 1-2.3-2.3c.2 0 .4 0 .6.1V9.5a5 5 0 1 0 4.3 4.9V8.9c.9.7 2 1.1 3.2 1.2V7.4c-1.7-.1-3-1.4-3.2-3.1V3z"/></svg>
+              <span class="visually-hidden">TikTok</span></a></li>
+          {% endif %}
+          {% if s.whatsapp_url %}
+            <li><a class="socials__item" href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-3-.2-.3A8 8 0 1 1 12 20zm4.4-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.2.1-.3 0-.5l-.7-1.6c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.8 1.6.6 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3z"/></svg>
+              <span class="visually-hidden">WhatsApp</span></a></li>
+          {% endif %}
+          {% if s.instagram_url %}
+            <li><a class="socials__item" href="{{ s.instagram_url }}" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17" cy="7" r="1.1" fill="currentColor" stroke="none"/></svg>
+              <span class="visually-hidden">Instagram</span></a><span class="socials__note" aria-hidden="true">*</span></li>
+          {% endif %}
+        </ul>
 
         <p>
-          <button type="button" class="btn btn--primary btn--pill" data-booking-open data-entry-point="1">
+          <button type="button" class="btn btn--primary" data-booking-open data-entry-point="1">
             Забронировать даты
           </button>
         </p>
       </div>
 
-      {% comment %}
-        Колонки подвала собираются из дерева страниц: разделы верхнего уровня
-        и их подстраницы. Так подвал не расходится с меню при добавлении
-        новой страницы — редактору не нужно править его отдельно (п. 8 ТЗ).
-      {% endcomment %}
-      <nav class="footer__columns" aria-label="Разделы сайта">
-        {% for item in current_site.root_page.get_children.live.in_menu %}
-          <div class="footer__column">
-            <p class="footer__column-title"><a href="{% pageurl item %}">{{ item.title }}</a></p>
-            {% with children=item.get_children.live.in_menu %}
-              {% if children %}
-                <ul>
-                  {% for child in children %}
-                    <li><a href="{% pageurl child %}">{{ child.title }}</a></li>
-                  {% endfor %}
-                </ul>
-              {% endif %}
-            {% endwith %}
-          </div>
-        {% endfor %}
-      </nav>
+      {% include "includes/footer_columns.html" %}
     </div>
 
     <div class="footer__legal">
       <div class="footer__requisites">
-        {% if s.legal_name %}{{ s.legal_name }}{% endif %}
-        {% if s.inn %} · ИНН {{ s.inn }}{% endif %}
-        {% if s.ogrnip %} · ОГРНИП {{ s.ogrnip }}{% endif %}
-        {% if s.legal_address %}<br>{{ s.legal_address }}{% endif %}
+        {% if s.legal_name %}<span>{{ s.legal_name }}</span>{% endif %}
+        {% if s.ogrnip %}<span>ОГРНИП: {{ s.ogrnip }}</span>{% endif %}
+        {% if s.inn %}<span>ИНН: {{ s.inn }}</span>{% endif %}
+      </div>
 
+      <div class="footer__center">
+        <p>© {{ current_site.site_name|default:"Лучший Сезон" }} {% now "Y" %}. Все права защищены.</p>
+        {% comment %}
+          Сноска обязательна, если на сайте есть ссылка на Instagram:
+          Meta признана в РФ экстремистской организацией, упоминание её
+          сервисов без этой пометки — нарушение.
+        {% endcomment %}
+        {% if s.instagram_url %}
+          <p class="footer__meta-note">* Meta запрещена на территории РФ</p>
+        {% endif %}
         {% comment %}
           Указание автора обязательно по лицензии CC BY 4.0, под которой
           распространяется шрифт Etude Noire. Убирать нельзя — без него

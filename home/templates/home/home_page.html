@@ -100,14 +100,23 @@
 {% if page.about_text or page.about_title %}
 <section class="section">
   <div class="container split">
-    {% if page.about_image %}
-      <div class="split__media">{% picture page.about_image preset="gallery" alt=page.about_title %}</div>
-    {% endif %}
+    {% comment %}
+      Место под фото занимаем всегда: без него блок схлопывался в одну
+      колонку и переставал совпадать с макетом. Оригиналы фотографий —
+      на стороне заказчика (п. 9.1 ТЗ).
+    {% endcomment %}
+    <div class="split__media">
+      {% if page.about_image %}
+        {% picture page.about_image preset="gallery" alt=page.about_title %}
+      {% else %}
+        <span class="ph ph--tall" aria-hidden="true"></span>
+      {% endif %}
+    </div>
     <div class="split__text">
-      {% if page.about_title %}<h2>{{ page.about_title }}</h2>{% endif %}
+      {% if page.about_title %}<h2 class="section__title">{{ page.about_title }}</h2>{% endif %}
       {{ page.about_text|richtext }}
       <p class="split__actions">
-        <button type="button" class="btn btn--primary" data-booking-open data-entry-point="2">Забронировать</button>
+        <button type="button" class="btn btn--primary" data-booking-open data-entry-point="2">Забронировать даты</button>
         {% if page.about_page %}
           <a class="btn btn--outline" href="{% pageurl page.about_page %}">Подробнее</a>
         {% endif %}
@@ -122,12 +131,17 @@
 <section class="section">
   <div class="container quote">
     <blockquote class="quote__text">
+      <span class="quote__mark" aria-hidden="true">&laquo;</span>
       <p>{{ page.quote_text|linebreaksbr }}</p>
       {% if page.quote_author %}<cite>{{ page.quote_author }}</cite>{% endif %}
     </blockquote>
-    {% if page.quote_image %}
-      <div class="quote__media">{% picture page.quote_image preset="card" alt=page.quote_author %}</div>
-    {% endif %}
+    <div class="quote__media">
+      {% if page.quote_image %}
+        {% picture page.quote_image preset="card" alt=page.quote_author %}
+      {% else %}
+        <span class="ph" aria-hidden="true"></span>
+      {% endif %}
+    </div>
   </div>
 </section>
 {% endif %}
@@ -143,11 +157,15 @@
 {% if houses %}
 <section class="section" id="houses">
   <div class="container">
-    <h2 class="section__title">Наши домики</h2>
+    <h2 class="section__title section__title--center">Наши домики</h2>
     <ul class="cards cards--houses">
       {% for house in houses %}
         <li class="card card--house">
-          {% picture house.hero_image preset="card" alt=house.title %}
+          {% if house.hero_image %}
+            {% picture house.hero_image preset="card" alt=house.title %}
+          {% else %}
+            <span class="ph" aria-hidden="true"></span>
+          {% endif %}
           {% if house.price_from %}<p class="card__badge">от {{ house.price_from }} ₽</p>{% endif %}
           <h3 class="card__title"><a class="card__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
           <p class="card__meta">до {{ house.capacity }} чел.{% if house.area %} · {{ house.area }} м²{% endif %}</p>
@@ -177,7 +195,11 @@
     <ul class="mosaic">
       {% for item in territory %}
         <li class="mosaic__item{% if item.is_large %} mosaic__item--large{% endif %}">
-          {% picture item.image preset="card" alt=item.title %}
+          {% if item.image %}
+            {% picture item.image preset="card" alt=item.title %}
+          {% else %}
+            <span class="ph" aria-hidden="true"></span>
+          {% endif %}
           <div class="mosaic__caption">
             <h3>{{ item.title }}</h3>
             {% if item.description %}<p>{{ item.description }}</p>{% endif %}
@@ -201,18 +223,31 @@
 {% if nearby %}
 <section class="section">
   <div class="container">
-    <h2 class="section__title">Интересное рядом</h2>
+    <h2 class="section__title section__title--center">Интересное рядом</h2>
     <ul class="cards cards--nearby">
       {% for place in nearby %}
         <li class="card card--nearby">
-          {% picture place.image preset="card" alt=place.title %}
+          {% if place.image %}
+            {% picture place.image preset="card" alt=place.title %}
+          {% else %}
+            <span class="ph" aria-hidden="true"></span>
+          {% endif %}
           <div class="card__body">
             <p class="card__number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</p>
             <h3 class="card__title">{{ place.title }}</h3>
             {% if place.description %}<p>{{ place.description }}</p>{% endif %}
-            {% if place.link_url %}
-              <p><a class="btn btn--outline" href="{{ place.link_url }}" rel="noopener" target="_blank">Подробнее</a></p>
-            {% endif %}
+            {% comment %}
+              Кнопка «Подробнее» есть у каждой карточки в макете. Если у
+              места не задана внешняя ссылка, ведём на страницу
+              «Интересное рядом» — карточка без кнопки ломала бы ряд.
+            {% endcomment %}
+            <p class="card__actions">
+              {% if place.link_url %}
+                <a class="btn btn--outline" href="{{ place.link_url }}" rel="noopener" target="_blank">Подробнее</a>
+              {% elif page.nearby_more_page %}
+                <a class="btn btn--outline" href="{% pageurl page.nearby_more_page %}">Подробнее</a>
+              {% endif %}
+            </p>
           </div>
         </li>
       {% endfor %}
@@ -268,8 +303,12 @@
 </section>
 {% endif %}
 
-{% comment %} 10. Фотогалерея — мозаика {% endcomment %}
-{% if page.gallery_images.all %}
+{% comment %}
+  10. Фотогалерея. Блок показывается и без загруженных фото — на их месте
+  стоят заглушки. Иначе секция из макета просто исчезала бы со страницы,
+  пока заказчик не пришлёт оригиналы (п. 9.1 ТЗ).
+{% endcomment %}
+{% if page.gallery_title %}
 <section class="section">
   <div class="container">
     <h2 class="section__title">{{ page.gallery_title }}</h2>
@@ -279,6 +318,12 @@
         <li class="mosaic__item{% if item.is_large %} mosaic__item--large{% endif %}">
           {% picture item.image preset="card" alt=item.alt %}
         </li>
+      {% empty %}
+        {% for i in "123456" %}
+          <li class="mosaic__item{% if forloop.first %} mosaic__item--large{% endif %}">
+            <span class="ph" aria-hidden="true"></span>
+          </li>
+        {% endfor %}
       {% endfor %}
     </ul>
     {% if page.gallery_page %}

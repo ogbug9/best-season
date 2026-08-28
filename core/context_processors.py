@@ -17,6 +17,93 @@ from forms.forms import FallbackBookingForm
 logger = logging.getLogger(__name__)
 
 
+# Состав колонок подвала по макету. Группировка отличается от шапки:
+# «Акции» стоят внутри «Размещения», «Интересное рядом» — внутри
+# «Территории». Из дерева страниц это не выводится, поэтому список
+# задан явно. Ключ — слаг страницы, значение — подпись в подвале
+# (в макете некоторые пункты названы иначе, чем сами страницы).
+FOOTER_COLUMNS = [
+    {
+        "title": "Размещение",
+        "slugs": [
+            ("razmeshchenie", "Дома"),
+            ("akcii", "Акции"),
+            ("pravila-bronirovaniya", "Правила бронирования"),
+            ("vyezdy-kompaniy", "Выезды компаний"),
+            ("kak-dobratsya", "Как добраться"),
+        ],
+        "legal_slugs": [
+            ("rassylka", "Рассылка"),
+            ("oferta", "Оферта"),
+            ("politika-konfidencialnosti", "Политика конфиденциальности"),
+            ("soglasie-na-obrabotku", "Персональные данные"),
+        ],
+    },
+    {
+        "title": "Территория",
+        "slugs": [
+            ("razvlecheniya", "Развлечения"),
+            ("chem-zanyatsya", "Чем заняться"),
+            ("uslugi", "Доп услуги"),
+            ("meropriyatiya", "Мероприятия"),
+            ("interesnoe-ryadom", "Интересное рядом"),
+        ],
+    },
+    {
+        "title": "О нас",
+        "slugs": [
+            ("galereya", "Галерея"),
+            ("otzyvy", "Отзывы"),
+            ("kontakty", "Контакты"),
+            ("voprosy", "FAQ"),
+            ("partneram", "Партнёрам"),
+        ],
+    },
+]
+
+
+def _links(pairs, pages):
+    out = []
+    for slug, label in pairs:
+        page = pages.get(slug)
+        if page is not None:
+            out.append({"title": label, "url": page.url})
+    return out
+
+
+def footer(request):
+    """Колонки подвала.
+
+    Страницы ищем одним запросом по слагам: подвал есть на каждой странице
+    сайта, и десяток отдельных запросов на каждый показ — лишняя нагрузка.
+    Ненайденные слаги просто пропускаются, поэтому подвал не разваливается,
+    пока часть страниц ещё не заведена.
+    """
+    from wagtail.models import Page
+
+    wanted = set()
+    for column in FOOTER_COLUMNS:
+        wanted.update(slug for slug, _ in column["slugs"])
+        wanted.update(slug for slug, _ in column.get("legal_slugs", []))
+
+    try:
+        pages = {p.slug: p for p in Page.objects.live().filter(slug__in=wanted)}
+    except Exception:
+        logger.exception("Не удалось собрать колонки подвала")
+        pages = {}
+
+    columns = []
+    for column in FOOTER_COLUMNS:
+        columns.append(
+            {
+                "title": column["title"],
+                "links": _links(column["slugs"], pages),
+                "legal": _links(column.get("legal_slugs", []), pages),
+            }
+        )
+    return {"footer_columns": columns}
+
+
 def booking(request):
     # Ошибки формы после неудачной отправки показываются на самой странице
     # (вьюха возвращает гостя с ?form=error), поэтому здесь всегда пустая.

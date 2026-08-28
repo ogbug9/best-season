@@ -98,9 +98,18 @@ class SiteSettings(BaseSiteSetting):
     )
     email = models.EmailField("Email", blank=True)
 
+    work_hours = models.CharField(
+        "Часы работы", max_length=64, blank=True, help_text="Например: 10:00 — 22:00"
+    )
+
     telegram_url = models.URLField("Telegram", blank=True)
     whatsapp_url = models.URLField("WhatsApp", blank=True)
     vk_url = models.URLField("ВКонтакте", blank=True)
+    tiktok_url = models.URLField("TikTok", blank=True)
+    # Instagram принадлежит Meta, признанной в РФ экстремистской организацией.
+    # Рядом со ссылкой обязана стоять сноска — она в подвале выводится
+    # автоматически, как только заполнено это поле.
+    instagram_url = models.URLField("Instagram", blank=True)
 
     address = models.CharField("Адрес", max_length=255, blank=True)
     yandex_map_url = models.URLField("Ссылка на Яндекс.Карты", blank=True)
@@ -186,6 +195,7 @@ class SiteSettings(BaseSiteSetting):
                 FieldPanel("phone"),
                 FieldPanel("phone_display"),
                 FieldPanel("email"),
+                FieldPanel("work_hours"),
             ],
             heading="Контакты",
         ),
@@ -194,6 +204,8 @@ class SiteSettings(BaseSiteSetting):
                 FieldPanel("telegram_url"),
                 FieldPanel("whatsapp_url"),
                 FieldPanel("vk_url"),
+                FieldPanel("tiktok_url"),
+                FieldPanel("instagram_url"),
             ],
             heading="Мессенджеры и соцсети",
         ),
