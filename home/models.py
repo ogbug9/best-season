@@ -76,6 +76,15 @@ class HomePage(Page):
         "Текст блока-цитаты", blank=True,
         help_text="Крупная выдержка между блоками «О нас» и «Наши домики».",
     )
+    @property
+    def quote_paragraphs(self):
+        """Абзацы цитаты для «лесенки» из макета.
+
+        Редактор разделяет их пустой строкой — разбивка остаётся его
+        решением, а вёрстка от неё не зависит (п. 8 ТЗ).
+        """
+        return [p.strip() for p in (self.quote_text or "").split("\n\n") if p.strip()]
+
     quote_author = models.CharField("Подпись под цитатой", max_length=120, blank=True)
     quote_image = models.ForeignKey(
         "wagtailimages.Image", verbose_name="Фото к цитате",

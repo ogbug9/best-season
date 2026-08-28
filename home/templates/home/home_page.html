@@ -84,35 +84,30 @@
       <span class="searchbar__cta btn btn--primary">Забронировать даты</span>
     </button>
 
-    {% if page.hero_cta_page or houses_index %}
-      <p class="hero__actions">
-        {% if page.hero_cta_page %}
-          <a class="btn btn--outline btn--on-media" href="{% pageurl page.hero_cta_page %}">{{ page.hero_cta_text }}</a>
-        {% else %}
-          <a class="btn btn--outline btn--on-media" href="{% pageurl houses_index %}">{{ page.hero_cta_text }}</a>
-        {% endif %}
-      </p>
-    {% endif %}
+    {% comment %}
+      Второй кнопки на первом экране в макете нет — там только полоса
+      поиска. Ссылка на каталог домов остаётся в меню и в блоке «О нас».
+    {% endcomment %}
   </div>
 </section>
 
 {% comment %} 2. О ферме — фото слева, текст справа {% endcomment %}
 {% if page.about_text or page.about_title %}
-<section class="section">
-  <div class="container split">
-    {% comment %}
-      Место под фото занимаем всегда: без него блок схлопывался в одну
-      колонку и переставал совпадать с макетом. Оригиналы фотографий —
-      на стороне заказчика (п. 9.1 ТЗ).
-    {% endcomment %}
-    <div class="split__media">
-      {% if page.about_image %}
-        {% picture page.about_image preset="gallery" alt=page.about_title %}
-      {% else %}
-        <span class="ph ph--tall" aria-hidden="true"></span>
-      {% endif %}
-    </div>
-    <div class="split__text">
+{% comment %}
+  По макету фото уходит в левый край экрана, а текст лежит на кремовой
+  панели со скруглённым верхним левым углом. Поэтому здесь не контейнер,
+  а раскладка во всю ширину: контейнерные поля тут только у текста.
+{% endcomment %}
+<section class="about">
+  <div class="about__media">
+    {% if page.about_image %}
+      {% picture page.about_image preset="gallery" alt=page.about_title %}
+    {% else %}
+      <span class="ph" aria-hidden="true"></span>
+    {% endif %}
+  </div>
+  <div class="about__panel">
+    <div class="about__text">
       {% if page.about_title %}<h2 class="section__title">{{ page.about_title }}</h2>{% endif %}
       {{ page.about_text|richtext }}
       <p class="split__actions">
@@ -128,20 +123,29 @@
 
 {% comment %} 3. Блок-цитата {% endcomment %}
 {% if page.quote_text %}
-<section class="section">
-  <div class="container quote">
+{% comment %}
+  Цитата: в макете абзацы идут лесенкой с нарастающим отступом, кавычки
+  стоят до первого и после последнего, фото уходит в правый край экрана.
+  Каждый абзац отделяется пустой строкой в поле — так редактор управляет
+  разбивкой, не трогая вёрстку (п. 8 ТЗ).
+{% endcomment %}
+<section class="quote">
+  <div class="quote__body">
     <blockquote class="quote__text">
-      <span class="quote__mark" aria-hidden="true">&laquo;</span>
-      <p>{{ page.quote_text|linebreaksbr }}</p>
+      <span class="quote__mark quote__mark--open" aria-hidden="true">&bdquo;</span>
+      {% for para in page.quote_paragraphs %}
+        <p class="quote__para" style="--step: {{ forloop.counter0 }}">{{ para|linebreaksbr }}</p>
+      {% endfor %}
+      <span class="quote__mark quote__mark--close" aria-hidden="true">&ldquo;</span>
       {% if page.quote_author %}<cite>{{ page.quote_author }}</cite>{% endif %}
     </blockquote>
-    <div class="quote__media">
-      {% if page.quote_image %}
-        {% picture page.quote_image preset="card" alt=page.quote_author %}
-      {% else %}
-        <span class="ph" aria-hidden="true"></span>
-      {% endif %}
-    </div>
+  </div>
+  <div class="quote__media">
+    {% if page.quote_image %}
+      {% picture page.quote_image preset="card" alt=page.quote_author %}
+    {% else %}
+      <span class="ph" aria-hidden="true"></span>
+    {% endif %}
   </div>
 </section>
 {% endif %}
@@ -160,22 +164,37 @@
     <h2 class="section__title section__title--center">Наши домики</h2>
     <ul class="cards cards--houses">
       {% for house in houses %}
-        <li class="card card--house">
-          {% if house.hero_image %}
-            {% picture house.hero_image preset="card" alt=house.title %}
-          {% else %}
-            <span class="ph" aria-hidden="true"></span>
-          {% endif %}
-          {% if house.price_from %}<p class="card__badge">от {{ house.price_from }} ₽</p>{% endif %}
-          <h3 class="card__title"><a class="card__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
-          <p class="card__meta">до {{ house.capacity }} чел.{% if house.area %} · {{ house.area }} м²{% endif %}</p>
-          <div class="card__reveal">
-            {% if house.short_description %}<p>{{ house.short_description }}</p>{% endif %}
-            <p class="card__actions">
-              <a class="btn btn--outline" href="{% pageurl house %}">Подробнее</a>
-              <button type="button" class="btn btn--primary" data-booking-open data-entry-point="3">Забронировать</button>
-            </p>
+        <li class="house">
+          <div class="house__media">
+            {% if house.hero_image %}
+              {% picture house.hero_image preset="card" alt=house.title %}
+            {% else %}
+              <span class="ph" aria-hidden="true"></span>
+            {% endif %}
+
+            {% comment %} Лента с ценой в правом верхнем углу — как в макете {% endcomment %}
+            {% if house.price_from %}
+              <p class="house__price">
+                <span>от</span>
+                <b>{{ house.price_from }} ₽</b>
+                <span>за ночь</span>
+              </p>
+            {% endif %}
+
+            <div class="house__overlay">
+              <div class="house__info">
+                <h3 class="house__title"><a class="house__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
+                <p class="house__meta">
+                  {{ house.capacity }} спальных места{% if house.short_description %} + {{ house.short_description }}{% endif %}
+                </p>
+              </div>
+              <a class="btn house__more" href="{% pageurl house %}">Подробнее</a>
+            </div>
           </div>
+
+          <button type="button" class="btn house__book" data-booking-open data-entry-point="3">
+            Забронировать
+          </button>
         </li>
       {% endfor %}
     </ul>
@@ -226,26 +245,35 @@
     <h2 class="section__title section__title--center">Интересное рядом</h2>
     <ul class="cards cards--nearby">
       {% for place in nearby %}
-        <li class="card card--nearby">
-          {% if place.image %}
-            {% picture place.image preset="card" alt=place.title %}
-          {% else %}
-            <span class="ph" aria-hidden="true"></span>
-          {% endif %}
-          <div class="card__body">
-            <p class="card__number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</p>
-            <h3 class="card__title">{{ place.title }}</h3>
+        {% comment %}
+          Карточки чередуются: тёмная, оливковая, тёмная — так в макете.
+          Чередование считается по индексу, а не задаётся руками, иначе
+          при добавлении четвёртого места ряд сломался бы.
+        {% endcomment %}
+        <li class="place{% if forloop.counter0|divisibleby:2 %} place--dark{% else %} place--olive{% endif %}">
+          <div class="place__head">
+            <p class="place__number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</p>
+            <h3 class="place__title">{{ place.title }}</h3>
+          </div>
+          <div class="place__media">
+            {% if place.image %}
+              {% picture place.image preset="card" alt=place.title %}
+            {% else %}
+              <span class="ph" aria-hidden="true"></span>
+            {% endif %}
+          </div>
+          <div class="place__body">
             {% if place.description %}<p>{{ place.description }}</p>{% endif %}
             {% comment %}
               Кнопка «Подробнее» есть у каждой карточки в макете. Если у
               места не задана внешняя ссылка, ведём на страницу
               «Интересное рядом» — карточка без кнопки ломала бы ряд.
             {% endcomment %}
-            <p class="card__actions">
+            <p class="place__actions">
               {% if place.link_url %}
-                <a class="btn btn--outline" href="{{ place.link_url }}" rel="noopener" target="_blank">Подробнее</a>
+                <a class="btn place__more" href="{{ place.link_url }}" rel="noopener" target="_blank">Подробнее</a>
               {% elif page.nearby_more_page %}
-                <a class="btn btn--outline" href="{% pageurl page.nearby_more_page %}">Подробнее</a>
+                <a class="btn place__more" href="{% pageurl page.nearby_more_page %}">Подробнее</a>
               {% endif %}
             </p>
           </div>
@@ -253,7 +281,7 @@
       {% endfor %}
     </ul>
     {% if page.nearby_more_page %}
-      <p class="center"><a class="btn btn--outline" href="{% pageurl page.nearby_more_page %}">{{ page.nearby_more_label }}</a></p>
+      <p class="center"><a class="btn btn--ghost" href="{% pageurl page.nearby_more_page %}">{{ page.nearby_more_label }} <span aria-hidden="true">→</span></a></p>
     {% endif %}
   </div>
 </section>
@@ -370,11 +398,15 @@
 {% endcomment %}
 {% if faq %}
 <section class="section">
-  <div class="container container--narrow">
-    <h2 class="section__title">Ответы на вопросы</h2>
+  {% comment %}
+    Контейнер обычной ширины: в узком (760px) заголовок в 90px по макету
+    разбивался на две строки, а в макете он в одну.
+  {% endcomment %}
+  <div class="container">
+    <h2 class="section__title section__title--center">Ответы на вопросы</h2>
     <div class="faq">
       {% for item in faq %}
-        <details class="faq__item">
+        <details class="faq__item{% if forloop.counter0|divisibleby:2 %} faq__item--dark{% else %} faq__item--olive{% endif %}">
           <summary class="faq__question">{{ item.question }}</summary>
           <div class="faq__answer">{{ item.answer|richtext }}</div>
         </details>
