@@ -224,8 +224,10 @@ body {
   justify-content: center;
   gap: var(--s-2);
   min-height: var(--tap-min);
-  /* padding 14px 40px — самый частый вариант кнопки в макете */
+  /* padding 14px 40px и кегль 20px — из инспектора Figma,
+     узел Frame 2087326612 (Primary/Default). См. design/spec.json */
   padding: 14px 40px;
+  font-size: 1.25rem;
   border: 1px solid transparent;
   border-radius: var(--radius-pill);
   font-weight: 600;
@@ -393,10 +395,33 @@ body {
   /* По макету первый экран центрирован по вертикали и горизонтали,
      а не прижат к нижнему краю. */
   align-items: center;
-  min-height: min(88svh, 760px);
+  /* 877px — высота первого экрана, снятая замером с эталона макета
+     (design/reference, фрейм 1440). 60.9vw даёт ровно 877 при 1440.
+     Нижняя граница — чтобы на узких экранах экран не схлопывался. */
+  min-height: clamp(520px, 60.9vw, 877px);
   padding-block: var(--s-8) var(--s-7);
   color: var(--c-cream);
   text-align: center;
+}
+
+/* Затемнение под текстом первого экрана.
+   В макете заголовок оливковый, и это работает только потому, что за
+   ним тёмная фотография: оливковый на нашем фоне даёт 2.81 — ниже
+   порога 3.0 даже для крупного текста. Редактор может загрузить любой
+   снимок, в том числе светлый, поэтому читаемость нельзя оставлять
+   на волю картинки. Подложка не светлее #141414 даёт 4.5 с запасом. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse 70% 55% at 50% 52%,
+    rgba(12, 14, 10, 0.82) 0%,
+    rgba(12, 14, 10, 0.62) 45%,
+    rgba(12, 14, 10, 0.28) 75%,
+    transparent 100%
+  );
 }
 
 .hero__media {
@@ -469,8 +494,15 @@ body {
   .hero__slide:first-child { opacity: 1; }
 }
 
-.hero__inner { position: relative; }
-.hero__title { color: var(--c-cream); }
+.hero__inner {
+  position: relative;
+  /* В макете группа «заголовок + подзаголовок + полоса поиска» стоит
+     чуть ниже центра первого экрана — замер по эталону даёт +37px. */
+  transform: translateY(37px);
+}
+/* Цвет заголовка из макета — оливковый, не кремовый. Читаемость
+   обеспечена затемнением .hero::before, см. комментарий выше. */
+.hero__title { color: var(--c-olive); }
 .hero__subtitle {
   /* Центрируем сам блок, а не только текст: без auto по бокам
      ограничение ширины прижало бы подзаголовок влево. */
@@ -1912,9 +1944,9 @@ body[data-modal-open] {
   margin-block: var(--s-8);
 }
 @media (min-width: 900px) {
-  /* Доли из макета: фото занимает примерно 38% ширины экрана,
-     кремовая панель с текстом — остальное. */
-  .about { grid-template-columns: 38fr 62fr; }
+  /* Доли из макета, снятые замером: левый край кремовой панели стоит
+     на 563px из 1440, то есть фото занимает 39.1% ширины экрана. */
+  .about { grid-template-columns: 563fr 877fr; }
 }
 .about__media { position: relative; }
 .about__media picture, .about__media img, .about__media .ph {
@@ -2205,3 +2237,8 @@ body[data-modal-open] {
   padding: 0 var(--s-5) var(--s-5);
   color: var(--c-cream);
 }
+
+
+/* Иконки в пилюлях полосы поиска — как в макете */
+.searchbar__field { gap: var(--s-2); }
+.searchbar__field svg { flex: none; opacity: 0.9; }

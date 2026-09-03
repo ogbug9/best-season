@@ -1,0 +1,329 @@
+{
+  "_meta": {
+    "назначение": "Реестр измеренных значений макета. Единственный источник правды по типографике, цветам и размерам компонентов.",
+    "правило": "Каждое значение обязано иметь source. 'inspector' — снято со скриншота панели Figma, это факт высшей пробы. 'reference' — измерено программно с PNG-эталона макета (design/reference): тоже факт, но с точностью до пикселя растра. 'derived' — вычислено из фактов, например затемнение цвета до нужного контраста. 'requirement' — требование ТЗ, а не макета. 'assumed' — догадка, замер не делался, подлежит замене. Соответствием макету считаются inspector, reference и derived. Всё, помеченное assumed, соответствием НЕ является.",
+    "как_пополнять": "Присылается скриншот панели инспектора по узлу — значения переносятся сюда с source=inspector и указанием узла в поле node. Затем design/check_spec.py проверяет, что вёрстка им соответствует.",
+    "как_проверять": "python design/check_spec.py --url http://127.0.0.1:8000/",
+    "обновлено": "2026-08-28"
+  },
+  "tokens": {
+    "color.cream": {
+      "value": "#F7F0E6",
+      "source": "inspector",
+      "node": "COMPONENTS / Цвета",
+      "заметка": "основной фон"
+    },
+    "color.olive": {
+      "value": "#847F57",
+      "source": "inspector",
+      "node": "COMPONENTS / Цвета",
+      "заметка": "заголовки секций и акценты. Контраст на кремовом 3.6 — годится ТОЛЬКО для крупного текста (от 18.66px при весе 700). Для обычного текста нужен затемнённый вариант."
+    },
+    "color.olive-dark": {
+      "value": "#746F4C",
+      "source": "derived",
+      "заметка": "оливковый, затемнённый на 12% до контраста ровно 4.5 с кремовым. Используется как фон под текстом 15px в карточках. На глаз от макетного не отличается."
+    },
+    "color.terra": {
+      "value": "#9B5026",
+      "source": "inspector",
+      "node": "COMPONENTS / Кнопка Primary",
+      "заметка": "кнопки действия"
+    },
+    "color.dark": {
+      "value": "#494949",
+      "source": "inspector",
+      "node": "COMPONENTS / Цвета",
+      "заметка": "основной текст"
+    },
+    "color.deep": {
+      "value": "#3A3C15",
+      "source": "inspector",
+      "node": "COMPONENTS / Цвета",
+      "заметка": "тёмные секции и карточки"
+    },
+    "color.focus": {
+      "value": "#7FA8E8",
+      "source": "inspector",
+      "node": "COMPONENTS / состояние Focus",
+      "заметка": "ВНЕ брендовой палитры. Открытый вопрос к Анастасии: так задумано или случайность?"
+    },
+    "font.heading": {
+      "value": "Etude Noire",
+      "source": "inspector",
+      "заметка": "лицензия CC BY 4.0, указание автора в подвале обязательно"
+    },
+    "font.body": {
+      "value": "Montserrat",
+      "source": "inspector",
+      "заметка": "лицензия SIL OFL"
+    },
+    "font.accent": {
+      "value": "Berold",
+      "source": "inspector",
+      "заметка": "НЕ ПОДКЛЮЧЁН: лицензия запрещает коммерческое использование, штраф от 4000 USD. Решение за заказчиком (п. 4.6, п. 9.1 ТЗ)."
+    },
+    "type.base": {
+      "value": "18px/22px",
+      "source": "inspector",
+      "node": "выгрузка всех слоёв",
+      "заметка": "межстрочный 1.22"
+    },
+    "type.lead": {
+      "value": "20px",
+      "source": "derived",
+      "заметка": "посчитано по ширине колонки: 46 знаков на 572px"
+    },
+    "layout.container": {
+      "value": "1360px",
+      "source": "inspector",
+      "node": "выгрузка всех слоёв"
+    },
+    "layout.frame": {
+      "value": "1440px",
+      "source": "inspector",
+      "заметка": "ширина фрейма макета"
+    },
+    "radius.small": {
+      "value": "10px",
+      "source": "inspector"
+    },
+    "radius.large": {
+      "value": "20px",
+      "source": "inspector"
+    },
+    "radius.pill": {
+      "value": "100px",
+      "source": "inspector"
+    },
+    "tap.min": {
+      "value": "44px",
+      "source": "requirement",
+      "заметка": "п. 10.13 ТЗ, минимальный размер цели нажатия"
+    }
+  },
+  "components": {
+    "section-title": {
+      "описание": "Заголовок секции: «О нас», «Наши домики», «Наша территория», «Интересное рядом», «Фотогалерея», «Ответы на вопросы»",
+      "selector": ".section__title",
+      "viewport": 1440,
+      "props": {
+        "font-family": {
+          "value": "Etude Noire",
+          "source": "inspector",
+          "node": "О нас"
+        },
+        "font-weight": {
+          "value": "500",
+          "source": "inspector",
+          "node": "О нас"
+        },
+        "font-size": {
+          "value": "90px",
+          "source": "inspector",
+          "node": "О нас"
+        },
+        "line-height": {
+          "value": "90px",
+          "source": "inspector",
+          "node": "О нас",
+          "заметка": "в макете 100%"
+        },
+        "color": {
+          "value": "#847F57",
+          "source": "inspector",
+          "node": "О нас"
+        }
+      }
+    },
+    "about-text-column": {
+      "описание": "Текстовая колонка блока «О нас»",
+      "selector": ".about__text",
+      "viewport": 1440,
+      "props": {
+        "max-width": {
+          "value": "572px",
+          "source": "inspector",
+          "node": "О нас / текстовый блок"
+        }
+      }
+    },
+    "btn-primary": {
+      "описание": "Основная кнопка действия",
+      "selector": ".btn--primary",
+      "viewport": 1440,
+      "props": {
+        "background-color": {
+          "value": "#9B5026",
+          "source": "inspector",
+          "node": "Frame 2087326612 Primary/Default"
+        },
+        "color": {
+          "value": "#F7F0E6",
+          "source": "inspector",
+          "node": "Frame 2087326612 Primary/Default"
+        },
+        "border-radius": {
+          "value": "100px",
+          "source": "inspector",
+          "node": "Frame 2087326612 Primary/Default"
+        },
+        "font-size": {
+          "value": "20px",
+          "source": "inspector",
+          "node": "Frame 2087326612 Primary/Default"
+        },
+        "padding-top": {
+          "value": "14px",
+          "source": "assumed",
+          "заметка": "инспектор показал 40px/14px, но неясно, что из них вертикаль"
+        },
+        "padding-left": {
+          "value": "40px",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА: панель показала 40px и 14px, но какое из них горизонталь — по скриншоту не понять"
+        }
+      }
+    },
+    "house-card": {
+      "описание": "Карточка домика на главной",
+      "selector": ".house",
+      "viewport": 1440,
+      "props": {
+        "border-radius": {
+          "value": "20px",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА"
+        },
+        "background-color": {
+          "value": "#3A3C15",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА"
+        }
+      }
+    },
+    "house-price-ribbon": {
+      "описание": "Лента с ценой в углу карточки домика",
+      "selector": ".house__price",
+      "viewport": 1440,
+      "props": {
+        "background-color": {
+          "value": "#9B5026",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА"
+        },
+        "color": {
+          "value": "#F7F0E6",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА"
+        }
+      }
+    },
+    "faq-question": {
+      "описание": "Полоса вопроса в аккордеоне",
+      "selector": ".faq__question",
+      "viewport": 1440,
+      "props": {
+        "font-size": {
+          "value": "20px",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА"
+        },
+        "font-weight": {
+          "value": "700",
+          "source": "derived",
+          "заметка": "вес 700 обязателен: при 600 контраст кремового на оливковом требует 4.5, а даёт 3.6"
+        },
+        "color": {
+          "value": "#F7F0E6",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА"
+        }
+      }
+    },
+    "mosaic-tile": {
+      "описание": "Плитка мозаики «Наша территория»",
+      "selector": ".mosaic__item",
+      "viewport": 1440,
+      "props": {
+        "border-radius": {
+          "value": "20px",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА"
+        }
+      }
+    },
+    "place-card": {
+      "описание": "Карточка «Интересное рядом»",
+      "selector": ".place",
+      "viewport": 1440,
+      "props": {
+        "border-radius": {
+          "value": "20px",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА"
+        }
+      }
+    },
+    "footer-column-title": {
+      "описание": "Заголовок колонки подвала",
+      "selector": ".footer__column-title",
+      "viewport": 1440,
+      "props": {
+        "color": {
+          "value": "#847F57",
+          "source": "inspector",
+          "node": "подвал, экспорт"
+        },
+        "font-size": {
+          "value": "20px",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА"
+        },
+        "font-weight": {
+          "value": "700",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА: в экспорте подвала заголовок выглядит полужирным, но точный вес не измерен"
+        }
+      }
+    },
+    "hero": {
+      "описание": "Первый экран",
+      "selector": ".hero",
+      "viewport": 1440,
+      "props": {
+        "min-height": {
+          "value": "877px",
+          "source": "reference",
+          "node": "ekran-1-pervyy.png",
+          "заметка": "замер: граница фото и кремовой секции на y=669 в эталоне шириной 1098, пересчёт к фрейму 1440"
+        }
+      }
+    },
+    "hero-title": {
+      "описание": "Заголовок первого экрана",
+      "selector": ".hero__title",
+      "viewport": 1440,
+      "props": {
+        "color": {
+          "value": "#847F57",
+          "source": "reference",
+          "node": "ekran-1-pervyy.png",
+          "заметка": "медиана светлых пикселей в полосе заголовка дала #868349 — это оливковый палитры с учётом сглаживания. ВАЖНО: на нашем фоне даёт 2.81, ниже порога 3.0. Читаемость обеспечена затемнением .hero::before"
+        }
+      }
+    },
+    "about-panel": {
+      "описание": "Кремовая панель блока «О нас»",
+      "selector": ".about__panel",
+      "viewport": 1440,
+      "props": {
+        "border-top-left-radius": {
+          "value": "20px",
+          "source": "assumed",
+          "заметка": "ЖДЁТ ИНСПЕКТОРА: в макете угол скруглён заметно крупнее"
+        }
+      }
+    }
+  }
+}
