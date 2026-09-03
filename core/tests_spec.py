@@ -82,8 +82,8 @@ class RegistryIntegrityTests(SimpleTestCase):
             if meta["source"] in FACT_SOURCES
         )
         self.assertGreaterEqual(
-            confirmed, 14,
-            f"Подтверждённых значений стало {confirmed}, было 14. "
+            confirmed, 44,
+            f"Подтверждённых значений стало {confirmed}, было 44. "
             "Замеры не должны пропадать.",
         )
 
@@ -129,7 +129,18 @@ class CssMatchesRegistryTests(SimpleTestCase):
         self.assert_in_css("5.625rem", "заголовок секции 90px = 5.625rem")
 
     def test_container_width(self):
-        self.assert_in_css("1360px", "ширина контейнера")
+        """1240px — по инспектору, три независимые секции с Left 100px.
+        Значение 1360px, стоявшее здесь раньше, было снято с выгрузки
+        всех слоёв и оказалось шире макета на 120px."""
+        self.assert_in_css("1240px", "ширина контейнера")
+        self.assertNotIn("1360px", CSS_CODE,
+                         "Вернулась старая ширина контейнера 1360px — "
+                         "страница снова шире макета на 120px")
+
+    def test_vertical_rhythm(self):
+        """Шаг между секциями и внутри секции — из инспектора, а не на глаз."""
+        self.assert_in_css("--section-gap-outer: 120px", "шаг между секциями")
+        self.assert_in_css("--section-gap-inner: 60px", "зазор заголовок→контент")
 
     def test_radius_scale(self):
         for value in ("10px", "20px", "100px"):

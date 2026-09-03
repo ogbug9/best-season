@@ -71,8 +71,21 @@
   --radius-lg: 20px;
   --radius-pill: 100px;
 
-  --container: 1360px;
+  /* Ширина контейнера снята инспектором по трём независимым секциям
+     («Наши домики», «Наша территория», «Ответы на вопросы»): у каждой
+     Left 100px и Width 1240px при фрейме 1440. Раньше здесь стояло
+     1360px из выгрузки всех слоёв — вся страница была на 120px шире
+     макета. */
+  --container: 1240px;
+  --gutter: 100px;
   --container-narrow: 760px;
+
+  /* Вертикальный ритм из макета. Внутренний зазор снят инспектором
+     (Gap 60px у всех трёх секций), внешний вычислен из координат:
+     «Наши домики» Top 2684.13 + Height 1175 = 3859.13, а «Наша
+     территория» начинается на 3979.13. Разница ровно 120px. */
+  --section-gap-inner: 60px;
+  --section-gap-outer: 120px;
 
   /* Минимальный размер интерактивного элемента — п. 10.13 ТЗ */
   --tap-min: 44px;
@@ -182,9 +195,13 @@ body {
 }
 .container--narrow { max-width: var(--container-narrow); }
 
-.section { padding-block: var(--s-7); }
+/* Вертикальный ритм по инспектору: между соседними секциями ровно
+   120px. Половина отступа лежит на каждой секции, поэтому сумма
+   соседних полей и даёт 120. Раньше здесь стояло 91px, подобранное
+   на глаз, — страница шла с другим шагом, чем макет. */
+.section { padding-block: var(--s-8); }
 @media (min-width: 768px) {
-  .section { padding-block: var(--s-9); }
+  .section { padding-block: calc(var(--section-gap-outer) / 2); }
 }
 
 .section--deep {
@@ -960,7 +977,10 @@ body {
   font-size: clamp(2.5rem, 1.2rem + 5.8vw, 5.625rem);
   line-height: 1;
   color: var(--c-olive);
-  margin-bottom: var(--s-5);
+  /* 60px — зазор между заголовком секции и содержимым. Инспектор дал
+     Gap 60px у всех трёх измеренных секций, значит это правило, а не
+     частный случай. */
+  margin-bottom: var(--section-gap-inner);
 }
 /* В макете часть заголовков секций стоит по центру («Наши домики»,
    «Интересное рядом», «Ответы на вопросы»), часть — по левому краю
@@ -1043,10 +1063,21 @@ body {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border-radius: var(--radius-lg);
-  min-height: 180px;
+  /* 10px по инспектору (узел Frame 2087326587). Раньше стояло 20px —
+     догадка, ошибка ровно вдвое. */
+  border-radius: var(--radius);
+  /* Плитка в макете строго квадратная, 295×295. aspect-ratio вместо
+     min-height: при 4 колонках в контейнере 1240 с зазором 10px
+     колонка как раз даёт 295px, и высота получается сама. */
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  background: #232323;
 }
-.mosaic__item--large { grid-column: span 2; }
+/* Растягивание на две колонки осталось только у фотогалереи-масонри.
+   В «Нашей территории» инспектор показал, что ВСЕ плитки строго
+   295×295: сетка 4×4 из квадратов, а разрежённость даётся пустыми
+   ячейками, а не широкими плитками. */
+.mosaic--photos .mosaic__item--large { grid-column: span 2; }
 
 .mosaic__item picture,
 .mosaic__item img {
@@ -1423,9 +1454,16 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: var(--s-3);
-  padding: var(--s-5);
-  border-radius: var(--radius-lg);
+  /* Плитка-ссылка обязана занять ячейку целиком: квадрат задан на
+     li.mosaic__item, а ссылка лежит внутри и без этого сжимается
+     по содержимому. */
+  height: 100%;
+  /* Инспектор по узлу «Кнопка» в «Нашей территории»: 295×295,
+     скругление 10px, поля 20px, фон #847F57 — то есть плитка живёт
+     по тем же правилам, что и фотоплитки рядом. */
+  gap: var(--s-2);
+  padding: var(--s-4);
+  border-radius: var(--radius);
   background: var(--c-olive);
   color: var(--c-cream);
   text-decoration: none;
@@ -1509,10 +1547,17 @@ body {
 .footer__logo { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--c-deep); }
 .footer__name {
   font-family: var(--font-heading);
-  font-size: 1.5rem;
-  line-height: 1.05;
+  /* 32.61px и межстрочный 90% — по инспектору. Дробное значение не
+     округляем: надпись в макете подогнана под ширину знака (153px),
+     и на 32px или 33px она перестаёт с ним совпадать. */
+  font-size: 2.038rem;
+  line-height: 0.9;
+  /* Оливковый, как в макете. Контраст на кремовом 3.6 — норма для
+     крупного текста (порог 3.0 от 24px при обычном весе), а здесь
+     32.61px. Ниже по правилу раньше стоял второй color: c-deep,
+     который перебивал этот — удалён. */
+  color: var(--c-olive);
   max-width: 7ch;
-  color: var(--c-deep);
 }
 .footer__contacts { display: grid; gap: var(--s-2); }
 .footer__phone { font-weight: 600; font-size: 1.125rem; }
@@ -1549,7 +1594,13 @@ body {
 }
 .footer__column-title--second { margin-top: var(--s-7); }
 .footer__column ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s-3); }
-.footer__column a { font-size: 1rem; }
+/* Инспектор по узлу «Бронирование» в колонке подвала:
+   Montserrat 400, 18px, межстрочный 100%, цвет #494949. */
+.footer__column a {
+  font-size: 1.125rem;
+  line-height: 1;
+  color: var(--c-dark);
+}
 /* Правовые документы в макете стоят в две колонки и заполняются сверху
    вниз, а не слева направо — отсюда grid-auto-flow: column с явным
    числом строк. */
@@ -1910,7 +1961,9 @@ body[data-modal-open] {
 
 /* Аккордеон вопросов держим в читаемой ширине, даже когда сама секция
    идёт в широком контейнере ради заголовка в одну строку. */
-.faq { max-width: 900px; margin-inline: auto; }
+/* Инспектор по узлу «Ответы на вопросы»: Fixed 1240px, то есть блок
+   занимает контейнер целиком. Ограничение в 900px было догадкой. */
+.faq { max-width: var(--container); margin-inline: auto; }
 
 
 /* =========================================================================
@@ -1944,9 +1997,15 @@ body[data-modal-open] {
   margin-block: var(--s-8);
 }
 @media (min-width: 900px) {
-  /* Доли из макета, снятые замером: левый край кремовой панели стоит
-     на 563px из 1440, то есть фото занимает 39.1% ширины экрана. */
-  .about { grid-template-columns: 563fr 877fr; }
+  /* Инспектор по узлам «О нас» и Rectangle 27: блок 1212×800, фото
+     560×800. Значит текстовая колонка — 652px, из них 572px занимает
+     сам текст (замер колонки) и 80px остаётся зазором. Блок уже
+     контейнера и прижат к левому краю кадра — фото уходит в край,
+     это осознанный разрыв сетки в макете, а не ошибка. */
+  .about {
+    grid-template-columns: 560fr 652fr;
+    max-width: 1212px;
+  }
 }
 .about__media { position: relative; }
 .about__media picture, .about__media img, .about__media .ph {
@@ -1956,13 +2015,17 @@ body[data-modal-open] {
   aspect-ratio: auto;
   width: 100%;
   height: 100%;
-  min-height: 420px;
+  /* 800px — высота фото по инспектору (Rectangle 27). Ниже 1440
+     ужимается пропорционально: 800/1440 = 55.5vw. */
+  min-height: clamp(420px, 55.56vw, 800px);
   object-fit: cover;
-  border-radius: 0;
+  /* Скруглён ТОЛЬКО нижний правый угол фотографии — так в макете.
+     Раньше скругление ошибочно висело на кремовой панели: это была
+     догадка, инспектор показал, что угол принадлежит фото. */
+  border-radius: 0 0 var(--radius-lg) 0;
 }
 .about__panel {
   background: var(--c-cream);
-  border-start-start-radius: var(--radius-lg);
   padding: var(--s-8) var(--s-7);
 }
 @media (min-width: 900px) {
@@ -2134,18 +2197,28 @@ body[data-modal-open] {
 /* ---------- Карточка «Интересное рядом» ---------- */
 .cards--nearby {
   display: grid;
-  gap: var(--s-5);
+  /* 20px по инспектору (Frame 2087326602): три карточки по 400px
+     плюс два зазора по 20 дают ровно 1240 — ширину контейнера. */
+  gap: var(--s-4);
   margin: 0;
   padding: 0;
   list-style: none;
 }
-@media (min-width: 900px) { .cards--nearby { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) {
+  .cards--nearby { grid-template-columns: repeat(3, 1fr); }
+  /* 700px — высота карточки по инспектору. Именно min-height, а не
+     height: если редактор напишет описание длиннее макетного, текст
+     должен растянуть карточку, а не обрезаться. */
+  .cards--nearby .place { min-height: 700px; }
+}
 
 .place {
   display: grid;
-  gap: var(--s-4);
+  /* Внутренние размеры по инспектору (Frame 2087326601):
+     поля 40px сверху и снизу, 20px по бокам, зазор между блоками 40px. */
+  gap: var(--s-7);
   align-content: start;
-  padding: var(--s-5);
+  padding: var(--s-7) var(--s-4);
   border-radius: var(--radius-lg);
   color: var(--c-cream);
 }
@@ -2155,7 +2228,8 @@ body[data-modal-open] {
    при норме 4.5 для обычного текста. #746F4C даёт ровно 4.5 и на
    глаз от макетного не отличается. Заголовки и крупные надписи
    по-прежнему на исходном оливковом. */
-.place--dark { background: #1F1F1D; }
+/* #1E1E1E — по инспектору. Раньше стояло #1F1F1D, подобранное на глаз. */
+.place--dark { background: #1E1E1E; }
 .place--olive { background: #746F4C; }
 
 .place__head { text-align: center; }
