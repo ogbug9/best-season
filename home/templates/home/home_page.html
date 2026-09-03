@@ -232,11 +232,29 @@
 {% if territory %}
 <section class="section section--pattern">
   <div class="container">
-    <h2 class="section__title">Наша территория</h2>
-    {% if page.territory_lead %}<p class="section__lead">{{ page.territory_lead }}</p>{% endif %}
     <ul class="mosaic">
+      {% comment %}
+        Заголовок стоит ВНУТРИ мозаики и занимает три ячейки первого
+        ряда — так в макете: секция «Наша территория» ровно 1240×1240,
+        то есть четыре ряда плиток по 295 с зазорами 20, и заголовок
+        живёт в этом же квадрате, а не над ним.
+      {% endcomment %}
+      <li class="mosaic__head">
+        <h2 class="section__title">Наша территория</h2>
+        {% if page.territory_lead %}<p class="section__lead">{{ page.territory_lead }}</p>{% endif %}
+      </li>
       {% for item in territory %}
-        <li class="mosaic__item{% if item.is_large %} mosaic__item--large{% endif %}">
+        {% if item.spacer_before %}
+          {% comment %}
+            Пустая ячейка из макета: держит разрыв в сетке.
+            Обычный пустой <li>, без role и без aria-hidden. И то и
+            другое убирает элемент из дерева доступности, после чего
+            проверка справедливо ругается, что в <ul> лежит не пункт
+            списка. Пустой пункт читалка просто пропустит.
+          {% endcomment %}
+          <li class="mosaic__item mosaic__item--empty"></li>
+        {% endif %}
+        <li class="mosaic__item">
           {% if item.image %}
             {% picture item.image preset="card" alt=item.title %}
           {% else %}

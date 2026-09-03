@@ -19,15 +19,20 @@ from wagtail.models import Site
 
 PLACEHOLDER = "Текст ожидается от заказчика."
 
+# Порядок и пустые ячейки сняты с макета по координатам плиток:
+# все они стоят на сетке 4×4 с шагом 315px (295 плитка + 20 зазор),
+# и две ячейки — вторая во втором ряду и третья в третьем — намеренно
+# оставлены пустыми. Третий элемент кортежа = «перед этим блоком
+# пустая ячейка».
 TERRITORY = [
-    ("Батут и детская площадка", "", True),
-    ("Игровая зона", "", False),
-    ("Спортивные игры", "", False),
     ("Контактная ферма", "", False),
+    ("Батут и детская площадка", "", False),
+    ("Костровая зона", "", True),
+    ("Спортивные игры", "", False),
     ("Русская баня", "", False),
     ("Финская сауна", "", False),
-    ("Фотосессии", "", False),
-    ("Река «Снежка»", "", False),
+    ("Фотосессии", "", True),
+    ("Река «Скнижка»", "", False),
     ("Большая беседка", "", False),
     ("Мастер-классы", "", False),
 ]
@@ -162,12 +167,22 @@ class Command(BaseCommand):
     def fill_snippets(self):
         from core.models import FaqItem, NearbyPlace, TerritoryItem
 
-        for order, (title, text, large) in enumerate(TERRITORY, start=1):
-            if TerritoryItem.objects.filter(title=title).exists():
+        for order, (title, text, spacer) in enumerate(TERRITORY, start=1):
+            existing = TerritoryItem.objects.filter(title=title).first()
+            if existing:
+                # Порядок и разрывы сетки правим и у заведённых плиток:
+                # они снимались с макета уже после первого наполнения,
+                # и без этого мозаика осталась бы в старой раскладке.
+                if (existing.sort_order, existing.spacer_before) != (order * 10, spacer):
+                    if not self.dry:
+                        existing.sort_order = order * 10
+                        existing.spacer_before = spacer
+                        existing.save(update_fields=["sort_order", "spacer_before"])
+                    self.mark(f"территория, раскладка по макету: {title}")
                 continue
             if not self.dry:
                 TerritoryItem.objects.create(
-                    title=title, description=text, is_large=large,
+                    title=title, description=text, spacer_before=spacer,
                     sort_order=order * 10, is_published=True,
                 )
             self.mark(f"территория: {title}")

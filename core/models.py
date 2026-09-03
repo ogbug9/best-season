@@ -266,7 +266,14 @@ class TerritoryItem(models.Model):
     description = models.CharField("Краткое описание", max_length=255, blank=True)
     is_large = models.BooleanField(
         "Крупная плитка", default=False,
-        help_text="Занимает две ячейки в мозаике. Отмечать не больше двух-трёх.",
+        help_text="Не используется в блоке «Наша территория»: по замерам "
+                  "макета все плитки там строго квадратные, 295×295.",
+    )
+    spacer_before = models.BooleanField(
+        "Пустая ячейка перед этим блоком", default=False,
+        help_text="В макете мозаика намеренно разрежена — две ячейки "
+                  "оставлены пустыми. Отметьте, чтобы сдвинуть этот блок "
+                  "на одну ячейку вправо.",
     )
     is_published = models.BooleanField("Показывать на сайте", default=True)
     sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
@@ -275,7 +282,7 @@ class TerritoryItem(models.Model):
         FieldPanel("title"),
         FieldPanel("image"),
         FieldPanel("description"),
-        FieldPanel("is_large"),
+        FieldPanel("spacer_before"),
         FieldPanel("is_published"),
         FieldPanel("sort_order"),
     ]

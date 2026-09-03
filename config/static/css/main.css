@@ -15,6 +15,11 @@
   /* Палитра из макетов Figma (канвас COMPONENTS) */
   --c-cream:        #F7F0E6;  /* основной фон */
   --c-olive:        #847F57;  /* акцент, ТОЛЬКО крупный текст и фоны */
+  /* Оливковый, затемнённый до контраста ровно 4.5 с кремовым. Нужен
+     везде, где на оливковом фоне стоит обычный текст: кремовый на
+     макетном #847F57 даёт 3.6 и не проходит п. 10.13 ТЗ. На глаз от
+     макетного не отличается. */
+  --c-olive-dark:   #746F4C;
   --c-terra:        #9B5026;  /* акцент действия, кнопки, ссылки */
   --c-dark:         #494949;  /* основной текст */
   --c-deep:         #3A3C15;  /* заголовки, тёмные секции */
@@ -312,7 +317,12 @@ body {
 .nav--mobile { display: none; }
 @media (max-width: 899px) {
   .nav--desktop { display: none; }
-  .nav--mobile { display: block; }
+  /* Именно [open]: браузер прячет содержимое закрытого <details> сам,
+     но `display: block` возвращало его в поток. Пункты меню при этом
+     были шире экрана и растягивали страницу — горизонтальная прокрутка
+     появлялась на пустом месте, хотя меню никто не открывал.
+     Ошибка была латентной и вылезла при первой же правке ширин. */
+  .nav-toggle[open] .nav--mobile { display: block; }
   .nav--mobile .nav__list { flex-direction: column; gap: var(--s-2); padding-block: var(--s-4); }
 
   /* Шапка не влезала в 390px: логотип, телефон и кнопка «Забронировать
@@ -1073,6 +1083,27 @@ body {
   min-height: 0;
   background: #232323;
 }
+/* Пустая ячейка мозаики: держит место в сетке и больше ничего.
+   Без сброса фона она была бы тёмным квадратом. */
+.mosaic__item--empty {
+  background: none;
+  pointer-events: none;
+}
+
+/* Заголовок внутри мозаики: три ячейки первого ряда. Квадратной
+   пропорции у него нет — он подстраивается под ряд плиток. */
+/* Внимание: НЕ ставить сюда display: grid или flex. Chrome и Safari
+   снимают с <li> роль пункта списка, как только у него меняется
+   display, и проверка доступности начинает ругаться, что в <ul> лежит
+   посторонний элемент. Обычного блочного потока здесь достаточно. */
+.mosaic__head > * + * { margin-top: var(--s-4); }
+@media (min-width: 1100px) {
+  .mosaic__head { grid-column: span 3; }
+}
+@media (min-width: 700px) and (max-width: 1099px) {
+  .mosaic__head { grid-column: span 2; }
+}
+.mosaic__head .section__title { margin-bottom: 0; }
 /* Растягивание на две колонки осталось только у фотогалереи-масонри.
    В «Нашей территории» инспектор показал, что ВСЕ плитки строго
    295×295: сетка 4×4 из квадратов, а разрежённость даётся пустыми
@@ -1096,9 +1127,14 @@ body {
      не дают нужного контраста под текстом (п. 10.13 ТЗ) */
   background: linear-gradient(180deg, rgba(58,60,21,0) 0%, rgba(58,60,21,0.85) 100%);
 }
+/* Инспектор (узлы «Русская баня», «Река "Скнижка"»):
+   Montserrat 600 / 24px / 100%, кремовый. */
 .mosaic__caption h3 {
   margin: 0;
-  font-size: 1.125rem;
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
   color: var(--c-cream);
 }
 .mosaic__caption p {
@@ -1585,12 +1621,17 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 }
 .footer__column-title {
-  margin-bottom: var(--s-4);
-  /* Оливковый на кремовом даёт 3.06 — для обычного текста мало. Здесь
-     кегль 20px и вес 700, это уже «крупный текст», порог 3.0. */
-  color: var(--c-olive);
+  /* Инспектор (узел «Размещение»): Montserrat 600 / 20px / 100%,
+     цвет в макете #847F57. Но 20px при весе 600 — обычный текст, а не
+     крупный (крупный от 18.66px только при весе 700 или от 24px), и
+     оливковый на кремовом даёт 3.6 при норме 4.5. Единственное
+     отступление от макета здесь — затемнённый оливковый; кегль, вес и
+     межстрочный как в макете. */
+  margin-bottom: 14px;
+  color: var(--c-olive-dark);
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 1;
 }
 .footer__column-title--second { margin-top: var(--s-7); }
 .footer__column ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s-3); }
@@ -2102,26 +2143,46 @@ body[data-modal-open] {
 /* ---------- Карточка дома ---------- */
 .cards--houses {
   display: grid;
-  gap: var(--s-6);
+  /* 20px по обеим осям. Проверяется арифметикой макета: по ширине
+     610×2 + зазор = 1240, по высоте заголовок 95 + отступ 60 + два
+     ряда по 500 + зазор = 1175, ровно высота секции из инспектора. */
+  gap: var(--s-4);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 @media (min-width: 900px) { .cards--houses { grid-template-columns: 1fr 1fr; } }
 
+/* Инспектор (Frame 2087326559): карточка 610×500 со скруглением 20px —
+   это САМА фотография, а не рамка вокруг неё. Подпись и обе кнопки
+   лежат поверх снимка на затемнении. Раньше карточка была коробкой с
+   тёмной подложкой и полем 10px, а фото внутри — отсюда и лишняя
+   высота, и не тот вид. 610×2 + зазор 20 = 1240, ширина контейнера. */
 .house {
-  display: grid;
-  gap: var(--s-4);
-  padding: var(--s-2);
-  border-radius: var(--radius-lg);
-  background: var(--c-deep);
-}
-.house__media {
   position: relative;
   isolation: isolate;
-  border-radius: var(--radius);
+  display: grid;
+  align-content: end;
+  gap: var(--s-2);
+  /* 32px по бокам — из замера: кнопка «Забронировать» Fill 546 внутри
+     карточки 610, значит (610−546)/2 = 32 ровно. */
+  padding: var(--s-4) 32px 20px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  min-height: 380px;
+  aspect-ratio: 610 / 500;
+  /* width обязателен вместе с aspect-ratio: без него браузер выводит
+     собственную ширину из min-height (380 × 610/500 = 464px), колонка
+     растягивается по ней, и на мобильном появляется горизонтальная
+     прокрутка. На этом уже ловились с фотографией в блоке «О нас» —
+     поэтому min-height здесь нет вовсе, высоту задаёт пропорция. */
+  width: 100%;
+}
+.house__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  isolation: isolate;
+  overflow: hidden;
   display: grid;
 }
 .house__media picture, .house__media img, .house__media .ph {
@@ -2132,10 +2193,13 @@ body[data-modal-open] {
 }
 /* Затемнение снизу: белый текст поверх фотографии обязан читаться
    при любом снимке — без него контраст зависел бы от картинки. */
+/* Градиент из макета: инспектор дал линейную заливку #000000 с 0%
+   сверху до 80% снизу. Он же обеспечивает читаемость белого текста
+   при любой фотографии, которую загрузит редактор. */
 .house__media::after {
   content: "";
   grid-area: 1 / 1;
-  background: linear-gradient(to top, rgba(26, 26, 26, 0.85) 0%, rgba(26, 26, 26, 0.35) 32%, transparent 60%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
 }
 
 /* Лента с ценой — прямоугольник с треугольным вырезом снизу */
@@ -2169,14 +2233,45 @@ body[data-modal-open] {
   padding: var(--s-5);
   color: var(--c-cream);
 }
-.house__title { color: var(--c-cream); font-family: var(--font-body); font-size: 1.375rem; font-weight: 700; }
+/* Инспектор: название Montserrat 600 / 24px / 100%, подпись
+   Montserrat 400 / 18px / 100%, обе чисто белые (#FFFFFF, не кремовый). */
+.house__title {
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
 .house__link { color: inherit; text-decoration: none; }
-.house__meta { margin-top: var(--s-1); font-size: 0.9375rem; }
+.house__meta {
+  margin-top: var(--s-2);
+  color: #FFFFFF;
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1;
+}
 
+/* Инспектор (Frame 2087326555): 153×40, скругление 20px, рамка 1px
+   белым, поля 10/28, текст Montserrat 400 / 16px / 100% белым.
+   Заливки нет — кнопка контурная поверх фотографии. */
 .house__more {
-  background: var(--c-cream);
-  color: var(--c-deep);
-  padding: 10px var(--s-5);
+  background: transparent;
+  border: 1px solid #FFFFFF;
+  border-radius: var(--radius-lg);
+  color: #FFFFFF;
+  padding: 10px 28px;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  /* 40px — высота из макета, но цель нажатия по п. 10.13 ТЗ не может
+     быть меньше 44px. Добираем невидимой областью, не меняя вид. */
+  min-height: 40px;
+  position: relative;
+}
+.house__more::after {
+  content: "";
+  position: absolute;
+  inset: -2px 0;
   min-height: var(--tap-min);
 }
 .house__more:hover { background: var(--c-white); color: var(--c-deep); }
@@ -2185,12 +2280,22 @@ body[data-modal-open] {
    Кремовый на оливковом даёт 3.6 — при 18px это провал (нужно 4.5).
    Цвета из макета не меняем: поднимаем кегль до 20px, тогда текст
    считается крупным (порог 18.66px при весе 700) и норма 3.0. */
+/* Инспектор (Frame 2087326541): ширина во всю карточку, высота 52,
+   скругление 100, поля 14/40, текст Montserrat 500 / 20px / 100%
+   кремовым. Фон в макете #847F57, но кремовый на нём даёт 3.6, а
+   текст 20px при весе 500 считается обычным и требует 4.5 (п. 10.13
+   ТЗ). Поэтому фон затемнён до #746F4C — ровно 4.5, на глаз от
+   макетного неотличим. Всё остальное как в макете. */
 .house__book {
   width: 100%;
-  background: var(--c-olive);
+  min-height: 52px;
+  padding: 14px 40px;
+  border-radius: var(--radius-pill);
+  background: var(--c-olive-dark);
   color: var(--c-cream);
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 500;
+  line-height: 1;
 }
 .house__book:hover { background: #726E4B; color: var(--c-cream); }
 
@@ -2276,21 +2381,27 @@ body[data-modal-open] {
   border-radius: var(--radius);
   overflow: hidden;
 }
-.faq__item--dark { background: #1F1F1D; }
+/* #232323 — по инспектору. Было #1F1F1D, подобранное на глаз. */
+.faq__item--dark { background: #232323; }
 .faq__item--olive { background: var(--c-olive); }
 .faq__item .faq__question {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--s-4);
-  min-height: 64px;
-  padding: var(--s-3) var(--s-5);
+  /* Инспектор (Frame 2087326605/606): полоса 1240×63, скругление 10px,
+     поля 12/32, текст Montserrat 500 / 32px / 100% кремовым.
+     На 32px текст считается крупным (порог 24px при обычном весе), и
+     кремовый на оливковом 3.6 проходит норму 3.0. Поэтому вес 500 из
+     макета можно оставить как есть — раньше приходилось поднимать до
+     700, потому что кегль стоял 20px. */
+  min-height: 63px;
+  padding: 12px 32px;
+  border-radius: var(--radius);
   color: var(--c-cream);
-  font-size: 1.25rem;
-  /* Вес именно 700: при 600 проверка доступности считает текст обычным
-     и требует 4.5, а кремовый на оливковом даёт 3.6. При 700 и 20px
-     текст крупный, норма 3.0 — проходит. */
-  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 500;
   cursor: pointer;
   list-style: none;
 }

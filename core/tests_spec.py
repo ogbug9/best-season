@@ -82,9 +82,31 @@ class RegistryIntegrityTests(SimpleTestCase):
             if meta["source"] in FACT_SOURCES
         )
         self.assertGreaterEqual(
-            confirmed, 44,
-            f"Подтверждённых значений стало {confirmed}, было 44. "
+            confirmed, 76,
+            f"Подтверждённых значений стало {confirmed}, было 76. "
             "Замеры не должны пропадать.",
+        )
+
+    def test_registry_has_no_guesses_left(self):
+        """С 03.09 в реестре не осталось ни одной догадки — каждое
+        значение снято инспектором, измерено с эталона или вычислено
+        из замера. Пока это так, про соответствие макету можно говорить
+        без оговорок.
+
+        Если тест упал — в реестр добавили новый компонент, значения
+        которого подобраны на глаз. Это допустимо как промежуточный шаг,
+        но тогда правится и этот тест: тихо вернуться к догадкам нельзя.
+        """
+        guesses = [
+            f"{comp}.{prop}"
+            for comp, data in SPEC["components"].items()
+            for prop, meta in data["props"].items()
+            if meta["source"] == "assumed"
+        ]
+        self.assertFalse(
+            guesses,
+            "В реестре снова появились догадки: " + ", ".join(guesses)
+            + ". Запросите скриншот инспектора по этим узлам.",
         )
 
     def test_assumptions_are_labelled(self):
