@@ -16,17 +16,21 @@
 {% if promotions %}
 <section class="section">
   <div class="container">
-    <ul class="cards">
+    {% comment %} Карточки чередуются оливковая/тёмная — так в макете. {% endcomment %}
+    {% comment %} Чередование по индексу, чтобы ряд не сломался при добавлении. {% endcomment %}
+    <ul class="promos">
       {% for promo in promotions %}
-        <li class="card">
-          {% picture promo.image preset="card" alt=promo.title %}
-          <div class="card__body">
-            <h2 class="card__title">{{ promo.title }}</h2>
-            {% if promo.short_description %}<p>{{ promo.short_description }}</p>{% endif %}
-            {% if promo.description %}<div class="prose">{{ promo.description|richtext }}</div>{% endif %}
-            {% if promo.date_to %}<p class="card__meta">Действует до {{ promo.date_to|date:"d.m.Y" }}</p>{% endif %}
-            <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="7">Забронировать</button></p>
-          </div>
+        <li class="promo{% if forloop.counter0|divisibleby:2 %} promo--olive{% else %} promo--dark{% endif %}">
+          {% if promo.image %}
+            <div class="promo__media">{% picture promo.image preset="card" alt=promo.title %}</div>
+          {% else %}
+            <div class="promo__media"><span class="ph" aria-hidden="true"></span></div>
+          {% endif %}
+          <h2 class="promo__title">{{ promo.title }}</h2>
+          {% if promo.short_description %}<p class="promo__text">{{ promo.short_description|linebreaksbr }}</p>{% endif %}
+          {% if promo.description %}<div class="promo__text prose">{{ promo.description|richtext }}</div>{% endif %}
+          {% if promo.date_to %}<p class="promo__text">Действует до {{ promo.date_to|date:"d.m.Y" }}</p>{% endif %}
+          <button type="button" class="btn promo__book" data-booking-open data-entry-point="7">Забронировать</button>
         </li>
       {% endfor %}
     </ul>

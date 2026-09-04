@@ -183,6 +183,28 @@ FAQ = [
 # Подпись под названием в макете короткая: «4 спальных места + камин».
 # Длинные фразы, которые стояли раньше, — мои заглушки, из-за них подпись
 # переносилась на две строки и ломала верх карточки.
+# Акции с макета «Special Offers», дословно. Названия в макете набраны
+# в две строки — перенос сохраняем, он часть вёрстки карточки.
+PROMOTIONS = [
+    ("Тариф «День рождения»", "den-rozhdeniya",
+     "Дарим скидку в день рождения — 15%"),
+    ("Тариф «Пятница со скидкой 50%»", "pyatnica-50",
+     "При бронировании 3-х дней: пятницы, субботы и воскресения, "
+     "на пятницу действует скидка 50%"),
+    ("Тариф «С мая по сентябрь»", "may-sentyabr",
+     "От 3-х суток скидка 10%\nОт 5 суток — 15%\nОт 7 суток — 20%"),
+    ("Тариф «Выгодная баня»", "vygodnaya-banya",
+     "При бронировании русской бани от 3-х часов — баня рассчитывается "
+     "по тарифу 1 500 ₽/час"),
+    ("Тариф «Гостеприимство»", "gostepriimstvo",
+     "При бронировании напрямую комплимент от хозяев: набор фермерских "
+     "продуктов или дополнительный час в бане"),
+    ("Тариф «Правильная удаленка»", "pravilnaya-udalenka",
+     "4 дня по цене 3 в будние дни"),
+    ("Тариф «С октября по апрель»", "oktyabr-aprel",
+     "От 3-х суток скидка 10%\nОт 5 суток — 20%\nОт 7 суток — 25%"),
+]
+
 HOUSES = [
     # 8000 у первого, 6000 у остальных — по макету (лента цены на карточке)
     ("Первый домик", "финская сауна", 8000, 4, 42),
@@ -278,6 +300,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             self.fill_snippets()
             self.fill_houses()
+            self.fill_promotions()
             self.fill_home()
             if self.dry:
                 transaction.set_rollback(True)
@@ -358,6 +381,26 @@ class Command(BaseCommand):
             self.mark(f"вопрос: {question}")
 
     # ---------- дома ----------
+
+    def fill_promotions(self):
+        from promotions.models import Promotion
+
+        for order, (title, slug, text) in enumerate(PROMOTIONS, start=1):
+            existing = Promotion.objects.filter(slug=slug).first()
+            if existing:
+                if existing.short_description != text and is_ours(existing.short_description):
+                    if not self.dry:
+                        existing.short_description = text
+                        existing.sort_order = order * 10
+                        existing.save()
+                    self.mark(f"акция, текст с макета: {title}")
+                continue
+            if not self.dry:
+                Promotion.objects.create(
+                    title=title, slug=slug, short_description=text,
+                    sort_order=order * 10, is_published=True,
+                )
+            self.mark(f"акция: {title}")
 
     def fill_houses(self):
         from houses.models import HouseIndexPage, HousePage

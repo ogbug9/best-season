@@ -2834,3 +2834,56 @@ body[data-modal-open] {
   color: var(--c-dark);
 }
 
+
+/* ---------- Карточки акций ----------
+   Макет «Special Offers»: три колонки, карточки чередуются оливковая
+   #847F57 и тёмная #1E1E1E, фото сверху, название и описание по центру,
+   кнопка кремовая #F7F0E6 во всю ширину. Цвета сняты пикселями
+   с выгрузки макета. */
+.promos {
+  display: grid;
+  gap: 20px;
+  margin: var(--s-7) 0 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 900px) {
+  .promos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.promo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  color: var(--c-cream);
+  text-align: center;
+}
+.promo--olive { background: var(--c-olive); }
+.promo--dark { background: #1E1E1E; }
+.promo__media picture,
+.promo__media img,
+.promo__media .ph {
+  display: block;
+  width: 100%;
+  aspect-ratio: 360 / 200;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+.promo__title {
+  margin: 0;
+  color: var(--c-cream);
+  font-size: 1.5rem;
+  line-height: 1.15;
+}
+.promo__text { margin: 0; color: var(--c-cream); font-size: 1rem; }
+/* Кнопка прижата к низу: в макете у всех карточек ряда она на одной линии */
+.promo__book {
+  margin-top: auto;
+  width: 100%;
+  background: var(--c-cream);
+  color: var(--c-deep);
+  border-radius: var(--radius-pill);
+}
+.promo__book:hover { background: var(--c-white); color: var(--c-deep); }
+
