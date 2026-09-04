@@ -154,3 +154,35 @@ class ContentPageTests(TestCase):
 
         body = self.client.get(page.url).content.decode()
         self.assertNotIn("data-entry-point=\"7\"", body)
+
+
+class SeedContentStaleTextTests(TestCase):
+    """Наши заглушки должны узнаваться и в размеченном виде.
+
+    На сервере тексты уже прошли через админку, где RichText оборачивает
+    их в <p>…</p>. Буквальное сравнение такую строку не узнавало, и команда
+    считала собственную заглушку правкой редактора — тексты с макета не
+    доезжали до боевого сайта.
+    """
+
+    def test_placeholder_v_razmetke_schitaetsya_nashim(self):
+        from core.management.commands.seed_content import PLACEHOLDER, is_ours
+
+        self.assertTrue(is_ours(f"<p>{PLACEHOLDER}</p>"))
+        self.assertTrue(is_ours(f"<p>Что-то своё. {PLACEHOLDER}</p>"))
+        self.assertTrue(is_ours("<p>&nbsp;</p>"))
+        self.assertTrue(is_ours(""))
+
+    def test_prezhnyaya_zaglushka_v_tegah_schitaetsya_nashey(self):
+        from core.management.commands.seed_content import STALE_TEXTS, is_ours
+
+        for text in STALE_TEXTS:
+            with self.subTest(text=text[:40]):
+                self.assertTrue(is_ours(f"<p>{text}</p>"))
+                self.assertTrue(is_ours(f"  {text}  "))
+
+    def test_pravka_redaktora_ne_trogaetsya(self):
+        from core.management.commands.seed_content import is_ours
+
+        self.assertFalse(is_ours("<p>Это написал редактор, трогать нельзя.</p>"))
+        self.assertFalse(is_ours("Живой текст заказчика"))

@@ -13,6 +13,9 @@
 вызывать при каждом старте контейнера.
 """
 
+import html
+import re
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from wagtail.models import Site
@@ -30,26 +33,47 @@ STALE_TEXTS = {
     "Большой лесной массив для уединённого отдыха",
     "Копилка ваших самых счастливых дней: неторопливые прогулки, "
     "знакомство с животными фермы, вечер у огня и чашка чая.",
+    "Больше развлечений и услуг в глэмпинге",
+    "Больше развлечений и услуг",
 }
+
+
+def _plain(value):
+    """Текст без разметки, лишних пробелов и неразрывных пробелов.
+
+    Сравнивать «как есть» нельзя: answer — это RichText, и стоит один раз
+    открыть запись в админке, как текст оказывается обёрнут в <p>…</p>.
+    Буквальное сравнение такую строку уже не узнаёт, и команда считает
+    её правкой редактора, хотя это наша же заглушка.
+    """
+    text = re.sub(r"<[^>]+>", " ", str(value or ""))
+    text = html.unescape(text).replace("\xa0", " ")
+    return re.sub(r"\s+", " ", text).strip()
+
+
+_STALE_PLAIN = {_plain(t) for t in STALE_TEXTS}
 
 
 def is_ours(value):
     """Текст ещё наш (заглушка или прежняя догадка), а не правка редактора."""
-    if not value or not str(value).strip():
+    text = _plain(value)
+    if not text:
         return True
-    text = str(value).strip()
     return (
-        PLACEHOLDER in text
-        or text in STALE_TEXTS
+        _plain(PLACEHOLDER) in text
+        or text in _STALE_PLAIN
         # прежнее написание названия в цитате
         or "«Best Season»" in text
     )
 
-# Порядок и пустые ячейки сняты с макета по координатам плиток:
-# все они стоят на сетке 4×4 с шагом 315px (295 плитка + 20 зазор),
-# и две ячейки — вторая во втором ряду и третья в третьем — намеренно
-# оставлены пустыми. Третий элемент кортежа = «перед этим блоком
-# пустая ячейка».
+
+# Плитки, которых в макете нет: остались от прежних заходов наполнения.
+# «Река «Снежка»» — опечатка-двойник «Скнижки», «Игровая зона» дублирует
+# «Спортивные игры». Из-за них плиток становилось 12 вместо 10, и пустые
+# ячейки мозаики уезжали не туда. Не удаляем, а снимаем с публикации:
+# удалять то, что мог завести редактор, команда не вправе.
+OBSOLETE_TERRITORY = ["Игровая зона", "Река «Снежка»", "Река \"Снежка\""]
+
 TERRITORY = [
     ("Контактная ферма", "", False),
     ("Батут и детская площадка", "", False),
@@ -154,12 +178,21 @@ FAQ = [
     ),
 ]
 
+# Подпись под названием в макете короткая: «4 спальных места + камин».
+# Длинные фразы, которые стояли раньше, — мои заглушки, из-за них подпись
+# переносилась на две строки и ломала верх карточки.
 HOUSES = [
-    ("Первый домик", "Стильный лофт с панорамным окном и камином", 6000, 4, 42),
-    ("Второй домик", "Стильный лофт с панорамным окном и камином", 6000, 4, 42),
-    ("Третий домик", "Стильный лофт с панорамным окном и баней", 6000, 4, 42),
-    ("Четвёртый домик", "Стильный лофт с панорамным окном и баней", 6000, 4, 42),
+    ("Первый домик", "финская сауна", 6000, 4, 42),
+    ("Второй домик", "камин", 6000, 4, 42),
+    ("Третий домик", "камин", 6000, 4, 42),
+    ("Четвёртый домик", "камин", 6000, 4, 42),
 ]
+
+# Прежние подписи домиков — их можно перезаписывать, это наши догадки
+STALE_HOUSE_DESC = {
+    "Стильный лофт с панорамным окном и камином",
+    "Стильный лофт с панорамным окном и баней",
+}
 
 HOME_TEXT = {
     "hero_title": "Лучший сезон",
@@ -209,7 +242,9 @@ HOME_TEXT = {
         "Здесь начинается территория вашего отдыха. "
         "Мы устроили всё так, как хотели бы сами."
     ),
-    "territory_more_label": "Больше развлечений и услуг в глэмпинге",
+    # Инспектор (Frame 2087326604, узел 2102:3008): текст плитки-кнопки
+    # в мозаике — именно такой, а не «Больше развлечений и услуг»
+    "territory_more_label": "Что вас здесь ждёт. Всё по порядку",
     "nearby_more_label": "Больше интересных мест рядом",
     "gallery_title": "Фотогалерея",
     "gallery_text": (
@@ -247,6 +282,14 @@ class Command(BaseCommand):
 
     def fill_snippets(self):
         from core.models import FaqItem, NearbyPlace, TerritoryItem
+
+        for title in OBSOLETE_TERRITORY:
+            stale = TerritoryItem.objects.filter(title=title, is_published=True).first()
+            if stale and is_ours(stale.description):
+                if not self.dry:
+                    stale.is_published = False
+                    stale.save(update_fields=["is_published"])
+                self.mark(f"территория, снято с публикации (нет в макете): {title}")
 
         for order, (title, text, spacer) in enumerate(TERRITORY, start=1):
             existing = TerritoryItem.objects.filter(title=title).first()
@@ -318,7 +361,16 @@ class Command(BaseCommand):
             return
 
         for order, (title, desc, price, capacity, area) in enumerate(HOUSES, start=1):
-            if HousePage.objects.filter(title=title).exists():
+            existing = HousePage.objects.filter(title=title).first()
+            if existing:
+                # Короткую подпись с макета доставляем и в заведённые дома,
+                # но только поверх собственных заглушек
+                stale = (existing.short_description or "").strip()
+                if stale != desc and (not stale or stale in STALE_HOUSE_DESC):
+                    if not self.dry:
+                        existing.short_description = desc
+                        existing.save()
+                    self.mark(f"дом, подпись с макета: {title}")
                 continue
             if self.dry:
                 self.mark(f"дом: {title}")

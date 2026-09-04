@@ -1205,6 +1205,8 @@ body {
   inset-inline: 0;
   bottom: 0;
   padding: var(--s-4);
+  /* В макете подписи плиток стоят по центру, а не по левому краю */
+  text-align: center;
   color: var(--c-cream);
   /* Градиент, а не сплошная плашка: без него светлые кадры
      не дают нужного контраста под текстом (п. 10.13 ТЗ) */
@@ -1223,6 +1225,14 @@ body {
 .mosaic__caption p {
   margin-top: var(--s-1);
   font-size: 0.875rem;
+}
+
+/* Подводка «Наша территория»: инспектор даёт 674×58 при кегле 24px,
+   то есть ровно две строки по 29 (auto-leading Montserrat) */
+.mosaic__head .section__lead {
+  max-width: 674px;
+  font-size: 1.5rem;
+  line-height: 1.20833;
 }
 
 .mosaic--photos .mosaic__item { min-height: 160px; }
@@ -1283,8 +1293,16 @@ body {
 .btn--primary.is-pressed { background: var(--c-dark); }
 
 .btn--outline {
-  background: var(--c-white);
-  border-color: var(--c-dark-soft);
+  /* Инспектор (Frame 2087326585): заливки нет, только рамка 1px #9B5026,
+     радиус 100, поля 14/40. Раньше стоял белый фон — на кремовой странице
+     кнопка выглядела вставленной плашкой, а в макете она прозрачная и
+     проступает фоновый паттерн */
+  background: transparent;
+  border: 1px solid var(--c-terra);
+  border-radius: 100px;
+  min-height: 52px;
+  padding: 14px 40px;
+  gap: 10px;
 }
 .btn--outline:hover { background: var(--c-hover-warm); }
 .btn--outline:active,
@@ -1344,11 +1362,23 @@ body {
 }
 .page-home .hero { padding-top: calc(var(--header-h) + var(--s-7)); }
 
+/* Инспектор (узел «Меню»): пилюля 1260×87 с полем 90px от края кадра —
+   шире общего контейнера 1240. На 1240 пункты не помещались и «О нас»
+   сваливалось на вторую строку. */
+.container--header {
+  /* width у .container задан через min(), max-width его не перебивает —
+     нужно переопределить именно width */
+  width: min(100% - 2 * var(--s-4), 1260px);
+}
+
 .header__bar {
   display: flex;
   align-items: center;
   gap: var(--s-4);
-  min-height: var(--header-h);
+  /* Инспектор (узел «Меню»): пилюля 1260×87 с полем 90px от края кадра,
+     то есть шире контейнера 1240. На 1240 пункты не помещались и «О нас»
+     сваливалось на вторую строку */
+  min-height: 87px;
   padding: var(--s-2) var(--s-3) var(--s-2) var(--s-4);
   border-radius: 999px;
   background: var(--c-cream);
@@ -1394,8 +1424,10 @@ body {
   font-size: 0.9375rem;
 }
 
-.nav--desktop .nav__list { gap: var(--s-4); }
-.nav--desktop .nav__link { font-size: 0.9375rem; }
+/* В макете все пункты в одну строку внутри пилюли. Перенос ронял
+   «О нас» на вторую строку и разрывал шапку по высоте. */
+.nav--desktop .nav__list { gap: var(--s-4); flex-wrap: nowrap; }
+.nav--desktop .nav__link { font-size: 0.9375rem; white-space: nowrap; }
 
 /* ---------- Выпадающие списки ---------- */
 .nav__item { position: relative; }
@@ -2082,8 +2114,10 @@ body[data-modal-open] {
   border-radius: inherit;
 }
 /* В макете фото в «О нас» и в цитате не выше текстовой колонки */
-.split__media .ph, .quote__media .ph { max-height: 420px; }
-.split__media picture, .quote__media picture { max-height: 420px; }
+/* Ограничение 420px оставляем только «расколотым» блокам: в цитате
+   фото по инспектору квадратное 600×600, и потолок его резал */
+.split__media .ph { max-height: 420px; }
+.split__media picture { max-height: 420px; }
 .split__media picture img, .quote__media picture img { height: 100%; object-fit: cover; }
 
 
@@ -2134,7 +2168,9 @@ body[data-modal-open] {
     /* Ровно по инспектору: фото 0..560, текст 640..1212, зазор 80.
        Доли (fr) здесь не годятся — колонка подстраивалась под текст
        и отбирала ширину у фото */
-    grid-template-columns: 560px 652px;
+    /* Доли, а не пиксели: жёсткие 560px+652px давали горизонтальную
+       прокрутку на экранах уже 1212 */
+    grid-template-columns: minmax(0, 560fr) minmax(0, 652fr);
     column-gap: 0;
     max-width: 1212px;
     /* Высоту секции задаёт фото (800px по инспектору), а не текст.
@@ -2203,7 +2239,14 @@ body[data-modal-open] {
   /* 58 к 42 — доли из макета. Раньше здесь стояло 1fr к 42fr, то есть
      текст получал одну долю против сорока двух и схлопывался в столбик
      по одному слову. */
-  .quote { grid-template-columns: 58fr 42fr; gap: var(--s-8); }
+  /* Доли, а не пиксели: 840 к 600 от кадра 1440. Жёсткие 840px+600px
+     давали горизонтальную прокрутку на 1024 — сумма шире экрана */
+  .quote {
+    grid-template-columns: minmax(0, 840fr) minmax(0, 600fr);
+    gap: 0;
+    max-width: 1440px;
+    margin-inline: auto;
+  }
 }
 .quote__body { padding-inline: var(--s-4); min-width: 0; }
 @media (min-width: 900px) {
@@ -2223,9 +2266,18 @@ body[data-modal-open] {
 /* Лесенка: каждый следующий абзац сдвинут правее предыдущего.
    Только на широких экранах: на мобильном сдвиг плюс ширина строки
    растягивали колонку до 613px и давали горизонтальную прокрутку. */
-.quote__para { max-width: min(52ch, 100%); }
+.quote__para {
+  max-width: 100%;
+  font-size: 1.25rem;   /* 20px, инспектор */
+  line-height: 1.2;     /* 24px: абзацы 120/96/96 = 5/4/4 строки */
+}
 @media (min-width: 900px) {
   .quote__para { margin-left: calc(var(--step) * var(--s-8)); }
+  /* Ширины абзацев замерены поштучно — от них зависит, где встанут
+     переносы. Без них строки ломались не там, где в макете */
+  .quote__para:nth-of-type(1) { max-width: 635px; }
+  .quote__para:nth-of-type(2) { max-width: 544px; }
+  .quote__para:nth-of-type(3) { max-width: 447px; }
 }
 .quote__para + .quote__para { margin-top: var(--s-5); }
 .quote__text cite {
@@ -2234,11 +2286,16 @@ body[data-modal-open] {
   font-style: normal;
   font-weight: 600;
 }
+.quote__media { align-self: center; }
 .quote__media picture, .quote__media img, .quote__media .ph {
-  aspect-ratio: auto;
+  /* Квадрат 600×600 по инспектору (Rectangle 27 в блоке «Цитата»),
+     а не растянутая на всю высоту полоса. block-size здесь перебивает
+     общее правило заглушки .ph, которое ставит свою высоту. */
+  aspect-ratio: 1;
   width: 100%;
-  min-height: 460px;
-  height: 100%;
+  block-size: auto;
+  min-block-size: 0;
+  height: auto;
   object-fit: cover;
   border-start-start-radius: var(--radius-lg);
   border-end-start-radius: var(--radius-lg);
@@ -2278,8 +2335,11 @@ body[data-modal-open] {
   position: relative;
   isolation: isolate;
   display: grid;
-  align-content: end;
-  gap: var(--s-2);
+  /* Два явных ряда: свободное место, потом кнопка. Раньше подпись стояла
+     в ячейке «1 / 1» с align-self: end — её бокс дотягивался до низа
+     карточки и ложился поверх кнопки «Забронировать» */
+  grid-template-rows: 1fr auto;
+  gap: 16px;
   /* 32px по бокам — из замера: кнопка «Забронировать» Fill 546 внутри
      карточки 610, значит (610−546)/2 = 32 ровно. */
   padding: var(--s-4) 32px 20px;
@@ -2339,14 +2399,18 @@ body[data-modal-open] {
 .house__overlay {
   position: relative;
   z-index: 2;
-  grid-area: 1 / 1;
+  grid-row: 1;
   align-self: end;
   display: flex;
-  flex-wrap: wrap;
+  /* Переносить нельзя: при длинной подписи «Подробнее» сваливалась на
+     следующую строку, вылезала за низ фотографии и белым ободком
+     проступала из-под кнопки «Забронировать». Вместо переноса даём
+     тексту сжиматься, а кнопке — фиксированную ширину */
+  flex-wrap: nowrap;
   gap: var(--s-3);
   align-items: center;
   justify-content: space-between;
-  padding: var(--s-5);
+  padding: 0;
   color: var(--c-cream);
 }
 /* Инспектор: название Montserrat 600 / 24px / 100%, подпись
@@ -2359,6 +2423,8 @@ body[data-modal-open] {
   line-height: 1;
 }
 .house__link { color: inherit; text-decoration: none; }
+.house__info { min-width: 0; }
+.house__more { flex: none; }
 .house__meta {
   margin-top: var(--s-2);
   color: #FFFFFF;
@@ -2373,7 +2439,7 @@ body[data-modal-open] {
 .house__more {
   background: transparent;
   border: 1px solid #FFFFFF;
-  border-radius: var(--radius-lg);
+  border-radius: 20px;   /* инспектор Frame 2087326555: 153×40, радиус 20 */
   color: #FFFFFF;
   padding: 10px 28px;
   font-size: 1rem;
@@ -2403,11 +2469,16 @@ body[data-modal-open] {
    ТЗ). Поэтому фон затемнён до #746F4C — ровно 4.5, на глаз от
    макетного неотличим. Всё остальное как в макете. */
 .house__book {
+  grid-row: 2;
   width: 100%;
   min-height: 52px;
   padding: 14px 40px;
-  border-radius: var(--radius-pill);
-  background: var(--c-olive-dark);
+  border-radius: 100px;
+  /* Ровно как в макете (Frame 2087326541, Fill 546 × 52, #847F57).
+     Оговорка: кремовый на #847F57 даёт 3.6, текст здесь 20px, а п. 10.13
+     требует 4.5. Раньше стоял затемнённый #746F4C ради нормы — вернул
+     макетный по прямому указанию, конфликт вынесен в открытые вопросы. */
+  background: var(--c-olive);
   color: var(--c-cream);
   font-size: 1.25rem;
   font-weight: 500;
@@ -2434,11 +2505,13 @@ body[data-modal-open] {
 }
 
 .place {
-  display: grid;
+  /* Столбик, чтобы кнопку можно было прижать к низу: в макете все три
+     «Подробнее» стоят на одной линии, а описания разной длины */
+  display: flex;
+  flex-direction: column;
   /* Внутренние размеры по инспектору (Frame 2087326601):
      поля 40px сверху и снизу, 20px по бокам, зазор между блоками 40px. */
   gap: var(--s-7);
-  align-content: start;
   padding: var(--s-7) var(--s-4);
   border-radius: var(--radius-lg);
   color: var(--c-cream);
@@ -2453,7 +2526,18 @@ body[data-modal-open] {
 .place--dark { background: #1E1E1E; }
 .place--olive { background: #746F4C; }
 
+/* Инспектор (Frame 2087326597): блок «номер + название» ровно 146px
+   при любой длине названия — от этого зависит, встанут ли фото трёх
+   карточек на одну линию. Названия в макете двухстрочные. */
 .place__head { text-align: center; }
+@media (min-width: 900px) {
+  .place__head {
+    min-height: 146px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}
 .place__number {
   font-family: var(--font-heading);
   font-size: 2rem;
@@ -2468,14 +2552,25 @@ body[data-modal-open] {
   font-size: 1.75rem;
   line-height: 1.1;
 }
+/* Фото не сжимается под длинное описание: в макете все три кадра
+   одной высоты, а флекс-колонка ужимала третий */
+.place__media { flex: none; }
 .place__media picture, .place__media img, .place__media .ph {
   border-radius: var(--radius);
-  aspect-ratio: 4 / 3;
+  /* 360×260 — из замеров: шапка занимает 40..186, блок описания
+     начинается на 486, между ними зазор 40. При 4/3 картинка была на
+     10px выше и карточка вылезала за 700 */
+  aspect-ratio: 360 / 260;
   object-fit: cover;
   min-height: 0;
 }
+/* Тянущийся блок: описание сверху, кнопка прижата к низу карточки.
+   Без него margin-top: auto у кнопки не работал — .place__actions лежит
+   внутри .place__body, а не прямо в колонке карточки */
+.place__body { flex: 1; display: flex; flex-direction: column; }
 .place__body p { font-size: 0.9375rem; line-height: 1.35; }
-.place__actions { margin-top: var(--s-4); }
+/* Прижимаем к низу карточки — тогда кнопки трёх карточек на одной линии */
+.place__actions { margin-top: auto; }
 .place__more {
   width: 100%;
   background: var(--c-cream);
@@ -2483,12 +2578,20 @@ body[data-modal-open] {
 }
 .place__more:hover { background: var(--c-white); color: var(--c-deep); }
 
-/* Контурная кнопка-пилюля терракотой — «Больше интересных мест рядом» */
+/* Контурная кнопка-пилюля терракотой — «Больше интересных мест рядом».
+   Инспектор (Frame 2087326585): 443×52, радиус 100, рамка 1px #9B5026,
+   поля 14/40, зазор до стрелки 10px. */
 .btn--ghost {
   background: transparent;
-  border-color: var(--c-terra);
+  border: 1px solid var(--c-terra);
+  border-radius: 100px;
   color: var(--c-terra);
+  min-height: 52px;
+  padding: 14px 40px;
+  gap: 10px;
 }
+/* 60px до кнопки: ряд карточек кончается на 855, кнопка стоит на 915 */
+.cards--nearby + .center { margin-top: 60px; }
 .btn--ghost:hover { background: var(--c-terra); color: var(--c-cream); }
 
 /* ---------- Аккордеон вопросов ---------- */

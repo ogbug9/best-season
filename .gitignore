@@ -32,3 +32,6 @@ design/out/
 # попадать не должны: один такой уже уехал на GitHub и в Amvera (1,8 МБ)
 *.tar.gz
 *.zip
+Claude outputs/
+Claude outputs/
+Claude outputs/

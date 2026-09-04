@@ -204,15 +204,18 @@
               </p>
             {% endif %}
 
-            <div class="house__overlay">
-              <div class="house__info">
-                <h3 class="house__title"><a class="house__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
-                <p class="house__meta">
-                  {{ house.capacity }} спальных места{% if house.short_description %} + {{ house.short_description }}{% endif %}
-                </p>
-              </div>
-              <a class="btn house__more" href="{% pageurl house %}">Подробнее</a>
+          </div>
+
+          {% comment %} Подпись — прямой ребёнок карточки, а не .house__media: {% endcomment %}
+          {% comment %} внутри медиа она игнорировала ряды сетки и накрывала кнопку {% endcomment %}
+          <div class="house__overlay">
+            <div class="house__info">
+              <h3 class="house__title"><a class="house__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
+              <p class="house__meta">
+                {{ house.capacity }} спальных места{% if house.short_description %} + {{ house.short_description }}{% endif %}
+              </p>
             </div>
+            <a class="btn house__more" href="{% pageurl house %}">Подробнее</a>
           </div>
 
           <button type="button" class="btn house__book" data-booking-open data-entry-point="3">
