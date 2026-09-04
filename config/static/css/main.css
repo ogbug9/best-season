@@ -1533,22 +1533,36 @@ body {
 }
 .faq__question {
   border-radius: var(--radius);
-  background: var(--c-olive);
-  /* Кремовый на оливковом даёт 3.0 — для полужирного от 18.66px это норма
-     по п. 10.13, поэтому кегль ниже не опускаем */
+  /* В макете плашки чередуются: нечётные тёмные, чётные оливковые.
+     Оливковый берём затемнённый: на #847F57 кремовый даёт 3.6 при
+     норме 4.5 для обычного текста (п. 10.13) */
+  background: var(--c-olive-dark);
   color: var(--c-cream);
   font-size: 1.125rem;
 }
+.faq__item:nth-child(odd) .faq__question { background: var(--c-card-dark); }
 .faq__question::after { color: var(--c-cream); }
 .faq__item[open] .faq__question { border-end-start-radius: 0; border-end-end-radius: 0; }
+
+/* Ответ в макете лежит прямо на кремовом фоне: ни рамки, ни белой
+   подложки. Боковые поля 32px — из замера: плашка 1240, текст 1176 */
 .faq__answer {
-  border: 1px solid var(--c-dark-soft);
-  border-top: 0;
-  border-end-start-radius: var(--radius);
-  border-end-end-radius: var(--radius);
-  padding: var(--s-4);
-  background: var(--c-white);
+  border: 0;
+  border-radius: 0;
+  padding: var(--s-4) 32px var(--s-5);
+  background: transparent;
+  color: var(--c-dark);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.5rem;      /* 24px, inspector */
+  /* 29px, а не 24: панель Figma пишет «100%», но высота узлов даёт ровно
+     29 на строку (116/4 и 377/13) — это auto-leading Montserrat 1.22 */
+  line-height: 1.20833;
 }
+.faq__answer p { margin: 0 0 1em; }
+.faq__answer p:last-child, .faq__answer ul:last-child { margin-bottom: 0; }
+.faq__answer ul { margin: 0 0 1em; padding-left: 1.2em; }
+.faq__answer a { color: inherit; text-decoration: underline; text-decoration-skip-ink: auto; }
 
 /* ---------- Ряд кнопок-разделов на первом экране ---------- */
 .hero__links {
