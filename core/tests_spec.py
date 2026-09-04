@@ -30,7 +30,9 @@ SPEC = json.loads((ROOT / "design/spec.json").read_text(encoding="utf-8"))
 CSS = (ROOT / "config/static/css/main.css").read_text(encoding="utf-8")
 
 # Источники, которые считаются фактом. Всё остальное — догадка.
-FACT_SOURCES = {"inspector", "reference", "derived", "requirement"}
+# «sozvon» — значение изменено договорённостью на созвоне и намеренно
+# расходится с макетом. Это факт с протоколом, а не догадка.
+FACT_SOURCES = {"inspector", "reference", "derived", "requirement", "sozvon"}
 
 
 def css_without_comments(text):
@@ -144,8 +146,16 @@ class CssMatchesRegistryTests(SimpleTestCase):
             self.assert_in_css(SPEC["tokens"][key]["value"],
                                f"цвет палитры {key}")
 
-    def test_hero_height_from_reference(self):
-        self.assert_in_css("877px", "высота первого экрана, замер по эталону")
+    def test_hero_zanimaet_ves_ekran(self):
+        """Созвон 04.09: первый экран должен занимать весь экран.
+
+        Раньше здесь было закреплено 877px — высота из эталона макета.
+        Настя на созвоне: «чтобы первый экран был первым экраном, вообще
+        на весь экран, я это так сначала задумывала». Решение отменяет
+        прежний замер, поэтому и проверка изменилась вместе с ним.
+        svh, а не vh: на телефонах панель браузера съедает часть vh.
+        """
+        self.assert_in_css("100svh", "первый экран во всю высоту окна")
 
     def test_section_title_size(self):
         self.assert_in_css("5.625rem", "заголовок секции 90px = 5.625rem")
