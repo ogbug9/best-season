@@ -171,3 +171,62 @@ class TemplateHygieneTests(TestCase):
         self.assertEqual(
             bad, [], f"Многострочные {{# #}} попадут в HTML как текст: {bad}"
         )
+
+
+class HouseCardSliderTests(TestCase):
+    """Карусель фотографий в карточке домика на главной.
+
+    В макете под фото стоят три точки — карточка листается. Слайды
+    собираются из обложки и первых кадров галереи, дубли не берём.
+    """
+
+    @staticmethod
+    def _image(name):
+        import io as _io
+        from PIL import Image as PILImage
+        from wagtail.images import get_image_model
+
+        buffer = _io.BytesIO()
+        PILImage.new("RGB", (800, 600), "olive").save(buffer, format="JPEG")
+        buffer.seek(0)
+        return get_image_model().objects.create(
+            title=name, file=ImageFile(buffer, name=f"{name}.jpg")
+        )
+
+    @classmethod
+    def setUpTestData(cls):
+        from houses.models import HouseGalleryImage, HouseIndexPage, HousePage
+
+        site = Site.objects.get(is_default_site=True)
+        site.hostname = "testserver"
+        site.save()
+        index = HouseIndexPage(title="Размещение", slug="razmeshchenie-slider")
+        site.root_page.add_child(instance=index)
+
+        cls.house = HousePage(title="Домик со слайдером", slug="so-slayderom", capacity=4)
+        cls.house.hero_image = cls._image("oblozhka")
+        index.add_child(instance=cls.house)
+        for i in range(4):
+            HouseGalleryImage.objects.create(page=cls.house, image=cls._image(f"kadr-{i}"))
+
+        cls.pustoy = HousePage(title="Домик без фото", slug="bez-foto", capacity=4)
+        index.add_child(instance=cls.pustoy)
+
+    def test_beryotsya_rovno_tri_kadra(self):
+        """Галерея из пяти кадров, а в карточке показываем три — как в макете."""
+        self.assertEqual(len(self.house.card_slides), 3)
+
+    def test_pervyy_kadr_oblozhka(self):
+        self.assertEqual(self.house.card_slides[0], self.house.hero_image)
+
+    def test_dubli_ne_povtoryayutsya(self):
+        slides = self.house.card_slides
+        self.assertEqual(len(slides), len(set(s.pk for s in slides)))
+
+    def test_bez_fotografiy_slaydov_net(self):
+        self.assertEqual(self.pustoy.card_slides, [])
+
+    def test_predel_tri_kadra(self):
+        from houses.models import HousePage
+
+        self.assertEqual(HousePage.CARD_SLIDES, 3, "в макете ровно три точки")

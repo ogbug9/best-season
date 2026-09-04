@@ -189,11 +189,33 @@
       {% for house in houses %}
         <li class="house">
           <div class="house__media">
-            {% if house.hero_image %}
-              {% picture house.hero_image preset="card" alt=house.title %}
-            {% else %}
-              <span class="ph" aria-hidden="true"></span>
-            {% endif %}
+            {% comment %} Слайды карточки: обложка плюс первые кадры галереи. {% endcomment %}
+            {% comment %} В макете под фото три точки — карточка листается. {% endcomment %}
+            {% with slides=house.card_slides %}
+              {% if slides %}
+                <div class="house__slides" data-house-slider>
+                  {% for image in slides %}
+                    <div class="house__slide{% if forloop.first %} is-active{% endif %}"
+                         {% if not forloop.first %}aria-hidden="true"{% endif %}>
+                      {% picture image preset="card" alt=house.title %}
+                    </div>
+                  {% endfor %}
+                </div>
+                {% if slides|length > 1 %}
+                  <div class="house__dots" role="tablist" aria-label="Фотографии домика">
+                    {% for image in slides %}
+                      <button type="button" class="house__dot{% if forloop.first %} is-active{% endif %}"
+                              role="tab" data-house-dot="{{ forloop.counter0 }}"
+                              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                        <span class="visually-hidden">Фото {{ forloop.counter }}</span>
+                      </button>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              {% else %}
+                <span class="ph" aria-hidden="true"></span>
+              {% endif %}
+            {% endwith %}
 
             {% comment %} Лента с ценой в правом верхнем углу — как в макете {% endcomment %}
             {% if house.price_from %}

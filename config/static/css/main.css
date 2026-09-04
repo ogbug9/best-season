@@ -126,6 +126,14 @@ body {
   margin: 0;
 }
 
+/* Длинные русские слова в крупных заголовках не влезают в узкий экран:
+   «бронирования» на 375px требует 366px при доступных 335. Переносим по
+   слогам — у документа lang="ru", браузер знает правила переноса,
+   а break-word оставляем на случай, если словарь недоступен. */
+.site :where(h1, h2, h3, h4, h5, h6) {
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
 .site :where(h1, h2, h3, h4, h5, h6) {
   font-family: var(--font-heading);
   line-height: var(--lh-heading);
@@ -2422,6 +2430,66 @@ body[data-modal-open] {
   font-weight: 600;
   line-height: 1;
 }
+/* ---------- Карусель фотографий в карточке домика ----------
+   В макете под фото три точки. Слайды лежат стопкой в той же ячейке
+   сетки: так высота карточки не зависит от того, какой кадр показан. */
+.house__slides {
+  position: absolute;
+  inset: 0;
+  display: grid;
+}
+.house__slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.house__slide.is-active { opacity: 1; pointer-events: auto; }
+.house__slide picture,
+.house__slide img,
+.house__slide .ph {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.house__dots {
+  position: absolute;
+  z-index: 3;
+  inset-inline: 0;
+  /* 63% высоты карточки — по макету точки стоят заметно выше подписи.
+     Доля, а не пиксели: карточка задана пропорцией 610/500 и ужимается
+     на узких экранах вместе с точками */
+  top: 63%;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.house__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(247, 240, 230, 0.45);
+  cursor: pointer;
+  position: relative;
+}
+/* Зона нажатия расширена ровно до шага между точками (16px) и 24px по
+   высоте. Больше нельзя: при 44px соседние зоны перекрывались и точка
+   перехватывала клики по соседней — карусель не листалась вовсе.
+   Шаг задан макетом, поэтому до рекомендованных 24×24 не дотягиваем;
+   вопрос вынесен в открытые. */
+.house__dot::after {
+  content: "";
+  position: absolute;
+  inset: -8px -4px;
+}
+.house__dot.is-active { background: var(--c-cream); }
+.house__dot:focus-visible { outline: 2px solid var(--c-cream); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .house__slide { transition: none; }
+}
+
 .house__link { color: inherit; text-decoration: none; }
 .house__info { min-width: 0; }
 .house__more { flex: none; }

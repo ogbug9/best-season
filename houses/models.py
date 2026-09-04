@@ -160,6 +160,24 @@ class HousePage(Page):
     def gallery_count(self):
         return self.gallery_images.count() if self.pk else 0
 
+    # В макете под фото карточки три точки, то есть листаются три кадра.
+    # Больше не берём: карточка на главной — витрина, а не галерея,
+    # весь набор лежит на странице дома.
+    CARD_SLIDES = 3
+
+    @property
+    def card_slides(self):
+        """Кадры для карусели в карточке на главной: обложка плюс галерея."""
+        if not self.pk:
+            return []
+        slides = [self.hero_image] if self.hero_image else []
+        for item in self.gallery_images.all()[: self.CARD_SLIDES]:
+            if item.image and item.image not in slides:
+                slides.append(item.image)
+            if len(slides) >= self.CARD_SLIDES:
+                break
+        return slides
+
     @property
     def amenities_by_group(self):
         """Удобства, сгруппированные для блока «Что входит»."""

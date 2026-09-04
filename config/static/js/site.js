@@ -162,3 +162,57 @@
     box.appendChild(frame);
   });
 })();
+
+/* Карусель фотографий в карточке домика.
+   Без библиотеки: три кадра, точки, свайп и стрелки с клавиатуры.
+   Без JS показывается первый слайд — карточка остаётся рабочей. */
+(function () {
+  document.querySelectorAll("[data-house-slider]").forEach(function (slider) {
+    var slides = Array.prototype.slice.call(slider.children);
+    if (slides.length < 2) return;
+
+    var card = slider.closest(".house");
+    var dots = card ? Array.prototype.slice.call(card.querySelectorAll("[data-house-dot]")) : [];
+    var current = 0;
+
+    function show(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach(function (slide, i) {
+        var active = i === current;
+        slide.classList.toggle("is-active", active);
+        if (active) slide.removeAttribute("aria-hidden");
+        else slide.setAttribute("aria-hidden", "true");
+      });
+      dots.forEach(function (dot, i) {
+        dot.classList.toggle("is-active", i === current);
+        dot.setAttribute("aria-selected", i === current ? "true" : "false");
+      });
+    }
+
+    dots.forEach(function (dot, i) {
+      dot.addEventListener("click", function (event) {
+        event.preventDefault();
+        show(i);
+      });
+      dot.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowRight") { event.preventDefault(); show(current + 1); dots[current].focus(); }
+        if (event.key === "ArrowLeft") { event.preventDefault(); show(current - 1); dots[current].focus(); }
+      });
+    });
+
+    // Свайп на телефоне. Горизонтальный жест переключает кадр,
+    // вертикальный не трогаем — иначе ломается прокрутка страницы.
+    var startX = null, startY = null;
+    slider.addEventListener("touchstart", function (event) {
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+    }, { passive: true });
+    slider.addEventListener("touchend", function (event) {
+      if (startX === null) return;
+      var dx = event.changedTouches[0].clientX - startX;
+      var dy = event.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
+      startX = startY = null;
+    }, { passive: true });
+  });
+})();
