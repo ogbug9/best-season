@@ -142,6 +142,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "ru"
 
+# Разряды в числах разделяются неразрывным пробелом: в макете цена
+# набрана как «8 000 ₽», а не «8000 ₽». Пробел именно неразрывный,
+# иначе строка может порваться между разрядом и знаком рубля.
+USE_THOUSAND_SEPARATOR = True
+THOUSAND_SEPARATOR = "\u00a0"
+NUMBER_GROUPING = 3
+
 TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
