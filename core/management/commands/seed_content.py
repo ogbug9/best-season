@@ -184,7 +184,8 @@ FAQ = [
 # Длинные фразы, которые стояли раньше, — мои заглушки, из-за них подпись
 # переносилась на две строки и ломала верх карточки.
 HOUSES = [
-    ("Первый домик", "финская сауна", 6000, 4, 42),
+    # 8000 у первого, 6000 у остальных — по макету (лента цены на карточке)
+    ("Первый домик", "финская сауна", 8000, 4, 42),
     ("Второй домик", "камин", 6000, 4, 42),
     ("Третий домик", "камин", 6000, 4, 42),
     ("Четвёртый домик", "камин", 6000, 4, 42),
@@ -371,11 +372,19 @@ class Command(BaseCommand):
                 # Короткую подпись с макета доставляем и в заведённые дома,
                 # но только поверх собственных заглушек
                 stale = (existing.short_description or "").strip()
+                changed = False
                 if stale != desc and (not stale or stale in STALE_HOUSE_DESC):
-                    if not self.dry:
-                        existing.short_description = desc
-                        existing.save()
+                    existing.short_description = desc
+                    changed = True
                     self.mark(f"дом, подпись с макета: {title}")
+                # Порядок правим и у заведённых: он снят с макета, а без
+                # него список сортируется по алфавиту
+                if existing.sort_order_index != order:
+                    existing.sort_order_index = order
+                    changed = True
+                    self.mark(f"дом, порядок по макету: {title}")
+                if changed and not self.dry:
+                    existing.save()
                 continue
             if self.dry:
                 self.mark(f"дом: {title}")
@@ -383,6 +392,10 @@ class Command(BaseCommand):
             page = HousePage(
                 title=title,
                 slug=f"domik-{order}",
+                # Порядок в списке задаём явно: без него сортировка падает
+                # на запасной ключ «по названию», и «Второй домик»
+                # оказывается перед «Первым»
+                sort_order_index=order,
                 short_description=desc,
                 price_from=price,
                 capacity=capacity,

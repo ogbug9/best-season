@@ -55,7 +55,7 @@
       <li>до {{ page.capacity }} чел.</li>
       {% if page.area %}<li>{{ page.area }} м²</li>{% endif %}
       {% if page.highlight %}<li>{{ page.highlight }}</li>{% endif %}
-      {% if page.price_from %}<li>от {{ page.price_from }} ₽/сутки</li>{% endif %}
+      {% if page.price_from %}<li>от {{ page.price_display }} ₽/сутки</li>{% endif %}
     </ul>
 
     {% include "includes/booking_cta.html" with entry_point="3" %}
@@ -126,7 +126,7 @@
       {% if page.price_from %}
         <div class="specs__item">
           <dt>Стоимость</dt>
-          <dd>от {{ page.price_from }} ₽/сутки</dd>
+          <dd>от {{ page.price_display }} ₽/сутки</dd>
         </div>
       {% endif %}
     </dl>
@@ -242,7 +242,7 @@
           </a>
           {% if other.short_description %}<p>{{ other.short_description }}</p>{% endif %}
           <p class="card__meta">
-            до {{ other.capacity }} чел.{% if other.price_from %} · от {{ other.price_from }} ₽/сутки{% endif %}
+            до {{ other.capacity }} чел.{% if other.price_from %} · от {{ other.price_display }} ₽/сутки{% endif %}
           </p>
         </li>
       {% endfor %}

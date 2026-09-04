@@ -60,7 +60,7 @@
           </p>
           <p class="card__foot">
             {% if house.price_from %}
-              <span class="price">от {{ house.price_from }} ₽<span class="price__unit"> / сутки</span></span>
+              <span class="price">от {{ house.price_display }} ₽<span class="price__unit"> / сутки</span></span>
             {% endif %}
             <a class="btn btn--outline btn--sm" href="{% pageurl house %}">Подробнее</a>
           </p>

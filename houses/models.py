@@ -157,6 +157,17 @@ class HousePage(Page):
         return self.gallery_images.count() < MIN_GALLERY_IMAGES
 
     @property
+    def price_display(self):
+        """Цена с разделителем тысяч, как в макете: «8 000», а не «8000».
+
+        Пробел неразрывный: иначе число может разорваться переносом
+        строки внутри ленты, а лента узкая.
+        """
+        if self.price_from is None:
+            return ""
+        return f"{self.price_from:,}".replace(",", "\u00a0")
+
+    @property
     def gallery_count(self):
         return self.gallery_images.count() if self.pk else 0
 
