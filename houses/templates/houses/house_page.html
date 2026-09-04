@@ -138,7 +138,9 @@
 
 {# ---------- 5. Что входит (п. 4.1.5) ---------- #}
 {% if page.amenities_by_group %}
-<section class="section section--deep">
+{% comment %} Секция светлая: в макете блок «Развернутое описание» стоит {% endcomment %}
+{% comment %} на кремовом фоне с тёмным текстом, а не на тёмной подложке {% endcomment %}
+<section class="section">
   <div class="container">
     <h2>Что входит</h2>
     <div class="amenities">
@@ -149,8 +151,10 @@
             {% for item in items %}
               {% icon item.icon as amenity_icon %}
               <li class="amenities__item">
-                {# Иконка не обязательна; пустое место сохраняем, чтобы подписи в столбце не разъехались #}
-                {% if amenity_icon %}{{ amenity_icon }}{% else %}<span class="icon" aria-hidden="true"></span>{% endif %}
+                {# В макете в этом блоке иконок нет: пункты идут вровень с #}
+                {# заголовком группы. Пустую заглушку не ставим — она сдвигала #}
+                {# подписи вправо. Если иконка задана, она выводится. #}
+                {% if amenity_icon %}{{ amenity_icon }}{% endif %}
                 <span>{{ item.name }}</span>
               </li>
             {% endfor %}
@@ -188,12 +192,19 @@
 {% if page.house_reviews %}
 <section class="section">
   <div class="container">
-    <h2>Отзывы о домике</h2>
-    <ul class="cards">
+    <h2 class="reviews__title">Отзывы о домике</h2>
+    {% comment %} Инспектор: три колонки по 397 с зазором 24, фото 397×220 {% endcomment %}
+    {% comment %} сверху, под ним текст. Фото необязательно. {% endcomment %}
+    <ul class="reviews">
       {% for review in page.house_reviews %}
-        <li class="card card--quote">
-          <blockquote><p>{{ review.text }}</p></blockquote>
-          <p class="card__meta">{{ review.author_name }}{% if review.visit_date %} · {{ review.visit_date|date:"F Y" }}{% endif %}</p>
+        <li class="reviews__item">
+          {% if review.image %}
+            <div class="reviews__media">
+              {% picture review.image preset="card" alt=review.author_name %}
+            </div>
+          {% endif %}
+          <blockquote class="reviews__text"><p>«{{ review.text }}»</p></blockquote>
+          <p class="reviews__author">{{ review.author_name }}{% if review.visit_date %} · {{ review.visit_date|date:"F Y" }}{% endif %}</p>
         </li>
       {% endfor %}
     </ul>

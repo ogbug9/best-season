@@ -26,6 +26,7 @@
 
 import argparse
 import json
+from urllib.parse import urlparse
 import re
 import subprocess
 import sys
@@ -50,6 +51,13 @@ const url = process.argv[3];
   // Группируем компоненты по ширине окна: разные брейкпоинты — разные замеры
   const byViewport = {};
   for (const [name, comp] of Object.entries(spec.components)) {
+    // Компонент с полем page проверяем только на своей странице: реестр
+    // охватывает несколько страниц, и чужие блоки иначе числятся ненайденными
+    if (comp.page) {
+      const path = new URL(url).pathname;
+      const match = comp.page === '/' ? path === '/' : path.startsWith(comp.page);
+      if (!match) continue;
+    }
     const w = comp.viewport || 1440;
     (byViewport[w] = byViewport[w] || []).push([name, comp]);
   }
@@ -139,6 +147,14 @@ def main():
     ok, bad, guesses, missing = 0, [], [], []
 
     for name, comp in spec["components"].items():
+        # Компонент, привязанный к своей странице, на чужой не проверяем —
+        # тот же фильтр, что и в браузерной части
+        page = comp.get("page")
+        if page:
+            path = urlparse(args.url).path
+            match = path == "/" if page == "/" else path.startswith(page)
+            if not match:
+                continue
         got = measured.get(name)
         if got is None:
             missing.append((name, comp["selector"]))

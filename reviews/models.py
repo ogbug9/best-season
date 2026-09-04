@@ -22,6 +22,16 @@ class Review(models.Model):
     """
 
     author_name = models.CharField("Имя автора", max_length=120)
+    # В макете страницы дома над каждым отзывом стоит фотография.
+    # Необязательная: на странице «Отзывы» отзывы идут без фото.
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        verbose_name="Фото к отзыву",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
     text = models.TextField("Текст отзыва")
     rating = models.PositiveSmallIntegerField(
         "Оценка",
@@ -57,6 +67,7 @@ class Review(models.Model):
             [
                 FieldPanel("author_name"),
                 FieldPanel("text"),
+                FieldPanel("image"),
                 FieldPanel("rating"),
                 FieldPanel("visit_date"),
             ],

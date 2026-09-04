@@ -883,6 +883,43 @@ body {
   }
 }
 
+/* ---------- Отзывы о домике ----------
+   Инспектор (Frame 2087326587 на странице «The First»): три колонки по
+   397px с зазором 24, фото 397×220 сверху, под ним 20px до текста.
+   Цвета сняты с выгрузки макета: заголовок #9B5026, текст #494949. */
+.reviews__title {
+  text-align: center;
+  color: var(--c-terra);
+}
+.reviews {
+  display: grid;
+  gap: 24px;
+  margin: var(--s-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 900px) {
+  .reviews { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.reviews__item { display: flex; flex-direction: column; }
+.reviews__media { margin-bottom: 20px; }
+.reviews__media picture,
+.reviews__media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 397 / 220;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+.reviews__text { margin: 0; color: var(--c-dark); }
+.reviews__text p { margin: 0; }
+/* Имя автора прижато вправо — так в макете */
+.reviews__author {
+  margin-top: var(--s-3);
+  text-align: right;
+  color: var(--c-dark);
+}
+
 /* ---------- Просмотрщик фото ---------- */
 .lightbox {
   width: min(96vw, 1200px);
@@ -972,28 +1009,43 @@ body {
 }
 
 /* ---------- Что входит ---------- */
+/* Инспектор («Развернутое описание»): подложка #985026 15%, скругление
+   10px, поля 20px сверху и снизу, 32px по бокам. Колонка группы 320px,
+   зазор между пунктами 16px. */
 .amenities {
   display: grid;
-  gap: var(--s-6);
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  padding: 20px 32px;
+  border-radius: 10px;
+  background: rgba(152, 80, 38, 0.15);
 }
+/* Заголовок группы: Montserrat 600 / 20px. Межстрочный 1.2, а не 1:
+   узел «Сауна» 24px высотой при кегле 20 — панель снова пишет «100%»,
+   но это Auto (см. _meta.ловушка_line_height в реестре). */
 .amenities__title {
-  padding-bottom: var(--s-2);
-  border-bottom: 1px solid rgba(247, 240, 230, 0.25);
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 1.25rem;
+  line-height: 1.2;
+  color: var(--c-dark);
 }
 .amenities__list {
-  margin: var(--s-4) 0 0;
+  margin: var(--s-3) 0 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: var(--s-3);
+  gap: 16px;
 }
+/* Пункт: Montserrat 400 / 20px / 24px, #494949 */
 .amenities__item {
   display: flex;
   align-items: center;
   gap: var(--s-3);
-  font-size: 1rem;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  color: var(--c-dark);
 }
 .icon {
   display: block;
@@ -2307,7 +2359,7 @@ body[data-modal-open] {
   .quote__para:nth-of-type(2) { max-width: 544px; }
   .quote__para:nth-of-type(3) { max-width: 447px; }
 }
-.quote__para + .quote__para { margin-top: var(--s-5); }
+.quote__para + .quote__para { margin-top: 32px; }  /* Gap 32 по инспектору */
 .quote__text cite {
   display: block;
   margin-top: var(--s-5);
