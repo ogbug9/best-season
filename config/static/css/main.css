@@ -759,6 +759,26 @@ body {
   }
 }
 
+/* ---------- Мозаика фото на странице домика ----------
+   Инспектор (фрейм «Фото» страницы «The First»): большой кадр 609×365
+   слева, четыре по 294×172 сеткой справа, зазоры 21px.
+   609 + 22 + 294 + 21 + 294 = 1240 — ровно ширина контейнера.
+   Доли, а не пиксели: на узких экранах раскладка ужимается целиком. */
+@media (min-width: 900px) {
+  .gallery--house {
+    grid-template-columns: 609fr 294fr 294fr;
+    grid-auto-rows: 1fr;
+    gap: 21px;
+    aspect-ratio: 1240 / 365;
+  }
+  .gallery--house .gallery__item:first-child {
+    grid-column: 1;
+    grid-row: span 2;
+  }
+  .gallery--house .gallery__item { min-height: 0; }
+  .gallery--house .gallery__link { aspect-ratio: auto; height: 100%; }
+}
+
 .gallery__link {
   display: block;
   overflow: hidden;

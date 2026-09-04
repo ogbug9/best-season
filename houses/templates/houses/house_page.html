@@ -70,10 +70,10 @@
   <div class="container">
     <h2>Галерея</h2>
 
-    <ul class="gallery" data-gallery>
+    <ul class="gallery gallery--house" data-gallery>
       {% for item in page.gallery_images.all %}
         {% image item.image width-1600 as full %}
-        <li class="gallery__item{% if forloop.counter > 6 %} gallery__item--rest{% endif %}">
+        <li class="gallery__item{% if forloop.counter > 5 %} gallery__item--rest{% endif %}">
           <a class="gallery__link" href="{{ full.url }}"
              data-gallery-item
              data-full="{{ full.url }}"
@@ -84,7 +84,7 @@
       {% endfor %}
     </ul>
 
-    {% if page.gallery_count > 6 %}
+    {% if page.gallery_count > 5 %}
       <p class="gallery__more">
         <button type="button" class="btn btn--outline" data-gallery-more hidden>
           Показать все {{ page.gallery_count }} фото
