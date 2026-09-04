@@ -812,18 +812,21 @@ body {
 /* Текст стоит в свободной середине мозаики. Границы блока взяты по
    просветам между плитками (220..1190 по горизонтали, 310..880 по
    вертикали), сам блок инспектором не мерился. */
+/* Блок замерен: 756x303 в точке x=327, y=443 внутри фрейма 1440x1290.
+   Раньше стоял по центру на глаз — заголовок вылезал за колонку */
 .photo-mosaic__text {
   position: absolute;
-  left: 50%;
-  top: 46%;
-  transform: translate(-50%, -50%);
-  /* Узкая колонка подводки — как в макете; заголовок намеренно шире её
-     и выходит за края, там он тоже выходит */
-  width: 26%;
+  left: 22.7083%;   /* 327 / 1440 */
+  top: 34.3411%;    /* 443 / 1290 */
+  width: 52.5%;     /* 756 / 1440 */
   text-align: center;
 }
+.photo-mosaic__text .section__lead {
+  width: 89.1534%;  /* 674 / 756 */
+  margin-inline: auto;
+}
 @media (min-width: 1000px) {
-  /* Заголовок в макете стоит одной строкой и шире колонки подводки */
+  /* Заголовок в макете — одна строка ровно по ширине блока (756px) */
   .photo-mosaic__text .section__title { white-space: nowrap; }
 }
 .photo-mosaic__text .section__title { margin: 0 0 var(--s-3); }
@@ -845,7 +848,8 @@ body {
   .photo-mosaic__item:nth-child(n + 10) { display: block; }
   .photo-mosaic__text {
     position: static;
-    transform: none;
+    left: auto;
+    top: auto;
     width: auto;
     margin-bottom: var(--s-5);
   }
@@ -1224,7 +1228,7 @@ body {
 .mosaic--photos .mosaic__item { min-height: 160px; }
 
 /* ---------- Аккордеон вопросов ---------- */
-.faq { display: grid; gap: var(--s-3); }
+.faq { display: grid; gap: 20px; }  /* зазор плашек, замер инспектора */
 
 .faq__item {
   border: 1px solid var(--c-dark-soft);
@@ -1610,16 +1614,10 @@ body {
   border: 0;
   background: transparent;
 }
-.faq__question {
-  border-radius: var(--radius);
-  /* В макете плашки чередуются: нечётные тёмные, чётные оливковые.
-     Оливковый берём затемнённый: на #847F57 кремовый даёт 3.6 при
-     норме 4.5 для обычного текста (п. 10.13) */
-  background: var(--c-olive-dark);
-  color: var(--c-cream);
-  font-size: 1.125rem;
-}
-.faq__item:nth-child(odd) .faq__question { background: var(--c-card-dark); }
+/* Плашка вопроса описана ниже одним блоком по замерам инспектора
+   (.faq__item .faq__question). Здесь раньше стояли кегль 18px и
+   переменная --c-card-dark, которой в палитре нет — правило молча не
+   работало, а цвет приходил от классов .faq__item--dark/--olive. */
 .faq__question::after { color: var(--c-cream); }
 .faq__item[open] .faq__question { border-end-start-radius: 0; border-end-end-radius: 0; }
 
@@ -1787,10 +1785,6 @@ body {
 /* Ровно 700: проверка доступности считает полужирным только 700,
    при 600 текст остаётся «обычным» и требует 4.5 вместо 3.0 */
 .mosaic__more {
-  font-weight: 700;
-  font-size: 1.25rem;
-}
-.faq__question {
   font-weight: 700;
   font-size: 1.25rem;
 }
@@ -2137,8 +2131,21 @@ body[data-modal-open] {
      контейнера и прижат к левому краю кадра — фото уходит в край,
      это осознанный разрыв сетки в макете, а не ошибка. */
   .about {
-    grid-template-columns: 560fr 652fr;
+    /* Ровно по инспектору: фото 0..560, текст 640..1212, зазор 80.
+       Доли (fr) здесь не годятся — колонка подстраивалась под текст
+       и отбирала ширину у фото */
+    grid-template-columns: 560px 652px;
+    column-gap: 0;
     max-width: 1212px;
+    /* Высоту секции задаёт фото (800px по инспектору), а не текст.
+       Без этого высота плыла: у разных сборок браузера перенос строк
+       чуть разный, и секция получалась то 800, то 828. Текстовая
+       колонка в макете занимает 647 из 800 — запас на перенос есть */
+    block-size: clamp(420px, 55.56vw, 800px);
+  }
+  .about__text p {
+    font-size: 1.25rem;      /* 20px, инспектор */
+    line-height: 1.2;        /* 24px: абзацы в макете 144 и 216 = 6 и 9 строк */
   }
 }
 .about__media { position: relative; }
@@ -2158,13 +2165,29 @@ body[data-modal-open] {
      догадка, инспектор показал, что угол принадлежит фото. */
   border-radius: 0 0 var(--radius-lg) 0;
 }
+@media (min-width: 900px) {
+  /* Порядок важен: базовое правило выше задаёт min-height, и в
+     медиазапросе ДО него этот сброс не срабатывал. Внутри секции с
+     закреплённой высотой фото следует за ней, а не диктует свою. */
+  .about__media,
+  .about__media picture,
+  .about__media img,
+  .about__media .ph {
+    block-size: 100%;
+    min-block-size: 0;
+  }
+
+}
 .about__panel {
   background: var(--c-cream);
   padding: var(--s-8) var(--s-7);
 }
 @media (min-width: 900px) {
-  .about__panel { padding: var(--s-9) var(--s-8); }
-  /* Текст внутри панели держим на ширине колонки из макета — 572px */
+  /* Поля по инспектору: текст занимает 640..1212 (572px), слева от него
+     80px до фото, сверху 120px до заголовка. Раньше стояло по 60px с
+     обеих сторон, и колонка сжималась до 452px — текст не помещался в
+     800px секции и распирал её до 882 */
+  .about__panel { padding: 120px 0 0 80px; }
   .about__text { max-width: 572px; }
 }
 
@@ -2469,7 +2492,7 @@ body[data-modal-open] {
 .btn--ghost:hover { background: var(--c-terra); color: var(--c-cream); }
 
 /* ---------- Аккордеон вопросов ---------- */
-.faq { display: grid; gap: var(--s-3); }
+.faq { display: grid; gap: 20px; }  /* зазор плашек, замер инспектора */
 .faq__item {
   border-radius: var(--radius);
   overflow: hidden;
@@ -2493,7 +2516,7 @@ body[data-modal-open] {
   border-radius: var(--radius);
   color: var(--c-cream);
   font-size: 2rem;
-  line-height: 1;
+  line-height: 1.21875;   /* 39/32 — высота узла в макете, не «100%» */
   font-weight: 500;
   cursor: pointer;
   list-style: none;
