@@ -772,6 +772,85 @@ body {
 
 .gallery__more { margin-top: var(--s-5); }
 
+/* ---------- Фотогалерея: мозаика по координатам макета ----------
+   Единственная секция главной во всю ширину фрейма (1440), а не в
+   контейнере 1240 — так в макете. Плитки расставлены абсолютно по
+   замерам инспектора: доли считаны от фрейма 1440x1290, поэтому
+   композиция сохраняется на любой ширине экрана.
+   Повёрнутые на -90 узлы записаны уже в экранных величинах. */
+.section--gallery > .photo-mosaic { max-width: 1440px; margin-inline: auto; }
+.photo-mosaic {
+  position: relative;
+  aspect-ratio: 1440 / 1290;
+}
+.photo-mosaic__tiles { margin: 0; padding: 0; list-style: none; }
+.photo-mosaic__item {
+  position: absolute;
+  overflow: hidden;
+  border-radius: var(--radius);   /* 10px, замер плиток */
+}
+.photo-mosaic__item picture,
+.photo-mosaic__item img,
+.photo-mosaic__item .ph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* В макете кадров ровно девять, остальные уводим на страницу галереи */
+.photo-mosaic__item:nth-child(n + 10) { display: none; }
+.photo-mosaic__item:nth-child(1) { left: 0.0%; top: 0.0%; width: 34.7222%; height: 19.3798%; }
+.photo-mosaic__item:nth-child(2) { left: 38.8889%; top: 5.5814%; width: 24.3056%; height: 19.3798%; }
+.photo-mosaic__item:nth-child(3) { left: 67.3611%; top: 0.0%; width: 28.4722%; height: 19.3798%; }
+.photo-mosaic__item:nth-child(4) { left: 0.0%; top: 24.031%; width: 15.2778%; height: 44.186%; }
+.photo-mosaic__item:nth-child(5) { left: 82.6389%; top: 24.031%; width: 17.3611%; height: 34.8837%; }
+.photo-mosaic__item:nth-child(6) { left: 79.8611%; top: 63.5659%; width: 15.9722%; height: 27.1318%; }
+.photo-mosaic__item:nth-child(7) { left: 58.3333%; top: 68.2171%; width: 17.3611%; height: 31.0078%; }
+.photo-mosaic__item:nth-child(8) { left: 19.4444%; top: 72.8682%; width: 34.7222%; height: 19.3798%; }
+.photo-mosaic__item:nth-child(9) { left: 0.0%; top: 72.8682%; width: 15.2778%; height: 27.1318%; }
+
+/* Текст стоит в свободной середине мозаики. Границы блока взяты по
+   просветам между плитками (220..1190 по горизонтали, 310..880 по
+   вертикали), сам блок инспектором не мерился. */
+.photo-mosaic__text {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  /* Узкая колонка подводки — как в макете; заголовок намеренно шире её
+     и выходит за края, там он тоже выходит */
+  width: 26%;
+  text-align: center;
+}
+@media (min-width: 1000px) {
+  /* Заголовок в макете стоит одной строкой и шире колонки подводки */
+  .photo-mosaic__text .section__title { white-space: nowrap; }
+}
+.photo-mosaic__text .section__title { margin: 0 0 var(--s-3); }
+.photo-mosaic__text .section__lead { margin: 0 0 var(--s-4); }
+
+/* Раскладку макета держим только на десктопе: мобильная мозаика не
+   мерилась, и растягивать девять абсолютных плиток вслепую нельзя */
+@media (max-width: 999px) {
+  .photo-mosaic { aspect-ratio: auto; }
+  .photo-mosaic__tiles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--s-3);
+  }
+  .photo-mosaic__item {
+    position: static;
+    aspect-ratio: 1;
+  }
+  .photo-mosaic__item:nth-child(n + 10) { display: block; }
+  .photo-mosaic__text {
+    position: static;
+    transform: none;
+    width: auto;
+    margin-bottom: var(--s-5);
+  }
+}
+
 /* ---------- Просмотрщик фото ---------- */
 .lightbox {
   width: min(96vw, 1200px);
@@ -1546,7 +1625,7 @@ body {
 
 /* Ответ в макете лежит прямо на кремовом фоне: ни рамки, ни белой
    подложки. Боковые поля 32px — из замера: плашка 1240, текст 1176 */
-.faq__answer {
+.faq__item .faq__answer {
   border: 0;
   border-radius: 0;
   padding: var(--s-4) 32px var(--s-5);
@@ -2432,10 +2511,9 @@ body[data-modal-open] {
   transition: transform 0.2s ease;
 }
 .faq__item[open] .faq__question::after { transform: rotate(-135deg) translate(-3px, -3px); }
-.faq__item .faq__answer {
-  padding: 0 var(--s-5) var(--s-5);
-  color: var(--c-cream);
-}
+/* Значения ответа собраны в одном правиле выше (.faq__answer, замеры
+   инспектора). Здесь раньше стоял кремовый текст — наследие тёмной
+   секции; на кремовом фоне он был почти нечитаем. */
 
 
 /* Иконки в пилюлях полосы поиска — как в макете */

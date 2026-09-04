@@ -378,26 +378,30 @@
   пока заказчик не пришлёт оригиналы (п. 9.1 ТЗ).
 {% endcomment %}
 {% if page.gallery_title %}
-<section class="section">
-  <div class="container">
-    <h2 class="section__title">{{ page.gallery_title }}</h2>
-    {% if page.gallery_text %}<p class="section__lead">{{ page.gallery_text }}</p>{% endif %}
-    <ul class="mosaic mosaic--photos">
+{# Единственная секция главной во всю ширину фрейма — так в макете. #}
+{# Поэтому .container здесь намеренно нет, текст стоит внутри мозаики. #}
+<section class="section section--gallery">
+  <div class="photo-mosaic">
+    <ul class="photo-mosaic__tiles">
       {% for item in page.gallery_images.all %}
-        <li class="mosaic__item{% if item.is_large %} mosaic__item--large{% endif %}">
+        <li class="photo-mosaic__item">
           {% picture item.image preset="card" alt=item.alt %}
         </li>
       {% empty %}
-        {% for i in "123456" %}
-          <li class="mosaic__item{% if forloop.first %} mosaic__item--large{% endif %}">
+        {% for i in "123456789" %}
+          <li class="photo-mosaic__item">
             <span class="ph" aria-hidden="true"></span>
           </li>
         {% endfor %}
       {% endfor %}
     </ul>
-    {% if page.gallery_page %}
-      <p class="center"><a class="btn btn--outline" href="{% pageurl page.gallery_page %}">Подробнее</a></p>
-    {% endif %}
+    <div class="photo-mosaic__text">
+      <h2 class="section__title">{{ page.gallery_title }}</h2>
+      {% if page.gallery_text %}<p class="section__lead">{{ page.gallery_text }}</p>{% endif %}
+      {% if page.gallery_page %}
+        <p><a class="btn btn--outline" href="{% pageurl page.gallery_page %}">Подробнее</a></p>
+      {% endif %}
+    </div>
   </div>
 </section>
 {% endif %}
