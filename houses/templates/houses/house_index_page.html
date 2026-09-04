@@ -24,7 +24,7 @@
       {% picture page.hero_image preset="hero" alt="" loading="eager" %}
     </div>
   {% endif %}
-  <div class="container page-hero__inner">
+  <div class="container page-hero__inner page-hero__inner--center">
     <h1>{{ page.title }}</h1>
     {% if page.intro %}
       <div class="page-hero__intro">{{ page.intro|richtext }}</div>
@@ -37,9 +37,24 @@
       ловушкой — гость заполнил бы их, а в модалку они бы не попали.
     {% endcomment %}
     <button type="button" class="searchbar" data-booking-open data-entry-point="1">
-      <span class="searchbar__field">Дата въезда</span>
-      <span class="searchbar__field">Дата выезда</span>
-      <span class="searchbar__field">Гости</span>
+      <span class="searchbar__field">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <rect x="2.5" y="4" width="15" height="13.5" rx="2.5"/><path d="M2.5 8h15M6.5 2.5v3M13.5 2.5v3"/>
+        </svg>
+        Дата въезда
+      </span>
+      <span class="searchbar__field">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <rect x="2.5" y="4" width="15" height="13.5" rx="2.5"/><path d="M2.5 8h15M6.5 2.5v3M13.5 2.5v3"/>
+        </svg>
+        Дата выезда
+      </span>
+      <span class="searchbar__field">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="10" cy="6.5" r="3.4"/><path d="M3.6 17c0-3.5 2.9-5.4 6.4-5.4s6.4 1.9 6.4 5.4"/>
+        </svg>
+        1 гость
+      </span>
       <span class="searchbar__cta btn btn--primary">Забронировать даты</span>
     </button>
   </div>
@@ -47,26 +62,11 @@
 
 <section class="section section--pattern">
   <div class="container">
-    <ul class="cards">
+    <ul class="cards cards--houses">
       {% for house in houses %}
-        <li class="card">
-          <a class="card__link" href="{% pageurl house %}">
-            {% picture house.hero_image preset="card" alt=house.title %}
-            <h2 class="card__title">{{ house.title }}</h2>
-          </a>
-          {% if house.short_description %}<p>{{ house.short_description }}</p>{% endif %}
-          <p class="card__meta">
-            до {{ house.capacity }} чел.{% if house.area %} · {{ house.area }} м²{% endif %}{% if house.highlight %} · {{ house.highlight }}{% endif %}
-          </p>
-          <p class="card__foot">
-            {% if house.price_from %}
-              <span class="price">от {{ house.price_display }} ₽<span class="price__unit"> / сутки</span></span>
-            {% endif %}
-            <a class="btn btn--outline btn--sm" href="{% pageurl house %}">Подробнее</a>
-          </p>
-        </li>
+        {% include "houses/_house_card.html" with house=house entry="1" %}
       {% empty %}
-        <li class="card"><p>Домики пока не добавлены.</p></li>
+        <li><p>Домики пока не добавлены.</p></li>
       {% endfor %}
     </ul>
   </div>

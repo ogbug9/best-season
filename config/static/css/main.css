@@ -2232,12 +2232,15 @@ body[data-modal-open] {
   background-attachment: scroll;
 }
 
-/* Кнопка полосы поиска в макете белая, а не терракотовая */
-.searchbar__cta.btn--primary {
+/* Кнопка полосы поиска зависит от фона. На первом экране она лежит
+   поверх фотографии и в макете кремовая. В каталоге «Наши домики» фон
+   светлый, и там она терракотовая #9B5026 — снято с выгрузки Houses.png.
+   Раньше правило было общим, и в каталоге кнопка терялась на фоне. */
+.hero .searchbar__cta.btn--primary {
   background: var(--c-cream);
   color: var(--c-deep);
 }
-.searchbar__cta.btn--primary:hover { background: var(--c-white); color: var(--c-deep); }
+.hero .searchbar__cta.btn--primary:hover { background: var(--c-white); color: var(--c-deep); }
 
 /* ---------- Блок «О нас» ----------
    Фото уходит в левый край экрана, текст лежит на кремовой панели
@@ -2814,3 +2817,20 @@ body[data-modal-open] {
 /* Иконки в пилюлях полосы поиска — как в макете */
 .searchbar__field { gap: var(--s-2); }
 .searchbar__field svg { flex: none; opacity: 0.9; }
+
+/* Шапка каталога по центру — так в макете «Наши домики» */
+.page-hero__inner--center { text-align: center; }
+.page-hero__inner--center .searchbar { margin-inline: auto; }
+.page-hero__inner--center .page-hero__intro { margin-inline: auto; max-width: 900px; }
+
+
+/* Полоса поиска на светлой странице. На главной она лежит поверх
+   фотографии и полупрозрачная, а в каталоге фон кремовый — пилюли
+   сливались с ним и оставалась видна только кнопка.
+   #D5CEBB — снято пикселями с выгрузки макета Houses.png. */
+.page-hero__inner--center .searchbar__field {
+  background: #D5CEBB;
+  border-color: transparent;
+  color: var(--c-dark);
+}
+

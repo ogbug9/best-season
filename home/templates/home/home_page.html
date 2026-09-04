@@ -187,63 +187,7 @@
     <h2 class="section__title section__title--center">Наши домики</h2>
     <ul class="cards cards--houses">
       {% for house in houses %}
-        <li class="house">
-          <div class="house__media">
-            {% comment %} Слайды карточки: обложка плюс первые кадры галереи. {% endcomment %}
-            {% comment %} В макете под фото три точки — карточка листается. {% endcomment %}
-            {% with slides=house.card_slides %}
-              {% if slides %}
-                <div class="house__slides" data-house-slider>
-                  {% for image in slides %}
-                    <div class="house__slide{% if forloop.first %} is-active{% endif %}"
-                         {% if not forloop.first %}aria-hidden="true"{% endif %}>
-                      {% picture image preset="card" alt=house.title %}
-                    </div>
-                  {% endfor %}
-                </div>
-                {% if slides|length > 1 %}
-                  <div class="house__dots" role="tablist" aria-label="Фотографии домика">
-                    {% for image in slides %}
-                      <button type="button" class="house__dot{% if forloop.first %} is-active{% endif %}"
-                              role="tab" data-house-dot="{{ forloop.counter0 }}"
-                              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
-                        <span class="visually-hidden">Фото {{ forloop.counter }}</span>
-                      </button>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-              {% else %}
-                <span class="ph" aria-hidden="true"></span>
-              {% endif %}
-            {% endwith %}
-
-            {% comment %} Лента с ценой в правом верхнем углу — как в макете {% endcomment %}
-            {% if house.price_from %}
-              <p class="house__price">
-                <span>от</span>
-                <b>{{ house.price_display }} ₽</b>
-                <span>за ночь</span>
-              </p>
-            {% endif %}
-
-          </div>
-
-          {% comment %} Подпись — прямой ребёнок карточки, а не .house__media: {% endcomment %}
-          {% comment %} внутри медиа она игнорировала ряды сетки и накрывала кнопку {% endcomment %}
-          <div class="house__overlay">
-            <div class="house__info">
-              <h3 class="house__title"><a class="house__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
-              <p class="house__meta">
-                {{ house.capacity }} спальных места{% if house.short_description %} + {{ house.short_description }}{% endif %}
-              </p>
-            </div>
-            <a class="btn house__more" href="{% pageurl house %}">Подробнее</a>
-          </div>
-
-          <button type="button" class="btn house__book" data-booking-open data-entry-point="3">
-            Забронировать
-          </button>
-        </li>
+        {% include "houses/_house_card.html" with house=house entry="3" %}
       {% endfor %}
     </ul>
     {% comment %} Кнопки «Все домики» в макете нет: под карточками сразу {% endcomment %}
