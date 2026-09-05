@@ -2959,7 +2959,7 @@ body.page-houses #main {
 
 .houses-catalog__head {
   display: grid;
-  gap: 40px;
+  gap: 20px;
   text-align: center;
 }
 
@@ -2967,8 +2967,14 @@ body.page-houses #main {
   margin: 0;
 }
 
+.page-houses .section__title {
+  font-size: 90px;
+  line-height: 94.53px;
+}
+
 .houses-catalog__intro {
   max-width: 1240px;
+  min-height: 96px;
   margin-inline: auto;
   color: var(--c-dark);
   font-size: 20px;
@@ -3010,9 +3016,27 @@ body.page-houses #main {
   margin-top: 0;
 }
 
+.page-houses .houses-catalog {
+  min-height: 1598px;
+}
+
+.page-houses .house {
+  inline-size: 610px;
+  block-size: 500px;
+  aspect-ratio: auto;
+}
+
+.page-houses .cards--houses {
+  grid-template-columns: 610px 610px;
+}
+
 .houses-services {
   padding-top: 80px;
   padding-bottom: 0;
+}
+
+.page-houses .houses-services {
+  min-height: 1270px;
 }
 
 .houses-catalog__head--services {
@@ -3033,6 +3057,10 @@ body.page-houses #main {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.page-houses .cards--services {
+  grid-template-columns: 610px 610px;
 }
 
 .service-card__price {
