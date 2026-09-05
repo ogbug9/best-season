@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; font: 14px/1.5 Inter, Arial, sans-serif; color: #242424; background: #f7f5ef; }
+  h1 { font-size: 22px; line-height: 1.2; margin: 0 0 14px; }
+  p { margin: 10px 0; }
+  #selection { padding: 12px; background: #fff; border: 1px solid #dedbd0; border-radius: 8px; overflow-wrap: anywhere; max-height: 90px; overflow: auto; }
+  label { display: block; margin: 16px 0; }
+  button { width: 100%; padding: 12px; border: 0; border-radius: 8px; background: #4b5134; color: white; font: inherit; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: default; }
+  a { display: block; color: #334b93; padding: 8px 0; overflow-wrap: anywhere; }
+  #status { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .hint { color: #626262; font-size: 12px; }
+</style>
+<h1>Выгрузка макета</h1>
+<p>Выдели фрейм в Figma. Начни с одной секции, например футера.</p>
+<div id="selection">Читаю выделение…</div>
+<label><input id="svg" type="checkbox"> Добавить SVG — для логотипов и иконок</label>
+<button id="export" disabled>Подготовить JSON + PNG</button>
+<p id="status" role="status" aria-live="polite"></p>
+<div id="files"></div>
+<p class="hint">JSON содержит структуру и параметры слоёв, PNG — изображение 1×. Сохрани файлы по ссылкам ниже. Макет не изменяется.</p>
+<script>
+  const button = document.getElementById('export');
+  const status = document.getElementById('status');
+  const files = document.getElementById('files');
+  let busy = false;
+  let count = 0;
+  let urls = [];
+  button.onclick = () => {
+    busy = true;
+    button.disabled = true;
+    for (const url of urls) URL.revokeObjectURL(url);
+    urls = [];
+    files.replaceChildren();
+    status.textContent = 'Готовлю файлы…';
+    parent.postMessage({ pluginMessage: { type: 'export', svg: document.getElementById('svg').checked } }, '*');
+  };
+  window.onmessage = event => {
+    const m = event.data.pluginMessage;
+    if (!m) return;
+    if (m.type === 'selection') {
+      count = m.names.length;
+      document.getElementById('selection').textContent = count ? m.names.join(' · ') : 'Ничего не выделено. Кликни по названию фрейма слева.';
+      button.disabled = busy || !count;
+    }
+    if (m.type === 'progress') status.textContent = m.text;
+    if (m.type === 'file') {
+      const blob = new Blob([m.data], { type: m.mime });
+      const url = URL.createObjectURL(blob);
+      urls.push(url);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = m.name;
+      link.textContent = 'Сохранить ' + m.name;
+      files.appendChild(link);
+    }
+    if (m.type === 'done') {
+      busy = false;
+      button.disabled = !count;
+      status.textContent = m.errors.length
+        ? 'Не всё удалось выгрузить:\n' + m.errors.join('\n') + '\nЕсли секция слишком большая, выдели меньший фрейм. Уже готовые файлы доступны ниже.'
+        : 'Готово. Нажми каждую ссылку, чтобы сохранить файлы.';
+    }
+  };
+  parent.postMessage({ pluginMessage: { type: 'ready' } }, '*');
+</script>
+</html>

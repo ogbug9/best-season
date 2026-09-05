@@ -1,4 +1,4 @@
-{% load wagtailcore_tags media_tags %}
+{% load static wagtailcore_tags media_tags %}
 {% comment %}
   Карточка домика. Одна на главную и на «Размещение»: в макете они
   одинаковые, и держать две копии разметки — верный способ их разъехать.
@@ -29,7 +29,17 @@
           </div>
         {% endif %}
       {% else %}
-        <span class="ph" aria-hidden="true"></span>
+        {% if fallback_index == 1 %}
+          <img src="{% static 'img/houses/house-1.jpg' %}" alt="">
+        {% elif fallback_index == 2 %}
+          <img src="{% static 'img/houses/house-2.jpg' %}" alt="">
+        {% elif fallback_index == 3 %}
+          <img src="{% static 'img/houses/house-3.jpg' %}" alt="">
+        {% elif fallback_index == 4 %}
+          <img src="{% static 'img/houses/house-4.jpg' %}" alt="">
+        {% else %}
+          <span class="ph" aria-hidden="true"></span>
+        {% endif %}
       {% endif %}
     {% endwith %}
 

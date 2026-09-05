@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags media_tags %}
+{% load static wagtailcore_tags wagtailimages_tags media_tags %}
 
 {% comment %}
   Каталог домов. Карточка повторяет карточку главной (п. 9.2 ТЗ — единый
@@ -18,53 +18,25 @@
 
 {% block content %}
 
-<section class="page-hero{% if page.hero_image %} page-hero--media{% endif %}">
-  {% if page.hero_image %}
-    <div class="page-hero__media" aria-hidden="true">
-      {% picture page.hero_image preset="hero" alt="" loading="eager" %}
+<section class="section section--pattern houses-catalog">
+  <div class="container houses-catalog__inner">
+    <div class="houses-catalog__head">
+      <h1 class="section__title section__title--center">Наши домики</h1>
+      <div class="houses-catalog__intro">
+        <p>Четыре дома — четыре разных характера. Но всё здесь сделано с вниманием к тому, что важно: камин или сауна, панорамные окна, уютная терраса и вид, который умиротворяет лучше любого магния. Мы создали пространство, в котором есть всё необходимое для комфорта, но нет ничего лишнего, чтобы вы могли расслабиться и провести время так, как хочется именно вам.</p>
+      </div>
     </div>
-  {% endif %}
-  <div class="container page-hero__inner page-hero__inner--center">
-    <h1>{{ page.title }}</h1>
-    {% if page.intro %}
-      <div class="page-hero__intro">{{ page.intro|richtext }}</div>
-    {% endif %}
 
-    {% comment %}
-      Точка входа №1 из таблицы п. 5.1 ТЗ. Визуально это поля поиска,
-      технически — одна кнопка: виджет Контура не принимает даты при
-      инициализации (см. 03-kontur-widget.md), настоящие инпуты были бы
-      ловушкой — гость заполнил бы их, а в модалку они бы не попали.
-    {% endcomment %}
-    <button type="button" class="searchbar" data-booking-open data-entry-point="1">
-      <span class="searchbar__field">
-        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-          <rect x="2.5" y="4" width="15" height="13.5" rx="2.5"/><path d="M2.5 8h15M6.5 2.5v3M13.5 2.5v3"/>
-        </svg>
-        Дата въезда
-      </span>
-      <span class="searchbar__field">
-        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-          <rect x="2.5" y="4" width="15" height="13.5" rx="2.5"/><path d="M2.5 8h15M6.5 2.5v3M13.5 2.5v3"/>
-        </svg>
-        Дата выезда
-      </span>
-      <span class="searchbar__field">
-        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-          <circle cx="10" cy="6.5" r="3.4"/><path d="M3.6 17c0-3.5 2.9-5.4 6.4-5.4s6.4 1.9 6.4 5.4"/>
-        </svg>
-        1 гость
-      </span>
+    <button type="button" class="searchbar houses-search" data-booking-open data-entry-point="1">
+      <span class="searchbar__field">Дата въезда</span>
+      <span class="searchbar__field">Дата выезда</span>
+      <span class="searchbar__field">1 гость</span>
       <span class="searchbar__cta btn btn--primary">Забронировать даты</span>
     </button>
-  </div>
-</section>
 
-<section class="section section--pattern">
-  <div class="container">
     <ul class="cards cards--houses">
       {% for house in houses %}
-        {% include "houses/_house_card.html" with house=house entry="1" %}
+        {% include "houses/_house_card.html" with house=house entry="1" fallback_index=forloop.counter %}
       {% empty %}
         <li><p>Домики пока не добавлены.</p></li>
       {% endfor %}
@@ -80,21 +52,26 @@
   здесь только витринное описание.
 {% endcomment %}
 {% if services %}
-<section class="section section--pattern">
+<section class="section section--pattern houses-services">
   <div class="container">
-    <h2>Доп услуги</h2>
-    <ul class="cards">
+    <div class="houses-catalog__head houses-catalog__head--services">
+      <h2 class="section__title section__title--center">Доп услуги</h2>
+      <p>Описание доп услуг за дополнительную плату.<br>Можно добавить сюда те самые якоря.</p>
+    </div>
+    <ul class="cards cards--services">
       {% for service in services %}
-        <li class="card">
-          {% if service.image %}{% picture service.image preset="card" alt=service.name %}{% endif %}
-          <h3 class="card__title">{{ service.name }}</h3>
-          {% if service.short_description %}<p>{{ service.short_description }}</p>{% endif %}
-          {% if service.price %}
-            <p class="card__foot">
-              <span class="price">{{ service.price }} ₽ {{ service.get_price_unit_display }}</span>
-              {% if service.price_note %}<span class="card__meta">{{ service.price_note }}</span>{% endif %}
-            </p>
-          {% endif %}
+        <li class="house service-card">
+          <div class="house__media">
+            {% if service.image %}{% picture service.image preset="card" alt=service.name %}{% else %}<img src="{% static 'img/houses/service-1.jpg' %}" alt="">{% endif %}
+          </div>
+          <div class="house__overlay">
+            <div class="house__info">
+              <h3 class="house__title">{{ service.name }}</h3>
+              {% if service.short_description %}<p class="house__meta">{{ service.short_description }}</p>{% endif %}
+            </div>
+            {% if service.price %}<p class="service-card__price">{{ service.price }} ₽ {{ service.get_price_unit_display }}</p>{% endif %}
+          </div>
+          <button type="button" class="btn house__book" data-booking-open data-entry-point="5">Забронировать</button>
         </li>
       {% endfor %}
     </ul>

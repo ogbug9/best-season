@@ -2943,6 +2943,110 @@ body[data-modal-open] {
   color: var(--c-dark);
 }
 
+.page-houses .main {
+  background: var(--c-cream);
+}
+
+.houses-catalog {
+  padding-top: 112px;
+  padding-bottom: 0;
+}
+
+.houses-catalog__inner {
+  display: grid;
+  gap: 60px;
+}
+
+.houses-catalog__head {
+  display: grid;
+  gap: 40px;
+  text-align: center;
+}
+
+.houses-catalog__head .section__title {
+  margin: 0;
+}
+
+.houses-catalog__intro {
+  max-width: 1240px;
+  margin-inline: auto;
+  color: var(--c-dark);
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.houses-catalog__intro p {
+  margin: 0;
+}
+
+.page-houses .houses-search {
+  display: grid;
+  grid-template-columns: 216px 219px 181px 254px;
+  gap: 14px;
+  width: 938px;
+  margin-top: 0;
+}
+
+.page-houses .houses-search .searchbar__field,
+.page-houses .houses-search .searchbar__cta {
+  min-height: 48px;
+  justify-content: center;
+  padding: 12px 24px;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.page-houses .houses-search .searchbar__field {
+  background: #D5CEBB;
+  border: 0;
+}
+
+.page-houses .houses-search .searchbar__cta {
+  background: var(--c-terra);
+  color: var(--c-cream);
+}
+
+.page-houses .cards--houses {
+  margin-top: 0;
+}
+
+.houses-services {
+  padding-top: 80px;
+  padding-bottom: 0;
+}
+
+.houses-catalog__head--services {
+  margin-bottom: 60px;
+}
+
+.houses-catalog__head--services p {
+  margin: 0;
+  color: var(--c-dark);
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.cards--services {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.service-card__price {
+  flex: none;
+  margin: 0;
+  color: #FFFFFF;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.page-houses .section--deep {
+  margin-top: 80px;
+}
+
 
 /* ---------- Карточки акций ----------
    Макет «Special Offers»: три колонки, карточки чередуются оливковая
