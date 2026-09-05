@@ -1441,8 +1441,11 @@ body {
   inset-inline: 0;
   top: var(--s-4);
   background: transparent;
+  /* Инспектор: пилюля стоит на Top 32 от верха кадра */
+
   border: 0;
 }
+@media (min-width: 900px) { .header { top: 32px; } }
 .page-home .hero { padding-top: calc(var(--header-h) + var(--s-7)); }
 /* Шапка вынесена из потока (position: absolute сверху), поэтому первый
    блок КАЖДОЙ страницы должен сам отступить на её высоту. Раньше это
@@ -1461,39 +1464,61 @@ body:not(.page-home) main > :first-child {
   width: min(100% - 2 * var(--s-4), 1260px);
 }
 
+/* Инспектор (узел «Меню»): 1260×86.91, поля 20×32, раскладка
+   space-between, скругление 100, фон #F7F0E6, backdrop-filter blur(10px).
+   Три группы внутри: знак 160×46.91, меню 551×20, правая часть 428×40. */
 .header__bar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--s-4);
-  /* Инспектор (узел «Меню»): пилюля 1260×87 с полем 90px от края кадра,
-     то есть шире контейнера 1240. На 1240 пункты не помещались и «О нас»
-     сваливалось на вторую строку */
-  min-height: 87px;
-  padding: var(--s-2) var(--s-3) var(--s-2) var(--s-4);
-  border-radius: 999px;
+  padding: var(--s-2) var(--s-3);
+  border-radius: 100px;
   background: var(--c-cream);
+  /* Поддержка неполная, поэтому фон непрозрачный и без размытия
+     шапка выглядит так же — блюр только украшает. */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 6px 24px rgba(73, 73, 73, 0.18);
 }
+@media (min-width: 900px) {
+  /* Размеры из инспектора действуют только там, где пилюля целиком
+     помещается в кадр. На узких экранах жёсткие 60px зазора и ширина
+     кнопки давали горизонтальную прокрутку. */
+  .header__bar {
+    gap: 60px;
+    min-height: 86.91px;
+    padding: 20px 32px;
+  }
+}
 
+/* Знак и название: группа 160×46.91, зазор 10.87, выравнивание по низу */
 .header__logo {
   display: inline-flex;
-  align-items: center;
-  gap: var(--s-2);
+  align-items: flex-end;
+  gap: 10.87px;
   text-decoration: none;
   color: var(--c-deep);
   flex: 0 0 auto;
 }
+@media (min-width: 900px) { .header__logo { width: 160px; } }
 .header__mark { display: inline-flex; color: var(--c-deep); }
 /* У знака бренда нет собственных width/height — только viewBox, чтобы
    цвет наследовался от текста, а размер задавался здесь. Без явных
    размеров svg без атрибутов разъезжается до 300×150. */
-.header__mark svg { width: 38px; height: 38px; }
+/* Инспектор (узел «Лого 2»): знак 46.91×46.91. Держим векторный контур,
+   а не присланный PNG 47×47: на экранах с удвоенной плотностью растр
+   такого размера мылит, а контур ещё и красится в цвет шапки. */
+.header__mark svg { width: 46.91px; height: 46.91px; }
 .footer__mark svg { width: 40px; height: 40px; }
+/* Инспектор: «Лучший сезон» — Etude Noire 400, 21.7392/90%, блок 102×40,
+   по центру, #494949. Две строки: 40 = 2 × 19.57 с округлением. */
 .header__name {
   font-family: var(--font-heading);
-  font-size: 1rem;
-  line-height: 1.1;
-  max-width: 7ch;
+  font-size: 21.7392px;
+  line-height: 0.9;
+  width: 102px;
+  text-align: center;
 }
 
 .header__aside {
@@ -1527,16 +1552,24 @@ body:not(.page-home) main > :first-child {
    с зазорами 24, значит на кнопку остаётся 214×40. Подпись 174×20,
    Montserrat 400 16/20, кремовая — отсюда поля 20 по горизонтали и 10 по
    вертикали. Общая кнопка сайта крупнее (20/600), в шапке она своя. */
+/* Инспектор (Frame 2087326541): 214×40, поля 10×20, #9B5026, скругление 100.
+   Общая кнопка сайта крупнее (20/600, поля 40×14) и тянется до 44px ради
+   размера цели нажатия — в шапке размер свой. Ширину задаём явно: подпись
+   в браузере на 1px шире фигмовской и кнопка расплывалась до 217. Вместе с
+   фиксированной шириной обязателен nowrap, иначе подпись ровно в 175px
+   срывается на вторую строку и пилюля вырастает до 102px. */
 .header__aside .btn {
-  /* Общая кнопка сайта тянется до 44px ради размера цели нажатия,
-     в шапке по макету 40. Правило только для десктопной шапки: на
-     мобильном эта кнопка скрыта и правило до неё не доходит. */
+  width: 214px;
   min-height: 40px;
-  padding: 9px 20px;
+  padding: 10px 20px;
   font-family: var(--font-body);
   font-weight: 400;
   font-size: 1rem;
   line-height: 20px;
+  white-space: nowrap;
+  /* У общей кнопки рамка в 1px, в макете её нет. С рамкой высота
+     выходила 42 вместо 40 при тех же полях 10. */
+  border: 0;
 }
 .header__phone {
   /* Инспектор: Montserrat 400, 16/115%, трекинг −0.02em, #494949, блок 136 */
@@ -1552,8 +1585,16 @@ body:not(.page-home) main > :first-child {
 
 /* В макете все пункты в одну строку внутри пилюли. Перенос ронял
    «О нас» на вторую строку и разрывал шапку по высоте. */
-.nav--desktop .nav__list { gap: var(--s-4); flex-wrap: nowrap; }
-.nav--desktop .nav__link { font-size: 0.9375rem; white-space: nowrap; }
+/* Инспектор (Frame 2087326536): группа меню 551×20, зазор 20.
+   Пункты — Montserrat 400, 16/20, #494949 («Размещение» 108, «Акции» 55). */
+.nav--desktop .nav__list { gap: 20px; flex-wrap: nowrap; }
+.nav--desktop .nav__link {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 20px;
+  white-space: nowrap;
+}
 
 /* ---------- Выпадающие списки ---------- */
 .nav__item { position: relative; }
