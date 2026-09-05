@@ -176,7 +176,7 @@
 {% comment %} 4. Слоган {% endcomment %}
 {% if page.slogan %}
 <section class="slogan">
-  <div class="container"><p>{{ page.slogan }}</p></div>
+  <div class="container"><p>{{ page.slogan|linebreaksbr }}</p></div>
 </section>
 {% endif %}
 

@@ -284,6 +284,7 @@ class Command(BaseCommand):
             self.create_legal(home)
             self.hide_duplicates()
             self.order_menu(home)
+            self.ensure_menu_visible(home)
 
             if self.dry:
                 transaction.set_rollback(True)
@@ -376,6 +377,35 @@ class Command(BaseCommand):
             self.stdout.write(
                 f"  порядок меню «{parent.title}»: {' → '.join(order)}"
             )
+
+    def ensure_menu_visible(self, home):
+        """Возвращает в шапку пункты, которые из неё пропали.
+
+        На боевом «Размещение» перестало показываться в меню: у страницы
+        оказался снят show_in_menus. Снаружи это выглядит как пропавший
+        пункт, а причина не видна. Пункты верхнего уровня и подпункты
+        перечислены в MENU_ORDER — по этому списку и восстанавливаем.
+
+        Трогаем только прямых детей нужного родителя: одноимённые копии в
+        других ветках дерева — забота hide_duplicates, её результат
+        перебивать нельзя, поэтому шаг идёт после неё.
+        """
+        for parent_slug, order in MENU_ORDER.items():
+            parent = home if parent_slug is None else Page.objects.filter(slug=parent_slug).first()
+            if parent is None:
+                continue
+            for page in parent.get_children():
+                if page.slug not in order or page.slug in NOT_IN_MENU:
+                    continue
+                if page.show_in_menus and page.live:
+                    continue
+                if not self.dry:
+                    if not page.show_in_menus:
+                        page.show_in_menus = True
+                        page.save()
+                    if not page.live:
+                        page.specific.save_revision().publish()
+                self.stdout.write(f"  пункт меню возвращён: «{page.title}» (/{page.slug}/)")
 
     def hide_duplicates(self):
         """Убирает из меню лишние копии одиночных страниц.
