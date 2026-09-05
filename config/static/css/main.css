@@ -2982,8 +2982,17 @@ body.page-houses main > .houses-catalog {
    записан как 94.53 — это то же значение до округления, но 95 даёт
    ровно высоту блока. */
 .page-houses .section__title {
-  font-size: 90px;
-  line-height: 95px;
+  /* 90px — размер макета, но слово «домики» в такой кегль не влезает в
+     узкий кадр и распирало страницу до 412 при 375. Ниже 1280 кегль
+     тянется по ширине экрана. */
+  font-size: clamp(2.5rem, 6.25vw, 90px);
+  line-height: 1.056;
+}
+@media (min-width: 1280px) {
+  .page-houses .section__title {
+    font-size: 90px;
+    line-height: 95px;
+  }
 }
 
 /* Панель: Montserrat 400, 20/24, #494949, по центру, блок 1240×96 —
@@ -3010,41 +3019,83 @@ body.page-houses main > .houses-catalog {
    поля 216 / 219 / 181 стоят на 251, 481, 714 — зазор 14, а кнопка 254
    начинается на 935, то есть отделена зазором 40, а не 14. При едином
    зазоре ряд выходил 912 вместо 938 и всё уезжало на 13px влево. */
-.page-houses .houses-search {
-  display: grid;
-  grid-template-columns: 216px 219px 181px 254px;
-  column-gap: 14px;
-  width: 938px;
-  margin-top: 0;
-  justify-content: start;
+.page-houses .houses-search { margin-top: 0; }
+/* Точные колонки — только там, где ряд помещается: 938px в узком кадре
+   растягивали всю сетку секции и давали прокрутку до 406 при 375. */
+@media (min-width: 1280px) {
+  .page-houses .houses-search {
+    display: grid;
+    grid-template-columns: 216px 219px 181px 254px;
+    column-gap: 14px;
+    width: 938px;
+    justify-content: start;
+  }
+  .page-houses .houses-search > :nth-child(4) { margin-left: 26px; }
 }
-.page-houses .houses-search > :nth-child(4) { margin-left: 26px; }
 
-/* Высоты из JSON: поля 46 (внутренний фрейм на y=470.91), кнопка 48
-   (внешний фрейм на y=469.91). Прежний min-height: 48 при полях 12px
-   и иконке давал 58, и весь ряд карточек уезжал вниз на 9px. */
+/* Инспектор: поля 216 / 219 / 181 × 46, поля 14px сверху и снизу,
+   60 справа и 32 слева, зазор до подписи 10, фон rgba(132,127,87,0.3),
+   скругление 100. Подпись Montserrat 400 16/115% с трекингом −0.02em,
+   цвет #494949. Кнопка 254×48, поля 14×40, #9B5026, подпись 16/20
+   кремовая. Прежний min-height: 48 при полях 12px и иконке давал 58,
+   и весь ряд карточек уезжал вниз на 9px. */
 .page-houses .houses-search { align-items: center; }
 .page-houses .houses-search .searchbar__field,
 .page-houses .houses-search .searchbar__cta {
   box-sizing: border-box;
-  justify-content: center;
-  padding-block: 0;
-  padding-inline: 24px;
-  font-size: 1rem;
-  line-height: 18.4px;
-}
-.page-houses .houses-search .searchbar__field { height: 46px; min-height: 0; }
-.page-houses .houses-search .searchbar__cta { height: 48px; min-height: 0; }
-.page-houses .houses-search .searchbar__field svg { flex: 0 0 auto; }
-
-.page-houses .houses-search .searchbar__field {
-  background: #D5CEBB;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   border: 0;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1rem;
 }
-
+.page-houses .houses-search .searchbar__field {
+  height: 46px;
+  min-height: 0;
+  justify-content: center;
+  padding: 14px 60px 14px 32px;
+  background: rgba(132, 127, 87, 0.3);
+  color: var(--c-dark);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+/* У поля гостей выключено выравнивание по центру — в макете
+   justify-content стоит только у двух полей с датами */
+.page-houses .houses-search .searchbar__field:nth-child(3) { justify-content: flex-start; }
 .page-houses .houses-search .searchbar__cta {
+  /* Ширину задаём явно: сама кнопка не растягивалась по колонке сетки
+     и выходила 228 вместо 254 */
+  width: 254px;
+  height: 48px;
+  min-height: 0;
+  justify-content: center;
+  padding: 14px 40px;
   background: var(--c-terra);
   color: var(--c-cream);
+  line-height: 20px;
+}
+/* Иконки — файлы от дизайнера, рисуются маской, чтобы брать цвет
+   подписи. Видимый контур 16×18 у дат и 12×16 у гостей, файлы на
+   пиксель шире из-за прозрачной рамки при выгрузке. */
+.page-houses .houses-search .searchbar__icon {
+  flex: 0 0 auto;
+  display: block;
+  background-color: currentColor;
+}
+.searchbar__icon--date {
+  width: 18px;
+  height: 20px;
+  -webkit-mask: url("../img/icon-calendar.png") no-repeat center / 18px 20px;
+  mask: url("../img/icon-calendar.png") no-repeat center / 18px 20px;
+}
+.searchbar__icon--guest {
+  width: 14px;
+  height: 18px;
+  -webkit-mask: url("../img/icon-guest.png") no-repeat center / 14px 18px;
+  mask: url("../img/icon-guest.png") no-repeat center / 14px 18px;
 }
 
 .page-houses .cards--houses {
@@ -3056,28 +3107,109 @@ body.page-houses main > .houses-catalog {
    min-height: 1598 компенсировал недостающий верхний отступ, то есть
    подгонял низ вместо того, чтобы поставить верх на место. */
 
-.page-houses .house {
-  inline-size: 610px;
-  block-size: 500px;
-  aspect-ratio: auto;
+@media (min-width: 1280px) {
+  .page-houses .house {
+    inline-size: 610px;
+    block-size: 500px;
+    aspect-ratio: auto;
+  }
 }
 
-.page-houses .cards--houses {
-  grid-template-columns: 610px 610px;
+@media (min-width: 1280px) {
+  .page-houses .cards--houses { grid-template-columns: 610px 610px; }
 }
 
+/* Секция «Доп услуги». Инспектор: блок 1240×1078 на y=1677.91,
+   колонка с зазором 60 между заголовочной группой, рядом крупных
+   карточек и рядом плиток. Верх секции = 1677.91 − низ «Наших домиков»
+   (1597.91) = 80. */
 .houses-services {
   padding-top: 80px;
   padding-bottom: 0;
+}
+.houses-services__inner {
+  display: grid;
+  gap: 60px;
+  justify-items: center;
+}
+/* Заголовочная группа: H1 1240×95 и подпись 1240×48 — те же, что у
+   «Наших домиков», зазор между ними 20 */
+.houses-catalog__head--services {
+  display: grid;
+  gap: 20px;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0;
 }
 
 /* То же и здесь: «Доп услуги» в макете 1078, высота набирается
    содержимым, а не закрепляется числом. */
 
-.houses-catalog__head--services {
-  margin-bottom: 60px;
+/* Ряд плиток: четыре 295×295 с зазором 20 (295×4 + 20×3 = 1240).
+   Подпись прижата к низу, поля из инспектора 217 сверху, 20 снизу,
+   39 и 38 по бокам; поверх фотографии тёмный градиент снизу. */
+.cards--service-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(295px, 100%), 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.service-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  aspect-ratio: 1;
+  padding: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+/* Точные размеры из инспектора — только там, где ряд из четырёх плиток
+   помещается в кадр: 295×4 + 20×3 = 1240. Ниже плитки тянутся долями,
+   иначе на 375 появлялась горизонтальная прокрутка до 1260. */
+@media (min-width: 1280px) {
+  .cards--service-tiles { grid-template-columns: repeat(4, 295px); }
+  .service-tile {
+    width: 295px;
+    height: 295px;
+    aspect-ratio: auto;
+    padding: 217px 38px 20px 39px;
+  }
+}
+.service-tile > img,
+.service-tile > picture,
+.service-tile > .ph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Градиент по инспектору: снизу вверх, от rgba(0,0,0,0.8) до прозрачного
+   на 39.37% высоты. Без него белая подпись пропадает на светлом кадре. */
+.service-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(360deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 39.37%);
+}
+.service-tile__title {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 29.26px;
+  color: var(--c-white, #FFFFFF);
+  text-align: center;
 }
 
+/* Зазор между заголовочной группой и рядом карточек задаёт сетка
+   секции (60). Прежний margin-bottom складывался с ним и давал 120. */
 .houses-catalog__head--services p {
   margin: 0;
   color: var(--c-dark);
@@ -3094,8 +3226,8 @@ body.page-houses main > .houses-catalog {
   list-style: none;
 }
 
-.page-houses .cards--services {
-  grid-template-columns: 610px 610px;
+@media (min-width: 1280px) {
+  .page-houses .cards--services { grid-template-columns: 610px 610px; }
 }
 
 .service-card__price {

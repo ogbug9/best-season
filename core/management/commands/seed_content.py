@@ -243,6 +243,20 @@ PROMOTIONS = [
 ]
 
 
+# Доп услуги с макета «Наши домики». Почасовые объекты идут крупными
+# карточками, остальные — плитками 295×295. Цены не заводим: в макете на
+# бане и беседке стоит «от 8 000 ₽ за ночь» — это подпись, скопированная
+# дизайнером с карточки домика, для почасового объекта она неверна.
+# Вопрос вынесен в открытые (design/spec.json).
+SERVICES = [
+    ("Русская баня", "russkaya-banya", True, "Описание"),
+    ("Большая беседка", "bolshaya-besedka", True, "Описание"),
+    ("Финская сауна", "finskaya-sauna", False, ""),
+    ("Мастер-классы", "master-klassy", False, ""),
+    ("Фотосессии", "fotosessii", False, ""),
+    ("Аренда велосипедов", "arenda-velosipedov", False, ""),
+]
+
 HOUSES = [
     # 8000 у первого, 6000 у остальных — по макету (лента цены на карточке)
     ("Первый домик", "финская сауна", 8000, 4, 42),
@@ -340,6 +354,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             self.fill_snippets()
             self.fill_houses()
+            self.fill_services()
             self.fill_promotions()
             self.fill_home()
             if self.dry:
@@ -475,6 +490,26 @@ class Command(BaseCommand):
         "расслабиться и провести время так, как хочется именно вам.</p>"
     )
 
+    def fill_services(self):
+        """Заводит доп услуги с макета, если их ещё нет.
+
+        Только создаём: заведённую услугу не трогаем — цену и описание
+        мог поправить редактор.
+        """
+        from services.models import Service
+
+        for order, (name, slug, hourly, desc) in enumerate(SERVICES, start=1):
+            if Service.objects.filter(slug=slug).exists():
+                continue
+            if self.dry:
+                self.mark(f"услуга: {name}")
+                continue
+            Service.objects.create(
+                name=name, slug=slug, is_hourly=hourly,
+                short_description=desc, sort_order=order * 10, is_published=True,
+            )
+            self.mark(f"услуга: {name}")
+
     def fill_houses(self):
         from houses.models import HouseIndexPage, HousePage
 
@@ -495,6 +530,13 @@ class Command(BaseCommand):
             index.intro = self.HOUSES_INTRO
             index_changed = True
             self.mark("раздел «Размещение»: вступительный текст с макета")
+        if not index.services_intro:
+            index.services_intro = (
+                "Описание доп услуг за дополнительную плату.\n"
+                "Можно добавить сюда те самые якоря."
+            )
+            index_changed = True
+            self.mark("раздел «Размещение»: подпись «Доп услуги» с макета")
         if index_changed and not self.dry:
             index.save()
             index.save_revision().publish()

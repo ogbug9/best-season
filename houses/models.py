@@ -32,12 +32,19 @@ class HouseIndexPage(Page):
         "Заголовок на странице", max_length=120, blank=True,
         help_text="Если пусто — берётся название страницы",
     )
+    # Подпись под заголовком «Доп услуги». В макете она в две строки,
+    # перенос расставлен руками — держим его в самом тексте.
+    services_intro = models.TextField(
+        "Подпись под заголовком «Доп услуги»", blank=True,
+        help_text="Перенос строки задаётся переводом строки",
+    )
     intro = RichTextField("Вступительный текст", blank=True, features=BODY_FEATURES)
 
     content_panels = Page.content_panels + [
         FieldPanel("heading"),
         FieldPanel("hero_image"),
         FieldPanel("intro"),
+        FieldPanel("services_intro"),
     ]
 
     subpage_types = ["houses.HousePage"]
@@ -57,8 +64,13 @@ class HouseIndexPage(Page):
             .order_by("sort_order_index", "title")
         )
         # П. 9.2.2 ТЗ: «Размещение» = раздел с домиками + доп услуги —
-        # одна страница, а не две.
-        context["services"] = Service.objects.filter(is_published=True)
+        # одна страница, а не две. В макете доп услуги показаны двумя
+        # рядами: почасовые объекты (баня, беседка) — крупными карточками
+        # 610×500, остальное — плитками 295×295 с одним названием.
+        services = Service.objects.filter(is_published=True)
+        context["services"] = services
+        context["hourly_services"] = services.filter(is_hourly=True)
+        context["tile_services"] = services.filter(is_hourly=False)
         return context
 
 
