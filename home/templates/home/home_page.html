@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags media_tags %}
+{% load static wagtailcore_tags wagtailimages_tags media_tags %}
 
 {% comment %}
   Главная. Порядок блоков — по макету Figma, канвас SITE DESKTOP
@@ -166,7 +166,16 @@
 {% comment %} 4. Слоган {% endcomment %}
 {% if page.slogan %}
 <section class="slogan">
-  <div class="container"><p>{{ page.slogan|linebreaksbr }}</p></div>
+  <div class="container">
+    <div class="slogan__frame">
+      <p>{{ page.slogan|linebreaksbr }}</p>
+      {% comment %}
+        Сердце — файл дизайнера, 50×50 с наклоном 13.25°. Декор, поэтому
+        просто картинка без подписи для читалок.
+      {% endcomment %}
+      <img class="slogan__heart" src="{% static 'img/heart.png' %}" width="50" height="50" alt="" aria-hidden="true">
+    </div>
+  </div>
 </section>
 {% endif %}
 

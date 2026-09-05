@@ -2444,7 +2444,25 @@ body[data-modal-open] {
      внутреннего отступа у текста нет — иначе первый абзац уже 635 */
   .quote__body { padding-inline: 0; }
 }
+/* Инспектор (Frame 2087326626): текстовый фрейм цитаты 635×376 на
+   158;1856 — то есть на 58 правее левого края блока. Колонка с зазором
+   32 и выравниванием по ПРАВОМУ краю: 120 + 32 + 96 + 32 + 96 = 376.
+   Лесенка получается сама — абзацы разной ширины прижаты к 793. */
 .quote__text { position: relative; margin: 0; }
+@media (min-width: 900px) {
+  .quote__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 32px;
+    width: 635px;
+    /* Высота из инспектора: 120 + 32 + 96 + 32 + 96. Задаём явно —
+       кавычки лежат в этом же контейнере абсолютом, и Chromium всё
+       равно оставлял под них место в колонке. */
+    height: 376px;
+    margin-left: 58px;
+  }
+}
 /* Кавычки — файлы дизайнера 48×40 (img/quote-open.png и quote-close.png).
    Рисуются маской, чтобы брать оливковый из палитры, а не зависеть от
    цвета в самом файле. Закрывающая в макете стоит на x=760, то есть на
@@ -2466,8 +2484,16 @@ body[data-modal-open] {
   transform: rotate(180deg);
 }
 @media (min-width: 900px) {
-  /* Закрывающая по инспектору смещена вправо от текста */
-  .quote__mark--close { margin-left: 660px; }
+  /* Инспектор: кавычки лежат вне текстового фрейма (158;1856).
+     Открывающая на 100;1812 — это −58 и −44 от фрейма, закрывающая
+     на 760;2227 — это 602 и 371. Вторая развёрнута на 180°: в макете
+     левая верхняя смотрит вверх, правая нижняя — вниз. */
+  .quote__mark {
+    position: absolute;
+    margin: 0;
+  }
+  .quote__mark--open { left: -58px; top: -44px; }
+  .quote__mark--close { left: 602px; top: 371px; }
 }
 /* Лесенка: каждый следующий абзац сдвинут правее предыдущего.
    Только на широких экранах: на мобильном сдвиг плюс ширина строки
@@ -2478,14 +2504,16 @@ body[data-modal-open] {
   line-height: 1.2;     /* 24px: абзацы 120/96/96 = 5/4/4 строки */
 }
 @media (min-width: 900px) {
-  .quote__para { margin-left: calc(var(--step) * var(--s-8)); }
+  /* Сдвиг больше не нужен: абзацы выровнены по правому краю фрейма */
+  .quote__para { margin-left: 0; }
   /* Ширины абзацев замерены поштучно — от них зависит, где встанут
      переносы. Без них строки ломались не там, где в макете */
   .quote__para:nth-of-type(1) { max-width: 635px; }
   .quote__para:nth-of-type(2) { max-width: 544px; }
   .quote__para:nth-of-type(3) { max-width: 447px; }
 }
-.quote__para + .quote__para { margin-top: 32px; }  /* Gap 32 по инспектору */
+/* Зазор задаёт колонка фрейма (gap: 32) — margin здесь складывался бы с ним */
+@media (max-width: 899px) { .quote__para + .quote__para { margin-top: 32px; } }
 .quote__text cite {
   display: block;
   margin-top: var(--s-5);
@@ -3690,4 +3718,36 @@ body.page-houses main > .houses-catalog {
   font-weight: 400;
   font-size: 20px;
   line-height: 24px;
+}
+
+/* ---------- Слоган: сердце ----------
+   Инспектор: фрейм слогана 809.13×118.13 на 315;2420, сердце 50×50 на
+   1064;2478 с поворотом 13.25° — это 749 и 58 от левого верхнего угла
+   фрейма. */
+.slogan__frame { position: relative; }
+.slogan__heart {
+  position: absolute;
+  left: 749px;
+  top: 58px;
+  width: 50px;
+  height: 50px;
+  transform: rotate(13.25deg);
+  pointer-events: none;
+}
+@media (min-width: 1240px) {
+  /* Фрейм слогана начинается на 315, как и сам текст */
+  .slogan__frame { width: 809.13px; margin-inline: 215px auto; }
+  .slogan .container > .slogan__frame > p { margin-inline: 0; }
+}
+@media (max-width: 1239px) { .slogan__heart { display: none; } }
+
+/* ---------- «Наша территория» ----------
+   Инспектор: заголовок 674×190 Etude Noire 500 90/95 #847F57 — две
+   строки; подпись 674×58 Montserrat 400 24/29 #494949 — тоже две. */
+.mosaic .section__title {
+  width: 674px;
+  line-height: 95px;
+}
+@media (max-width: 1279px) {
+  .mosaic .section__title { width: auto; line-height: 1.056; }
 }
