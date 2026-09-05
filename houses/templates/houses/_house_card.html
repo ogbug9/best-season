@@ -1,4 +1,4 @@
-{% load static wagtailcore_tags media_tags %}
+{% load wagtailcore_tags media_tags %}
 {% comment %}
   Карточка домика. Одна на главную и на «Размещение»: в макете они
   одинаковые, и держать две копии разметки — верный способ их разъехать.
@@ -29,31 +29,20 @@
           </div>
         {% endif %}
       {% else %}
-        {% if fallback_index == 1 %}
-          <img src="{% static 'img/houses/house-1.jpg' %}" alt="">
-        {% elif fallback_index == 2 %}
-          <img src="{% static 'img/houses/house-2.jpg' %}" alt="">
-        {% elif fallback_index == 3 %}
-          <img src="{% static 'img/houses/house-3.jpg' %}" alt="">
-        {% elif fallback_index == 4 %}
-          <img src="{% static 'img/houses/house-4.jpg' %}" alt="">
-        {% else %}
-          <span class="ph" aria-hidden="true"></span>
-        {% endif %}
+        {% comment %}
+          Фотографии загружаются через админку — Wagtail сам делает
+          web-версии нужных размеров. Держать исходники в static нельзя:
+          четыре кадра занимали 37 МБ и уезжали в каждую сборку.
+        {% endcomment %}
+        <span class="ph" aria-hidden="true"></span>
       {% endif %}
     {% endwith %}
 
     {% comment %} Лента с ценой в правом верхнем углу — как в макете {% endcomment %}
-    {% if house.price_from or fallback_index %}
+    {% if house.price_from %}
       <p class="house__price">
         <span>от</span>
-        {% if fallback_index == 1 %}
-          <b>8&nbsp;000 ₽</b>
-        {% elif fallback_index %}
-          <b>6&nbsp;000 ₽</b>
-        {% else %}
-          <b>{{ house.price_display }} ₽</b>
-        {% endif %}
+        <b>{{ house.price_display }} ₽</b>
         <span>за ночь</span>
       </p>
     {% endif %}

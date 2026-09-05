@@ -2947,9 +2947,19 @@ body.page-houses #main {
   background: var(--c-cream);
 }
 
+/* Верх секции. В макете H1 стоит на y=198.91, пилюля шапки кончается
+   на 118.91 — значит между ними 80. Шапка вынесена из потока, поэтому
+   отступ считаем от верха страницы: 198.91 − 0 = 198.91 до базовой
+   линии блока. Прежние 60 поднимали весь блок на 60 выше макета, и это
+   компенсировали подгонкой высоты секции снизу. */
 .houses-catalog {
-  padding-top: 60px;
   padding-bottom: 0;
+}
+/* Селектор с тем же весом, что и общее правило
+   `body:not(.page-home) main > :first-child` — иначе оно перебивает и
+   секция остаётся на прежних ~139. */
+body.page-houses main > .houses-catalog {
+  padding-top: 198.91px;
 }
 
 .houses-catalog__inner {
@@ -2985,22 +2995,36 @@ body.page-houses #main {
   margin: 0;
 }
 
+/* Полоса поиска. Координаты из выгрузки Houses_58006-2465.json:
+   поля 216 / 219 / 181 стоят на 251, 481, 714 — зазор 14, а кнопка 254
+   начинается на 935, то есть отделена зазором 40, а не 14. При едином
+   зазоре ряд выходил 912 вместо 938 и всё уезжало на 13px влево. */
 .page-houses .houses-search {
   display: grid;
   grid-template-columns: 216px 219px 181px 254px;
-  gap: 14px;
+  column-gap: 14px;
   width: 938px;
   margin-top: 0;
+  justify-content: start;
 }
+.page-houses .houses-search > :nth-child(4) { margin-left: 26px; }
 
+/* Высоты из JSON: поля 46 (внутренний фрейм на y=470.91), кнопка 48
+   (внешний фрейм на y=469.91). Прежний min-height: 48 при полях 12px
+   и иконке давал 58, и весь ряд карточек уезжал вниз на 9px. */
+.page-houses .houses-search { align-items: center; }
 .page-houses .houses-search .searchbar__field,
 .page-houses .houses-search .searchbar__cta {
-  min-height: 48px;
+  box-sizing: border-box;
   justify-content: center;
-  padding: 12px 24px;
+  padding-block: 0;
+  padding-inline: 24px;
   font-size: 1rem;
-  line-height: 1;
+  line-height: 18.4px;
 }
+.page-houses .houses-search .searchbar__field { height: 46px; min-height: 0; }
+.page-houses .houses-search .searchbar__cta { height: 48px; min-height: 0; }
+.page-houses .houses-search .searchbar__field svg { flex: 0 0 auto; }
 
 .page-houses .houses-search .searchbar__field {
   background: #D5CEBB;
@@ -3016,9 +3040,10 @@ body.page-houses #main {
   margin-top: 0;
 }
 
-.page-houses .houses-catalog {
-  min-height: 1598px;
-}
+/* Высоту секции не закрепляем: в макете «Наши домики» — 1399 от
+   y=198.91 до 1597.91, и она набирается содержимым. Прежний
+   min-height: 1598 компенсировал недостающий верхний отступ, то есть
+   подгонял низ вместо того, чтобы поставить верх на место. */
 
 .page-houses .house {
   inline-size: 610px;
@@ -3035,9 +3060,8 @@ body.page-houses #main {
   padding-bottom: 0;
 }
 
-.page-houses .houses-services {
-  min-height: 1270px;
-}
+/* То же и здесь: «Доп услуги» в макете 1078, высота набирается
+   содержимым, а не закрепляется числом. */
 
 .houses-catalog__head--services {
   margin-bottom: 60px;
