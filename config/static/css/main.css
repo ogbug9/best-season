@@ -3530,3 +3530,129 @@ body.page-houses main > .houses-catalog {
 .house__more,
 .searchbar__cta,
 .header__aside .btn { font-weight: 400; }
+
+/* ---------- Первый экран главной ----------
+   Заголовок: Etude Noire 700, 90/95, блок 788×95, по центру. Заливка —
+   радиальный градиент по тексту, из инспектора:
+   radial-gradient(53.36% 122.5% at 46.64% -0.53%, #6A6C54 0%, #969044 100%).
+   Начертание 700 у Etude Noire в проекте есть, подделывать нечего. */
+.hero__title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 90px;
+  line-height: 95px;
+  text-align: center;
+  /* Цвет остаётся запасным: если браузер не умеет background-clip: text,
+     заголовок будет оливковым, а не невидимым. */
+  color: var(--c-olive);
+  background-image: radial-gradient(53.36% 122.5% at 46.64% -0.53%, #6A6C54 0%, #969044 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero__title { -webkit-text-fill-color: transparent; color: transparent; }
+}
+@media (max-width: 1279px) {
+  /* 90px в узкий кадр не влезают: «сезон» распирало страницу */
+  .hero__title { font-size: clamp(2.5rem, 6.25vw, 90px); line-height: 1.056; }
+}
+
+/* Подзаголовок: Montserrat 400 18/22 белым по центру, блок 865×44 —
+   две строки, перенос после «восстановиться» стоит в самом тексте. */
+.hero__subtitle {
+  max-width: 865px;
+  margin: var(--s-4) auto 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+/* Полоса поиска первого экрана. Инспектор: группа полей 644×46 с
+   зазором 14, поля 216 / 219 / 181 × 46 с полями 14/60/14/32 и фоном
+   rgba(255,255,255,0.3); кнопка 254×48, поля 14×40, фон #F7F0E6,
+   скругление 100. От каталога отличается только цветом: там поля
+   оливковые, а кнопка терракотовая. */
+@media (min-width: 1280px) {
+  .hero .searchbar {
+    display: grid;
+    grid-template-columns: 216px 219px 181px 254px;
+    column-gap: 14px;
+    align-items: center;
+    /* Колонки в сумме 912 при полосе 938: между группой полей (644) и
+       кнопкой (254) зазор 40, а не 14. При выравнивании по центру всё
+       уезжало на 13px вправо. */
+    justify-content: start;
+    width: 938px;
+    margin-inline: auto;
+  }
+  .hero .searchbar > :nth-child(4) { margin-left: 26px; }
+}
+.hero .searchbar__field,
+.hero .searchbar__cta {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1rem;
+}
+.hero .searchbar__field {
+  height: 46px;
+  min-height: 0;
+  justify-content: center;
+  padding: 14px 60px 14px 32px;
+  background: rgba(255, 255, 255, 0.3);
+  color: var(--c-cream);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.hero .searchbar__field:nth-child(3) { justify-content: flex-start; }
+.hero .searchbar__cta {
+  width: 254px;
+  height: 48px;
+  min-height: 0;
+  justify-content: center;
+  padding: 14px 40px;
+  background: var(--c-cream);
+  color: var(--c-deep);
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+/* ---------- Подпись у лапы ----------
+   Показываем свою, а не системную подсказку: та появляется с задержкой,
+   рисуется шрифтом системы и встаёт где придётся. Своя стоит под лапой
+   по центру и появляется вместе с ней. */
+.header__paw-wrap { position: relative; display: inline-flex; }
+.header__paw-note {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--c-deep);
+  color: var(--c-cream);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 16px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+.header__paw-wrap:hover .header__paw-note,
+.header__paw-wrap:focus-within .header__paw-note { opacity: 1; }
+
+/* «Подробнее»: панель инспектора даёт межстрочный 20, в выгрузке JSON
+   он записан как 19.5 — то же значение до округления. */
+.house__more { line-height: 20px; }

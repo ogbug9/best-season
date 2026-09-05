@@ -52,8 +52,16 @@
           цвет шапки — тёмный на главной, кремовый на внутренних страницах.
           В покое крупная, при наведении и с клавиатуры — мелкая.
         {% endcomment %}
-        <span class="header__paw" role="img" aria-label="Можно с животными"
-              title="Можно с животными"></span>
+        {% comment %}
+          Подпись показываем свою, а не системную подсказку браузера:
+          та появляется с задержкой в секунду, рисуется шрифтом системы
+          и встаёт где придётся. Своя стоит под лапой по центру и
+          появляется вместе с ней.
+        {% endcomment %}
+        <span class="header__paw-wrap">
+          <span class="header__paw" role="img" aria-label="Можно с животными"></span>
+          <span class="header__paw-note" aria-hidden="true">Можно с животными</span>
+        </span>
         {% if s.phone %}
           <a class="header__phone" href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a>
         {% endif %}
