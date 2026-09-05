@@ -84,20 +84,13 @@
 
       <div class="footer__center">
         <p>© {{ current_site.site_name|default:"Лучший Сезон" }} {% now "Y" %}. Все права защищены.</p>
-        {% comment %}
-          Сноска обязательна, если на сайте есть ссылка на Instagram:
-          Meta признана в РФ экстремистской организацией, упоминание её
-          сервисов без этой пометки — нарушение.
-        {% endcomment %}
-        {% if s.instagram_url %}
-          <p class="footer__meta-note">* Meta запрещена на территории РФ</p>
-        {% endif %}
+        <p class="footer__meta-note">* Meta запрещена на территории РФ</p>
         {% comment %}
           Указание автора обязательно по лицензии CC BY 4.0, под которой
           распространяется шрифт Etude Noire. Убирать нельзя — без него
           использование шрифта неправомерно.
         {% endcomment %}
-        <p class="footer__credits">
+        <p class="footer__meta-note">
           Шрифт Etude Noire — Дмитрий Антонов / Blue Curve Designstudio,
           лицензия <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" target="_blank">CC BY 4.0</a>
         </p>
