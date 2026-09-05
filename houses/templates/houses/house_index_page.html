@@ -96,7 +96,7 @@
               {% if service.image %}{% picture service.image preset="card" alt=service.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
               {% if service.price %}
                 <p class="house__price">
-                  <span>от</span><b>{{ service.price }} ₽</b><span>{{ service.get_price_unit_display }}</span>
+                  <span>от</span><b>{{ service.price_display }} ₽</b><span>за ночь</span>
                 </p>
               {% endif %}
             </div>

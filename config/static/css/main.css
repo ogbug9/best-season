@@ -1509,7 +1509,10 @@ body:not(.page-home) main > :first-child {
   flex: 0 0 auto;
 }
 @media (min-width: 900px) { .header__logo { width: 160px; } }
-.header__mark { display: inline-flex; color: var(--c-deep); }
+/* Цвет знака наследуется от пилюли: на оливковой шапке внутренних
+   страниц он кремовый, на кремовой главной — тёмный. Своё значение
+   цвета здесь перебивало правило шапки, и знак оставался тёмным. */
+.header__mark { display: inline-flex; color: inherit; }
 /* У знака бренда нет собственных width/height — только viewBox, чтобы
    цвет наследовался от текста, а размер задавался здесь. Без явных
    размеров svg без атрибутов разъезжается до 300×150. */
@@ -2585,23 +2588,45 @@ body[data-modal-open] {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
 }
 
-/* Лента с ценой — прямоугольник с треугольным вырезом снизу */
+/* Лента с ценой. Инспектор: 94×128 на 485;0 внутри карточки 610,
+   фон #9B5026, рамка 1px #F7F0E6, снизу треугольный вырез глубиной 27
+   (снято с присланного файла img/price-flag.png по альфа-каналу).
+   Рисуем двумя слоями с одинаковым обрезом: внешний — цвет рамки,
+   внутренний на 1px внутрь — заливка. Так контур виден по всему
+   периметру, включая скосы выреза, и не мылит на ретине. */
 .house__price {
   position: absolute;
   z-index: 2;
   top: 0;
-  right: var(--s-4);
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-  padding: var(--s-2) var(--s-4) var(--s-5);
-  background: var(--c-terra);
-  color: var(--c-cream);
-  font-size: 0.8125rem;
-  line-height: 1.1;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+  right: 31px;              /* 610 − 485 − 94 */
+  width: 94px;
+  height: 128px;
+  padding: 28px 12px 0;
+  margin: 0;
+  display: block;
+  background: #F7F0E6;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 27px), 0 100%);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  color: #FFFFFF;
+  text-align: center;
 }
-.house__price b { font-size: 1rem; font-weight: 700; white-space: nowrap; }
+.house__price::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: #9B5026;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 27px), 0 100%);
+}
+.house__price > * {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+/* Все три строки флажка одного набора — Montserrat 500 18/22 */
+.house__price b { font-size: 18px; font-weight: 500; white-space: nowrap; }
 
 .house__overlay {
   position: relative;
@@ -3368,15 +3393,15 @@ body.page-houses main > .houses-catalog {
    кнопка 546×52 с полями 14×40, фоном #847F57 и скруглением 100,
    «Подробнее» 153×40 Montserrat 400 16/19.5. */
 @media (min-width: 1280px) {
-  .page-houses .house__info { width: 546px; }
-  .page-houses .house__title {
+  .house__info { width: 546px; }
+  .house__title {
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 24px;
     line-height: 29px;
     color: #FFFFFF;
   }
-  .page-houses .house__meta {
+  .house__meta {
     width: 546px;
     font-family: var(--font-body);
     font-weight: 400;
@@ -3384,7 +3409,7 @@ body.page-houses main > .houses-catalog {
     line-height: 22px;
     color: #FFFFFF;
   }
-  .page-houses .house__book {
+  .house__book {
     width: 546px;
     height: 52px;
     padding: 14px 40px;
@@ -3395,7 +3420,7 @@ body.page-houses main > .houses-catalog {
     font-size: 20px;
     line-height: 24.38px;
   }
-  .page-houses .house__more {
+  .house__more {
     width: 153px;
     height: 40px;
     font-family: var(--font-body);
@@ -3440,30 +3465,30 @@ body.page-houses main > .houses-catalog {
    У второй карточки инспектор показывает 341 вместо 333 — расхождение
    самого макета на 8px, берём 333 (три карточки из четырёх). */
 @media (min-width: 1280px) {
-  .page-houses .house {
+  .house {
     padding: 0 32px 32px;
     grid-template-rows: auto auto;
     align-content: end;
     row-gap: 24px;
   }
-  .page-houses .house__dots {
+  .house__dots {
     position: absolute;
     inset-inline: 0;
     bottom: 193px;   /* 500 − 299 − 8 */
     top: auto;
     z-index: 2;
   }
-  .page-houses .house__overlay {
+  .house__overlay {
     position: relative;
     display: block;
     width: 546px;
     padding: 0;
     margin: 0;
   }
-  .page-houses .house__info { display: grid; gap: 10px; width: 546px; }
-  .page-houses .house__title,
-  .page-houses .house__meta { margin: 0; }
-  .page-houses .house__more {
+  .house__info { display: grid; gap: 10px; width: 546px; }
+  .house__title,
+  .house__meta { margin: 0; }
+  .house__more {
     position: absolute;
     left: 393px;
     top: 2px;
@@ -3474,7 +3499,7 @@ body.page-houses main > .houses-catalog {
     border-radius: 20px;
     background: transparent;
   }
-  .page-houses .house__book { margin: 0; }
+  .house__book { margin: 0; }
 }
 
 /* ---------- Наведение на карточку домика ----------

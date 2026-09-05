@@ -41,6 +41,13 @@ class Service(models.Model):
     price_unit = models.CharField(
         "Единица", max_length=12, choices=PriceUnit.choices, default=PriceUnit.HOUR
     )
+    @property
+    def price_display(self):
+        """Цена с неразрывным пробелом в разряде тысяч — как в макете."""
+        if self.price is None:
+            return ""
+        return f"{self.price:,}".replace(",", "\u00a0")
+
     price_note = models.CharField(
         "Примечание к цене", max_length=120, blank=True,
         help_text="Например: «минимум 2 часа». Точный расчёт — в виджете Контура.",

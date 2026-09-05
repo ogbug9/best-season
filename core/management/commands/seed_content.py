@@ -249,14 +249,16 @@ PROMOTIONS = [
 # дизайнером с карточки домика, для почасового объекта она неверна.
 # Вопрос вынесен в открытые (design/spec.json).
 SERVICES = [
-    ("Русская баня", "russkaya-banya", True, "Описание"),
-    ("Большая беседка", "bolshaya-besedka", True, "Описание"),
+    # Цены почасовых объектов — с флажков макета, по прямому указанию
+    # заказчика 05.09: баня 8 000, беседка 6 000
+    ("Русская баня", "russkaya-banya", True, "Описание", 8000),
+    ("Большая беседка", "bolshaya-besedka", True, "Описание", 6000),
     # Переносы в названиях — как в макете: «Финская сауна» и «Аренда
     # велосипедов» стоят в две строки (блок 58 против 29 у остальных)
-    ("Финская\nсауна", "finskaya-sauna", False, ""),
-    ("Мастер-классы", "master-klassy", False, ""),
-    ("Фотосессии", "fotosessii", False, ""),
-    ("Аренда\nвелосипедов", "arenda-velosipedov", False, ""),
+    ("Финская\nсауна", "finskaya-sauna", False, "", None),
+    ("Мастер-классы", "master-klassy", False, "", None),
+    ("Фотосессии", "fotosessii", False, "", None),
+    ("Аренда\nвелосипедов", "arenda-velosipedov", False, "", None),
 ]
 
 HOUSES = [
@@ -500,14 +502,21 @@ class Command(BaseCommand):
         """
         from services.models import Service
 
-        for order, (name, slug, hourly, desc) in enumerate(SERVICES, start=1):
-            if Service.objects.filter(slug=slug).exists():
+        for order, (name, slug, hourly, desc, price) in enumerate(SERVICES, start=1):
+            existing = Service.objects.filter(slug=slug).first()
+            if existing:
+                # Цену доставляем и в заведённую услугу, но только если её
+                # там ещё нет: свою цену редактора не трогаем
+                if price and existing.price is None and not self.dry:
+                    existing.price = price
+                    existing.save()
+                    self.mark(f"услуга, цена с макета: {name}")
                 continue
             if self.dry:
                 self.mark(f"услуга: {name}")
                 continue
             Service.objects.create(
-                name=name, slug=slug, is_hourly=hourly,
+                name=name, slug=slug, is_hourly=hourly, price=price,
                 short_description=desc, sort_order=order * 10, is_published=True,
             )
             self.mark(f"услуга: {name}")
