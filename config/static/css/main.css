@@ -1874,84 +1874,44 @@ body:not(.page-home) main > :first-child {
 .hero__link:hover { background: var(--c-cream); color: var(--c-deep); }
 
 /* ---------- Подвал по макету ---------- */
-.footer__top {
-  display: grid;
-  gap: var(--s-6);
-  margin-bottom: var(--s-6);
-}
-@media (min-width: 900px) { .footer__top { grid-template-columns: 1fr 2fr; } }
-
-.footer__brand { display: grid; gap: var(--s-4); align-content: start; justify-items: start; }
-.footer__logo { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--c-deep); }
-.footer__name {
-  font-family: var(--font-heading);
-  /* 32.61px и межстрочный 90% — по инспектору. Дробное значение не
-     округляем: надпись в макете подогнана под ширину знака (153px),
-     и на 32px или 33px она перестаёт с ним совпадать. */
-  font-size: 2.038rem;
-  line-height: 0.9;
-  /* Оливковый, как в макете. Контраст на кремовом 3.6 — норма для
-     крупного текста (порог 3.0 от 24px при обычном весе), а здесь
-     32.61px. Ниже по правилу раньше стоял второй color: c-deep,
-     который перебивал этот — удалён. */
-  color: var(--c-olive);
-  max-width: 7ch;
-}
-.footer__contacts { display: grid; gap: var(--s-2); }
-.footer__phone { font-weight: 600; font-size: 1.125rem; }
+.footer { padding-top: 100px; }
+.footer__top { display: grid; gap: 48px; margin-bottom: 0; }
+.footer__brand { display: flex; flex-direction: column; align-items: center; width: 240px; gap: 40px; }
+.footer__logo { display: flex; align-items: center; gap: 16px; width: 240px; height: 70px; color: var(--c-olive); }
+.footer__mark { flex: 0 0 70px; }
+.footer__mark svg { display: block; width: 70px; height: 70px; }
+.footer__name { font-family: var(--font-heading); font-size: 32.61px; font-weight: 400; line-height: .9; color: var(--c-olive); width: 154px; }
+.footer__contacts { display: grid; gap: 14px; text-align: center; font-size: 16px; line-height: 18px; }
+.footer__contacts p { margin: 0; }
+.footer__phone { font-size: 20px; font-weight: 400; line-height: 24px; }
 .footer__hours { color: var(--c-dark); }
-
-/* Круглые иконки соцсетей — как в макете */
-.socials { display: flex; gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
-.socials li { display: flex; align-items: flex-start; }
-.socials__item {
-  display: grid;
-  place-items: center;
-  width: var(--tap-min);
-  height: var(--tap-min);
-  border: 1px solid var(--c-dark-soft);
-  border-radius: var(--radius-pill);
-  color: var(--c-deep);
+.footer__brand .socials { margin-top: -20px; }
+.socials { display: flex; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.socials li { position: relative; display: flex; align-items: flex-start; }
+.socials__item { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 100px; background: var(--c-dark); color: var(--c-cream); }
+.socials__item:hover { background: var(--c-olive); }
+.socials__note { position: absolute; top: -5px; right: -3px; font-size: 12px; }
+.footer__brand .btn { width: 214px; min-height: 40px; height: 40px; padding: 0; font-size: 16px; font-weight: 400; }
+.footer__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 24px; align-content: start; }
+.footer__column-title { margin-bottom: 14px; color: var(--c-olive); font-size: 20px; font-weight: 600; line-height: 24px; }
+.footer__column ul, .footer__legal-links { margin: 0; padding: 0; list-style: none; display: grid; row-gap: 10px; }
+.footer__column li, .footer__legal-links li { line-height: 22px; }
+.footer__column a, .footer__documents a, .footer__booking-link { font-family: var(--font-body); font-weight: 400; font-size: 18px; line-height: 22px; color: var(--c-dark); }
+.footer__booking-link { display: inline; border: 0; padding: 0; background: none; cursor: pointer; text-align: left; }
+.footer__booking-link:hover { color: var(--c-terra); text-decoration: underline; }
+.footer__documents { grid-column: 1 / -1; }
+.footer__legal-links { grid-auto-flow: column; grid-template-rows: repeat(2, 22px); grid-template-columns: 100px auto; column-gap: 30px; justify-content: start; }
+@media (min-width: 1200px) {
+  .footer__top { grid-template-columns: 240px 1fr; column-gap: 120px; }
+  .footer__columns { width: 716px; padding-top: 12px; grid-template-columns: 229px 180px 107px; column-gap: 100px; row-gap: 45px; }
+  .footer__documents { width: 433px; }
+  .footer__column a, .footer__documents a { white-space: nowrap; }
+  .footer__legal { margin: 58px 20px 0; padding-top: 16px; }
 }
-.socials__item:hover { background: var(--c-olive-soft); }
-/* Звёздочка ведёт к сноске про Meta внизу подвала */
-.socials__note { font-size: 0.75rem; color: var(--c-dark); }
-
-.footer__columns {
-  display: grid;
-  gap: var(--s-6);
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-}
-.footer__column-title {
-  /* Инспектор (узел «Размещение»): Montserrat 600 / 20px / 100%,
-     цвет в макете #847F57. Но 20px при весе 600 — обычный текст, а не
-     крупный (крупный от 18.66px только при весе 700 или от 24px), и
-     оливковый на кремовом даёт 3.6 при норме 4.5. Единственное
-     отступление от макета здесь — затемнённый оливковый; кегль, вес и
-     межстрочный как в макете. */
-  margin-bottom: 14px;
-  color: var(--c-olive-dark);
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1;
-}
-.footer__column-title--second { margin-top: var(--s-7); }
-.footer__column ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s-3); }
-/* Инспектор по узлу «Бронирование» в колонке подвала:
-   Montserrat 400, 18px, межстрочный 100%, цвет #494949. */
-.footer__column a {
-  font-size: 1.125rem;
-  line-height: 1;
-  color: var(--c-dark);
-}
-/* Правовые документы в макете стоят в две колонки и заполняются сверху
-   вниз, а не слева направо — отсюда grid-auto-flow: column с явным
-   числом строк. */
-.footer__legal-links {
-  grid-auto-flow: column;
-  grid-template-rows: repeat(2, auto);
-  justify-content: start;
-  column-gap: var(--s-7);
+@media (max-width: 599px) {
+  .footer__columns { grid-template-columns: 1fr; }
+  .footer__legal-links { grid-auto-flow: row; grid-template-columns: 1fr; grid-template-rows: none; }
+  .footer__brand { justify-self: center; }
 }
 
 .footer__legal {

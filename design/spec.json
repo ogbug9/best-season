@@ -516,10 +516,9 @@
           "node": "Футтер / «Бронирование»"
         },
         "line-height": {
-          "value": "18px",
+          "value": "22px",
           "source": "inspector",
-          "node": "Футтер / «Бронирование»",
-          "заметка": "в макете 100%"
+          "node": "Футтер / CSS из сообщения 05.09.2026"
         },
         "color": {
           "value": "#494949",
@@ -575,9 +574,14 @@
           "заметка": "в макете 600, не 700 — а значит текст обычный и требует контраста 4.5"
         },
         "color": {
-          "value": "#746F4C",
-          "source": "derived",
-          "заметка": "в макете #847F57, но 20px при весе 600 — обычный текст, контраст 3.6 при норме 4.5. Единственное отступление от макета в подвале"
+          "value": "#847F57",
+          "source": "inspector",
+          "node": "Футтер / Размещение, CSS из сообщения 05.09.2026"
+        },
+        "line-height": {
+          "value": "24px",
+          "source": "inspector",
+          "node": "Футтер / Размещение, CSS из сообщения 05.09.2026"
         }
       },
       "page": "/"
@@ -924,6 +928,57 @@
         "border-radius": {
           "value": "10px",
           "source": "inspector"
+        }
+      }
+    },
+    "footer-brand": {
+      "selector": ".footer__brand",
+      "viewport": 1440,
+      "page": "/",
+      "props": {
+        "width": {
+          "value": "240px",
+          "source": "inspector",
+          "node": "Футтер / CSS пользователя 05.09.2026"
+        },
+        "gap": {
+          "value": "40px",
+          "source": "inspector",
+          "node": "Футтер / CSS пользователя 05.09.2026"
+        }
+      }
+    },
+    "footer-columns": {
+      "selector": ".footer__columns",
+      "viewport": 1440,
+      "page": "/",
+      "props": {
+        "width": {
+          "value": "716px",
+          "source": "inspector",
+          "node": "Футтер / CSS пользователя 05.09.2026"
+        },
+        "column-gap": {
+          "value": "100px",
+          "source": "inspector",
+          "node": "Футтер / CSS пользователя 05.09.2026"
+        }
+      }
+    },
+    "footer-documents": {
+      "selector": ".footer__documents",
+      "viewport": 1440,
+      "page": "/",
+      "props": {
+        "width": {
+          "value": "433px",
+          "source": "inspector",
+          "node": "Футтер / CSS пользователя 05.09.2026"
+        },
+        "height": {
+          "value": "92px",
+          "source": "inspector",
+          "node": "Футтер / CSS пользователя 05.09.2026"
         }
       }
     }

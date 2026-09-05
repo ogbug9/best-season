@@ -15,20 +15,23 @@
       {% if column.links %}
         <ul>
           {% for link in column.links %}
-            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            <li>{% if link.booking %}<button type="button" class="footer__booking-link" data-booking-open data-entry-point="1">{{ link.title }}</button>{% else %}<a href="{{ link.url }}">{{ link.title }}</a>{% endif %}</li>
           {% endfor %}
         </ul>
       {% endif %}
 
-      {% comment %} Правовые документы висят под первой колонкой — так в макете {% endcomment %}
+    </div>
+  {% endfor %}
+  {% for column in footer_columns %}
       {% if column.legal %}
-        <p class="footer__column-title footer__column-title--second">Правовые документы</p>
+      <div class="footer__documents">
+        <p class="footer__column-title">Правовые документы</p>
         <ul class="footer__legal-links">
           {% for link in column.legal %}
             <li><a href="{{ link.url }}">{{ link.title }}</a></li>
           {% endfor %}
         </ul>
+      </div>
       {% endif %}
-    </div>
   {% endfor %}
 </nav>

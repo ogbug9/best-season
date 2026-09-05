@@ -26,11 +26,11 @@ FOOTER_COLUMNS = [
     {
         "title": "Размещение",
         "slugs": [
-            ("razmeshchenie", "Дома"),
             ("akcii", "Акции"),
+            ("__booking__", "Бронирование"),
+            ("razmeshchenie", "Дома"),
             ("pravila-bronirovaniya", "Правила бронирования"),
             ("vyezdy-kompaniy", "Выезды компаний"),
-            ("kak-dobratsya", "Как добраться"),
         ],
         "legal_slugs": [
             ("rassylka", "Рассылка"),
@@ -56,7 +56,7 @@ FOOTER_COLUMNS = [
             ("otzyvy", "Отзывы"),
             ("kontakty", "Контакты"),
             ("voprosy", "FAQ"),
-            ("partneram", "Партнёрам"),
+            ("partneram", "Партнерам"),
         ],
     },
 ]
@@ -65,6 +65,9 @@ FOOTER_COLUMNS = [
 def _links(pairs, pages):
     out = []
     for slug, label in pairs:
+        if slug == "__booking__":
+            out.append({"title": label, "booking": True})
+            continue
         page = pages.get(slug)
         if page is not None:
             out.append({"title": label, "url": page.url})
