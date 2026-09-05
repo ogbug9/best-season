@@ -2445,15 +2445,30 @@ body[data-modal-open] {
   .quote__body { padding-inline: 0; }
 }
 .quote__text { position: relative; margin: 0; }
+/* Кавычки — файлы дизайнера 48×40 (img/quote-open.png и quote-close.png).
+   Рисуются маской, чтобы брать оливковый из палитры, а не зависеть от
+   цвета в самом файле. Закрывающая в макете стоит на x=760, то есть на
+   660 от левого края блока цитаты, и развёрнута на 180°. */
 .quote__mark {
   display: block;
-  font-family: var(--font-heading);
-  font-size: 4rem;
-  line-height: 0.6;
-  color: var(--c-olive);
+  width: 48px;
+  height: 40px;
+  background-color: var(--c-olive);
+  -webkit-mask: url("../img/quote-open.png") no-repeat center / 48px 40px;
+  mask: url("../img/quote-open.png") no-repeat center / 48px 40px;
+  font-size: 0;
 }
 .quote__mark--open { margin-bottom: var(--s-4); }
-.quote__mark--close { margin-top: var(--s-4); text-align: right; }
+.quote__mark--close {
+  margin-top: var(--s-4);
+  -webkit-mask-image: url("../img/quote-close.png");
+  mask-image: url("../img/quote-close.png");
+  transform: rotate(180deg);
+}
+@media (min-width: 900px) {
+  /* Закрывающая по инспектору смещена вправо от текста */
+  .quote__mark--close { margin-left: 660px; }
+}
 /* Лесенка: каждый следующий абзац сдвинут правее предыдущего.
    Только на широких экранах: на мобильном сдвиг плюс ширина строки
    растягивали колонку до 613px и давали горизонтальную прокрутку. */
@@ -3656,3 +3671,23 @@ body.page-houses main > .houses-catalog {
 /* «Подробнее»: панель инспектора даёт межстрочный 20, в выгрузке JSON
    он записан как 19.5 — то же значение до округления. */
 .house__more { line-height: 20px; }
+
+/* ---------- Кнопки блока «О нас» ----------
+   Инспектор (Frame 2087326585): ряд 531×52, зазор 32. Подписи
+   «Забронировать даты» 218×24 (#F7F0E6) и «Подробнее» 121×24 (#494949),
+   обе Montserrat 400 20/24 — то есть кнопки 298×52 и 201×52 при полях
+   40 по горизонтали. Стояло 600-е начертание, оттого и выглядело жирнее. */
+.about__text .split__actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+}
+.about__text .split__actions .btn {
+  min-height: 52px;
+  height: 52px;
+  padding: 14px 40px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+}
