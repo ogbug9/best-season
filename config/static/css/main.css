@@ -319,7 +319,8 @@ body {
   text-decoration-thickness: 1px;
 }
 
-.header__phone { font-weight: 600; text-decoration: none; white-space: nowrap; }
+/* Вес и кегль телефона заданы ниже, по инспектору: 400, 16px */
+.header__phone { text-decoration: none; white-space: nowrap; }
 
 /* Мобильное меню — раскрытие на <details>, без своего JS */
 .nav--mobile { display: none; }
@@ -1498,19 +1499,55 @@ body:not(.page-home) main > :first-child {
 .header__aside {
   display: flex;
   align-items: center;
-  gap: var(--s-3);
+  /* Инспектор (Frame 2087326542): группа 428×40, зазор 24 */
+  gap: 24px;
   margin-inline-start: auto;
   flex: 0 0 auto;
 }
+/* Лапа: файлы от дизайнера, 30×28 в покое и 30×23 при наведении.
+   Рисуем маской, а не картинкой, чтобы один файл красился в цвет шапки:
+   тёмный на главной, кремовый на внутренних страницах. Коробка всегда
+   30×28 — иначе при наведении соседи дёргаются. */
 .header__paw {
-  display: inline-flex;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 28px;
+  background-color: currentColor;
+  -webkit-mask: url("../img/paw-big.png") no-repeat center / 30px 28px;
+  mask: url("../img/paw-big.png") no-repeat center / 30px 28px;
   color: var(--c-deep);
 }
+.header__paw:hover,
+.header__paw:focus-visible {
+  -webkit-mask: url("../img/paw-small.png") no-repeat center / 30px 23px;
+  mask: url("../img/paw-small.png") no-repeat center / 30px 23px;
+}
+/* Кнопка в шапке: инспектор даёт группу 428×40 при лапе 30 и телефоне 136
+   с зазорами 24, значит на кнопку остаётся 214×40. Подпись 174×20,
+   Montserrat 400 16/20, кремовая — отсюда поля 20 по горизонтали и 10 по
+   вертикали. Общая кнопка сайта крупнее (20/600), в шапке она своя. */
+.header__aside .btn {
+  /* Общая кнопка сайта тянется до 44px ради размера цели нажатия,
+     в шапке по макету 40. Правило только для десктопной шапки: на
+     мобильном эта кнопка скрыта и правило до неё не доходит. */
+  min-height: 40px;
+  padding: 9px 20px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 20px;
+}
 .header__phone {
+  /* Инспектор: Montserrat 400, 16/115%, трекинг −0.02em, #494949, блок 136 */
   color: var(--c-dark);
   text-decoration: none;
   white-space: nowrap;
-  font-size: 0.9375rem;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 /* В макете все пункты в одну строку внутри пилюли. Перенос ронял
