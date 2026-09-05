@@ -505,12 +505,24 @@ class Command(BaseCommand):
         for order, (name, slug, hourly, desc, price) in enumerate(SERVICES, start=1):
             existing = Service.objects.filter(slug=slug).first()
             if existing:
+                changed = False
                 # Цену доставляем и в заведённую услугу, но только если её
                 # там ещё нет: свою цену редактора не трогаем
-                if price and existing.price is None and not self.dry:
+                if price and existing.price is None:
                     existing.price = price
-                    existing.save()
+                    changed = True
                     self.mark(f"услуга, цена с макета: {name}")
+                # Перенос строки в названии появился позже, чем сами
+                # услуги: на боевом «Финская сауна» и «Аренда
+                # велосипедов» уже были заведены одной строкой. Правим
+                # только если название совпадает с прежним — свой вариант
+                # редактора не трогаем.
+                if existing.name != name and existing.name == name.replace("\n", " "):
+                    existing.name = name
+                    changed = True
+                    self.mark(f"услуга, перенос в названии: {name!r}")
+                if changed and not self.dry:
+                    existing.save()
                 continue
             if self.dry:
                 self.mark(f"услуга: {name}")

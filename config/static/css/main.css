@@ -2589,11 +2589,14 @@ body[data-modal-open] {
 }
 
 /* Лента с ценой. Инспектор: 94×128 на 485;0 внутри карточки 610,
-   фон #9B5026, рамка 1px #F7F0E6, снизу треугольный вырез глубиной 27
-   (снято с присланного файла img/price-flag.png по альфа-каналу).
-   Рисуем двумя слоями с одинаковым обрезом: внешний — цвет рамки,
-   внутренний на 1px внутрь — заливка. Так контур виден по всему
-   периметру, включая скосы выреза, и не мылит на ретине. */
+   фон #9B5026, рамка 1px #F7F0E6, снизу треугольный вырез до y=101
+   (глубина 27, снята с присланного файла по альфа-каналу).
+   Рисуется контуром SVG, а не clip-path: обрез в браузере не
+   сглаживается, и на диагоналях выреза была видна лесенка. Контур
+   векторный — чист на любом масштабе и на ретине.
+   Обводка идёт только по бокам и низу: по верхней грани её нет, иначе
+   светлая линия ложится поперёк карточки и режет её. Боковые кончики
+   доходят ровно до 128, то есть до низа ленты. */
 .house__price {
   position: absolute;
   z-index: 2;
@@ -2604,8 +2607,7 @@ body[data-modal-open] {
   padding: 28px 12px 0;
   margin: 0;
   display: block;
-  background: #F7F0E6;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 27px), 0 100%);
+  background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='94' height='128' viewBox='0 0 94 128'%3E%3Cpath d='M0 0H94V128L47 101L0 128Z' fill='%239B5026'/%3E%3Cpath d='M0.5 0V127.5L47 101.05L93.5 127.5V0' fill='none' stroke='%23F7F0E6' stroke-width='1'/%3E%3C/svg%3E") no-repeat 0 0 / 94px 128px;
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 18px;
@@ -2613,18 +2615,7 @@ body[data-modal-open] {
   color: #FFFFFF;
   text-align: center;
 }
-.house__price::before {
-  content: "";
-  position: absolute;
-  inset: 1px;
-  background: #9B5026;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 27px), 0 100%);
-}
-.house__price > * {
-  position: relative;
-  z-index: 1;
-  display: block;
-}
+.house__price > * { display: block; }
 /* Все три строки флажка одного набора — Montserrat 500 18/22 */
 .house__price b { font-size: 18px; font-weight: 500; white-space: nowrap; }
 
