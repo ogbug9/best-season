@@ -44,10 +44,16 @@
     {% endwith %}
 
     {% comment %} Лента с ценой в правом верхнем углу — как в макете {% endcomment %}
-    {% if house.price_from %}
+    {% if house.price_from or fallback_index %}
       <p class="house__price">
         <span>от</span>
-        <b>{{ house.price_display }} ₽</b>
+        {% if fallback_index == 1 %}
+          <b>8&nbsp;000 ₽</b>
+        {% elif fallback_index %}
+          <b>6&nbsp;000 ₽</b>
+        {% else %}
+          <b>{{ house.price_display }} ₽</b>
+        {% endif %}
         <span>за ночь</span>
       </p>
     {% endif %}

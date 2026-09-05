@@ -473,6 +473,18 @@ class Command(BaseCommand):
                     existing.sort_order_index = order
                     changed = True
                     self.mark(f"дом, порядок по макету: {title}")
+                if existing.price_from != price:
+                    existing.price_from = price
+                    changed = True
+                    self.mark(f"дом, цена по макету: {title}")
+                if existing.capacity != capacity:
+                    existing.capacity = capacity
+                    changed = True
+                    self.mark(f"дом, вместимость по макету: {title}")
+                if existing.area != area:
+                    existing.area = area
+                    changed = True
+                    self.mark(f"дом, площадь по макету: {title}")
                 if changed and not self.dry:
                     existing.save()
                 continue

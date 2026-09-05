@@ -2943,12 +2943,12 @@ body[data-modal-open] {
   color: var(--c-dark);
 }
 
-.page-houses .main {
+body.page-houses #main {
   background: var(--c-cream);
 }
 
 .houses-catalog {
-  padding-top: 112px;
+  padding-top: 60px;
   padding-bottom: 0;
 }
 
@@ -2971,8 +2971,8 @@ body[data-modal-open] {
   max-width: 1240px;
   margin-inline: auto;
   color: var(--c-dark);
-  font-size: 1.25rem;
-  line-height: 1.2;
+  font-size: 20px;
+  line-height: 24.38px;
 }
 
 .houses-catalog__intro p {
@@ -3022,8 +3022,8 @@ body[data-modal-open] {
 .houses-catalog__head--services p {
   margin: 0;
   color: var(--c-dark);
-  font-size: 1.25rem;
-  line-height: 1.2;
+  font-size: 20px;
+  line-height: 24.38px;
 }
 
 .cards--services {
@@ -3044,7 +3044,7 @@ body[data-modal-open] {
 }
 
 .page-houses .section--deep {
-  margin-top: 80px;
+  display: none;
 }
 
 
