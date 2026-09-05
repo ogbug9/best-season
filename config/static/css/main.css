@@ -3422,3 +3422,80 @@ body.page-houses main > .houses-catalog {
    домиков: 80 (1677.91 − 1597.91 по инспектору). */
 .houses-faq { padding-top: 80px; }
 
+/* ---------- Карточка домика на «Размещении»: точная геометрия ----------
+   Инспектор, координаты внутри карточки 610×500:
+     блок содержимого 32;299 546×169 — снизу тоже 32
+     точки          287;299  36×8
+     инфо            32;331 546×61 — название 29, зазор 10, подпись 22
+     кнопка          32;416 546×52
+     «Подробнее»    425;333 153×40, рамка 1px #FFFFFF, скругление 20,
+                    поля 10×28
+   Арифметика сходится сама: 32 снизу + 52 кнопка + 24 зазор + 61 инфо
+   = блок начинается на 331, а точки на 24 выше — на 299. Поэтому здесь
+   не абсолютные координаты, а поля и зазоры: так карточка не разъедется,
+   если подпись станет длиннее.
+   «Подробнее» — единственный абсолютный элемент: в потоке он растягивал
+   строку с названием до 713 и вылезал за карточку вправо. Координаты
+   считаются от блока инфо (32;331), поэтому 425−32 и 333−331.
+   У второй карточки инспектор показывает 341 вместо 333 — расхождение
+   самого макета на 8px, берём 333 (три карточки из четырёх). */
+@media (min-width: 1280px) {
+  .page-houses .house {
+    padding: 0 32px 32px;
+    grid-template-rows: auto auto;
+    align-content: end;
+    row-gap: 24px;
+  }
+  .page-houses .house__dots {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 193px;   /* 500 − 299 − 8 */
+    top: auto;
+    z-index: 2;
+  }
+  .page-houses .house__overlay {
+    position: relative;
+    display: block;
+    width: 546px;
+    padding: 0;
+    margin: 0;
+  }
+  .page-houses .house__info { display: grid; gap: 10px; width: 546px; }
+  .page-houses .house__title,
+  .page-houses .house__meta { margin: 0; }
+  .page-houses .house__more {
+    position: absolute;
+    left: 393px;
+    top: 2px;
+    width: 153px;
+    height: 40px;
+    padding: 10px 28px;
+    border: 1px solid #FFFFFF;
+    border-radius: 20px;
+    background: transparent;
+  }
+  .page-houses .house__book { margin: 0; }
+}
+
+/* ---------- Наведение на карточку домика ----------
+   Одинаково на главной и на «Размещении»: фотография чуть приближается,
+   кнопка темнеет. Движение выключается для тех, кто просил уменьшить
+   анимацию (п. 10.13 ТЗ). */
+.house__media picture, .house__media img {
+  transition: transform 0.35s ease;
+}
+.house:hover .house__media picture,
+.house:hover .house__media img,
+.house:focus-within .house__media picture,
+.house:focus-within .house__media img {
+  transform: scale(1.03);
+}
+.house__book { transition: background-color 0.2s ease; }
+.house:hover .house__book { background: var(--c-olive-dark, #746F4C); }
+.house__more { transition: background-color 0.2s ease, color 0.2s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .house:hover .house__media picture,
+  .house:hover .house__media img,
+  .house:focus-within .house__media picture,
+  .house:focus-within .house__media img { transform: none; }
+}
