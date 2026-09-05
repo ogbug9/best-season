@@ -2977,18 +2977,25 @@ body.page-houses main > .houses-catalog {
   margin: 0;
 }
 
+/* Панель инспектора: Etude Noire 500, 90/95, #847F57, по центру, блок
+   1240×95 («identical to box height»). В выгрузке JSON межстрочный
+   записан как 94.53 — это то же значение до округления, но 95 даёт
+   ровно высоту блока. */
 .page-houses .section__title {
   font-size: 90px;
-  line-height: 94.53px;
+  line-height: 95px;
 }
 
+/* Панель: Montserrat 400, 20/24, #494949, по центру, блок 1240×96 —
+   ровно 4 строки по 24. С межстрочным 24.38 из JSON выходило 98. */
 .houses-catalog__intro {
   max-width: 1240px;
   min-height: 96px;
   margin-inline: auto;
   color: var(--c-dark);
   font-size: 20px;
-  line-height: 24.38px;
+  line-height: 24px;
+  text-align: center;
 }
 
 .houses-catalog__intro p {
@@ -3071,7 +3078,7 @@ body.page-houses main > .houses-catalog {
   margin: 0;
   color: var(--c-dark);
   font-size: 20px;
-  line-height: 24.38px;
+  line-height: 24px;
 }
 
 .cards--services {

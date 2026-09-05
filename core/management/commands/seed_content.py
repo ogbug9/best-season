@@ -471,14 +471,20 @@ class Command(BaseCommand):
         if index is None:
             return
 
-        # Текст раздела ставим только поверх своей же заглушки — правку
-        # редактора не трогаем (п. 8 ТЗ)
+        # Заголовок и текст раздела ставим только поверх своей же
+        # заглушки — правку редактора не трогаем (п. 8 ТЗ)
+        index_changed = False
+        if not index.heading:
+            index.heading = "Наши домики"
+            index_changed = True
+            self.mark("раздел «Размещение»: заголовок с макета «Наши домики»")
         if is_ours(index.intro) and _plain(index.intro) != _plain(self.HOUSES_INTRO):
             index.intro = self.HOUSES_INTRO
-            if not self.dry:
-                index.save()
-                index.save_revision().publish()
+            index_changed = True
             self.mark("раздел «Размещение»: вступительный текст с макета")
+        if index_changed and not self.dry:
+            index.save()
+            index.save_revision().publish()
 
         for order, (title, desc, price, capacity, area) in enumerate(HOUSES, start=1):
             existing = HousePage.objects.filter(title=title).first()

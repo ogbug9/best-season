@@ -24,9 +24,18 @@ class HouseIndexPage(Page):
         on_delete=models.SET_NULL,
         related_name="+",
     )
+    # Заголовок на странице и название в меню — это разные вещи: в меню
+    # пункт называется «Размещение», а на самой странице в макете стоит
+    # «Наши домики». Раньше H1 брался из title и на странице печаталось
+    # название пункта меню.
+    heading = models.CharField(
+        "Заголовок на странице", max_length=120, blank=True,
+        help_text="Если пусто — берётся название страницы",
+    )
     intro = RichTextField("Вступительный текст", blank=True, features=BODY_FEATURES)
 
     content_panels = Page.content_panels + [
+        FieldPanel("heading"),
         FieldPanel("hero_image"),
         FieldPanel("intro"),
     ]
