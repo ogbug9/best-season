@@ -1,4 +1,4 @@
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags static %}
 {% wagtail_site as current_site %}
 {% with s=settings.core.SiteSettings %}
 
@@ -103,8 +103,15 @@
         </p>
       </div>
 
+      {% comment %}
+        Значки платёжных систем — файлы от дизайнера, размеры из инспектора
+        (Frame 30, группа 206×40, зазор 40): Visa 40×40, Mastercard 32×24,
+        Мир 54×16. Порядок такой же, как в макете.
+      {% endcomment %}
       <p class="footer__pay" aria-label="Принимаем карты Visa, Mastercard и Мир">
-        <span>VISA</span><span>MC</span><span>МИР</span>
+        <img src="{% static 'img/pay-visa.png' %}" width="40" height="40" alt="Visa" loading="lazy">
+        <img src="{% static 'img/pay-mastercard.png' %}" width="32" height="24" alt="Mastercard" loading="lazy">
+        <img src="{% static 'img/pay-mir.png' %}" width="54" height="16" alt="Мир" loading="lazy">
       </p>
     </div>
   </div>
