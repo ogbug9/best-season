@@ -2591,12 +2591,9 @@ body[data-modal-open] {
 /* Лента с ценой. Инспектор: 94×128 на 485;0 внутри карточки 610,
    фон #9B5026, рамка 1px #F7F0E6, снизу треугольный вырез до y=101
    (глубина 27, снята с присланного файла по альфа-каналу).
-   Рисуется контуром SVG, а не clip-path: обрез в браузере не
-   сглаживается, и на диагоналях выреза была видна лесенка. Контур
-   векторный — чист на любом масштабе и на ретине.
-   Обводка идёт только по бокам и низу: по верхней грани её нет, иначе
-   светлая линия ложится поперёк карточки и режет её. Боковые кончики
-   доходят ровно до 128, то есть до низа ленты. */
+   Сам контур — инлайновый SVG в includes/price_flag.html: фоновая
+   картинка растрируется под текущий размер и на увеличении даёт
+   лесенку, а векторный рисунок остаётся чистым. */
 .house__price {
   position: absolute;
   z-index: 2;
@@ -2607,7 +2604,7 @@ body[data-modal-open] {
   padding: 28px 12px 0;
   margin: 0;
   display: block;
-  background: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='94' height='128' viewBox='0 0 94 128'%3E%3Cpath d='M0 0H94V128L47 101L0 128Z' fill='%239B5026'/%3E%3Cpath d='M0.5 0V127.5L47 101.05L93.5 127.5V0' fill='none' stroke='%23F7F0E6' stroke-width='1'/%3E%3C/svg%3E") no-repeat 0 0 / 94px 128px;
+  background: none;
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 18px;
@@ -2615,7 +2612,14 @@ body[data-modal-open] {
   color: #FFFFFF;
   text-align: center;
 }
-.house__price > * { display: block; }
+.house__price-shape {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: block;
+}
+.house__price > span,
+.house__price > b { position: relative; display: block; }
 /* Все три строки флажка одного набора — Montserrat 500 18/22 */
 .house__price b { font-size: 18px; font-weight: 500; white-space: nowrap; }
 
@@ -3515,3 +3519,14 @@ body.page-houses main > .houses-catalog {
   .house:focus-within .house__media picture,
   .house:focus-within .house__media img { transform: none; }
 }
+
+/* ---------- Подписи кнопок ----------
+   «Забронировать», «Забронировать даты» и «Подробнее» набраны обычным
+   начертанием. В инспекторе у «Забронировать» стоит 500, но файла
+   Montserrat Medium в проекте нет, и браузер подделывает его из 600 —
+   подпись выглядела жирной. По прямому указанию заказчика 05.09 везде
+   ставим 400. */
+.house__book,
+.house__more,
+.searchbar__cta,
+.header__aside .btn { font-weight: 400; }

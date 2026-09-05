@@ -40,11 +40,7 @@
 
     {% comment %} Лента с ценой в правом верхнем углу — как в макете {% endcomment %}
     {% if house.price_from %}
-      <p class="house__price">
-        <span>от</span>
-        <b>{{ house.price_display }} ₽</b>
-        <span>за ночь</span>
-      </p>
+      {% include "includes/price_flag.html" with amount=house.price_display unit="за ночь" %}
     {% endif %}
   </div>
 

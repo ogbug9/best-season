@@ -1,0 +1,22 @@
+{% comment %}
+  Лента с ценой. Ждёт в контексте `amount` (уже отформатированную сумму)
+  и `unit` (подпись под ценой).
+
+  Контур нарисован инлайновым SVG, а не фоном и не clip-path: фон
+  растрируется под текущий размер и на увеличении страницы даёт лесенку,
+  clip-path браузер вовсе не сглаживает. Инлайновый рисунок остаётся
+  векторным на любом масштабе.
+
+  Путь симметричен относительно x=47, поэтому оба кончика выреза лежат
+  на одном уровне. Обводка идёт только по бокам и снизу: по верхней
+  грани её нет, иначе светлая линия ложится поперёк карточки.
+{% endcomment %}
+<p class="house__price">
+  <svg class="house__price-shape" viewBox="0 0 94 128" width="94" height="128"
+       shape-rendering="geometricPrecision" aria-hidden="true" focusable="false">
+    <path d="M0 0H94V128L47 101L0 128Z" fill="#9B5026"/>
+    <path d="M0.5 0V127.5L47 101.3L93.5 127.5V0" fill="none"
+          stroke="#F7F0E6" stroke-width="1" stroke-linejoin="miter"/>
+  </svg>
+  <span>от</span><b>{{ amount }} ₽</b><span>{{ unit }}</span>
+</p>
