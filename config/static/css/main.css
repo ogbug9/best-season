@@ -1707,9 +1707,12 @@ body:not(.page-home) main > :first-child {
   background: var(--c-olive);
   color: var(--c-cream);
   text-decoration: none;
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
-  line-height: 1.2;
+  /* Макет: Montserrat 400 / 24px / 29px, цвет #F7F0E6 */
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 29px;
+  color: var(--c-cream);
 }
 .mosaic__more:hover { background: var(--c-deep); color: var(--c-cream); }
 .mosaic__more span[aria-hidden] { font-size: 1.5rem; }
@@ -2339,13 +2342,16 @@ body[data-modal-open] {
   /* 58 к 42 — доли из макета. Раньше здесь стояло 1fr к 42fr, то есть
      текст получал одну долю против сорока двух и схлопывался в столбик
      по одному слову. */
-  /* Доли, а не пиксели: 840 к 600 от кадра 1440. Жёсткие 840px+600px
-     давали горизонтальную прокрутку на 1024 — сумма шире экрана */
+  /* Инспектор: блок цитаты 1340×600 в точке Left 100, то есть от 100 до
+     правого края кадра. Внутри — текст 708, зазор 32, фото 600×600,
+     которое упирается в правый край. Доли, а не пиксели: на узких
+     экранах раскладка ужимается целиком и прокрутки не даёт. */
   .quote {
-    grid-template-columns: minmax(0, 840fr) minmax(0, 600fr);
-    gap: 0;
+    grid-template-columns: minmax(0, 708fr) minmax(0, 600fr);
+    gap: 32px;
     max-width: 1440px;
     margin-inline: auto;
+    padding-left: 100px;
   }
 }
 .quote__body { padding-inline: var(--s-4); min-width: 0; }
@@ -2403,11 +2409,18 @@ body[data-modal-open] {
 
 /* ---------- Слоган ----------
    В макете набран акцидентной гарнитурой, крупно, в две строки. */
+/* Макет: Montserrat 300 Italic 44px, межстрочный 110%, #494949,
+   по центру, блок 755px. Раньше стоял акцидентный шрифт и другой кегль. */
 .slogan p {
-  font-family: var(--font-heading);
-  font-size: clamp(1.5rem, 0.9rem + 2.2vw, 2.5rem);
-  line-height: 1.28;
-  color: var(--c-deep);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 2.75rem;
+  line-height: 1.1;
+  color: var(--c-dark);
+  max-width: 755px;
+  margin-inline: auto;
+  text-align: center;
   text-wrap: balance;
 }
 
@@ -2842,18 +2855,27 @@ body[data-modal-open] {
    с выгрузки макета. */
 .promos {
   display: grid;
-  gap: 20px;
+  /* Инспектор: ряд 1260, три карточки по 404 → зазор ровно 24 */
+  gap: 24px;
   margin: var(--s-7) 0 0;
   padding: 0;
   list-style: none;
 }
 @media (min-width: 900px) {
-  .promos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Ряд карточек в макете 1260, а не 1240: при 1240 заголовки рвались
+     там, где в макете они помещаются целиком */
+  .promos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 1260px;
+    margin-inline: auto;
+  }
 }
 .promo {
   display: flex;
   flex-direction: column;
-  gap: var(--s-4);
+  /* Инспектор (карточка 404×540): поля 20 со всех сторон,
+     от фото до текста 40 */
+  gap: 40px;
   padding: 20px;
   border-radius: var(--radius-lg);
   color: var(--c-cream);
@@ -2861,17 +2883,23 @@ body[data-modal-open] {
 }
 .promo--olive { background: var(--c-olive); }
 .promo--dark { background: #1E1E1E; }
+/* Фото 360 внутри блока 364: в макете у него по 2px с боков */
+.promo__media { padding-inline: 2px; }
 .promo__media picture,
 .promo__media img,
 .promo__media .ph {
   display: block;
   width: 100%;
-  aspect-ratio: 360 / 200;
+  aspect-ratio: 360 / 220;   /* Rectangle 42, инспектор */
   object-fit: cover;
   border-radius: var(--radius);
 }
+/* Montserrat, как в макете: заголовок карточки набран тем же шрифтом,
+   что и описание, а не акцидентным Etude Noire. */
 .promo__title {
   margin: 0;
+  font-family: var(--font-body);
+  font-weight: 600;
   color: var(--c-cream);
   font-size: 1.5rem;
   line-height: 1.15;
@@ -2881,9 +2909,60 @@ body[data-modal-open] {
 .promo__book {
   margin-top: auto;
   width: 100%;
+  /* Ровно 50: поля 14 сверху и снизу плюс строка 22 (узел «Забронировать»
+     148×22). Рамки нет — с ней выходило 54. */
+  min-height: 50px;
+  padding-block: 14px;
+  line-height: 22px;
+  border: 0;
   background: var(--c-cream);
   color: var(--c-deep);
   border-radius: var(--radius-pill);
 }
 .promo__book:hover { background: var(--c-white); color: var(--c-deep); }
 
+
+
+/* Перенос по слогам включён для заголовков ради длинных слов на телефоне
+   («Правила бронирования»). В карточках он вредит: макет рвёт названия
+   по словам, а не по слогам — «Вы-годная», «Госте-приимство» это уже
+   не 1 в 1. Отключаем там, где карточка. */
+.promo__title,
+.house__title,
+.place__title,
+.reviews__title,
+.mosaic__caption h3 {
+  hyphens: manual;
+}
+
+/* Ряд акций в макете 1260 (Frame «1260 Fill × 540 Hug»), шире общего
+   контейнера 1240. У .container ширина задана через width: min(), поэтому
+   переопределять надо именно width, max-width её не перебивает. */
+.container--wide { width: min(100% - 2 * var(--s-4), 1260px); }
+
+
+/* ---------- Цвет шапки по страницам ----------
+   Макет: на главной пилюля кремовая поверх фотографии, на остальных
+   страницах оливковая #847F57 с кремовым текстом. Цвета сняты пикселями
+   с выгрузок Houses.png и Special Offers.png.
+   Оговорка: кремовый на #847F57 даёт 3.6 при норме 4.5 для текста 15px
+   (п. 10.13). Ставим как в макете по прямому указанию, конфликт вынесен
+   в открытые вопросы. */
+.header__bar {
+  background: var(--c-olive);
+}
+.header__bar .nav__link,
+.header__bar .header__phone,
+.header__bar .header__logo,
+.header__bar .header__name,
+.header__bar .header__paw {
+  color: var(--c-cream);
+}
+.page-home .header__bar { background: var(--c-cream); }
+.page-home .header__bar .nav__link,
+.page-home .header__bar .header__phone,
+.page-home .header__bar .header__logo,
+.page-home .header__bar .header__name,
+.page-home .header__bar .header__paw {
+  color: var(--c-dark);
+}
