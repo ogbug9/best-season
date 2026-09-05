@@ -2989,6 +2989,10 @@ body.page-houses main > .houses-catalog {
 /* Панель: Montserrat 400, 20/24, #494949, по центру, блок 1240×96 —
    ровно 4 строки по 24. С межстрочным 24.38 из JSON выходило 98. */
 .houses-catalog__intro {
+  /* Блок в макете 1240 на всю ширину контейнера. Одного max-width мало:
+     это элемент грид-раскладки, и с `margin-inline: auto` он ужимался по
+     самой длинной строке (1173 вместо 1240). */
+  width: 100%;
   max-width: 1240px;
   min-height: 96px;
   margin-inline: auto;
