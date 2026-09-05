@@ -3361,3 +3361,64 @@ body.page-houses main > .houses-catalog {
 .page-home .header__bar .header__paw {
   color: var(--c-dark);
 }
+
+/* ---------- Страница «Размещение»: типографика карточек ----------
+   Инспектор карточки домика: название Montserrat 600 24/29 #FFFFFF,
+   подпись Montserrat 400 18/22 #FFFFFF на всю ширину блока 546,
+   кнопка 546×52 с полями 14×40, фоном #847F57 и скруглением 100,
+   «Подробнее» 153×40 Montserrat 400 16/19.5. */
+@media (min-width: 1280px) {
+  .page-houses .house__info { width: 546px; }
+  .page-houses .house__title {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 29px;
+    color: #FFFFFF;
+  }
+  .page-houses .house__meta {
+    width: 546px;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    color: #FFFFFF;
+  }
+  .page-houses .house__book {
+    width: 546px;
+    height: 52px;
+    padding: 14px 40px;
+    background: var(--c-olive);
+    border-radius: 100px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24.38px;
+  }
+  .page-houses .house__more {
+    width: 153px;
+    height: 40px;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19.5px;
+  }
+}
+
+/* Подписи плиток: инспектор даёт #F7F0E6, а не белый, и межстрочный 29.
+   «Финская сауна» и «Аренда велосипедов» стоят в две строки — перенос
+   хранится в названии услуги, поэтому уважаем переводы строк. */
+.service-tile__title {
+  color: var(--c-cream);
+  line-height: 29px;
+  white-space: pre-line;
+}
+
+/* Подпись поля поиска в макете в одну строку (98×18). В колонку 216 с
+   полями 60 и 32 и иконкой она не влезала и рвалась на две. */
+.page-houses .houses-search .searchbar__field { white-space: nowrap; }
+
+/* Блок вопросов на «Размещении» отбит так же, как «Доп услуги» от ряда
+   домиков: 80 (1677.91 − 1597.91 по инспектору). */
+.houses-faq { padding-top: 80px; }
+

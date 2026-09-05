@@ -59,7 +59,7 @@
 
     <ul class="cards cards--houses">
       {% for house in houses %}
-        {% include "houses/_house_card.html" with house=house entry="1" %}
+        {% include "houses/_house_card.html" with house=house entry="1" level="2" %}
       {% empty %}
         <li><p>Домики пока не добавлены.</p></li>
       {% endfor %}
@@ -124,6 +124,26 @@
         {% endfor %}
       </ul>
     {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %}
+  Ответы на вопросы — тот же аккордеон, что на главной. Отступ сверху
+  такой же, как между рядом домиков и заголовком «Доп услуги»: 80.
+{% endcomment %}
+{% if faq %}
+<section class="section houses-faq">
+  <div class="container">
+    <h2 class="section__title section__title--center">Ответы на вопросы</h2>
+    <div class="faq">
+      {% for item in faq %}
+        <details class="faq__item{% if forloop.counter0|divisibleby:2 %} faq__item--dark{% else %} faq__item--olive{% endif %}">
+          <summary class="faq__question">{{ item.question }}</summary>
+          <div class="faq__answer">{{ item.answer|richtext }}</div>
+        </details>
+      {% endfor %}
+    </div>
   </div>
 </section>
 {% endif %}

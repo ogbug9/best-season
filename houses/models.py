@@ -71,6 +71,10 @@ class HouseIndexPage(Page):
         context["services"] = services
         context["hourly_services"] = services.filter(is_hourly=True)
         context["tile_services"] = services.filter(is_hourly=False)
+        # Тот же аккордеон, что на главной — набор вопросов общий
+        from core.models import FaqItem
+
+        context["faq"] = FaqItem.objects.filter(is_published=True, show_on_home=True)
         return context
 
 

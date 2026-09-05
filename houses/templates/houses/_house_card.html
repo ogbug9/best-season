@@ -52,7 +52,17 @@
   {% comment %} внутри медиа она игнорировала ряды сетки и накрывала кнопку {% endcomment %}
   <div class="house__overlay">
     <div class="house__info">
-      <h3 class="house__title"><a class="house__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
+      {% comment %}
+        Уровень заголовка приходит снаружи: на «Размещении» карточка идёт
+        сразу после H1 страницы и должна быть H2, на главной — после H2
+        секции и остаётся H3. Пропуск уровня Wagtail помечает как ошибку
+        доступности, и по п. 10.13 ТЗ это не придирка.
+      {% endcomment %}
+      {% if level == "2" %}
+        <h2 class="house__title"><a class="house__link" href="{% pageurl house %}">{{ house.title }}</a></h2>
+      {% else %}
+        <h3 class="house__title"><a class="house__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
+      {% endif %}
       <p class="house__meta">
         {{ house.capacity }} спальных места{% if house.short_description %} + {{ house.short_description }}{% endif %}
       </p>

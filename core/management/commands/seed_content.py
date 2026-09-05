@@ -251,10 +251,12 @@ PROMOTIONS = [
 SERVICES = [
     ("Русская баня", "russkaya-banya", True, "Описание"),
     ("Большая беседка", "bolshaya-besedka", True, "Описание"),
-    ("Финская сауна", "finskaya-sauna", False, ""),
+    # Переносы в названиях — как в макете: «Финская сауна» и «Аренда
+    # велосипедов» стоят в две строки (блок 58 против 29 у остальных)
+    ("Финская\nсауна", "finskaya-sauna", False, ""),
     ("Мастер-классы", "master-klassy", False, ""),
     ("Фотосессии", "fotosessii", False, ""),
-    ("Аренда велосипедов", "arenda-velosipedov", False, ""),
+    ("Аренда\nвелосипедов", "arenda-velosipedov", False, ""),
 ]
 
 HOUSES = [
