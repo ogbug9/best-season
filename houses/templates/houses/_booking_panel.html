@@ -1,0 +1,91 @@
+{% load icon_tags houses_tags %}
+{% comment %}
+  Блок бронирования с первого экрана страницы дома.
+
+  Календарь и сумма приходят с сервера (HousePage.get_context), поэтому
+  без JS панель остаётся читаемой: видны месяцы, цена «от» и кнопка,
+  открывающая модалку Контура. Скрипт calendar.js только навешивает
+  выбор диапазона и пересчёт — те же данные, тот же вид.
+
+  Считаем на сервере намеренно: сумму, которую видит гость, нельзя
+  отдавать на откуп тому, что подставит в браузере JS.
+{% endcomment %}
+<section class="booking-panel" data-booking-panel data-house="{{ page.slug }}" data-house-id="{{ page.pk }}"
+         data-calendar-url="{% url 'houses:calendar' page.slug %}"
+         data-price-url="{% url 'houses:price' page.slug %}">
+  <div class="container">
+
+    {% comment %} Строка полей: даты 858 и гости 362 по замерам макета {% endcomment %}
+    <div class="booking-panel__fields">
+      <div class="booking-field booking-field--dates">
+        <button type="button" class="booking-field__slot" data-field="date_from">
+          {% icon "calendar" %}
+          <span data-label-date-from>Дата заезда</span>
+        </button>
+        <span class="booking-field__dash" aria-hidden="true">—</span>
+        <button type="button" class="booking-field__slot" data-field="date_to">
+          {% icon "calendar" %}
+          <span data-label-date-to>Дата выезда</span>
+        </button>
+      </div>
+      <div class="booking-field booking-field--guests">
+        <span class="booking-field__slot booking-field__slot--static">
+          {% icon "guest" %}
+          <span data-label-guests>Количество гостей</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="booking-panel__cards">
+
+      {% comment %} ---------- Календарь на два месяца ---------- {% endcomment %}
+      <div class="calendar" data-calendar>
+        <div class="calendar__months" data-calendar-months>
+          {% include "houses/_calendar_months.html" with calendar=calendar %}
+        </div>
+      </div>
+
+      {% comment %} ---------- Гости, итог, кнопка ---------- {% endcomment %}
+      <div class="guests" data-guests>
+        <h2 class="guests__title">Количество гостей</h2>
+
+        {% include "houses/_guest_counter.html" with key="adults" label="Взрослые" value=quote.adults min=1 max=page.max_adults note=settings.core.SiteSettings.guests_adults_note %}
+        {% include "houses/_guest_counter.html" with key="children" label="Дети" value=quote.children min=0 max=page.max_children note=settings.core.SiteSettings.guests_children_note %}
+        {% include "houses/_guest_counter.html" with key="pets" label="Питомцы" value=quote.pets min=0 max=page.max_pets note=page.pet_fee_note %}
+
+        <p class="booking-summary" data-summary aria-live="polite">
+          <span class="booking-summary__item">
+            {% icon "moon" %}<span data-summary-nights>{{ quote.nights|nights }}</span>
+          </span>
+          <span class="booking-summary__item">
+            {% icon "capacity" %}<span data-summary-guests>{{ quote.guests|guests }}</span>
+          </span>
+        </p>
+
+        {% comment %}
+          Пока даты не выбраны, суммы нет — показываем цену «от». Врать
+          итоговой суммой до выбора дат нельзя: гость запомнит её.
+        {% endcomment %}
+        <p class="booking-total" data-total>
+          {% if quote.total %}{{ quote.total|price_ru }} ₽
+          {% else %}от {{ quote.price_from|price_ru }} ₽{% endif %}
+        </p>
+
+        <p class="booking-error" data-error{% if not quote.error %} hidden{% endif %}>{{ quote.error }}</p>
+
+        <button type="button" class="btn btn--primary booking-submit"
+                data-booking-open data-entry-point="3">
+          Забронировать
+        </button>
+
+        {% comment %}
+          Выбранное уезжает в резервную форму: если виджет не поднялся,
+          гость не вводит даты заново.
+        {% endcomment %}
+        <input type="hidden" data-input="date_from" value="{{ quote.date_from }}">
+        <input type="hidden" data-input="date_to" value="{{ quote.date_to }}">
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -1,0 +1,57 @@
+{% comment %}
+  Сетка календаря. Вынесена отдельным файлом: скрипт при перелистывании
+  просит у сервера те же данные и перерисовывает только этот кусок,
+  поэтому разметка должна быть ровно одна на серверный рендер и на JS.
+{% endcomment %}
+{% for month in calendar.months %}
+  <div class="calendar__month">
+    <div class="calendar__head">
+      {% if forloop.first %}
+        <button type="button" class="calendar__arrow calendar__arrow--prev"
+                data-calendar-prev data-start="{{ calendar.prev }}"
+                {% if not calendar.prev %}disabled{% endif %}
+                aria-label="Предыдущий месяц"></button>
+      {% endif %}
+      <span class="calendar__title">{{ month.title }}</span>
+      {% if forloop.last %}
+        <button type="button" class="calendar__arrow calendar__arrow--next"
+                data-calendar-next data-start="{{ calendar.next }}"
+                {% if not calendar.next %}disabled{% endif %}
+                aria-label="Следующий месяц"></button>
+      {% endif %}
+    </div>
+
+    {% comment %} Таблица, а не сетка из span: у дат есть строки и столбцы,
+       и читалка должна объявлять их как таблицу. {% endcomment %}
+    <table class="calendar__grid">
+      <caption class="visually-hidden">{{ month.title }}</caption>
+      <thead>
+        <tr>
+          <th scope="col"><abbr title="Понедельник">Пн</abbr></th>
+          <th scope="col"><abbr title="Вторник">Вт</abbr></th>
+          <th scope="col"><abbr title="Среда">Ср</abbr></th>
+          <th scope="col"><abbr title="Четверг">Чт</abbr></th>
+          <th scope="col"><abbr title="Пятница">Пт</abbr></th>
+          <th scope="col"><abbr title="Суббота">Сб</abbr></th>
+          <th scope="col"><abbr title="Воскресенье">Вс</abbr></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for week in month.weeks %}
+          <tr>
+            {% for cell in week %}
+              <td class="calendar__cell{% if cell.outside %} calendar__cell--outside{% endif %}{% if cell.past %} calendar__cell--past{% endif %}{% if cell.today %} calendar__cell--today{% endif %}{% if cell.selected %} calendar__cell--selected{% endif %}{% if cell.in_range %} calendar__cell--range{% endif %}{% if cell.range_start %} calendar__cell--range-start{% endif %}{% if cell.range_end %} calendar__cell--range-end{% endif %}">
+                {% if cell.available and not cell.outside %}
+                  <button type="button" class="calendar__day" data-day="{{ cell.iso }}"
+                          {% if cell.selected %}aria-pressed="true"{% endif %}>{{ cell.day }}</button>
+                {% else %}
+                  <span class="calendar__day calendar__day--off">{{ cell.day }}</span>
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endfor %}

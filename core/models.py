@@ -37,15 +37,50 @@ ICON_CHOICES = [
     ("pool", "Купель"),
     ("pets", "Можно с животными"),
     ("kids", "Можно с детьми"),
+    # Иконки карточек-фактов и блока брони на странице дома
+    ("capacity", "Вместимость"),
+    ("guest", "Гость"),
+    ("calendar", "Календарь"),
+    ("camera", "Фотоаппарат"),
+    ("area", "Площадь"),
+    ("layout", "Планировка"),
+    ("sofa_bed", "Диван-кровать"),
+    ("bunk_bed", "Двухэтажная кровать"),
+    ("moon", "Ночи"),
 ]
 
 
-class AmenityGroup(models.TextChoices):
-    INSIDE = "inside", "В доме"
-    KITCHEN = "kitchen", "Кухня"
-    BATHROOM = "bathroom", "Ванная"
-    OUTSIDE = "outside", "На улице"
-    RULES = "rules", "Условия"
+@register_snippet
+class AmenityGroup(models.Model):
+    """Группа удобств: «Кухня», «Сауна», «Внешняя территория» и т.д.
+
+    Раньше это был закрытый TextChoices на пять значений. В макете
+    развёрнутого описания групп восемь, и набор явно продолжит расти —
+    держать его в коде значит гонять миграцию ради каждой строчки,
+    поэтому группы заведены справочником.
+    """
+
+    name = models.CharField("Название", max_length=80, unique=True)
+    # Колонка развёрнутого описания. В макете раскладка жёсткая — три
+    # колонки по 320 с разной высотой, и автоматическая разбивка её не
+    # повторяет: браузер выравнивает колонки по высоте и переносит
+    # группы не туда. Поэтому колонку выбирает редактор.
+    column = models.PositiveSmallIntegerField(
+        "Колонка в развёрнутом описании",
+        choices=[(1, "Первая"), (2, "Вторая"), (3, "Третья")],
+        default=1,
+    )
+    sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
+
+    panels = [FieldPanel("name"), FieldPanel("column"), FieldPanel("sort_order")]
+
+    class Meta:
+        verbose_name = "Группа удобств"
+        verbose_name_plural = "Группы удобств"
+        ordering = ["sort_order", "name"]
+
+    def __str__(self):
+        return self.name
 
 
 @register_snippet
@@ -57,18 +92,43 @@ class Amenity(models.Model):
     """
 
     name = models.CharField("Название", max_length=80)
-    group = models.CharField(
-        "Группа",
-        max_length=16,
-        choices=AmenityGroup.choices,
-        default=AmenityGroup.INSIDE,
+    group = models.ForeignKey(
+        AmenityGroup,
+        verbose_name="Группа",
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="amenities",
+    )
+    # Плитки-теги в блоке «Удобства» на странице дома — короткий список
+    # главного. Остальное уходит в развёрнутое описание ниже, иначе
+    # блок из восьми групп встал бы на первый экран.
+    is_featured = models.BooleanField(
+        "Показывать плиткой в «Удобствах»",
+        default=False,
+        help_text="Короткий список главного над развёрнутым описанием.",
+    )
+    # Флаги независимы: на макете «Телевизор» и «Кондиционер» стоят и
+    # плиткой, и в списке, а «Большая терраса» — только плиткой, потому
+    # что в списке то же самое названо «Крытая терраса 24 м²».
+    in_list = models.BooleanField(
+        "Показывать в развёрнутом описании",
+        default=True,
+        help_text="Снимите, если плитка дублирует пункт списка другим названием.",
     )
     icon = models.CharField("Иконка", max_length=32, choices=ICON_CHOICES, blank=True)
     sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
+    # Порядок плиток свой: в списке «Умная колонка Алиса» одиннадцатая
+    # по Кухне, а плиткой стоит шестой. Одним полем это не выразить.
+    featured_order = models.PositiveSmallIntegerField(
+        "Порядок среди плиток", default=100
+    )
 
     panels = [
         FieldPanel("name"),
         FieldPanel("group"),
+        FieldPanel("is_featured"),
+        FieldPanel("featured_order"),
+        FieldPanel("in_list"),
         FieldPanel("icon"),
         FieldPanel("sort_order"),
     ]
@@ -76,10 +136,10 @@ class Amenity(models.Model):
     class Meta:
         verbose_name = "Удобство"
         verbose_name_plural = "Удобства"
-        ordering = ["group", "sort_order", "name"]
+        ordering = ["group__sort_order", "group__name", "sort_order", "name"]
 
     def __str__(self):
-        return f"{self.get_group_display()} — {self.name}"
+        return f"{self.group} — {self.name}" if self.group_id else self.name
 
 
 @register_setting
@@ -178,6 +238,17 @@ class SiteSettings(BaseSiteSetting):
         ),
         help_text="2–3 строки, объясняющие, что произойдёт дальше (п. 5.4.3 ТЗ).",
     )
+    # Подписи под счётчиками гостей на странице дома. Условия размещения
+    # одинаковы для всех домиков, поэтому живут в настройках сайта,
+    # а не повторяются в каждой странице.
+    guests_adults_note = models.CharField(
+        "Подпись у счётчика «Взрослые»", max_length=120, blank=True,
+        default="Возраст от 7 лет",
+    )
+    guests_children_note = models.CharField(
+        "Подпись у счётчика «Дети»", max_length=120, blank=True,
+        default="Бесплатно до 7 лет",
+    )
     yandex_metrika_id = models.CharField(
         "Номер счётчика Яндекс.Метрики",
         max_length=16,
@@ -239,6 +310,8 @@ class SiteSettings(BaseSiteSetting):
             [
                 FieldPanel("kontur_hotel_id"),
                 FieldPanel("booking_lead_text"),
+                FieldPanel("guests_adults_note"),
+                FieldPanel("guests_children_note"),
                 FieldPanel("yandex_metrika_id"),
             ],
             heading="Бронирование и аналитика",

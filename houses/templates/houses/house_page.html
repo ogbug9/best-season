@@ -2,8 +2,10 @@
 {% load wagtailcore_tags wagtailimages_tags media_tags icon_tags %}
 
 {% comment %}
-  Страница дома. Порядок блоков зафиксирован по п. 4.1 ТЗ и редактором
-  не меняется — он правит только содержимое (п. 8 ТЗ).
+  Страница дома. Порядок блоков — по макету «Первый домик»: заголовок,
+  блок бронирования, мозаика фото, карточки-факты, «О домике»/«Удобства»,
+  развёрнутое описание, отзывы. Редактор правит содержимое, не порядок
+  (п. 8 ТЗ).
 {% endcomment %}
 
 {% block body_class %}page-house{% endblock %}
@@ -33,168 +35,150 @@
 
 {% block content %}
 
-{% comment %} ---------- 1. Первый экран (п. 4.1.1) ----------
-   loading=eager: картинка участвует в замере LCP, ленивая загрузка его портит. {% endcomment %}
-<section class="house-hero{% if page.hero_image %} house-hero--media{% endif %}">
-  {% if page.hero_image %}
-    <div class="house-hero__media" aria-hidden="true">
-      {% picture page.hero_image preset="hero" alt="" loading="eager" %}
-    </div>
-  {% endif %}
-
-  <div class="container house-hero__inner">
-    <p class="house-hero__eyebrow">
-      {% if page.get_parent %}<a href="{% pageurl page.get_parent %}">{{ page.get_parent.title }}</a>{% endif %}
-    </p>
+{# ---------- 1. Заголовок ---------- #}
+<section class="house-title">
+  <div class="container">
     <h1>{{ page.title }}</h1>
-    {% if page.short_description %}
-      <p class="house-hero__lead">{{ page.short_description }}</p>
-    {% endif %}
-
-    <ul class="house-hero__facts">
-      <li>до {{ page.capacity }} чел.</li>
-      {% if page.area %}<li>{{ page.area }} м²</li>{% endif %}
-      {% if page.highlight %}<li>{{ page.highlight }}</li>{% endif %}
-      {% if page.price_from %}<li>от {{ page.price_display }} ₽/сутки</li>{% endif %}
-    </ul>
-
-    {% include "includes/booking_cta.html" with entry_point="3" %}
   </div>
 </section>
 
-{% comment %} ---------- 2. Галерея (п. 4.1.2, не меньше 15 фото) ----------
-   Без JS каждое фото — обычная ссылка на полный размер; скрипт перехватывает
-   клик и открывает просмотрщик, поэтому галерея работает и с выключенным JS. {% endcomment %}
-{% if page.gallery_images.all %}
-<section class="section" id="gallery">
-  <div class="container">
-    <h2>Галерея</h2>
+{# ---------- 2. Бронирование ---------- #}
+{% include "houses/_booking_panel.html" %}
 
-    <ul class="gallery gallery--house" data-gallery>
-      {% for item in page.gallery_images.all %}
-        {% image item.image width-1600 as full %}
-        <li class="gallery__item{% if forloop.counter > 5 %} gallery__item--rest{% endif %}">
-          <a class="gallery__link" href="{{ full.url }}"
-             data-gallery-item
-             data-full="{{ full.url }}"
-             data-caption="{{ item.caption|default:page.title }}">
-            {% picture item.image preset="square" alt=item.caption|default:page.title %}
+{% comment %} ---------- 3. Мозаика фото ----------
+   Пять кадров по макету: крупный слева, четыре справа. Клик открывает
+   просмотрщик; без JS каждое фото остаётся ссылкой на полный размер,
+   поэтому галерея работает и со снятым скриптом. {% endcomment %}
+{% with mosaic=page.mosaic_images %}
+{% if mosaic %}
+<section class="house-mosaic-section">
+  <div class="container">
+    <h2 class="visually-hidden">Фотографии домика</h2>
+    <ul class="house-mosaic gallery" data-gallery>
+      {% for image in mosaic %}
+        {% image image width-1600 as full %}
+        <li class="house-mosaic__item gallery__item">
+          <a class="house-mosaic__link gallery__link" href="{{ full.url }}"
+             data-gallery-item data-full="{{ full.url }}" data-caption="{{ page.title }}">
+            {% picture image preset="gallery" alt=page.title %}
+            {% if forloop.last %}
+              <span class="house-mosaic__more">{% icon "camera" %}Смотреть</span>
+            {% endif %}
           </a>
         </li>
       {% endfor %}
     </ul>
 
-    {% if page.gallery_count > 5 %}
-      <p class="gallery__more">
-        <button type="button" class="btn btn--outline" data-gallery-more hidden>
-          Показать все {{ page.gallery_count }} фото
-        </button>
-      </p>
-    {% endif %}
-  </div>
-</section>
-{% endif %}
-
-{# ---------- 3. Описание (п. 4.1.3) ---------- #}
-{% if page.description %}
-<section class="section section--pattern">
-  <div class="container container--narrow prose">{{ page.description|richtext }}</div>
-</section>
-{% endif %}
-
-{# ---------- 4. Характеристики (п. 4.1.4) ---------- #}
-<section class="section">
-  <div class="container">
-    <h2>Характеристики</h2>
-    <dl class="specs">
-      <div class="specs__item">
-        <dt>Вместимость</dt>
-        <dd>{{ page.capacity }} чел.</dd>
-      </div>
-      {% if page.area %}
-        <div class="specs__item">
-          <dt>Площадь</dt>
-          <dd>{{ page.area }} м²</dd>
-        </div>
-      {% endif %}
-      {% if page.highlight %}
-        <div class="specs__item">
-          <dt>Особенность</dt>
-          <dd>{{ page.highlight }}</dd>
-        </div>
-      {% endif %}
-      {% if page.price_from %}
-        <div class="specs__item">
-          <dt>Стоимость</dt>
-          <dd>от {{ page.price_display }} ₽/сутки</dd>
-        </div>
-      {% endif %}
-    </dl>
-    {% if page.price_from %}
-      <p class="specs__note">Цена справочная. Итоговая стоимость на выбранные даты считается в системе бронирования.</p>
-    {% endif %}
-  </div>
-</section>
-
-{# ---------- 5. Что входит (п. 4.1.5) ---------- #}
-{% if page.amenities_by_group %}
-{% comment %} Секция светлая: в макете блок «Развернутое описание» стоит {% endcomment %}
-{% comment %} на кремовом фоне с тёмным текстом, а не на тёмной подложке {% endcomment %}
-<section class="section">
-  <div class="container">
-    <h2>Что входит</h2>
-    <div class="amenities">
-      {% for group, items in page.amenities_by_group.items %}
-        <div class="amenities__group">
-          <h3 class="amenities__title">{{ group }}</h3>
-          <ul class="amenities__list">
-            {% for item in items %}
-              {% icon item.icon as amenity_icon %}
-              <li class="amenities__item">
-                {# В макете в этом блоке иконок нет: пункты идут вровень с #}
-                {# заголовком группы. Пустую заглушку не ставим — она сдвигала #}
-                {# подписи вправо. Если иконка задана, она выводится. #}
-                {% if amenity_icon %}{{ amenity_icon }}{% endif %}
-                <span>{{ item.name }}</span>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
+    {% comment %} Остальные кадры нужны просмотрщику, но на странице их не
+       видно: показывать 15 плиток макет не просит. {% endcomment %}
+    <ul class="house-mosaic__rest" hidden>
+      {% for item in page.gallery_images.all %}
+        {% image item.image width-1600 as full %}
+        <li class="gallery__item gallery__item--rest">
+          <a class="gallery__link" href="{{ full.url }}" data-gallery-item
+             data-full="{{ full.url }}" data-caption="{{ item.caption|default:page.title }}">
+            {{ item.caption|default:page.title }}
+          </a>
+        </li>
       {% endfor %}
-    </div>
+    </ul>
   </div>
 </section>
 {% endif %}
+{% endwith %}
 
-{# ---------- 6. Компактный блок «Как добраться» (п. 4.1.6) ---------- #}
-{% if settings.core.SiteSettings.directions_short %}
-<section class="section">
+{# ---------- 4. Карточки-факты ---------- #}
+<section class="house-facts-section">
   <div class="container">
-    <div class="directions">
-      <div class="directions__text">
-        <h2>Как добраться</h2>
-        <p>{{ settings.core.SiteSettings.directions_short|linebreaksbr }}</p>
+    <div class="house-facts">
+      <div class="fact-card">
+        <p class="fact-card__title">{% icon "capacity" %}Вместимость до {{ page.capacity }}-х человек</p>
+        <p class="fact-card__chips">
+          {% if page.area %}<span class="chip">{% icon "area" %}{{ page.area|floatformat:"-1" }} м²</span>{% endif %}
+          {% if page.layout_note %}<span class="chip">{% icon "layout" %}{{ page.layout_note }}</span>{% endif %}
+        </p>
       </div>
-      <p class="directions__actions">
-        {% if settings.core.SiteSettings.directions_page %}
-          <a class="btn btn--outline" href="{% pageurl settings.core.SiteSettings.directions_page %}">Подробный маршрут</a>
-        {% endif %}
-        {% if settings.core.SiteSettings.yandex_map_url %}
-          <a class="btn btn--outline" href="{{ settings.core.SiteSettings.yandex_map_url }}" target="_blank" rel="noopener">Маршрут в Яндекс.Картах</a>
-        {% endif %}
-      </p>
+
+      {% if page.sleeping_places.all %}
+      <div class="fact-card">
+        <p class="fact-card__title">Спальные места</p>
+        <p class="fact-card__chips">
+          {% for place in page.sleeping_places.all %}
+            <span class="chip">{% icon place.icon %}{{ place.name }}</span>
+          {% endfor %}
+        </p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{# ---------- 5. «О домике» и «Удобства» ---------- #}
+{% if page.description or page.featured_amenities %}
+<section class="house-about-section">
+  <div class="container house-about">
+    {% if page.description %}
+      <div class="house-about__text">
+        <h2 class="section__title">О домике</h2>
+        <div class="prose">{{ page.description|richtext }}</div>
+      </div>
+    {% endif %}
+
+    {% if page.featured_amenities %}
+      <div class="house-about__amenities">
+        <h2 class="section__title">Удобства</h2>
+        <ul class="amenity-tags">
+          {% for amenity in page.featured_amenities %}
+            <li class="amenity-tag">{{ amenity.name }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %} ---------- 6. Развёрнутое описание ----------
+   Переключатель на чекбоксе, а не на <details>: закрытый <details>
+   прячет содержимое целиком, а в макете свёрнутый блок показывает
+   начало колонок с затуханием. Чекбокс работает без JS так же. {% endcomment %}
+{% if page.equipment_groups %}
+<section class="equipment-section">
+  <div class="container">
+    <div class="equipment">
+      <input type="checkbox" id="equipment-toggle" class="equipment__switch visually-hidden">
+
+      <div class="equipment__columns">
+        {% for column in page.equipment_columns %}
+          <div class="equipment__column">
+            {% for group, items in column %}
+              <div class="equipment__group">
+                <h3 class="equipment__title">{{ group.name }}</h3>
+                <ul class="equipment__list">
+                  {% for item in items %}<li>{{ item.name }}</li>{% endfor %}
+                </ul>
+              </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <label class="btn btn--outline equipment__toggle" for="equipment-toggle">
+        <span class="equipment__toggle-more">Подробнее</span>
+        <span class="equipment__toggle-less">Свернуть</span>
+      </label>
     </div>
   </div>
 </section>
 {% endif %}
 
-{# ---------- 7. Отзывы о домике (п. 4.1.7) ---------- #}
+{# ---------- 7. Отзывы о домике (п. 4.1.7 ТЗ) ---------- #}
 {% if page.house_reviews %}
-<section class="section">
+<section class="house-reviews-section">
   <div class="container">
-    <h2 class="reviews__title">Отзывы о домике</h2>
-    {% comment %} Инспектор: три колонки по 397 с зазором 24, фото 397×220 {% endcomment %}
-    {% comment %} сверху, под ним текст. Фото необязательно. {% endcomment %}
+    <h2 class="section__title section__title--center">Отзывы о домике</h2>
+    {% comment %} Три колонки по 397 с зазором 24, фото 397×220 сверху,
+       под ним текст, автор справа. Фото необязательно. {% endcomment %}
     <ul class="reviews">
       {% for review in page.house_reviews %}
         <li class="reviews__item">
@@ -204,7 +188,7 @@
             </div>
           {% endif %}
           <blockquote class="reviews__text"><p>«{{ review.text }}»</p></blockquote>
-          <p class="reviews__author">{{ review.author_name }}{% if review.visit_date %} · {{ review.visit_date|date:"F Y" }}{% endif %}</p>
+          <p class="reviews__author">{{ review.author_name }}</p>
         </li>
       {% endfor %}
     </ul>
@@ -212,47 +196,8 @@
 </section>
 {% endif %}
 
-{# ---------- 8. Точка входа в бронирование (п. 4.1.8) ---------- #}
-<section class="section section--deep">
-  <div class="container container--narrow center">
-    <h2>Забронировать «{{ page.title }}»</h2>
-    <p>Проверьте свободные даты и стоимость на нужный период.</p>
-    {% include "includes/booking_cta.html" with entry_point="4" %}
-  </div>
-</section>
-
-{% comment %} Вопрос о доме — одна из четырёх форм раздела 7 ТЗ {% endcomment %}
-<section class="section">
-  <div class="container container--narrow">
-    {% include "forms/request_form.html" with form=question_form form_type="house_question" title="Задать вопрос о доме" lead="Ответим на почту или в мессенджер." submit_label="Отправить вопрос" %}
-  </div>
-</section>
-
-{# ---------- 9. Ссылки на 3 других дома (п. 4.1.9) ---------- #}
-{% if page.other_houses %}
-<section class="section">
-  <div class="container">
-    <h2>Другие домики</h2>
-    <ul class="cards">
-      {% for other in page.other_houses %}
-        <li class="card">
-          <a class="card__link" href="{% pageurl other %}">
-            {% picture other.hero_image preset="card" alt=other.title %}
-            <h3 class="card__title">{{ other.title }}</h3>
-          </a>
-          {% if other.short_description %}<p>{{ other.short_description }}</p>{% endif %}
-          <p class="card__meta">
-            до {{ other.capacity }} чел.{% if other.price_from %} · от {{ other.price_display }} ₽/сутки{% endif %}
-          </p>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
-</section>
-{% endif %}
-
-{% comment %} Просмотрщик галереи. Разметка лежит в странице пустой: скрипт только
-   подставляет в неё кадр, а <dialog> сам держит фокус и закрывается по Esc. {% endcomment %}
+{% comment %} Просмотрщик галереи. Разметка пустая: скрипт подставляет в неё
+   кадр, а <dialog> сам держит фокус и закрывается по Esc. {% endcomment %}
 {% if page.gallery_images.all %}
 <dialog class="lightbox" data-lightbox aria-label="Просмотр фото">
   <button type="button" class="lightbox__close" data-lightbox-close aria-label="Закрыть">×</button>

@@ -1,0 +1,17 @@
+{% comment %}
+  Строка счётчика гостей: название, минус/значение/плюс, подпись снизу.
+  Ждёт key, label, value, min, max и note.
+{% endcomment %}
+<div class="guests__row" data-counter="{{ key }}" data-min="{{ min }}" data-max="{{ max }}">
+  <div class="guests__line">
+    <span class="guests__label" id="guests-{{ key }}">{{ label }}</span>
+    <span class="guests__control">
+      <button type="button" class="guests__step" data-step="-1"
+              aria-label="Убрать: {{ label|lower }}">−</button>
+      <output class="guests__value" data-value for="guests-{{ key }}">{{ value }}</output>
+      <button type="button" class="guests__step" data-step="1"
+              aria-label="Добавить: {{ label|lower }}">+</button>
+    </span>
+  </div>
+  {% if note %}<p class="guests__note">{{ note }}</p>{% endif %}
+</div>

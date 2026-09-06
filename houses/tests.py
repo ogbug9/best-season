@@ -1,8 +1,9 @@
 """Тесты страниц домов.
 
-Порядок девяти блоков из п. 4.1 ТЗ — критерий приёмки. Тест на структуру
-пишется специально: пропуск блока «Как добраться» в первой версии
-Фазы 5 прошёл незамеченным именно потому, что такого теста не было.
+Порядок блоков — критерий приёмки: он задан макетом «Первый домик» и
+редактором не меняется. Тест на структуру пишется специально: пропуск
+блока в первой версии Фазы 5 прошёл незамеченным именно потому, что
+такого теста не было.
 """
 
 import io
@@ -54,8 +55,13 @@ class HousePageStructureTests(WagtailPageTestCase):
         for i in range(3):
             cls.house.gallery_images.create(image=cls._make_image(f"gallery-{i}"))
 
-        amenity = Amenity.objects.create(name="Финская сауна", group=AmenityGroup.INSIDE)
-        cls.house.amenities.add(amenity)
+        group = AmenityGroup.objects.create(name="Сауна", sort_order=10)
+        cls.house.amenities.add(
+            Amenity.objects.create(name="Финская сауна", group=group, is_featured=True)
+        )
+        cls.house.amenities.add(
+            Amenity.objects.create(name="Шапочки для сауны", group=group)
+        )
         cls.house.save_revision().publish()
 
         Review.objects.create(
@@ -85,20 +91,18 @@ class HousePageStructureTests(WagtailPageTestCase):
         self.assertPageIsRenderable(self.index)
         self.assertPageIsRenderable(self.house)
 
-    def test_block_order_matches_tz(self):
-        """П. 4.1 ТЗ задаёт жёсткий порядок девяти блоков."""
+    def test_block_order_matches_layout(self):
+        """Макет задаёт жёсткий порядок блоков страницы дома."""
         html = self.client.get(self.house.url).content.decode()
 
         markers = [
-            "house-hero",       # 1. первый экран
-            "data-gallery",     # 2. галерея
-            "О домике" if "О домике" in html else "prose",  # 3. описание
-            "specs",            # 4. характеристики
-            "Что входит",       # 5. что входит
-            "Как добраться",    # 6. компактный блок маршрута
-            "Отзывы о домике",  # 7. отзывы
-            "Забронировать «",  # 8. точка входа в конце (не section--deep — тем же классом рисуется блок 5)
-            "Другие домики",    # 9. ссылки на остальные дома
+            "house-title",          # 1. заголовок
+            "data-booking-panel",   # 2. бронирование
+            "house-mosaic",         # 3. мозаика фото
+            "house-facts",          # 4. вместимость и спальные места
+            "О домике",             # 5. описание и удобства
+            "equipment__columns",   # 6. развёрнутое описание
+            "Отзывы о домике",      # 7. отзывы
         ]
 
         positions = []
@@ -107,12 +111,24 @@ class HousePageStructureTests(WagtailPageTestCase):
             self.assertNotEqual(index, -1, f"Блок «{marker}» пропал со страницы дома")
             positions.append(index)
 
-        self.assertEqual(positions, sorted(positions), "Порядок блоков разошёлся с п. 4.1 ТЗ")
+        self.assertEqual(positions, sorted(positions), "Порядок блоков разошёлся с макетом")
 
-    def test_pms_name_is_shown_next_to_button(self):
-        """П. 5.3.2: предвыбор дома невозможен, работает подпись у кнопки."""
+    def test_sections_outside_layout_are_gone(self):
+        """Секции, которых на макете нет, со страницы убраны.
+
+        Требования ТЗ по ним закрываются в других местах сайта — тест
+        держит решение зафиксированным, чтобы блоки не вернулись
+        случайной правкой шаблона.
+        """
         html = self.client.get(self.house.url).content.decode()
-        self.assertIn(self.house.pms_name, html)
+        for marker in ["Как добраться", "Другие домики", "Задать вопрос о доме"]:
+            self.assertNotIn(marker, html)
+
+    def test_booking_entry_point_is_numbered(self):
+        """Таблица п. 5.1: кнопка брони несёт номер точки входа,
+        иначе в Метрику уходит пустой параметр вместо цели."""
+        html = self.client.get(self.house.url).content.decode()
+        self.assertIn('data-entry-point="3"', html)
 
     def test_other_houses_are_exactly_three(self):
         self.assertEqual(len(self.house.other_houses), 3)

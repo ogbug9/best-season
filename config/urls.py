@@ -17,6 +17,8 @@ urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     path("search/", search_views.search, name="search"),
     path("", include("forms.urls")),
+    # Календарь и расчёт стоимости для блока брони на странице дома
+    path("", include("houses.urls")),
     # SEO-минимум по п. 10.8 ТЗ
     path("sitemap.xml", sitemap, name="sitemap"),
     path("robots.txt", robots_txt, name="robots"),

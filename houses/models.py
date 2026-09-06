@@ -1,9 +1,12 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.fields import RichTextField
 from wagtail.models import Orderable, Page
 from wagtail.search import index
+
+from core.models import ICON_CHOICES
 
 # Требование п. 4.1.2 ТЗ: галерея не меньше 15 фото на дом.
 MIN_GALLERY_IMAGES = 15
@@ -114,14 +117,34 @@ class HousePage(Page):
     area = models.DecimalField(
         "Площадь, м²", max_digits=6, decimal_places=1, null=True, blank=True
     )
+    # «Свободная планировка» в карточке вместимости на макете
+    layout_note = models.CharField(
+        "Планировка", max_length=80, blank=True,
+        help_text="Коротко: «Свободная планировка». Строка в карточке вместимости.",
+    )
     highlight = models.CharField(
         "Особенность", max_length=120, blank=True,
         help_text="Коротко: «с камином», «с панорамным окном». Показывается в характеристиках.",
     )
     price_from = models.PositiveIntegerField(
         "Цена от, ₽/сутки", null=True, blank=True,
-        help_text="Справочно для витрины. Итоговый расчёт — всегда в виджете Контура.",
+        help_text="Справочно для витрины: лента цены на карточке дома.",
     )
+
+    # --- Расчёт стоимости в блоке бронирования (п. 4.1.1 макета) ---
+    # Считаем на сервере: цену нельзя отдавать на откуп тому, что гость
+    # подставит в JS. Сезонные исключения — в HousePriceRule.
+    price_per_night = models.PositiveIntegerField(
+        "Цена за ночь, ₽", null=True, blank=True,
+        help_text="Базовая цена расчёта. Если пусто — берётся «Цена от».",
+    )
+    pet_fee = models.PositiveIntegerField(
+        "Доплата за питомца, ₽", default=0,
+        help_text="За одного питомца за всё проживание. Выводится подсказкой у счётчика.",
+    )
+    max_adults = models.PositiveSmallIntegerField("Максимум взрослых", default=4)
+    max_children = models.PositiveSmallIntegerField("Максимум детей", default=4)
+    max_pets = models.PositiveSmallIntegerField("Максимум питомцев", default=2)
 
     amenities = ParentalManyToManyField(
         "core.Amenity", verbose_name="Что входит", blank=True
@@ -146,11 +169,24 @@ class HousePage(Page):
             [
                 FieldPanel("capacity"),
                 FieldPanel("area"),
+                FieldPanel("layout_note"),
                 FieldPanel("highlight"),
                 FieldPanel("price_from"),
             ],
             heading="Характеристики",
         ),
+        InlinePanel("sleeping_places", label="Спальные места", min_num=0),
+        MultiFieldPanel(
+            [
+                FieldPanel("price_per_night"),
+                FieldPanel("pet_fee"),
+                FieldPanel("max_adults"),
+                FieldPanel("max_children"),
+                FieldPanel("max_pets"),
+            ],
+            heading="Расчёт стоимости",
+        ),
+        InlinePanel("price_rules", label="Сезонные цены", min_num=0),
         FieldPanel("amenities"),
         FieldPanel("sort_order_index"),
     ]
@@ -214,13 +250,88 @@ class HousePage(Page):
                 break
         return slides
 
+    # Мозаика на макете — ровно пять кадров: крупный слева и четыре
+    # справа, у последнего оверлей «Смотреть». Остальная галерея
+    # открывается просмотрщиком.
+    MOSAIC_IMAGES = 5
+
+    @property
+    def mosaic_images(self):
+        """Кадры мозаики: обложка плюс галерея, без повторов."""
+        if not self.pk:
+            return []
+        images = [self.hero_image] if self.hero_image else []
+        for item in self.gallery_images.all():
+            if item.image and item.image not in images:
+                images.append(item.image)
+            if len(images) >= self.MOSAIC_IMAGES:
+                break
+        return images
+
     @property
     def amenities_by_group(self):
-        """Удобства, сгруппированные для блока «Что входит»."""
+        """Удобства, сгруппированные по справочнику групп."""
+        return self._grouped(self.amenities.select_related("group"))
+
+    @property
+    def featured_amenities(self):
+        """Плитки-теги блока «Удобства»."""
+        return self.amenities.filter(is_featured=True).order_by(
+            "featured_order", "name"
+        )
+
+    @property
+    def equipment_groups(self):
+        """Развёрнутое описание: всё, что не попало в плитки."""
+        return self._grouped(
+            self.amenities.filter(in_list=True).select_related("group")
+        )
+
+    # Три колонки по 320 с зазором 72 — раскладка снята с макета
+    EQUIPMENT_COLUMNS = 3
+
+    @property
+    def equipment_columns(self):
+        """Группы, разложенные по колонкам макета.
+
+        Колонку задаёт сама группа: высоты у колонок разные, и отдать
+        разбивку браузеру нельзя — он выравнивает их по высоте и
+        раскладывает группы не так, как в макете.
+        """
+        columns = [[] for _ in range(self.EQUIPMENT_COLUMNS)]
+        for group, items in self.equipment_groups.items():
+            index = min(max(group.column, 1), self.EQUIPMENT_COLUMNS) - 1
+            columns[index].append((group, items))
+        return columns
+
+    @staticmethod
+    def _grouped(queryset):
         groups = {}
-        for amenity in self.amenities.all():
-            groups.setdefault(amenity.get_group_display(), []).append(amenity)
+        for amenity in queryset:
+            if amenity.group_id is None:
+                continue
+            groups.setdefault(amenity.group, []).append(amenity)
         return groups
+
+    @property
+    def pet_fee_note(self):
+        """Подпись у счётчика питомцев: «Доплата за питомца 1000 ₽»."""
+        if not self.pet_fee:
+            return ""
+        amount = f"{self.pet_fee:,}".replace(",", " ")
+        return f"Доплата за питомца {amount} ₽"
+
+    def nightly_price(self, day):
+        """Цена ночи, начинающейся в этот день.
+
+        Сезонное правило перекрывает базовую цену; если правил несколько
+        и они пересеклись, берётся заведённое первым — разбирать
+        приоритеты редактору не нужно, достаточно порядка в списке.
+        """
+        for rule in self.price_rules.all():
+            if rule.date_from <= day <= rule.date_to:
+                return rule.price_per_night
+        return self.price_per_night or self.price_from or 0
 
     @property
     def other_houses(self):
@@ -233,13 +344,13 @@ class HousePage(Page):
         )
 
     def get_context(self, request):
-        from core.models import _consent_page
-        from forms.forms import HouseQuestionForm
+        from houses.booking import calendar_months, quote
 
         context = super().get_context(request)
-        # Дом подставляется сразу, чтобы владелец видел, о чём вопрос (п. 7 ТЗ)
-        context["question_form"] = HouseQuestionForm(initial={"house": self.pk})
-        context["consent_page"] = _consent_page()
+        # Календарь и расчёт приходят с сервера: без JS страница остаётся
+        # рабочей, а с JS скрипт только переспрашивает те же endpoint'ы.
+        context["calendar"] = calendar_months(self)
+        context["quote"] = quote(self)
         return context
 
     @property
@@ -273,3 +384,51 @@ class HouseGalleryImage(Orderable):
 
     def __str__(self):
         return self.caption or f"Фото {self.sort_order}"
+
+
+class HouseSleepingPlace(Orderable):
+    """Строка карточки «Спальные места» на макете: иконка и название."""
+
+    page = ParentalKey(
+        HousePage, on_delete=models.CASCADE, related_name="sleeping_places"
+    )
+    name = models.CharField("Название", max_length=80)
+    icon = models.CharField(
+        "Иконка", max_length=32, choices=ICON_CHOICES, blank=True
+    )
+
+    panels = [FieldPanel("name"), FieldPanel("icon")]
+
+    class Meta(Orderable.Meta):
+        verbose_name = "Спальное место"
+        verbose_name_plural = "Спальные места"
+
+    def __str__(self):
+        return self.name
+
+
+class HousePriceRule(Orderable):
+    """Сезонная цена: в эти даты ночь стоит иначе, чем обычно."""
+
+    page = ParentalKey(HousePage, on_delete=models.CASCADE, related_name="price_rules")
+    date_from = models.DateField("С")
+    date_to = models.DateField("По", help_text="Включительно.")
+    price_per_night = models.PositiveIntegerField("Цена за ночь, ₽")
+
+    panels = [
+        FieldPanel("date_from"),
+        FieldPanel("date_to"),
+        FieldPanel("price_per_night"),
+    ]
+
+    class Meta(Orderable.Meta):
+        verbose_name = "Сезонная цена"
+        verbose_name_plural = "Сезонные цены"
+
+    def clean(self):
+        super().clean()
+        if self.date_from and self.date_to and self.date_to < self.date_from:
+            raise ValidationError({"date_to": "Дата «по» раньше даты «с»."})
+
+    def __str__(self):
+        return f"{self.date_from}—{self.date_to}: {self.price_per_night} ₽"
