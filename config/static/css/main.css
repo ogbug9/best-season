@@ -860,12 +860,22 @@ body {
   /* Заголовок в макете — одна строка ровно по ширине блока (756px) */
   .photo-mosaic__text .section__title { white-space: nowrap; }
 }
-.photo-mosaic__text .section__title { margin: 0 0 var(--s-3); }
-.photo-mosaic__text .section__lead { margin: 0 0 var(--s-4); }
+.photo-mosaic__text .section__title { margin: 0 0 20px; font-weight: 500; color: #847F57; }
+.photo-mosaic__text .section__lead { margin: 0 auto 40px; font-size: 20px; line-height: 24px; color: #494949; }
+.photo-mosaic__text > p:last-child { margin: 0; }
+.photo-mosaic__text .btn { width: 201px; height: 52px; min-height: 52px; padding: 13px 39px; border: 1px solid #9B5026; border-radius: 100px; font-size: 20px; line-height: 24px; font-weight: 400; color: #494949; }
+@media (min-width: 1440px) {
+  .photo-mosaic__text .section__title { font-size: 90px; line-height: 95px; }
+}
+@media (min-width: 1000px) and (max-width: 1439px) {
+  .photo-mosaic__text .section__title { font-size: 6.25vw; line-height: 1.055556; }
+  .photo-mosaic__text .section__lead { font-size: 1.388889vw; line-height: 1.2; }
+}
 
 /* Раскладку макета держим только на десктопе: мобильная мозаика не
    мерилась, и растягивать девять абсолютных плиток вслепую нельзя */
 @media (max-width: 999px) {
+  .photo-mosaic__text .section__lead br { display: none; }
   .photo-mosaic { aspect-ratio: auto; }
   .photo-mosaic__tiles {
     display: grid;
@@ -2838,7 +2848,7 @@ body[data-modal-open] {
   list-style: none;
 }
 @media (min-width: 900px) {
-  .cards--nearby { grid-template-columns: repeat(3, 1fr); }
+  .cards--nearby { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   /* 700px — высота карточки по инспектору. Именно min-height, а не
      height: если редактор напишет описание длиннее макетного, текст
      должен растянуть карточку, а не обрезаться. */
@@ -2857,15 +2867,8 @@ body[data-modal-open] {
   border-radius: var(--radius-lg);
   color: var(--c-cream);
 }
-/* Чередование тёмных и оливковых карточек — как в макете.
-   Оливковый здесь на 12% темнее палитрового #847F57: описание в
-   карточке набрано 15px, а кремовый на исходном оливковом даёт 3.6
-   при норме 4.5 для обычного текста. #746F4C даёт ровно 4.5 и на
-   глаз от макетного не отличается. Заголовки и крупные надписи
-   по-прежнему на исходном оливковом. */
-/* #1E1E1E — по инспектору. Раньше стояло #1F1F1D, подобранное на глаз. */
 .place--dark { background: #1E1E1E; }
-.place--olive { background: #746F4C; }
+.place--olive { background: #847F57; }
 
 /* Инспектор (Frame 2087326597): блок «номер + название» ровно 146px
    при любой длине названия — от этого зависит, встанут ли фото трёх
@@ -2895,13 +2898,12 @@ body[data-modal-open] {
 }
 /* Фото не сжимается под длинное описание: в макете все три кадра
    одной высоты, а флекс-колонка ужимала третий */
-.place__media { flex: none; }
+.place__media { flex: none; aspect-ratio: 360 / 220; }
+.place__media picture, .place__media img, .place__media .ph { display: block; width: 100%; height: auto; }
 .place__media picture, .place__media img, .place__media .ph {
   border-radius: var(--radius);
-  /* 360×260 — из замеров: шапка занимает 40..186, блок описания
-     начинается на 486, между ними зазор 40. При 4/3 картинка была на
-     10px выше и карточка вылезала за 700 */
-  aspect-ratio: 360 / 260;
+  /* 360×220 — размер фото из присланного макета. */
+  aspect-ratio: 360 / 220;
   object-fit: cover;
   min-height: 0;
 }
@@ -2909,7 +2911,7 @@ body[data-modal-open] {
    Без него margin-top: auto у кнопки не работал — .place__actions лежит
    внутри .place__body, а не прямо в колонке карточки */
 .place__body { flex: 1; display: flex; flex-direction: column; }
-.place__body p { font-size: 0.9375rem; line-height: 1.35; }
+.place__body p { font-size: 18px; line-height: 22px; }
 /* Прижимаем к низу карточки — тогда кнопки трёх карточек на одной линии */
 .place__actions { margin-top: auto; }
 .place__more {
@@ -2933,6 +2935,28 @@ body[data-modal-open] {
 }
 /* 60px до кнопки: ряд карточек кончается на 855, кнопка стоит на 915 */
 .cards--nearby + .center { margin-top: 60px; }
+.place__head { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.place__number { margin: 0; font-size: 40px; line-height: 42px; letter-spacing: 0; }
+.place__title { margin: 0; width: 330px; max-width: 100%; font-size: 40px; line-height: 42px; white-space: nowrap; }
+.place { min-width: 0; }
+.place:not(.place--olive) .place__title { width: 279px; }
+.place__body { gap: 20px; }
+.place__description { margin: 0; min-height: 91px; }
+.place__actions { margin-bottom: 13px; }
+.place__more { min-height: 50px; height: 50px; padding: 14px 40px; font-size: 18px; line-height: 22px; font-weight: 400; color: #494949; }
+.nearby-more { width: 443px; max-width: 100%; height: 52px; padding: 13px 39px; font-size: 20px; line-height: 24px; font-weight: 400; color: #494949; white-space: nowrap; }
+.nearby-more img { flex: none; width: 13px; height: 10px; }
+@media (max-width: 899px) {
+  .place__description br { display: none; }
+  .nearby-more { height: auto; padding-inline: 20px; font-size: 16px; }
+}
+@media (min-width: 900px) and (max-width: 1279px) {
+  .place__description br { display: none; }
+  .place__title { font-size: 30px; line-height: 34px; }
+}
+@media (max-width: 420px) {
+  .place__title { font-size: 32px; line-height: 36px; }
+}
 .btn--ghost:hover { background: var(--c-terra); color: var(--c-cream); }
 
 /* ---------- Аккордеон вопросов ---------- */

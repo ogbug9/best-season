@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags wagtailimages_tags media_tags territory_tags %}
+{% load static wagtailcore_tags wagtailimages_tags media_tags territory_tags nearby_tags %}
 
 {% comment %}
   Главная. Порядок блоков — по макету Figma, канвас SITE DESKTOP
@@ -261,7 +261,7 @@
         <li class="place{% if forloop.counter0|divisibleby:2 %} place--dark{% else %} place--olive{% endif %}">
           <div class="place__head">
             <p class="place__number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</p>
-            <h3 class="place__title">{{ place.title }}</h3>
+            <h3 class="place__title">{{ place.title|nearby_title|linebreaksbr }}</h3>
           </div>
           <div class="place__media">
             {% if place.image %}
@@ -271,7 +271,7 @@
             {% endif %}
           </div>
           <div class="place__body">
-            {% if place.description %}<p>{{ place.description }}</p>{% endif %}
+            {% if place.description %}<p class="place__description">{{ place.description|nearby_description|linebreaksbr }}</p>{% endif %}
             {% comment %}
               Кнопка «Подробнее» есть у каждой карточки в макете. Если у
               места не задана внешняя ссылка, ведём на страницу
@@ -289,7 +289,7 @@
       {% endfor %}
     </ul>
     {% if page.nearby_more_page %}
-      <p class="center"><a class="btn btn--ghost" href="{% pageurl page.nearby_more_page %}">{{ page.nearby_more_label }} <span aria-hidden="true">→</span></a></p>
+      <p class="center"><a class="btn btn--ghost nearby-more" href="{% pageurl page.nearby_more_page %}">{{ page.nearby_more_label }} <img src="{% static 'img/nearby-arrow.png' %}" width="13" height="10" alt=""></a></p>
     {% endif %}
   </div>
 </section>
@@ -364,7 +364,7 @@
     </ul>
     <div class="photo-mosaic__text">
       <h2 class="section__title">{{ page.gallery_title }}</h2>
-      {% if page.gallery_text %}<p class="section__lead">{{ page.gallery_text }}</p>{% endif %}
+      {% if page.gallery_text %}<p class="section__lead">{{ page.gallery_text|gallery_lines|linebreaksbr }}</p>{% endif %}
       {% if page.gallery_page %}
         <p><a class="btn btn--outline" href="{% pageurl page.gallery_page %}">Подробнее</a></p>
       {% endif %}
