@@ -33,3 +33,4 @@ design/out/
 *.tar.gz
 *.zip
 Claude outputs/
+.ai/font-build-deps/
