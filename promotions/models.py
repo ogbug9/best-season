@@ -92,6 +92,9 @@ class PromotionsPage(Page):
         verbose_name = "Страница «Акции»"
 
     def get_context(self, request):
+        from core.models import FaqItem
+
         context = super().get_context(request)
         context["promotions"] = [p for p in Promotion.objects.all() if p.is_active]
+        context["faq"] = FaqItem.objects.filter(is_published=True, show_on_home=True)
         return context

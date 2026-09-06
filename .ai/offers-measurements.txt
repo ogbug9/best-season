@@ -1,0 +1,446 @@
+[
+  {
+    cls: 'offers-title',
+    x: 90,
+    y: 225,
+    w: 1260,
+    h: 95,
+    font: '500 90px / 95px "Etude Noire", ui-serif, Georgia, serif',
+    text: 'Акции'
+  },
+  {
+    cls: 'promos',
+    x: 90,
+    y: 380,
+    w: 1260,
+    h: 1690,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Тариф\n' +
+      '”День рождения”\n' +
+      '\n' +
+      'Дарим скидку в день рождения - 15%\n' +
+      '\n' +
+      'Забронировать\n' +
+      'Тариф ”Пятница\n' +
+      'со скидкой 50%”\n' +
+      '\n' +
+      'При бронировании 3-х дней:\n' +
+      'пятницы, субботы и воскресения,\n' +
+      'на пятницу действует скидка 50%\n' +
+      '\n' +
+      'Забронировать\n' +
+      'Тариф\n' +
+      '”С мая по сентябрь”\n' +
+      '\n' +
+      'От 3-х суток скидка 10%\n' +
+      'От 5 суток - 15%\n' +
+      'От 7 суток - 20%\n' +
+      '\n' +
+      'Забронировать\n' +
+      'Тариф\n' +
+      '”Выгодная баня”\n' +
+      '\n' +
+      'При бронировании русской бани\n' +
+      'от 3-х часов - баня рассчитывается\n' +
+      'по тарифу 1 500Р/час\n' +
+      '\n' +
+      'Забронировать\n' +
+      'Тариф\n' +
+      '”Гостеприимство”\n' +
+      '\n' +
+      'При бронировании напрямую\n' +
+      'комплимент от хозяев: набор\n' +
+      'фермерских продуктов или\n' +
+      'дополнительный час в бане\n' +
+      '\n' +
+      'Забронировать\n' +
+      'Тариф\n' +
+      '”Правильная удаленка”\n' +
+      '\n' +
+      '4 дня по цене 3 в будние дни\n' +
+      '\n' +
+      'Забронировать\n' +
+      'Тариф\n' +
+      '”С октября по апрель”\n' +
+      '\n' +
+      'От 3-х суток скидка 10%\n' +
+      'От 5 суток - 20%\n' +
+      'От 7 суток - 25%\n' +
+      '\n' +
+      'Забронировать'
+  },
+  {
+    cls: 'promo promo--olive',
+    x: 90,
+    y: 380,
+    w: 404,
+    h: 540,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Тариф\n”День рождения”\n\nДарим скидку в день рождения - 15%\n\nЗабронировать'
+  },
+  {
+    cls: 'ph',
+    x: 112,
+    y: 400,
+    w: 360,
+    h: 220,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: ''
+  },
+  {
+    cls: 'promo__title',
+    x: 110,
+    y: 660,
+    w: 364,
+    h: 50,
+    font: '24px / 25px "Etude Noire", ui-serif, Georgia, serif',
+    text: 'Тариф\n”День рождения”'
+  },
+  {
+    cls: 'promo__text',
+    x: 110,
+    y: 724,
+    w: 364,
+    h: 22,
+    font: '18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Дарим скидку в день рождения - 15%'
+  },
+  {
+    cls: 'btn promo__book',
+    x: 110,
+    y: 830,
+    w: 364,
+    h: 50,
+    font: '500 18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Забронировать'
+  },
+  {
+    cls: 'promo promo--dark',
+    x: 518,
+    y: 380,
+    w: 404,
+    h: 540,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Тариф ”Пятница\n' +
+      'со скидкой 50%”\n' +
+      '\n' +
+      'При бронировании 3-х дней:\n' +
+      'пятницы, субботы и воскресения,\n' +
+      'на пятницу действует скидка 50%\n' +
+      '\n' +
+      'Забронировать'
+  },
+  {
+    cls: 'ph',
+    x: 540,
+    y: 400,
+    w: 360,
+    h: 220,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: ''
+  },
+  {
+    cls: 'promo__title',
+    x: 538,
+    y: 660,
+    w: 364,
+    h: 50,
+    font: '24px / 25px "Etude Noire", ui-serif, Georgia, serif',
+    text: 'Тариф ”Пятница\nсо скидкой 50%”'
+  },
+  {
+    cls: 'promo__text',
+    x: 538,
+    y: 724,
+    w: 364,
+    h: 66,
+    font: '18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'При бронировании 3-х дней:\n' +
+      'пятницы, субботы и воскресения,\n' +
+      'на пятницу действует скидка 50%'
+  },
+  {
+    cls: 'btn promo__book',
+    x: 538,
+    y: 830,
+    w: 364,
+    h: 50,
+    font: '500 18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Забронировать'
+  },
+  {
+    cls: 'promo promo--olive',
+    x: 946,
+    y: 380,
+    w: 404,
+    h: 540,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Тариф\n' +
+      '”С мая по сентябрь”\n' +
+      '\n' +
+      'От 3-х суток скидка 10%\n' +
+      'От 5 суток - 15%\n' +
+      'От 7 суток - 20%\n' +
+      '\n' +
+      'Забронировать'
+  },
+  {
+    cls: 'ph',
+    x: 968,
+    y: 400,
+    w: 360,
+    h: 220,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: ''
+  },
+  {
+    cls: 'promo__title',
+    x: 966,
+    y: 660,
+    w: 364,
+    h: 50,
+    font: '24px / 25px "Etude Noire", ui-serif, Georgia, serif',
+    text: 'Тариф\n”С мая по сентябрь”'
+  },
+  {
+    cls: 'promo__text',
+    x: 966,
+    y: 724,
+    w: 364,
+    h: 66,
+    font: '18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'От 3-х суток скидка 10%\nОт 5 суток - 15%\nОт 7 суток - 20%'
+  },
+  {
+    cls: 'btn promo__book',
+    x: 966,
+    y: 830,
+    w: 364,
+    h: 50,
+    font: '500 18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Забронировать'
+  },
+  {
+    cls: 'promo promo--dark',
+    x: 90,
+    y: 944,
+    w: 404,
+    h: 562,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Тариф\n' +
+      '”Выгодная баня”\n' +
+      '\n' +
+      'При бронировании русской бани\n' +
+      'от 3-х часов - баня рассчитывается\n' +
+      'по тарифу 1 500Р/час\n' +
+      '\n' +
+      'Забронировать'
+  },
+  {
+    cls: 'ph',
+    x: 112,
+    y: 964,
+    w: 360,
+    h: 220,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: ''
+  },
+  {
+    cls: 'promo__title',
+    x: 110,
+    y: 1224,
+    w: 364,
+    h: 50,
+    font: '24px / 25px "Etude Noire", ui-serif, Georgia, serif',
+    text: 'Тариф\n”Выгодная баня”'
+  },
+  {
+    cls: 'promo__text',
+    x: 110,
+    y: 1288,
+    w: 364,
+    h: 66,
+    font: '18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'При бронировании русской бани\n' +
+      'от 3-х часов - баня рассчитывается\n' +
+      'по тарифу 1 500Р/час'
+  },
+  {
+    cls: 'btn promo__book',
+    x: 110,
+    y: 1416,
+    w: 364,
+    h: 50,
+    font: '500 18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Забронировать'
+  },
+  {
+    cls: 'promo promo--olive',
+    x: 518,
+    y: 944,
+    w: 404,
+    h: 562,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Тариф\n' +
+      '”Гостеприимство”\n' +
+      '\n' +
+      'При бронировании напрямую\n' +
+      'комплимент от хозяев: набор\n' +
+      'фермерских продуктов или\n' +
+      'дополнительный час в бане\n' +
+      '\n' +
+      'Забронировать'
+  },
+  {
+    cls: 'ph',
+    x: 540,
+    y: 964,
+    w: 360,
+    h: 220,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: ''
+  },
+  {
+    cls: 'promo__title',
+    x: 538,
+    y: 1224,
+    w: 364,
+    h: 50,
+    font: '24px / 25px "Etude Noire", ui-serif, Georgia, serif',
+    text: 'Тариф\n”Гостеприимство”'
+  },
+  {
+    cls: 'promo__text',
+    x: 538,
+    y: 1288,
+    w: 364,
+    h: 88,
+    font: '18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'При бронировании напрямую\n' +
+      'комплимент от хозяев: набор\n' +
+      'фермерских продуктов или\n' +
+      'дополнительный час в бане'
+  },
+  {
+    cls: 'btn promo__book',
+    x: 538,
+    y: 1416,
+    w: 364,
+    h: 50,
+    font: '500 18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Забронировать'
+  },
+  {
+    cls: 'promo promo--dark',
+    x: 946,
+    y: 944,
+    w: 404,
+    h: 562,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Тариф\n”Правильная удаленка”\n\n4 дня по цене 3 в будние дни\n\nЗабронировать'
+  },
+  {
+    cls: 'ph',
+    x: 968,
+    y: 964,
+    w: 360,
+    h: 220,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: ''
+  },
+  {
+    cls: 'promo__title',
+    x: 966,
+    y: 1224,
+    w: 364,
+    h: 50,
+    font: '24px / 25px "Etude Noire", ui-serif, Georgia, serif',
+    text: 'Тариф\n”Правильная удаленка”'
+  },
+  {
+    cls: 'promo__text',
+    x: 966,
+    y: 1288,
+    w: 364,
+    h: 22,
+    font: '18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: '4 дня по цене 3 в будние дни'
+  },
+  {
+    cls: 'btn promo__book',
+    x: 966,
+    y: 1416,
+    w: 364,
+    h: 50,
+    font: '500 18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Забронировать'
+  },
+  {
+    cls: 'promo promo--olive',
+    x: 90,
+    y: 1530,
+    w: 404,
+    h: 540,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Тариф\n' +
+      '”С октября по апрель”\n' +
+      '\n' +
+      'От 3-х суток скидка 10%\n' +
+      'От 5 суток - 20%\n' +
+      'От 7 суток - 25%\n' +
+      '\n' +
+      'Забронировать'
+  },
+  {
+    cls: 'ph',
+    x: 112,
+    y: 1550,
+    w: 360,
+    h: 220,
+    font: '18px / 21.96px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: ''
+  },
+  {
+    cls: 'promo__title',
+    x: 110,
+    y: 1810,
+    w: 364,
+    h: 50,
+    font: '24px / 25px "Etude Noire", ui-serif, Georgia, serif',
+    text: 'Тариф\n”С октября по апрель”'
+  },
+  {
+    cls: 'promo__text',
+    x: 110,
+    y: 1874,
+    w: 364,
+    h: 66,
+    font: '18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'От 3-х суток скидка 10%\nОт 5 суток - 20%\nОт 7 суток - 25%'
+  },
+  {
+    cls: 'btn promo__book',
+    x: 110,
+    y: 1980,
+    w: 364,
+    h: 50,
+    font: '500 18px / 22px Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    text: 'Забронировать'
+  },
+  {
+    cls: 'section__title section__title--center',
+    x: 100,
+    y: 2130,
+    w: 1240,
+    h: 90,
+    font: '500 90px / 90px "Etude Noire", ui-serif, Georgia, serif',
+    text: 'Ответы на вопросы'
+  }
+]
+FAQ opens: 
+viewport 1280 { viewport: 1280, doc: 1280, grid: 1240 }
+viewport 1100 { viewport: 1100, doc: 1100, grid: 1060 }
+viewport 1024 { viewport: 1024, doc: 1024, grid: 984 }
+viewport 768 { viewport: 768, doc: 768, grid: 728 }
+viewport 375 { viewport: 375, doc: 375, grid: 335 }
+Hero: Лучший сезон radial-gradient(53.36% 122.5% at 46.64% -0.53%, rgb(106, 108, 84) 0%, rgb(150, 144, 68) 100%)

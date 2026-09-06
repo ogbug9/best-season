@@ -3342,80 +3342,37 @@ body.page-houses main > .houses-catalog {
 }
 
 
-/* ---------- Карточки акций ----------
-   Макет «Special Offers»: три колонки, карточки чередуются оливковая
-   #847F57 и тёмная #1E1E1E, фото сверху, название и описание по центру,
-   кнопка кремовая #F7F0E6 во всю ширину. Цвета сняты пикселями
-   с выгрузки макета. */
-.promos {
-  display: grid;
-  /* Инспектор: ряд 1260, три карточки по 404 → зазор ровно 24 */
-  gap: 24px;
-  margin: var(--s-7) 0 0;
-  padding: 0;
-  list-style: none;
-}
-@media (min-width: 900px) {
-  /* Ряд карточек в макете 1260, а не 1240: при 1240 заголовки рвались
-     там, где в макете они помещаются целиком */
-  .promos {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    max-width: 1260px;
-    margin-inline: auto;
-  }
-}
-.promo {
-  display: flex;
-  flex-direction: column;
-  /* Инспектор (карточка 404×540): поля 20 со всех сторон,
-     от фото до текста 40 */
-  gap: 40px;
-  padding: 20px;
-  border-radius: var(--radius-lg);
-  color: var(--c-cream);
-  text-align: center;
-}
-.promo--olive { background: var(--c-olive); }
+/* ---------- Акции: Special Offers, карточки 404×540 ---------- */
+body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom: 0; }
+.page-promotions .offers-title { margin: 0; font-family: var(--font-heading); font-weight: 500; font-size: 90px; line-height: 95px; color: #847F57; text-align: center; }
+.page-promotions .offers-intro { margin: 20px 0 0; text-align: center; }
+.promos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 80px 0 0; padding: 0; list-style: none; }
+.page-promotions .promos { margin-top: 60px; }
+.promo { display: flex; flex-direction: column; align-items: center; gap: 40px; min-width: 0; min-height: 540px; padding: 20px 20px 40px; border-radius: 20px; color: #F7F0E6; text-align: center; }
+.promo--olive { background: #847F57; }
 .promo--dark { background: #1E1E1E; }
-/* Фото 360 внутри блока 364: в макете у него по 2px с боков */
-.promo__media { padding-inline: 2px; }
-.promo__media picture,
-.promo__media img,
-.promo__media .ph {
-  display: block;
-  width: 100%;
-  aspect-ratio: 360 / 220;   /* Rectangle 42, инспектор */
-  object-fit: cover;
-  border-radius: var(--radius);
+.promo__media { flex: none; width: 100%; padding-inline: 2px; }
+.promo--olive .ph { background-color: #F7F0E6; }
+.promo__media .ph { display: block; width: 100%; min-height: 0; aspect-ratio: 360 / 220; border-radius: 10px; }
+.promo__copy { width: 100%; }
+.promo__title { margin: 0; font-family: var(--font-heading); font-weight: 400; color: #F7F0E6; font-size: 24px; line-height: 25px; min-height: 50px; }
+.promo__copy .promo__text { margin: 14px 0 0; color: #F7F0E6; font-size: 18px; line-height: 22px; }
+.promo__book { flex: none; margin-top: auto; width: 100%; height: 50px; min-height: 50px; padding: 14px 40px; font-size: 18px; font-weight: 500; line-height: 22px; border: 0; background: #F7F0E6; color: #494949; border-radius: 100px; }
+.promo__book:hover { background: var(--c-white); color: #494949; }
+.page-promotions .offers-section + .section { padding-top: 60px; }
+@media (max-width: 1279px) {
+  .promo__title br, .promo__text br { display: none; }
+  .promo__title { min-height: 50px; }
 }
-/* Montserrat, как в макете: заголовок карточки набран тем же шрифтом,
-   что и описание, а не акцидентным Etude Noire. */
-.promo__title {
-  margin: 0;
-  font-family: var(--font-body);
-  font-weight: 600;
-  color: var(--c-cream);
-  font-size: 1.5rem;
-  line-height: 1.15;
+@media (min-width: 700px) and (max-width: 1099px) {
+  .promos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.promo__text { margin: 0; color: var(--c-cream); font-size: 1rem; }
-/* Кнопка прижата к низу: в макете у всех карточек ряда она на одной линии */
-.promo__book {
-  margin-top: auto;
-  width: 100%;
-  /* Ровно 50: поля 14 сверху и снизу плюс строка 22 (узел «Забронировать»
-     148×22). Рамки нет — с ней выходило 54. */
-  min-height: 50px;
-  padding-block: 14px;
-  line-height: 22px;
-  border: 0;
-  background: var(--c-cream);
-  color: var(--c-deep);
-  border-radius: var(--radius-pill);
+@media (max-width: 699px) {
+  body.page-promotions main > .offers-section { padding-top: 160px; }
+  .page-promotions .offers-title { font-size: 54px; line-height: 60px; }
+  .promos { grid-template-columns: minmax(0, 1fr); }
+  .promo { min-height: 540px; }
 }
-.promo__book:hover { background: var(--c-white); color: var(--c-deep); }
-
-
 
 /* Перенос по слогам включён для заголовков ради длинных слов на телефоне
    («Правила бронирования»). В карточках он вредит: макет рвёт названия

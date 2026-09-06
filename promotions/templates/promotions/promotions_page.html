@@ -1,44 +1,27 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags media_tags %}
-
+{% load wagtailcore_tags promotion_tags %}
+{% block body_class %}page-promotions{% endblock %}
 {% block content %}
-<section class="section page-head">
-  <div class="container container--narrow">
-    <h1>{{ page.title }}</h1>
-    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
-  </div>
-</section>
-
-{% if page.body %}
-<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
-{% endif %}
-
-{% if promotions %}
-<section class="section">
+<section class="section offers-section">
   <div class="container container--wide">
-    {% comment %} Карточки чередуются оливковая/тёмная — так в макете. {% endcomment %}
-    {% comment %} Чередование по индексу, чтобы ряд не сломался при добавлении. {% endcomment %}
+    <h1 class="offers-title">{{ page.title }}</h1>
+    {% if promotions %}
     <ul class="promos">
       {% for promo in promotions %}
-        <li class="promo{% if forloop.counter0|divisibleby:2 %} promo--olive{% else %} promo--dark{% endif %}">
-          {% if promo.image %}
-            <div class="promo__media">{% picture promo.image preset="card" alt=promo.title %}</div>
-          {% else %}
-            <div class="promo__media"><span class="ph" aria-hidden="true"></span></div>
-          {% endif %}
-          <h2 class="promo__title">{{ promo.title }}</h2>
-          {% if promo.short_description %}<p class="promo__text">{{ promo.short_description|linebreaksbr }}</p>{% endif %}
+      <li class="promo{% if forloop.counter0|divisibleby:2 %} promo--olive{% else %} promo--dark{% endif %}">
+        <div class="promo__media"><span class="ph" aria-hidden="true"></span></div>
+        <div class="promo__copy">
+          <h2 class="promo__title">{{ promo.title|promotion_title|linebreaksbr }}</h2>
+          {% if promo.short_description %}<p class="promo__text">{{ promo.short_description|promotion_description|linebreaksbr }}</p>{% endif %}
           {% if promo.description %}<div class="promo__text prose">{{ promo.description|richtext }}</div>{% endif %}
           {% if promo.date_to %}<p class="promo__text">Действует до {{ promo.date_to|date:"d.m.Y" }}</p>{% endif %}
-          <button type="button" class="btn promo__book" data-booking-open data-entry-point="7">Забронировать</button>
-        </li>
+        </div>
+        <button type="button" class="btn promo__book" data-booking-open data-entry-point="7">Забронировать</button>
+      </li>
       {% endfor %}
     </ul>
+    {% else %}<p>Сейчас действующих акций нет.</p>{% endif %}
   </div>
 </section>
-{% else %}
-<section class="section">
-  <div class="container container--narrow"><p>Сейчас действующих акций нет.</p></div>
-</section>
-{% endif %}
+{% include "includes/faq_section.html" %}
 {% endblock %}

@@ -57,7 +57,7 @@
   </div>
 
   <div class="container hero__inner">
-    <h1 class="hero__title">{{ page.hero_title|default:page.title }}</h1>
+    <h1 class="hero__title">{{ page.hero_title|default:page.title|brand_title }}</h1>
     {% if page.hero_subtitle %}<p class="hero__subtitle">{{ page.hero_subtitle|linebreaksbr }}</p>{% endif %}
 
     {% if page.hero_links.all %}
@@ -408,24 +408,6 @@
   тег раскрывается сам, работает с клавиатуры и читалками экрана,
   и не тянет вес на страницу — скорость на мобильных предмет приёмки (п. 1.2).
 {% endcomment %}
-{% if faq %}
-<section class="section">
-  {% comment %}
-    Контейнер обычной ширины: в узком (760px) заголовок в 90px по макету
-    разбивался на две строки, а в макете он в одну.
-  {% endcomment %}
-  <div class="container">
-    <h2 class="section__title section__title--center">Ответы на вопросы</h2>
-    <div class="faq">
-      {% for item in faq %}
-        <details class="faq__item{% if forloop.counter0|divisibleby:2 %} faq__item--dark{% else %} faq__item--olive{% endif %}">
-          <summary class="faq__question">{{ item.question }}</summary>
-          <div class="faq__answer">{{ item.answer|richtext }}</div>
-        </details>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-{% endif %}
+{% include "includes/faq_section.html" %}
 
 {% endblock %}

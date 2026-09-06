@@ -992,6 +992,225 @@
           "node": "Футтер / CSS пользователя 05.09.2026"
         }
       }
+    },
+    "offers-heading": {
+      "selector": ".offers-title",
+      "viewport": 1440,
+      "page": "/akcii/",
+      "props": {
+        "width": {
+          "value": "1260px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "height": {
+          "value": "95px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "font-size": {
+          "value": "90px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "line-height": {
+          "value": "95px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "font-weight": {
+          "value": "500",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "color": {
+          "value": "#847F57",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "text-align": {
+          "value": "center",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        }
+      }
+    },
+    "offers-grid": {
+      "selector": ".page-promotions .promos",
+      "viewport": 1440,
+      "page": "/akcii/",
+      "props": {
+        "width": {
+          "value": "1260px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "height": {
+          "value": "1690px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "gap": {
+          "value": "24px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        }
+      }
+    },
+    "offers-card": {
+      "selector": ".page-promotions .promo",
+      "viewport": 1440,
+      "page": "/akcii/",
+      "props": {
+        "width": {
+          "value": "404px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "height": {
+          "value": "540px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "padding-top": {
+          "value": "20px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "padding-left": {
+          "value": "20px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "padding-bottom": {
+          "value": "40px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "border-radius": {
+          "value": "20px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "background-color": {
+          "value": "#847F57",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        }
+      }
+    },
+    "offers-image": {
+      "selector": ".page-promotions .promo__media .ph",
+      "viewport": 1440,
+      "page": "/akcii/",
+      "props": {
+        "width": {
+          "value": "360px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "height": {
+          "value": "220px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "border-radius": {
+          "value": "10px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        }
+      }
+    },
+    "offers-card-title": {
+      "selector": ".page-promotions .promo__title",
+      "viewport": 1440,
+      "page": "/akcii/",
+      "props": {
+        "width": {
+          "value": "364px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "height": {
+          "value": "50px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "font-size": {
+          "value": "24px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "line-height": {
+          "value": "25px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "font-weight": {
+          "value": "400",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        }
+      }
+    },
+    "offers-card-text": {
+      "selector": ".page-promotions .promo__text",
+      "viewport": 1440,
+      "page": "/akcii/",
+      "props": {
+        "font-size": {
+          "value": "18px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "line-height": {
+          "value": "22px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "color": {
+          "value": "#F7F0E6",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        }
+      }
+    },
+    "offers-booking": {
+      "selector": ".page-promotions .promo__book",
+      "viewport": 1440,
+      "page": "/akcii/",
+      "props": {
+        "width": {
+          "value": "364px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "height": {
+          "value": "50px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "font-size": {
+          "value": "18px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "line-height": {
+          "value": "22px",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "font-weight": {
+          "value": "500",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        },
+        "color": {
+          "value": "#494949",
+          "source": "inspector",
+          "node": "Special Offers / user CSS 06.09.2026"
+        }
+      }
     }
   },
   "geometry": {

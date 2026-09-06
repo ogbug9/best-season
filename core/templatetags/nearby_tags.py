@@ -3,6 +3,11 @@ from django import template
 
 register = template.Library()
 
+
+@register.filter
+def brand_title(value):
+    return "Лучший сезон" if value == "Лучший Сезон" else value
+
 TITLES = {
     'Усадьба "Поленово"': 'Усадьба\n”Поленово”',
     'деревня Ф. Конюхова': 'деревня\nФ. Конюхова',
