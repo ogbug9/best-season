@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags wagtailimages_tags media_tags %}
+{% load static wagtailcore_tags wagtailimages_tags media_tags territory_tags %}
 
 {% comment %}
   Главная. Порядок блоков — по макету Figma, канвас SITE DESKTOP
@@ -228,7 +228,7 @@
             <span class="ph" aria-hidden="true"></span>
           {% endif %}
           <div class="mosaic__caption">
-            <h3>{{ item.title }}</h3>
+            <h3>{{ item.title|territory_lines|linebreaksbr }}</h3>
             {% if item.description %}<p>{{ item.description }}</p>{% endif %}
           </div>
         </li>
@@ -236,8 +236,8 @@
       {% if page.territory_more_page %}
         <li class="mosaic__item">
           <a class="mosaic__more" href="{% pageurl page.territory_more_page %}">
-            {{ page.territory_more_label }}
-            <span aria-hidden="true">→</span>
+            <span class="mosaic__more-label">{{ page.territory_more_label|territory_lines|linebreaksbr }}</span>
+            <span class="mosaic__more-arrow" aria-hidden="true"></span>
           </a>
         </li>
       {% endif %}

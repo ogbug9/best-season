@@ -1302,7 +1302,7 @@ body {
   font-family: var(--font-body);
   font-size: 1.5rem;
   font-weight: 600;
-  line-height: 1;
+  line-height: 29px;
   color: var(--c-cream);
 }
 .mosaic__caption p {
@@ -1781,9 +1781,11 @@ body:not(.page-home) main > :first-child {
 
 /* ---------- Плитка-ссылка в мозаике ---------- */
 .mosaic__more {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   /* Плитка-ссылка обязана занять ячейку целиком: квадрат задан на
      li.mosaic__item, а ссылка лежит внутри и без этого сжимается
      по содержимому. */
@@ -1805,7 +1807,26 @@ body:not(.page-home) main > :first-child {
   color: var(--c-cream);
 }
 .mosaic__more:hover { background: var(--c-deep); color: var(--c-cream); }
-.mosaic__more span[aria-hidden] { font-size: 1.5rem; }
+.mosaic__more::after {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  inset: 10px;
+  border: 1px solid #F7F0E6;
+  border-radius: 8px;
+  pointer-events: none;
+}
+.mosaic__more-label { width: 195px; max-width: 100%; }
+.mosaic__more-arrow {
+  width: 28px;
+  height: 22px;
+  flex: none;
+  align-self: flex-start;
+  margin-left: max(0px, calc((100% - 195px) / 2));
+  background: #F7F0E6;
+  -webkit-mask: url("../img/icon-territory-arrow.png") center / contain no-repeat;
+  mask: url("../img/icon-territory-arrow.png") center / contain no-repeat;
+}
 
 /* ---------- Фотогалерея масонри ---------- */
 .mosaic--photos {
@@ -1978,16 +1999,6 @@ body:not(.page-home) main > :first-child {
 }
 .btn--on-media:hover { background: var(--c-cream); color: var(--c-deep); }
 
-/* Кремовый на оливковом даёт 3.6 — для обычного текста мало, но для
-   крупного полужирного (от 18.66px) норма 3.0, и он проходит.
-   Поэтому не перекрашиваем оливковый, а поднимаем кегль и насыщенность:
-   так сохраняется вид макета и выполняется требование. */
-/* Ровно 700: проверка доступности считает полужирным только 700,
-   при 600 текст остаётся «обычным» и требует 4.5 вместо 3.0 */
-.mosaic__more {
-  font-weight: 700;
-  font-size: 1.25rem;
-}
 
 /* =========================================================================
    Страницы второй очереди (Фаза 6)
@@ -3143,11 +3154,12 @@ body.page-houses main > .houses-catalog {
 /* Иконки — файлы от дизайнера, рисуются маской, чтобы брать цвет
    подписи. Видимый контур 16×18 у дат и 12×16 у гостей, файлы на
    пиксель шире из-за прозрачной рамки при выгрузке. */
-.page-houses .houses-search .searchbar__icon {
+.searchbar__icon {
   flex: 0 0 auto;
   display: block;
   background-color: currentColor;
 }
+.hero .searchbar__icon { color: #FFFFFF; }
 .searchbar__icon--date {
   width: 18px;
   height: 20px;
