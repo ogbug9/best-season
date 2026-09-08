@@ -2331,8 +2331,8 @@ body[data-modal-open] {
    Главная: блоки по макету SITE DESKTOP
    ========================================================================= */
 
-/* Главная, макет 1440×9060. PNG уже содержат повороты, обрезку по
-   краям макета и opacity: повторная трансформация исказит рисунок. */
+/* Главная, макет 1440×9060. Фон 1: исходный SVG содержит opacity
+   и геометрию рисунка, дополнительные трансформации не нужны. */
 .page-home {
   position: relative;
   isolation: isolate;
@@ -2352,13 +2352,26 @@ body[data-modal-open] {
   height: auto;
 }
 .home-background__image--1 { width: 100%; left: 0; top: 9.02%; }
-.home-background__image--4 { width: 37.291667%; left: 0; top: 22.9%; }
-.home-background__image--5 { width: 37.291667%; right: 0; top: 29.44%; }
-.home-background__image--2 { width: 80.555556%; left: 0; top: 39.83%; }
-.home-background__image--8 { width: 86.111111%; left: 13.888889%; top: 63.08%; }
-.home-background__image--6 { width: 39.027778%; left: 0; top: 80.68%; }
-.home-background__image--7 { width: 61.458333%; right: 0; top: 78.59%; }
-.home-background__image--bottom { width: 99.513889%; right: 0; bottom: 0; }
+
+
+
+
+
+
+
+/* На десктопе размеры заданы в CSS-пикселях относительно центра макета:
+   браузерный zoom масштабирует линии вместе с контентом. Проценты от
+   ширины окна компенсировали zoom и растягивали рисунок на широких экранах. */
+@media (min-width: 900px) {
+  .home-background__image--1 { width: 1440px; left: calc(50% - 720px); }
+
+
+
+
+
+
+
+}
 .page-home .about__panel { background: transparent; }
 
 /* Кнопка полосы поиска зависит от фона. На первом экране она лежит
