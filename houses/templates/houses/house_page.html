@@ -62,7 +62,7 @@
              data-gallery-item data-full="{{ full.url }}" data-caption="{{ page.title }}">
             {% picture image preset="gallery" alt=page.title %}
             {% if forloop.last %}
-              <span class="house-mosaic__more">{% icon "camera" %}Смотреть</span>
+              <span class="house-mosaic__more">{% house_icon "camera" %}Смотреть</span>
             {% endif %}
           </a>
         </li>
@@ -84,6 +84,10 @@
     </ul>
   </div>
 </section>
+{% else %}
+<section class="house-mosaic-section" aria-hidden="true">
+  <div class="container"><div class="house-mosaic house-mosaic--empty"></div></div>
+</section>
 {% endif %}
 {% endwith %}
 
@@ -92,10 +96,10 @@
   <div class="container">
     <div class="house-facts">
       <div class="fact-card">
-        <p class="fact-card__title">{% icon "capacity" %}Вместимость до {{ page.capacity }}-х человек</p>
+        <p class="fact-card__title">{% house_icon "capacity" %}Вместимость до {{ page.capacity }}-х человек</p>
         <p class="fact-card__chips">
-          {% if page.area %}<span class="chip">{% icon "area" %}{{ page.area|floatformat:"-1" }} м²</span>{% endif %}
-          {% if page.layout_note %}<span class="chip">{% icon "layout" %}{{ page.layout_note }}</span>{% endif %}
+          {% if page.area %}<span class="chip">{% house_icon "area" %}{{ page.area|floatformat:"-1" }} м²</span>{% endif %}
+          {% if page.layout_note %}<span class="chip">{% house_icon "layout" %}{{ page.layout_note }}</span>{% endif %}
         </p>
       </div>
 
@@ -104,7 +108,7 @@
         <p class="fact-card__title">Спальные места</p>
         <p class="fact-card__chips">
           {% for place in page.sleeping_places.all %}
-            <span class="chip">{% icon place.icon %}{{ place.name }}</span>
+            <span class="chip">{% house_icon place.icon %}{{ place.name }}</span>
           {% endfor %}
         </p>
       </div>
@@ -186,6 +190,8 @@
             <div class="reviews__media">
               {% picture review.image preset="card" alt=review.author_name %}
             </div>
+          {% else %}
+            <div class="reviews__media" aria-hidden="true"></div>
           {% endif %}
           <blockquote class="reviews__text"><p>«{{ review.text }}»</p></blockquote>
           <p class="reviews__author">{{ review.author_name }}</p>

@@ -19,18 +19,18 @@
     <div class="booking-panel__fields">
       <div class="booking-field booking-field--dates">
         <button type="button" class="booking-field__slot" data-field="date_from">
-          {% icon "calendar" %}
+          {% house_icon "calendar" %}
           <span data-label-date-from>Дата заезда</span>
         </button>
         <span class="booking-field__dash" aria-hidden="true">—</span>
         <button type="button" class="booking-field__slot" data-field="date_to">
-          {% icon "calendar" %}
+          {% house_icon "calendar" %}
           <span data-label-date-to>Дата выезда</span>
         </button>
       </div>
       <div class="booking-field booking-field--guests">
         <span class="booking-field__slot booking-field__slot--static">
-          {% icon "guest" %}
+          {% house_icon "guest" %}
           <span data-label-guests>Количество гостей</span>
         </span>
       </div>
@@ -46,6 +46,7 @@
       </div>
 
       {% comment %} ---------- Гости, итог, кнопка ---------- {% endcomment %}
+      <div class="booking-panel__sidebar">
       <div class="guests" data-guests>
         <h2 class="guests__title">Количество гостей</h2>
 
@@ -53,12 +54,14 @@
         {% include "houses/_guest_counter.html" with key="children" label="Дети" value=quote.children min=0 max=page.max_children note=settings.core.SiteSettings.guests_children_note %}
         {% include "houses/_guest_counter.html" with key="pets" label="Питомцы" value=quote.pets min=0 max=page.max_pets note=page.pet_fee_note %}
 
+      </div>
+
         <p class="booking-summary" data-summary aria-live="polite">
           <span class="booking-summary__item">
-            {% icon "moon" %}<span data-summary-nights>{{ quote.nights|nights }}</span>
+            {% house_icon "moon" %}<span data-summary-nights>{{ quote.nights|nights }}</span>
           </span>
           <span class="booking-summary__item">
-            {% icon "capacity" %}<span data-summary-guests>{{ quote.guests|guests }}</span>
+            {% house_icon "capacity" %}<span data-summary-guests>{{ quote.guests|guests }}</span>
           </span>
         </p>
 

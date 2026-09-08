@@ -27,3 +27,15 @@ def icon(name, css_class="icon"):
         f'<use href="{static("img/icons.svg")}#i-{name}"></use>'
         "</svg>"
     )
+
+
+@register.simple_tag
+def house_icon(name):
+    """Иконки страницы дома из присланного макета."""
+    if name not in {"sofa_bed", "bunk_bed", "layout", "area", "capacity",
+                    "guest", "moon", "calendar", "camera"}:
+        return icon(name)
+    return mark_safe(
+        f'<img class="icon house-icon house-icon--{name}" '
+        f'src="{static(f"img/house-icons/{name}.png")}" alt="" aria-hidden="true">'
+    )

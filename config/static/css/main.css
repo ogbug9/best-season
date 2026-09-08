@@ -3770,7 +3770,7 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 }
 
 /* ---------- Заголовок ---------- */
-.page-house .house-title { padding-block: var(--s-9) var(--s-7); }
+.page-house .house-title { padding-block: 198.91px 60px; }
 .page-house .house-title h1 {
   font-family: var(--font-heading);
   font-weight: 500;
@@ -3793,8 +3793,8 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 67px;
-  padding: 12px 42px;
+  min-height: 67.47px;
+  padding: 21.23px 42.46px;
   background: var(--c-sand);
   border-radius: var(--radius);
 }
@@ -3805,17 +3805,17 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  min-height: var(--tap-min);
-  padding: 0 var(--s-2);
+  min-height: 25px;
+  padding: 0;
   border: 0;
   background: none;
   font: inherit;
-  font-size: var(--fs-base);
+  font-size: 21.23px;
   color: var(--text);
   cursor: pointer;
 }
 .page-house .booking-field__slot--static { cursor: default; }
-.page-house .booking-field__slot .icon { width: 20px; height: 20px; color: var(--accent); }
+.page-house .booking-field__slot .icon { width: 20px; height: 20px; color: var(--text); }
 .page-house .booking-field__dash { color: var(--c-muted); }
 /* Выбранное поле подсвечивается: гость видит, какую дату поставит клик */
 .page-house .booking-field__slot.is-active { color: var(--accent); font-weight: 500; }
@@ -3829,11 +3829,13 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 /* ---------- Календарь ---------- */
 .page-house .calendar {
   flex: 0 0 858px;
-  padding: 25px;
+  padding: 42.46px;
   background: var(--c-white);
   border-radius: 17px;
+
+  min-height: 518.08px;
 }
-.page-house .calendar__months { display: flex; gap: 25px; }
+.page-house .calendar__months { display: flex; gap: 59.45px; }
 .page-house .calendar__month { flex: 1 1 0; }
 
 .page-house .calendar__head {
@@ -3841,14 +3843,14 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  margin-bottom: var(--s-3);
+  min-height: 42.46px;
+  margin-bottom: 21.23px;
 }
 .page-house .calendar__title {
   font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 24px;
+  font-weight: 500;
+  font-size: 21.23px;
+  line-height: 26px;
   color: var(--text);
 }
 .page-house .calendar__arrow {
@@ -3879,44 +3881,45 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 .page-house .calendar__arrow--prev::before { transform: rotate(-135deg); }
 .page-house .calendar__arrow:hover:not([disabled]) { background: var(--c-hover); border-color: transparent; }
 .page-house .calendar__arrow[disabled] { cursor: default; }
-.page-house .calendar__arrow[disabled]::before { border-color: var(--c-faded); }
+.page-house .calendar__arrow[disabled]::before { border-color: #CBD2E0; }
 
 .page-house .calendar__grid {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 4.25px;
   table-layout: fixed;
 }
 .page-house .calendar__grid th {
-  padding-bottom: var(--s-2);
+  padding-bottom: 21.23px;
   font-weight: 400;
-  font-size: var(--fs-small);
-  color: var(--c-muted);
+  font-size: 14.86px;
+  color: var(--text);
 }
 .page-house .calendar__grid th abbr { text-decoration: none; }
-.page-house .calendar__cell { height: 44px; text-align: center; padding: 0; }
+.page-house .calendar__cell { height: 50.96px; text-align: center; padding: 0; }
 
 .page-house .calendar__day {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 42.46px;
+  height: 42.46px;
   border: 0;
   border-radius: 50%;
   background: none;
   font: inherit;
-  font-size: var(--fs-small);
-  color: var(--text);
+  font-size: 14.86px;
+  color: #667595;
   cursor: pointer;
 }
-.page-house .calendar__day--off { color: var(--c-faded); cursor: default; }
+.page-house .calendar__day--off { color: #CBD2E0; cursor: default; }
 .page-house .calendar__day:hover:not(.calendar__day--off) { background: var(--c-hover); }
 
 /* Полоса диапазона идёт по всей ячейке, поэтому фон живёт на td,
    а круг у краёв — на самой кнопке. */
 .page-house .calendar__cell--range,
 .page-house .calendar__cell--range-start,
-.page-house .calendar__cell--range-end { background: var(--c-peach); }
+.page-house .calendar__cell--range-end { background: #FFF0E6; }
 .page-house .calendar__cell--range-start { border-radius: var(--radius) 0 0 var(--radius); }
 .page-house .calendar__cell--range-end { border-radius: 0 var(--radius) var(--radius) 0; }
 /* Обрыв полосы на краях недели скругляем: иначе она упирается в край
@@ -3931,7 +3934,7 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 }
 
 .page-house .calendar__cell--selected .calendar__day,
-.page-house .calendar__cell--selected .calendar__day:hover { background: var(--c-peach-strong); }
+.page-house .calendar__cell--selected .calendar__day:hover { background: #FFCEA5; }
 
 /* Сегодняшний день помечен точкой под цифрой */
 .page-house .calendar__cell--today .calendar__day { position: relative; }
@@ -3948,22 +3951,31 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 }
 
 /* ---------- Гости, итог, кнопка ---------- */
-.page-house .guests {
-  flex: 0 0 360px;
+.page-house .booking-panel__sidebar {
+  flex: 1 1 362px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 25px;
-  padding: 25px;
+  gap: 16px;
+}
+.page-house .guests {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25.48px;
+  padding: 25.48px;
+  min-height: 339.3px;
   background: var(--c-white);
-  border-radius: 17px;
+  border-radius: 16.99px;
 }
 .page-house .guests__title {
   margin: 0;
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: 20px;
-  line-height: 24px;
+  font-size: 21.23px;
+  line-height: 26px;
   color: var(--text);
 }
 .page-house .guests__row { width: 100%; }
@@ -3973,38 +3985,44 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   justify-content: space-between;
   gap: var(--s-3);
 }
-.page-house .guests__label { font-size: var(--fs-base); color: var(--text); }
+.page-house .guests__label { font-size: 21.23px; color: var(--text); }
 .page-house .guests__control { display: inline-flex; align-items: center; gap: 12px; }
 .page-house .guests__step {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 31.85px;
+  height: 31.85px;
   border: 0;
   border-radius: 50%;
-  background: #FDECE0;
+  background: #FFF0E6;
   font: inherit;
-  font-size: 18px;
+  font-size: 24px;
   line-height: 1;
-  color: var(--accent);
+  color: var(--text);
   cursor: pointer;
 }
-.page-house .guests__step[disabled] { color: var(--c-faded); cursor: default; }
-.page-house .guests__value { min-width: 20px; text-align: center; font-size: var(--fs-base); }
+.page-house .guests__step[disabled] { color: #CBD2E0; cursor: default; }
+.page-house .guests__value { min-width: 20px; text-align: center; font-size: 21.23px; }
 .page-house .guests__note {
-  margin: 4px 0 0;
-  font-size: var(--fs-small);
-  color: var(--c-muted);
+  margin: 10.62px 0 0;
+  font-size: 18px;
+  color: #B5B5B5;
+
+  line-height: 22px;
 }
 
 .page-house .booking-summary {
   display: flex;
   gap: 25px;
   margin: 0;
+
+  font-size: 20px;
+
+  line-height: 24px;
 }
 .page-house .booking-summary__item { display: inline-flex; align-items: center; gap: 8px; }
-.page-house .booking-summary .icon { width: 20px; height: 20px; color: var(--text); }
+.page-house .booking-summary .icon { width: 22px; height: 22px; color: var(--accent); }
 .page-house .booking-total {
   margin: 0;
   font-weight: 500;
@@ -4021,9 +4039,13 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 }
 .page-house .booking-submit {
   width: 100%;
-  min-height: 71px;
+  min-height: 71.47px;
   border-radius: var(--radius-pill);
-  font-size: 20px;
+  font-size: 24px;
+
+  line-height: 29px;
+
+  padding: 21.23px 32px;
 }
 
 /* ---------- Мозаика фото ---------- */
@@ -4060,13 +4082,15 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   gap: var(--s-2);
   background: rgba(0, 0, 0, .2);
   color: var(--c-white);
-  font-size: var(--fs-base);
+  font-size: 21.23px;
+
+  flex-direction: column;
 }
 .page-house .house-mosaic__more .icon { width: 22px; height: 22px; }
 .page-house .house-mosaic__rest { display: none; }
 
 /* ---------- Карточки-факты ---------- */
-.page-house .house-facts-section { padding-block: 0 var(--s-8); }
+.page-house .house-facts-section { padding-block: 0 42.46px; }
 .page-house .house-facts { display: flex; gap: 42.46px; }
 .page-house .fact-card {
   flex: 1 1 0;
@@ -4082,9 +4106,9 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   align-items: center;
   gap: var(--s-2);
   margin: 0;
-  font-weight: 500;
-  font-size: 20px;
-  line-height: 24px;
+  font-weight: 600;
+  font-size: 21.23px;
+  line-height: 27.01px;
   color: var(--text);
 }
 .page-house .fact-card__title .icon { width: 22px; height: 22px; color: var(--accent); }
@@ -4097,23 +4121,25 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 .page-house .chip {
   display: inline-flex;
   align-items: center;
-  gap: 10.62px;
-  min-height: 44px;
-  padding: 8.49px 21.23px;
-  background: var(--c-sand);
-  border-radius: var(--radius);
-  font-size: var(--fs-small);
+  gap: 8px;
+  min-height: 27.01px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  font-size: 21.23px;
   color: var(--text);
+
+  line-height: 27.01px;
 }
 .page-house .chip .icon { width: 18px; height: 18px; color: var(--accent); }
 
 /* ---------- «О домике» и «Удобства» ---------- */
-.page-house .house-about-section { padding-block: 0 var(--s-8); }
+.page-house .house-about-section { padding-block: 0 48px; }
 .page-house .house-about { display: flex; gap: 42.46px; }
 .page-house .house-about__text,
 .page-house .house-about__amenities { flex: 1 1 0; }
 .page-house .house-about .section__title {
-  margin: 0 0 var(--s-5);
+  margin: 0 0 25.48px;
   font-family: var(--font-heading);
   font-weight: 500;
   font-size: 34px;
@@ -4122,8 +4148,8 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 }
 .page-house .amenity-tags {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 21.23px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10.62px 21.23px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -4131,25 +4157,24 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 .page-house .amenity-tag {
   display: flex;
   align-items: center;
-  min-height: 44px;
+  min-height: 43.99px;
   padding: 8.49px 21.23px;
   background: var(--c-sand);
-  border-radius: var(--radius);
-  font-size: var(--fs-small);
+  border-radius: 10.62px;
+  font-size: 21.23px;
+  line-height: 27.01px;
   color: var(--text);
 }
 
 /* ---------- Развёрнутое описание ----------
-   Раскрытое состояние: внутренняя сетка 1104 = три колонки по 320
-   с зазором 72, между группами 32, между пунктами 10.62, текст 20/24.
-   Подложка — терракотовый под 15%: на кремовом фоне это и есть
-   #E9D8CA из свёрнутого состояния, но записан он так, как в макете. */
+   Оба состояния занимают контейнер 1240. Колонки по 320px
+   распределены между внутренними полями 40px. */
 .page-house .equipment-section { padding-block: 0 var(--s-8); }
 .page-house .equipment {
   display: flex;
   flex-direction: column;
-  padding: 20px 32px;
-  background: rgba(155, 80, 38, .15);
+  padding: 24px 40px;
+  background: #E9D8CA;
   border-radius: var(--radius);
 }
 /* Переключатель — скрытый чекбокс: закрытый <details> прячет содержимое
@@ -4164,7 +4189,8 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
      40 при padding 10/32. Перебиваем явно, на узких экранах отступ
      под палец возвращаем ниже. */
   height: 40px;
-  margin-top: var(--s-5);
+  min-height: 40px;
+  margin-top: 8px;
   padding: 10px 32px;
   /* Пункты списка в этом блоке 20px, кнопка остаётся обычной 16-й:
      иначе она наследует крупный шрифт и вырастает вдвое */
@@ -4187,9 +4213,9 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 72px;
+  gap: 0;
   width: 100%;
-  max-width: 1104px;
+  max-width: none;
   margin-inline: auto;
 }
 /* Колонку задаёт группа, а не браузер: multi-column выравнивает колонки
@@ -4209,7 +4235,7 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 .page-house .equipment__group {
   display: flex;
   flex-direction: column;
-  gap: 10.62px;
+  gap: 16px;
 }
 .page-house .equipment__title {
   margin: 0;
@@ -4222,7 +4248,7 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 .page-house .equipment__list {
   display: flex;
   flex-direction: column;
-  gap: 10.62px;
+  gap: 10px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -4235,9 +4261,9 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 }
 
 /* ---------- Отзывы ---------- */
-.page-house .house-reviews-section { padding-block: 0 var(--s-8); }
+.page-house .house-reviews-section { padding-block: 0 100px; }
 .page-house .house-reviews-section .section__title {
-  margin: 0 0 var(--s-6);
+  margin: 0 0 60px;
   font-family: var(--font-heading);
   font-weight: 500;
   font-size: 34px;
@@ -4261,7 +4287,7 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 .page-house .reviews__media { height: 220px; border-radius: 20px; overflow: hidden; }
 .page-house .reviews__media img { width: 100%; height: 100%; object-fit: cover; }
 .page-house .reviews__text { margin: 0; }
-.page-house .reviews__text p { margin: 0; font-size: var(--fs-small); color: var(--text); }
+.page-house .reviews__text p { margin: 0; font-size: 18px; line-height: 22px; color: var(--text); }
 .page-house .reviews__author {
   margin: 0;
   font-weight: 500;
@@ -4282,7 +4308,7 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   .page-house .house-about { flex-wrap: wrap; }
   .page-house .booking-field--dates,
   .page-house .calendar,
-  .page-house .guests { flex: 1 1 100%; }
+  .page-house .booking-panel__sidebar { flex: 1 1 100%; }
   .page-house .house-mosaic { grid-template-columns: 1fr 1fr; }
   .page-house .house-mosaic__item:first-child { grid-column: span 2; }
 }
@@ -4294,3 +4320,32 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   .page-house .equipment__column { width: 100%; }
   .page-house .reviews { grid-template-columns: 1fr; }
 }
+
+body.page-house main > .house-title:first-child { padding-top: 198.91px; }
+.page-house .house-about .prose { font-size: 21.23px; line-height: 27.01px; }
+.page-house .house-about .prose p { margin: 0; }
+.page-house .house-about__text, .page-house .house-about__amenities { min-width: 0; }
+.page-house .house-mosaic__link picture, .page-house .reviews__media picture { display: block; height: 100%; }
+.page-house .equipment__switch:checked ~ .equipment__columns { min-height: 1080px; }
+.page-house .equipment__switch:not(:checked) ~ .equipment__columns .equipment__group ~ .equipment__group { visibility: hidden; }
+@media (max-width: 1279px) {
+  .page-house .equipment__column { width: 30%; }
+}
+@media (max-width: 767px) {
+  body.page-house main > .house-title:first-child { padding-top: 150px; }
+  .page-house .house-title h1 { font-size: 42px; }
+  .page-house .booking-field { padding: 16px; }
+  .page-house .booking-field--dates { gap: 12px; }
+  .page-house .booking-field__slot { font-size: 14px; }
+  .page-house .calendar { padding: 24px; }
+  .page-house .house-facts, .page-house .house-about { flex-direction: column; }
+  .page-house .equipment { padding: 24px; }
+  .page-house .equipment__column { width: 100%; }
+  .page-house .equipment__switch:checked ~ .equipment__columns { min-height: 0; }
+}
+
+.page-house .chip .house-icon--sofa_bed { width: 36px; height: 25px; }
+.page-house .chip .house-icon--bunk_bed { width: 26px; height: 23px; }
+.page-house .house-icon { object-fit: contain; flex-shrink: 0; }
+
+.page-house .house-mosaic--empty { height: 365.21px; }
