@@ -30,3 +30,17 @@ def price_ru(value):
         return f"{int(value):,}".replace(",", "\u00a0")
     except (TypeError, ValueError):
         return ""
+
+
+@register.filter
+def featured_label(value):
+    """Короткая подпись плитки; полное название остаётся в оснащении."""
+    return str(value).replace(" (электропечь)", "")
+
+
+@register.filter(is_safe=True)
+def description_breaks(value):
+    """Сохраняем смысловые строки первого домика после richtext."""
+    return value.replace(". Идеальное место", ".<br>Идеальное место").replace(
+        ". Безлимитный", ".<br>Безлимитный"
+    )

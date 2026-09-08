@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags media_tags icon_tags %}
+{% load wagtailcore_tags wagtailimages_tags media_tags icon_tags houses_tags %}
 
 {% comment %}
   Страница дома. Порядок блоков — по макету «Первый домик»: заголовок,
@@ -124,7 +124,7 @@
     {% if page.description %}
       <div class="house-about__text">
         <h2 class="section__title">О домике</h2>
-        <div class="prose">{{ page.description|richtext }}</div>
+        <div class="prose">{{ page.description|richtext|description_breaks }}</div>
       </div>
     {% endif %}
 
@@ -133,7 +133,7 @@
         <h2 class="section__title">Удобства</h2>
         <ul class="amenity-tags">
           {% for amenity in page.featured_amenities %}
-            <li class="amenity-tag">{{ amenity.name }}</li>
+            <li class="amenity-tag">{{ amenity.name|featured_label }}</li>
           {% endfor %}
         </ul>
       </div>

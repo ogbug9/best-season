@@ -1522,7 +1522,7 @@ body:not(.page-home) main > :first-child {
 .header__logo {
   display: inline-flex;
   align-items: flex-end;
-  gap: 10.87px;
+  gap: 11px;
   text-decoration: none;
   color: var(--c-deep);
   flex: 0 0 auto;
@@ -1531,14 +1531,14 @@ body:not(.page-home) main > :first-child {
 /* Цвет знака наследуется от пилюли: на оливковой шапке внутренних
    страниц он кремовый, на кремовой главной — тёмный. Своё значение
    цвета здесь перебивало правило шапки, и знак оставался тёмным. */
-.header__mark { display: inline-flex; color: inherit; }
+.header__mark { display: inline-flex; flex: 0 0 46.91px; color: inherit; overflow: visible; }
 /* У знака бренда нет собственных width/height — только viewBox, чтобы
    цвет наследовался от текста, а размер задавался здесь. Без явных
    размеров svg без атрибутов разъезжается до 300×150. */
 /* Инспектор (узел «Лого 2»): знак 46.91×46.91. Держим векторный контур,
    а не присланный PNG 47×47: на экранах с удвоенной плотностью растр
    такого размера мылит, а контур ещё и красится в цвет шапки. */
-.header__mark svg { width: 46.91px; height: 46.91px; }
+.header__mark svg { width: 46.91px; height: 46.91px; flex-shrink: 0; overflow: visible; }
 .footer__mark svg { width: 40px; height: 40px; }
 /* Инспектор: «Лучший сезон» — Etude Noire 400, 21.7392/90%, блок 102×40,
    по центру, #494949. Две строки: 40 = 2 × 19.57 с округлением. */
@@ -2674,7 +2674,7 @@ body[data-modal-open] {
   right: 31px;              /* 610 − 485 − 94 */
   width: 94px;
   height: 128px;
-  padding: 28px 12px 0;
+  padding: 28px 6px 0;
   margin: 0;
   display: block;
   background: none;
@@ -2693,7 +2693,8 @@ body[data-modal-open] {
 }
 .house__price > span,
 .house__price > b { position: relative; display: block; }
-/* Все три строки флажка одного набора — Montserrat 500 18/22 */
+/* Сумма 500 18/22, подписи 400 16/20; каждая занимает одну строку. */
+.house__price > span { font-size: 16px; font-weight: 400; line-height: 20px; white-space: nowrap; }
 .house__price b { font-size: 18px; font-weight: 500; white-space: nowrap; }
 
 .house__overlay {
@@ -4060,7 +4061,7 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   list-style: none;
 }
 .page-house .house-mosaic__item { margin: 0; }
-.page-house .house-mosaic__item:first-child { grid-row: span 2; }
+.page-house .house-mosaic__item:first-child { grid-column: 1; grid-row: span 2; }
 .page-house .house-mosaic__link {
   position: relative;
   display: block;
@@ -4097,9 +4098,9 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   display: flex;
   flex-direction: column;
   gap: 21.23px;
-  padding: 21.23px 33.97px;
+  padding: 21.2329px 33.9726px;
   background: var(--c-blush);
-  border-radius: var(--radius);
+  border-radius: 10.6164px;
 }
 .page-house .fact-card__title {
   display: flex;
@@ -4107,8 +4108,8 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   gap: var(--s-2);
   margin: 0;
   font-weight: 600;
-  font-size: 21.23px;
-  line-height: 27.01px;
+  font-size: 22px;
+  line-height: 27px;
   color: var(--text);
 }
 .page-house .fact-card__title .icon { width: 22px; height: 22px; color: var(--accent); }
@@ -4121,15 +4122,15 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 .page-house .chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 27.01px;
+  gap: 10.62px;
+  min-height: 27px;
   padding: 0;
   background: transparent;
   border-radius: 0;
-  font-size: 21.23px;
+  font-size: 22px;
   color: var(--text);
 
-  line-height: 27.01px;
+  line-height: 27px;
 }
 .page-house .chip .icon { width: 18px; height: 18px; color: var(--accent); }
 
@@ -4161,8 +4162,8 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   padding: 8.49px 21.23px;
   background: var(--c-sand);
   border-radius: 10.62px;
-  font-size: 21.23px;
-  line-height: 27.01px;
+  font-size: 22px;
+  line-height: 27px;
   color: var(--text);
 }
 
@@ -4194,9 +4195,11 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   padding: 10px 32px;
   /* Пункты списка в этом блоке 20px, кнопка остаётся обычной 16-й:
      иначе она наследует крупный шрифт и вырастает вдвое */
-  font-size: var(--fs-small);
-  line-height: 20px;
+  font-size: 18px;
+  line-height: 22px;
   cursor: pointer;
+  font-weight: 400;
+  color: #494949;
 }
 /* Раскрытая надпись короче, и кнопка в макете уже: 143 против 173 */
 .page-house .equipment__switch:checked ~ .equipment__toggle { min-width: 143px; }
@@ -4261,7 +4264,7 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 }
 
 /* ---------- Отзывы ---------- */
-.page-house .house-reviews-section { padding-block: 0 100px; }
+.page-house .house-reviews-section { padding-block: 0; }
 .page-house .house-reviews-section .section__title {
   margin: 0 0 60px;
   font-family: var(--font-heading);
@@ -4322,7 +4325,7 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 }
 
 body.page-house main > .house-title:first-child { padding-top: 198.91px; }
-.page-house .house-about .prose { font-size: 21.23px; line-height: 27.01px; }
+.page-house .house-about .prose { font-size: 22px; line-height: 27px; }
 .page-house .house-about .prose p { margin: 0; }
 .page-house .house-about__text, .page-house .house-about__amenities { min-width: 0; }
 .page-house .house-mosaic__link picture, .page-house .reviews__media picture { display: block; height: 100%; }
@@ -4349,3 +4352,21 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 .page-house .house-icon { object-fit: contain; flex-shrink: 0; }
 
 .page-house .house-mosaic--empty { height: 365.21px; }
+
+.page-house .house-mosaic__link { aspect-ratio: auto; }
+@media (min-width: 1280px) {
+  .page-house .fact-card { min-height: 117.7px; }
+  .page-house .fact-card__chips { flex-wrap: nowrap; }
+  .page-house .fact-card:last-child .fact-card__chips { width: 100%; justify-content: space-between; gap: 10px; }
+}
+@media (min-width: 1280px) {
+  .page-home .quote { grid-template-columns: 693px 455px; gap: 92px; align-items: start; }
+  .page-home .quote__body { padding-top: 44px; }
+  .page-home .quote__media { align-self: start; }
+}
+@media (min-width: 900px) and (max-width: 1279px) {
+  .page-home .quote { grid-template-columns: minmax(0, 1fr) minmax(0, 455fr); gap: 40px; padding-inline: 40px; }
+  .page-home .quote__text { width: auto; height: auto; margin-left: 0; }
+  .page-home .quote__mark--open { left: -40px; }
+  .page-home .quote__mark--close { left: auto; right: 0; top: auto; bottom: -44px; }
+}

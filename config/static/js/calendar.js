@@ -30,6 +30,7 @@
   };
 
   restore();
+  updateGuestLabel();
 
   /* ---------- Выбор дат ---------- */
 
@@ -83,11 +84,21 @@
     if (next < min || next > max) return;
 
     state[key] = next;
+    updateGuestLabel();
     row.querySelector("[data-value]").textContent = next;
     limits(row, next, min, max);
     save();
     recalc();
   });
+
+  function updateGuestLabel() {
+    var total = Number(state.adults) + Number(state.children);
+    var last = total % 10;
+    var hundred = total % 100;
+    var word = hundred >= 11 && hundred <= 14 ? "гостей"
+      : last === 1 ? "гость" : last >= 2 && last <= 4 ? "гостя" : "гостей";
+    text("[data-label-guests]", total + " " + word);
+  }
 
   function limits(row, value, min, max) {
     row.querySelectorAll("[data-step]").forEach(function (button) {
