@@ -221,7 +221,7 @@
           {% endcomment %}
           <li class="mosaic__item mosaic__item--empty"></li>
         {% endif %}
-        <li class="mosaic__item">
+        <li class="mosaic__item territory-card" tabindex="0">
           {% if item.image %}
             {% picture item.image preset="card" alt=item.title %}
           {% else %}
@@ -229,7 +229,12 @@
           {% endif %}
           <div class="mosaic__caption">
             <h3>{{ item.title|territory_lines|linebreaksbr }}</h3>
-            {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+            <div class="territory-card__details">
+              {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+              {% if item.link_url %}
+                <a class="territory-card__link" href="{{ item.link_url }}">Подробнее</a>
+              {% endif %}
+            </div>
           </div>
         </li>
       {% endfor %}

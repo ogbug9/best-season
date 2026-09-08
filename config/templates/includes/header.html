@@ -58,9 +58,9 @@
           и встаёт где придётся. Своя стоит под лапой по центру и
           появляется вместе с ней.
         {% endcomment %}
-        <span class="header__paw-wrap">
+        <span class="header__paw-wrap" tabindex="0" aria-label="Можно с животными. Существует доплата">
           <span class="header__paw" role="img" aria-label="Можно с животными"></span>
-          <span class="header__paw-note" aria-hidden="true">Можно с животными</span>
+          <span class="header__paw-note" aria-hidden="true">Можно с животными<br>Существует доплата</span>
         </span>
         {% if s.phone %}
           <a class="header__phone" href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a>

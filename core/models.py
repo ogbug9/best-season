@@ -337,6 +337,10 @@ class TerritoryItem(models.Model):
         null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
     )
     description = models.CharField("Краткое описание", max_length=255, blank=True)
+    link_url = models.URLField(
+        "Ссылка «Подробнее»", blank=True,
+        help_text="Адрес страницы карточки. Пусто — кнопка не показывается.",
+    )
     is_large = models.BooleanField(
         "Крупная плитка", default=False,
         help_text="Не используется в блоке «Наша территория»: по замерам "
@@ -355,6 +359,7 @@ class TerritoryItem(models.Model):
         FieldPanel("title"),
         FieldPanel("image"),
         FieldPanel("description"),
+        FieldPanel("link_url"),
         FieldPanel("spacer_before"),
         FieldPanel("is_published"),
         FieldPanel("sort_order"),

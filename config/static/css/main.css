@@ -2523,7 +2523,7 @@ body[data-modal-open] {
     margin: 0;
   }
   .quote__mark--open { left: -58px; top: -44px; right: auto; bottom: auto; }
-  .quote__mark--close { left: 602px; top: 371px; right: auto; bottom: auto; }
+  .quote__mark--close { left: 602px; top: 411px; right: auto; bottom: auto; }
 }
 /* Лесенка: каждый следующий абзац сдвинут правее предыдущего.
    Только на широких экранах: на мобильном сдвиг плюс ширина строки
@@ -3680,17 +3680,18 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 .header__paw-note {
   position: absolute;
   top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   z-index: 5;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: var(--c-deep);
-  color: var(--c-cream);
+  box-sizing: border-box;
+  width: 204px;
+  height: 69px;
+  padding: 20px 14px 9px;
+  background: url("../img/pet-tooltip.png") center / 100% 100% no-repeat;
+  color: #494949;
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: 13px;
-  line-height: 16px;
+  font-size: 16px;
+  line-height: 20px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
@@ -4370,5 +4371,54 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-home .quote { grid-template-columns: minmax(0, 1fr) minmax(0, 455fr); gap: 40px; padding-inline: 40px; }
   .page-home .quote__text { width: auto; height: auto; margin-left: 0; }
   .page-home .quote__mark--open { left: -40px; }
-  .page-home .quote__mark--close { left: auto; right: 0; top: auto; bottom: -44px; }
+  .page-home .quote__mark--close { left: auto; right: 0; top: auto; bottom: -84px; }
+}
+
+/* Состояния карточек территории на главной. */
+.territory-card > picture, .territory-card > .ph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: filter .2s ease;
+}
+.territory-card .mosaic__caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 38px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, .5));
+}
+.territory-card .mosaic__caption h3 { font-size: 24px; line-height: 29px; font-weight: 600; }
+.territory-card__details { display: none; width: 100%; }
+.territory-card .territory-card__details p { margin: 0; font-size: 18px; line-height: 22px; }
+.territory-card__link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40px;
+  padding: 10px 28px;
+  margin-top: 24px;
+  border-radius: 20px;
+  background: #847F57;
+  color: #F7F0E6;
+  font: 500 16px/20px var(--font-body);
+  text-decoration: none;
+}
+.territory-card:is(:hover, :focus-within) > picture,
+.territory-card:is(:hover, :focus-within) > .ph { filter: blur(2px) brightness(.5); }
+.territory-card:is(:hover, :focus-within) .mosaic__caption { background: none; }
+.territory-card:is(:hover, :focus-within) .territory-card__details { display: block; }
+.territory-card:focus-visible { outline: 2px solid var(--c-olive); outline-offset: 3px; }
+@media (hover: none) {
+  .territory-card .territory-card__details { display: block; }
+  .territory-card .mosaic__caption { background: rgba(0, 0, 0, .65); }
+}
+@media (max-width: 699px) {
+  .territory-card { aspect-ratio: auto; min-height: 295px; }
+  .territory-card > picture, .territory-card > .ph { position: absolute; inset: 0; }
+  .territory-card .mosaic__caption { position: relative; min-height: 295px; justify-content: flex-end; padding-inline: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .territory-card > picture, .territory-card > .ph { transition: none; }
 }
