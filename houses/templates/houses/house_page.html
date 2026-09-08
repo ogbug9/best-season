@@ -105,7 +105,7 @@
 
       {% if page.sleeping_places.all %}
       <div class="fact-card">
-        <p class="fact-card__title">Спальные места</p>
+        <h2 class="fact-card__title">Спальные места</h2>
         <p class="fact-card__chips">
           {% for place in page.sleeping_places.all %}
             <span class="chip">{% house_icon place.icon %}{{ place.name }}</span>

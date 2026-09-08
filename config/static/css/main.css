@@ -2496,7 +2496,7 @@ body[data-modal-open] {
 /* Кавычки — файлы дизайнера 48×40 (img/quote-open.png и quote-close.png).
    Рисуются маской, чтобы брать оливковый из палитры, а не зависеть от
    цвета в самом файле. Закрывающая в макете стоит на x=760, то есть на
-   660 от левого края блока цитаты, и развёрнута на 180°. */
+   660 от левого края блока цитаты. Новый PNG уже развёрнут. */
 .quote__mark {
   display: block;
   width: 48px;
@@ -2511,19 +2511,19 @@ body[data-modal-open] {
   margin-top: var(--s-4);
   -webkit-mask-image: url("../img/quote-close.png");
   mask-image: url("../img/quote-close.png");
-  transform: rotate(180deg);
+  transform: none;
 }
 @media (min-width: 900px) {
   /* Инспектор: кавычки лежат вне текстового фрейма (158;1856).
      Открывающая на 100;1812 — это −58 и −44 от фрейма, закрывающая
-     на 760;2227 — это 602 и 371. Вторая развёрнута на 180°: в макете
+     на 760;2227 — это 602 и 371. Ориентация уже задана в PNG: в макете
      левая верхняя смотрит вверх, правая нижняя — вниз. */
   .quote__mark {
     position: absolute;
     margin: 0;
   }
-  .quote__mark--open { left: -58px; top: -44px; }
-  .quote__mark--close { left: 602px; top: 371px; }
+  .quote__mark--open { left: -58px; top: -44px; right: auto; bottom: auto; }
+  .quote__mark--close { left: 602px; top: 371px; right: auto; bottom: auto; }
 }
 /* Лесенка: каждый следующий абзац сдвинут правее предыдущего.
    Только на широких экранах: на мобильном сдвиг плюс ширина строки
@@ -4103,6 +4103,8 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   border-radius: 10.6164px;
 }
 .page-house .fact-card__title {
+  font-family: var(--font-body);
+  text-wrap: wrap;
   display: flex;
   align-items: center;
   gap: var(--s-2);

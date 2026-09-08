@@ -295,50 +295,6 @@
 </section>
 {% endif %}
 
-{% comment %} 8. Услуги {% endcomment %}
-{% if services %}
-<section class="section">
-  <div class="container">
-    <h2 class="section__title">Услуги</h2>
-    <ul class="cards">
-      {% for service in services %}
-        <li class="card">
-          {% picture service.image preset="card" alt=service.name %}
-          <div class="card__body">
-            <h3 class="card__title">{{ service.name }}</h3>
-            {% if service.short_description %}<p>{{ service.short_description }}</p>{% endif %}
-            {% if service.price %}
-              <p class="card__price">{{ service.price }} ₽ {{ service.get_price_unit_display }}</p>
-              {% if service.price_note %}<p class="card__meta">{{ service.price_note }}</p>{% endif %}
-            {% endif %}
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
-</section>
-{% endif %}
-
-{% comment %} 9. Акции {% endcomment %}
-{% if promotions %}
-<section class="section">
-  <div class="container">
-    <h2 class="section__title">Акции</h2>
-    <ul class="cards">
-      {% for promo in promotions %}
-        <li class="card">
-          {% picture promo.image preset="card" alt=promo.title %}
-          <div class="card__body">
-            <h3 class="card__title">{{ promo.title }}</h3>
-            {% if promo.short_description %}<p>{{ promo.short_description }}</p>{% endif %}
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
-</section>
-{% endif %}
-
 {% comment %}
   10. Фотогалерея. Блок показывается и без загруженных фото — на их месте
   стоят заглушки. Иначе секция из макета просто исчезала бы со страницы,
@@ -382,23 +338,6 @@
     {% if page.directions_page %}
       <p><a class="btn btn--primary" href="{% pageurl page.directions_page %}">Как доехать</a></p>
     {% endif %}
-  </div>
-</section>
-{% endif %}
-
-{% comment %} 12. Отзывы {% endcomment %}
-{% if reviews %}
-<section class="section">
-  <div class="container">
-    <h2 class="section__title">Отзывы</h2>
-    <ul class="cards">
-      {% for review in reviews %}
-        <li class="card card--quote">
-          <blockquote><p>{{ review.text }}</p></blockquote>
-          <p class="card__meta">{{ review.author_name }}{% if review.visit_date %} · {{ review.visit_date|date:"F Y" }}{% endif %}</p>
-        </li>
-      {% endfor %}
-    </ul>
   </div>
 </section>
 {% endif %}
