@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.functional import cached_property
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.models import Page
 from wagtail.fields import RichTextField
@@ -41,6 +42,19 @@ class Service(models.Model):
     price_unit = models.CharField(
         "Единица", max_length=12, choices=PriceUnit.choices, default=PriceUnit.HOUR
     )
+    @cached_property
+    def display_image(self):
+        """Своё фото услуги либо фото одноимённой карточки территории."""
+        if self.image_id:
+            return self.image
+        from core.models import TerritoryItem
+
+        name = " ".join(self.name.casefold().split())
+        for item in TerritoryItem.objects.filter(is_published=True).exclude(image=None).select_related("image"):
+            if " ".join(item.title.casefold().split()) == name:
+                return item.image
+        return None
+
     @property
     def price_display(self):
         """Цена с неразрывным пробелом в разряде тысяч — как в макете."""

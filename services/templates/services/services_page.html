@@ -19,7 +19,7 @@
     <ul class="cards">
       {% for service in services %}
         <li class="card">
-          {% picture service.image preset="card" alt=service.name %}
+          {% picture service.display_image preset="card" alt=service.name %}
           <div class="card__body">
             <h2 class="card__title">{{ service.name }}</h2>
             {% if service.short_description %}<p>{{ service.short_description }}</p>{% endif %}

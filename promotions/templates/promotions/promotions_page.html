@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags promotion_tags %}
+{% load wagtailcore_tags promotion_tags media_tags %}
 {% block body_class %}page-promotions{% endblock %}
 {% block content %}
 <section class="section offers-section">
@@ -9,7 +9,7 @@
     <ul class="promos">
       {% for promo in promotions %}
       <li class="promo{% if forloop.counter0|divisibleby:2 %} promo--olive{% else %} promo--dark{% endif %}">
-        <div class="promo__media"><span class="ph" aria-hidden="true"></span></div>
+        <div class="promo__media">{% if promo.image %}{% picture promo.image preset="card" alt=promo.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
         <div class="promo__copy">
           <h2 class="promo__title">{{ promo.title|promotion_title|linebreaksbr }}</h2>
           {% if promo.short_description %}<p class="promo__text">{{ promo.short_description|promotion_description|linebreaksbr }}</p>{% endif %}
