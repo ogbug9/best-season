@@ -9,6 +9,19 @@
 
 {% block body_class %}page-home{% endblock %}
 
+{% block page_background %}
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.png' %}" width="1440" height="1440" alt="">
+    <img class="home-background__image home-background__image--4" src="{% static 'img/home-backgrounds/bg-4.png' %}" width="537" height="1192" alt="">
+    <img class="home-background__image home-background__image--5" src="{% static 'img/home-backgrounds/bg-5.png' %}" width="537" height="1192" alt="">
+    <img class="home-background__image home-background__image--2" src="{% static 'img/home-backgrounds/bg-2.png' %}" width="1160" height="2629" alt="">
+    <img class="home-background__image home-background__image--8" src="{% static 'img/home-backgrounds/bg-8.png' %}" width="1240" height="1544" alt="">
+    <img class="home-background__image home-background__image--6" src="{% static 'img/home-backgrounds/bg-6.png' %}" width="562" height="1418" alt="">
+    <img class="home-background__image home-background__image--7" src="{% static 'img/home-backgrounds/bg-7.png' %}" width="885" height="1570" alt="">
+    <img class="home-background__image home-background__image--bottom" src="{% static 'img/home-backgrounds/bg-bottom.png' %}" width="1433" height="619" alt="">
+  </div>
+{% endblock %}
+
 {% block og_image %}
   {% with first=page.slides.first %}
     {% if first %}

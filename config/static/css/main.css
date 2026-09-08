@@ -2331,16 +2331,35 @@ body[data-modal-open] {
    Главная: блоки по макету SITE DESKTOP
    ========================================================================= */
 
-/* Место под фоновый паттерн. Оригинальные SVG придёт от дизайнера —
-   свой рисунок сюда не подставляем. Когда файл будет, включается одной
-   строкой background-image, разметка не меняется.
-   Паттерн приклеен к странице и не имеет собственного движения при
-   прокрутке — решение зафиксировано в 04-makety-figma.md. */
+/* Главная, макет 1440×9060. PNG уже содержат повороты, обрезку по
+   краям макета и opacity: повторная трансформация исказит рисунок. */
 .page-home {
-  background-repeat: repeat;
-  background-size: 1200px auto;
-  background-attachment: scroll;
+  position: relative;
+  isolation: isolate;
 }
+.home-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+.home-background__image {
+  position: absolute;
+  display: block;
+  max-width: none;
+  height: auto;
+}
+.home-background__image--1 { width: 100%; left: 0; top: 9.02%; }
+.home-background__image--4 { width: 37.291667%; left: 0; top: 22.9%; }
+.home-background__image--5 { width: 37.291667%; right: 0; top: 29.44%; }
+.home-background__image--2 { width: 80.555556%; left: 0; top: 39.83%; }
+.home-background__image--8 { width: 86.111111%; left: 13.888889%; top: 63.08%; }
+.home-background__image--6 { width: 39.027778%; left: 0; top: 80.68%; }
+.home-background__image--7 { width: 61.458333%; right: 0; top: 78.59%; }
+.home-background__image--bottom { width: 99.513889%; right: 0; bottom: 0; }
+.page-home .about__panel { background: transparent; }
 
 /* Кнопка полосы поиска зависит от фона. На первом экране она лежит
    поверх фотографии и в макете кремовая. В каталоге «Наши домики» фон
