@@ -1931,9 +1931,10 @@ body:not(.page-home) main > :first-child {
 .footer__brand .socials { margin-top: -20px; }
 .socials { display: flex; gap: 5px; margin: 0; padding: 0; list-style: none; }
 .socials li { position: relative; display: flex; align-items: flex-start; }
-.socials__item { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 100px; background: var(--c-dark); color: var(--c-cream); }
+.socials__item { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 100px; background: transparent; color: var(--c-cream); }
+.socials__item img { display: block; width: 40px; height: 40px; }
 .socials__item:hover { background: var(--c-olive); }
-.socials__note { position: absolute; top: -5px; right: -3px; font-size: 12px; }
+.socials__note { position: absolute; top: -5px; right: -3px; width: 7px; height: 18px; font-family: var(--font-body); font-weight: 400; font-size: 16px; line-height: 115%; }
 .footer__brand .btn { width: 214px; min-height: 40px; height: 40px; padding: 0; font-size: 16px; font-weight: 400; }
 .footer__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 24px; align-content: start; }
 .footer__column-title { margin-bottom: 14px; color: var(--c-olive); font-size: 20px; font-weight: 600; line-height: 24px; }
@@ -2523,7 +2524,7 @@ body[data-modal-open] {
     margin: 0;
   }
   .quote__mark--open { left: -58px; top: -44px; right: auto; bottom: auto; }
-  .quote__mark--close { left: 602px; top: 411px; right: auto; bottom: auto; }
+  .quote__mark--close { left: 602px; top: 451px; right: auto; bottom: auto; }
 }
 /* Лесенка: каждый следующий абзац сдвинут правее предыдущего.
    Только на широких экранах: на мобильном сдвиг плюс ширина строки
@@ -3680,7 +3681,8 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 .header__paw-note {
   position: absolute;
   top: calc(100% + 8px);
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 5;
   box-sizing: border-box;
   width: 204px;
@@ -4371,7 +4373,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-home .quote { grid-template-columns: minmax(0, 1fr) minmax(0, 455fr); gap: 40px; padding-inline: 40px; }
   .page-home .quote__text { width: auto; height: auto; margin-left: 0; }
   .page-home .quote__mark--open { left: -40px; }
-  .page-home .quote__mark--close { left: auto; right: 0; top: auto; bottom: -84px; }
+  .page-home .quote__mark--close { left: auto; right: 0; top: auto; bottom: -124px; }
 }
 
 /* Состояния карточек территории на главной. */
@@ -4422,3 +4424,5 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 @media (prefers-reduced-motion: reduce) {
   .territory-card > picture, .territory-card > .ph { transition: none; }
 }
+
+.service-card[id], .service-tile[id] { scroll-margin-top: 32px; }

@@ -222,7 +222,19 @@ class HomePage(Page):
 
         from core.models import FaqItem, NearbyPlace, TerritoryItem
 
-        context["territory"] = TerritoryItem.objects.filter(is_published=True)
+        context["territory"] = list(TerritoryItem.objects.filter(is_published=True))
+        # Переносы в названиях услуг не меняют соответствие карточек.
+        services_by_name = {
+            " ".join(service.name.casefold().split()): service
+            for service in Service.objects.filter(is_published=True)
+        }
+        catalog = context["houses_index"]
+        catalog_url = catalog.get_url(request) if catalog else None
+        for item in context["territory"]:
+            item.details_url = item.link_url
+            service = services_by_name.get(" ".join(item.title.casefold().split()))
+            if not item.details_url and service and catalog_url:
+                item.details_url = f"{catalog_url}#service-{service.slug}"
         context["nearby"] = NearbyPlace.objects.filter(is_published=True)[:3]
         context["faq"] = FaqItem.objects.filter(is_published=True, show_on_home=True)
         return context

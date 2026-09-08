@@ -231,8 +231,8 @@
             <h3>{{ item.title|territory_lines|linebreaksbr }}</h3>
             <div class="territory-card__details">
               {% if item.description %}<p>{{ item.description }}</p>{% endif %}
-              {% if item.link_url %}
-                <a class="territory-card__link" href="{{ item.link_url }}">Подробнее</a>
+              {% if item.details_url %}
+                <a class="territory-card__link" href="{{ item.details_url }}">Подробнее</a>
               {% endif %}
             </div>
           </div>

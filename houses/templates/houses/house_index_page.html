@@ -91,7 +91,7 @@
     {% if hourly_services %}
       <ul class="cards cards--services">
         {% for service in hourly_services %}
-          <li class="house service-card">
+          <li class="house service-card" id="service-{{ service.slug }}">
             <div class="house__media">
               {% if service.image %}{% picture service.image preset="card" alt=service.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
               {% if service.price %}
@@ -115,7 +115,7 @@
     {% if tile_services %}
       <ul class="cards cards--service-tiles">
         {% for service in tile_services %}
-          <li class="service-tile">
+          <li class="service-tile" id="service-{{ service.slug }}">
             {% if service.image %}{% picture service.image preset="card" alt=service.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
             <h3 class="service-tile__title">{{ service.name }}</h3>
           </li>
