@@ -15,6 +15,15 @@
      Дмитрий Антонов / Blue Curve Designstudio. Указание стоит в подвале сайта.
 */
 
+/* Berold Regular: файл пользователя, слоган мобильной главной. */
+@font-face {
+  font-family: "Berold";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/berold-regular.otf") format("opentype");
+}
+
 /* Montserrat 500: static subsets from google/fonts ofl/montserrat/Montserrat[wght].ttf; license: ../fonts/Montserrat-OFL.txt. */
 /* ---------- Montserrat: основной текст ---------- */
 @font-face {

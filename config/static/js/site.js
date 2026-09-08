@@ -204,6 +204,8 @@
     // вертикальный не трогаем — иначе ломается прокрутка страницы.
     var startX = null, startY = null;
     slider.addEventListener("touchstart", function (event) {
+      // На мобильной главной свайп листает домики; фотографии — по точкам.
+      if (document.body.classList.contains("page-home") && window.matchMedia("(max-width: 699px)").matches) return;
       startX = event.touches[0].clientX;
       startY = event.touches[0].clientY;
     }, { passive: true });

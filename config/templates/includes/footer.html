@@ -82,9 +82,9 @@
 
     <div class="footer__legal">
       <div class="footer__requisites">
-        {% if s.legal_name %}<span>{{ s.legal_name }}</span>{% endif %}
-        {% if s.ogrnip %}<span>ОГРНИП: {{ s.ogrnip }}</span>{% endif %}
-        {% if s.inn %}<span>ИНН: {{ s.inn }}</span>{% endif %}
+        {% if s.legal_name %}<span>{{ s.legal_name }}</span>{% else %}<span class="home-mobile-copy">ИП Новосад Софья Павловна</span>{% endif %}
+        {% if s.ogrnip %}<span>ОГРНИП: {{ s.ogrnip }}</span>{% else %}<span class="home-mobile-copy">ОГРНИП: 323774600773141</span>{% endif %}
+        {% if s.inn %}<span>ИНН: {{ s.inn }}</span>{% else %}<span class="home-mobile-copy">ИНН: 770902179335</span>{% endif %}
       </div>
 
       <div class="footer__center">

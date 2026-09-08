@@ -64,6 +64,8 @@
         </span>
         {% if s.phone %}
           <a class="header__phone" href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a>
+        {% else %}
+          <a class="header__phone header__phone--fallback" href="tel:+79912550837">+7 (991) 255-08-37</a>
         {% endif %}
         <button type="button" class="btn btn--primary btn--pill" data-booking-open data-entry-point="1">
           Забронировать даты

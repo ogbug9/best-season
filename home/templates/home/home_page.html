@@ -21,6 +21,7 @@
 {% endblock %}
 
 {% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/home-mobile.css' %}" media="(max-width: 699px)">
   {% comment %}
     Предзагрузка первого кадра героя. Это элемент LCP, а он предмет
     приёмки (п. 1.2 ТЗ, ≤2,5 с). Без preload браузер находит картинку
@@ -60,7 +61,7 @@
 
   <div class="container hero__inner">
     <h1 class="hero__title">{{ page.hero_title|default:page.title|brand_title }}</h1>
-    {% if page.hero_subtitle %}<p class="hero__subtitle">{{ page.hero_subtitle|linebreaksbr }}</p>{% endif %}
+    {% if page.hero_subtitle %}<p class="hero__subtitle"><span class="home-desktop-copy">{{ page.hero_subtitle|linebreaksbr }}</span><span class="home-mobile-copy">{{ page.hero_subtitle|mobile_text }}</span></p>{% endif %}
 
     {% if page.hero_links.all %}
       <ul class="hero__links">
@@ -86,7 +87,7 @@
       {% endcomment %}
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
-        Дата въезда
+        <span class="searchbar__date-desktop">Дата въезда</span><span class="searchbar__date-mobile">Дата въезда — выезда</span>
       </span>
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
@@ -156,7 +157,7 @@
     <blockquote class="quote__text">
       <span class="quote__mark quote__mark--open" aria-hidden="true">&bdquo;</span>
       {% for para in page.quote_paragraphs %}
-        <p class="quote__para" style="--step: {{ forloop.counter0 }}">{{ para|linebreaksbr }}</p>
+        <p class="quote__para" style="--step: {{ forloop.counter0 }}"><span class="home-desktop-copy">{{ para|linebreaksbr }}</span><span class="home-mobile-copy">{{ para|mobile_quote }}</span></p>
       {% endfor %}
       <span class="quote__mark quote__mark--close" aria-hidden="true">&ldquo;</span>
       {% if page.quote_author %}<cite>{{ page.quote_author }}</cite>{% endif %}
@@ -248,9 +249,9 @@
         </li>
       {% endfor %}
       {% if page.territory_more_page %}
-        <li class="mosaic__item">
+        <li class="mosaic__item mosaic__item--more">
           <a class="mosaic__more" href="{% pageurl page.territory_more_page %}">
-            <span class="mosaic__more-label">{{ page.territory_more_label|territory_lines|linebreaksbr }}</span>
+            <span class="mosaic__more-label"><span class="home-desktop-copy">{{ page.territory_more_label|territory_lines|linebreaksbr }}</span><span class="home-mobile-copy">Больше развлечений и услуг</span></span>
             <span class="mosaic__more-arrow" aria-hidden="true"></span>
           </a>
         </li>
@@ -262,7 +263,7 @@
 
 {% comment %} 7. Интересное рядом — три карточки с номерами {% endcomment %}
 {% if nearby %}
-<section class="section">
+<section class="section home-nearby">
   <div class="container">
     <h2 class="section__title section__title--center">Интересное рядом</h2>
     <ul class="cards cards--nearby">
@@ -275,7 +276,7 @@
         <li class="place{% if forloop.counter0|divisibleby:2 %} place--dark{% else %} place--olive{% endif %}">
           <div class="place__head">
             <p class="place__number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</p>
-            <h3 class="place__title">{{ place.title|nearby_title|linebreaksbr }}</h3>
+            <h3 class="place__title"><span class="home-desktop-copy">{{ place.title|nearby_title|linebreaksbr }}</span><span class="home-mobile-copy">{{ place.title|nearby_title|mobile_text }}</span></h3>
           </div>
           <div class="place__media">
             {% if place.image %}
@@ -285,7 +286,7 @@
             {% endif %}
           </div>
           <div class="place__body">
-            {% if place.description %}<p class="place__description">{{ place.description|nearby_description|linebreaksbr }}</p>{% endif %}
+            {% if place.description %}<p class="place__description"><span class="home-desktop-copy">{{ place.description|nearby_description|linebreaksbr }}</span><span class="home-mobile-copy">{{ place.description|mobile_text }}</span></p>{% endif %}
             {% comment %}
               Кнопка «Подробнее» есть у каждой карточки в макете. Если у
               места не задана внешняя ссылка, ведём на страницу
@@ -334,7 +335,7 @@
     </ul>
     <div class="photo-mosaic__text">
       <h2 class="section__title">{{ page.gallery_title }}</h2>
-      {% if page.gallery_text %}<p class="section__lead">{{ page.gallery_text|gallery_lines|linebreaksbr }}</p>{% endif %}
+      {% if page.gallery_text %}<p class="section__lead"><span class="home-desktop-copy">{{ page.gallery_text|gallery_lines|linebreaksbr }}</span><span class="home-mobile-copy">{{ page.gallery_text|mobile_gallery }}</span></p>{% endif %}
       {% if page.gallery_page %}
         <p><a class="btn btn--outline" href="{% pageurl page.gallery_page %}">Подробнее</a></p>
       {% endif %}
@@ -364,4 +365,7 @@
 {% include "includes/faq_section.html" %}
 </div>
 
+{% endblock %}
+{% block extra_js %}
+  <script src="{% static 'js/home-mobile.js' %}" defer></script>
 {% endblock %}

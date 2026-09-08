@@ -5,6 +5,22 @@ register = template.Library()
 
 
 @register.filter
+def mobile_text(value):
+    """Убирает настольные переносы, сохраняя пробелы между словами."""
+    return ' '.join(str(value).split())
+
+
+@register.filter
+def mobile_quote(value):
+    return mobile_text(value).replace('Так появился “Лучший сезон”', 'Так появился “Best Season”')
+
+
+@register.filter
+def mobile_gallery(value):
+    return mobile_text(value).replace('вечернего разговора за чашкой чая', 'разговора за чашкой чая')
+
+
+@register.filter
 def brand_title(value):
     return "Лучший сезон" if value == "Лучший Сезон" else value
 
