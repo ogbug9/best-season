@@ -9,11 +9,7 @@
 
 {% block body_class %}page-home{% endblock %}
 
-{% block page_background %}
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.svg' %}" width="1440" height="1440" alt="">
-  </div>
-{% endblock %}
+
 
 {% block og_image %}
   {% with first=page.slides.first %}
@@ -109,6 +105,13 @@
     {% endcomment %}
   </div>
 </section>
+
+<div class="home-after-hero">
+  {% if page.about_text or page.about_title %}
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.svg' %}" width="1440" height="1440" alt="">
+  </div>
+  {% endif %}
 
 {% comment %} 2. О ферме — фото слева, текст справа {% endcomment %}
 {% if page.about_text or page.about_title %}
@@ -359,5 +362,6 @@
   и не тянет вес на страницу — скорость на мобильных предмет приёмки (п. 1.2).
 {% endcomment %}
 {% include "includes/faq_section.html" %}
+</div>
 
 {% endblock %}

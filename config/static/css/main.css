@@ -2331,10 +2331,11 @@ body[data-modal-open] {
    Главная: блоки по макету SITE DESKTOP
    ========================================================================= */
 
-/* Главная, макет 1440×9060. Фон 1: исходный SVG содержит opacity
-   и геометрию рисунка, дополнительные трансформации не нужны. */
-.page-home {
+/* Фон 1: верх SVG y=817, верх «О нас» y=920 в макете 1440×9060.
+   Привязка к секции сохраняет разницу -103px при любой высоте hero. */
+.home-after-hero {
   position: relative;
+  display: flow-root;
   isolation: isolate;
 }
 .home-background {
@@ -2351,26 +2352,14 @@ body[data-modal-open] {
   max-width: none;
   height: auto;
 }
-.home-background__image--1 { width: 100%; left: 0; top: 9.02%; }
-
-
-
-
-
-
-
-/* На десктопе размеры заданы в CSS-пикселях относительно центра макета:
-   браузерный zoom масштабирует линии вместе с контентом. Проценты от
-   ширины окна компенсировали zoom и растягивали рисунок на широких экранах. */
+.home-background__image--1 {
+  width: 100%;
+  left: 0;
+  top: calc(var(--s-8) - 103px);
+}
+/* CSS-пиксели сохраняют масштабирование рисунка браузерным zoom. */
 @media (min-width: 900px) {
   .home-background__image--1 { width: 1440px; left: calc(50% - 720px); }
-
-
-
-
-
-
-
 }
 .page-home .about__panel { background: transparent; }
 
