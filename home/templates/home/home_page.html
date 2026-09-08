@@ -21,7 +21,6 @@
 {% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/home-mobile.css' %}" media="(max-width: 699px)">
   {% comment %}
     Предзагрузка первого кадра героя. Это элемент LCP, а он предмет
     приёмки (п. 1.2 ТЗ, ≤2,5 с). Без preload браузер находит картинку
@@ -61,7 +60,7 @@
 
   <div class="container hero__inner">
     <h1 class="hero__title">{{ page.hero_title|default:page.title|brand_title }}</h1>
-    {% if page.hero_subtitle %}<p class="hero__subtitle"><span class="home-desktop-copy">{{ page.hero_subtitle|linebreaksbr }}</span><span class="home-mobile-copy">{{ page.hero_subtitle|mobile_text }}</span></p>{% endif %}
+    {% if page.hero_subtitle %}<p class="hero__subtitle"><span class="home-desktop-copy">{{ page.hero_subtitle|linebreaksbr }}</span><span class="home-mobile-copy">{{ page.hero_subtitle|mobile_hero|linebreaksbr }}</span></p>{% endif %}
 
     {% if page.hero_links.all %}
       <ul class="hero__links">
@@ -265,7 +264,7 @@
 {% if nearby %}
 <section class="section home-nearby">
   <div class="container">
-    <h2 class="section__title section__title--center">Интересное рядом</h2>
+    <h2 class="section__title section__title--center"><span class="home-desktop-copy">Интересное рядом</span><span class="home-mobile-copy">Интересное<br>рядом</span></h2>
     <ul class="cards cards--nearby">
       {% for place in nearby %}
         {% comment %}
@@ -365,7 +364,4 @@
 {% include "includes/faq_section.html" %}
 </div>
 
-{% endblock %}
-{% block extra_js %}
-  <script src="{% static 'js/home-mobile.js' %}" defer></script>
 {% endblock %}

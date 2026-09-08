@@ -75,7 +75,14 @@ class HouseIndexPage(Page):
         context["hourly_services"] = services.filter(is_hourly=True)
         context["tile_services"] = services.filter(is_hourly=False)
         # Тот же аккордеон, что на главной — набор вопросов общий
-        from core.models import FaqItem
+        from core.models import FaqItem, TerritoryItem, TerritoryPage
+
+        mobile_titles = ('Русская баня', 'Фотосессии', 'Река "Скнижка"', 'Большая беседка')
+        mobile_tiles = {item.title: item for item in TerritoryItem.objects.filter(
+            is_published=True, title__in=mobile_titles,
+        ).select_related('image')}
+        context['mobile_services'] = [mobile_tiles[title] for title in mobile_titles if title in mobile_tiles]
+        context['mobile_services_page'] = TerritoryPage.objects.live().first()
 
         context["faq"] = FaqItem.objects.filter(is_published=True, show_on_home=True)
         return context

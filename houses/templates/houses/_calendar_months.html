@@ -13,6 +13,11 @@
                 aria-label="Предыдущий месяц"></button>
       {% endif %}
       <span class="calendar__title">{{ month.title }}</span>
+      {% if forloop.first %}
+        <button type="button" class="calendar__arrow calendar__arrow--next mobile-calendar-next"
+                data-calendar-next data-start="{{ calendar.next_mobile }}"
+                {% if not calendar.next_mobile %}disabled{% endif %} aria-label="Следующий месяц"></button>
+      {% endif %}
       {% if forloop.last %}
         <button type="button" class="calendar__arrow calendar__arrow--next"
                 data-calendar-next data-start="{{ calendar.next }}"

@@ -1,5 +1,6 @@
 """Переносы стандартных карточек по макету; авторский текст CMS сохраняется."""
 from django import template
+from django.utils.html import strip_tags
 
 register = template.Library()
 
@@ -8,6 +9,20 @@ register = template.Library()
 def mobile_text(value):
     """Убирает настольные переносы, сохраняя пробелы между словами."""
     return ' '.join(str(value).split())
+
+
+@register.filter
+def mobile_hero(value):
+    reference = ('Мы создаём место, где можно замедлиться,\n'
+                 'восстановиться и прожить простые\n'
+                 'моменты радости в окружении природы,\n'
+                 'тепла и настоящей жизни.')
+    return reference if mobile_text(value) == mobile_text(reference) else value
+
+
+@register.filter
+def mobile_intro(value):
+    return mobile_text(strip_tags(str(value).replace('<br>', ' ').replace('<br/>', ' ').replace('<br />', ' ').replace('</p>', ' ')))
 
 
 @register.filter

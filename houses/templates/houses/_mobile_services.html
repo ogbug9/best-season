@@ -1,0 +1,18 @@
+{% load wagtailcore_tags media_tags territory_tags %}
+{% if mobile_services %}
+<section class="section mobile-catalog-services">
+  <div class="container">
+    <h2 class="section__title">Что добавить</h2>
+    <p class="mobile-catalog-services__intro">Чем можно разнообразить ваш отдых: русская баня, беседка, фотосессия с животными.<br>Скажите заранее — подготовим к вашему приезду.</p>
+    <ul class="mobile-service-tiles">
+      {% for item in mobile_services %}
+      <li class="service-tile">
+        {% if item.image %}{% picture item.image preset="card" alt=item.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+        <h3 class="service-tile__title">{{ item.title|territory_lines|linebreaksbr }}</h3>
+      </li>
+      {% endfor %}
+    </ul>
+    {% if mobile_services_page %}<a class="btn btn--primary" href="{% pageurl mobile_services_page %}">Больше развлечений и услуг</a>{% endif %}
+  </div>
+</section>
+{% endif %}

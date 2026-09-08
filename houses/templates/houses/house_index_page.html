@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags wagtailimages_tags media_tags %}
+{% load static wagtailcore_tags wagtailimages_tags media_tags nearby_tags territory_tags %}
 
 {% comment %}
   Каталог домов. Карточка повторяет карточку главной (п. 9.2 ТЗ — единый
@@ -30,7 +30,7 @@
       {% endcomment %}
       <h1 class="section__title section__title--center">{{ page.heading|default:page.title }}</h1>
       {% if page.intro %}
-        <div class="houses-catalog__intro">{{ page.intro|richtext }}</div>
+        <div class="houses-catalog__intro"><div class="home-desktop-copy">{{ page.intro|richtext }}</div><div class="home-mobile-copy">{{ page.intro|mobile_intro|linebreaksbr }}</div></div>
       {% endif %}
     </div>
 
@@ -44,7 +44,7 @@
     <button type="button" class="searchbar houses-search" data-booking-open data-entry-point="1">
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
-        Дата въезда
+        <span class="home-desktop-copy">Дата въезда</span><span class="home-mobile-copy">Даты</span>
       </span>
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
@@ -74,6 +74,7 @@
   hourlyObjectsList (см. 03-kontur-widget.md), он подключается в Фазе 7 —
   здесь только витринное описание.
 {% endcomment %}
+{% include "houses/_mobile_services.html" %}
 {% if hourly_services or tile_services %}
 <section class="section houses-services">
   <div class="container houses-services__inner">
@@ -133,7 +134,7 @@
 {% if faq %}
 <section class="section houses-faq">
   <div class="container">
-    <h2 class="section__title section__title--center">Ответы на вопросы</h2>
+    <h2 class="section__title section__title--center"><span class="home-desktop-copy">Ответы на вопросы</span><span class="home-mobile-copy">Ответы<br>на вопросы</span></h2>
     <div class="faq">
       {% for item in faq %}
         <details class="faq__item{% if forloop.counter0|divisibleby:2 %} faq__item--dark{% else %} faq__item--olive{% endif %}">

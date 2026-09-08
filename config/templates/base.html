@@ -34,6 +34,8 @@
 
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home-mobile.css' %}" media="(max-width: 699px)">
+    <link rel="stylesheet" href="{% static 'css/pages-mobile.css' %}" media="(max-width: 699px)">
     {% block extra_css %}{% endblock %}
 
     {# Микроразметка организации — п. 10.5 ТЗ #}
@@ -83,6 +85,7 @@
        остальных скрипт выходит сразу, ничего не найдя. {% endcomment %}
     <script src="{% static 'js/calendar.js' %}" defer></script>
     <script src="{% static 'js/kontur.js' %}" defer></script>
+    <script src="{% static 'js/home-mobile.js' %}" defer></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

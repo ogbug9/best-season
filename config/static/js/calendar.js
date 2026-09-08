@@ -250,6 +250,7 @@
   }
 
   function label(selector, iso, fallback) {
+    if (selector === '[data-label-date-to]' && window.matchMedia('(max-width: 699px)').matches) fallback = 'выезда';
     var node = panel.querySelector(selector);
     if (!node) return;
     node.textContent = iso ? human(iso) : fallback;

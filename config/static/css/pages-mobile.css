@@ -1,0 +1,143 @@
+/* Мобильные макеты 390px. Файл подключён только до 699px. */
+:is(.page-home, .page-houses, .page-house, .page-promotions) .searchbar__icon {
+  flex: 0 0 18px; width: 18px; height: 20px; overflow: visible;
+  mask-position: center; mask-repeat: no-repeat;
+}
+:is(.page-home, .page-houses) .searchbar__icon--date { mask-image: url('../img/mobile-calendar.png'); mask-size: 15px 17px; }
+:is(.page-home, .page-houses) .searchbar__icon--guest { mask-image: url('../img/mobile-guest.png'); mask-size: 13px 16px; }
+.page-home .home-nearby .section__title { width: 350px; max-width: 100%; }
+.page-home .home-nearby .home-mobile-copy { display: block; }
+:is(.page-home, .page-houses, .page-house, .page-promotions) .footer__center::before {
+  content: ''; display: block; width: 100%; height: 1px; margin-bottom: 20px;
+  background: url('../img/mobile-footer-line.png') center / 100% 1px no-repeat;
+}
+:is(.page-houses, .page-house, .page-promotions) .header__bar { height: 72px; background: #847f57; }
+:is(.page-houses, .page-house, .page-promotions) .header__bar :is(.header__logo, .header__name, .header__phone) { color: #f7f0e6; }
+:is(.page-houses, .page-house, .page-promotions) .nav-toggle__button span,
+:is(.page-houses, .page-house, .page-promotions) .nav-toggle__button span::after { border-color: #f7f0e6; }
+:is(.page-houses, .page-house, .page-promotions) .icon { overflow: visible; flex-shrink: 0; object-fit: contain; }
+
+body.page-houses main > .houses-catalog:first-child { padding: 112px 0 32px; }
+.page-houses .houses-catalog__inner { display: block; }
+.page-houses .houses-catalog__head { display: block; width: 100%; margin: 0 0 24px; text-align: left; }
+.page-houses .houses-catalog__head .section__title { margin-bottom: 10px; }
+.page-houses .houses-catalog__intro { font-size: 14px; line-height: 17px; text-align: left; }
+.page-houses .houses-search { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: none; margin: 0 0 24px; padding: 0; background: none; }
+.page-houses .houses-search .searchbar__field { justify-content: flex-start; width: 100%; height: 36px; min-height: 0; padding: 10px 20px; font-size: 13px; line-height: 16px; }
+.page-houses .houses-search .searchbar__field:nth-child(2) { display: none; }
+.page-houses .houses-search .searchbar__cta { grid-column: 1 / -1; width: 100%; height: 44px; min-height: 0; margin: 0; padding: 12px 20px; font-size: 16px; line-height: 20px; }
+.page-houses .houses-services,
+.page-houses .section--deep { display: none; }
+.page-houses .mobile-catalog-services { display: block; padding-top: 48px; }
+.page-houses .mobile-catalog-services .section__title { margin-bottom: 10px; }
+.page-houses .mobile-catalog-services__intro { margin: 0 0 24px; font-size: 13px; line-height: 16px; }
+.page-houses .mobile-service-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; list-style: none; margin: 0; padding: 0; }
+.page-houses .mobile-service-tiles .service-tile { width: 100%; height: auto; aspect-ratio: 170 / 179; padding: 12px 16px; border-radius: 6px; }
+.page-houses .mobile-service-tiles .service-tile__title { font-size: 14px; line-height: 17px; font-weight: 600; text-align: center; }
+.page-houses .mobile-catalog-services .btn { width: 100%; min-height: 44px; height: 44px; margin-top: 24px; padding: 12px 16px; font-size: 16px; line-height: 20px; }
+.page-houses .houses-faq { padding-block: 32px; }
+
+body.page-promotions main > .offers-section:first-child { padding: 112px 0 32px; }
+.page-promotions .offers-title { margin: 0 0 24px; font: 500 36px/38px var(--font-heading); color: #847f57; text-align: left; }
+.page-promotions .promos { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+.page-promotions .promo { width: 100%; min-height: 0; padding: 8px; gap: 14px; border-radius: 20px; }
+.page-promotions .promo__media { padding: 0; }
+.page-promotions .promo__media :is(picture, .ph) { display: block; width: 100%; aspect-ratio: 334 / 204.79; border-radius: 14px; }
+.page-promotions .promo__media img { border-radius: 14px; }
+.page-promotions .promo__title { min-height: 0; margin: 0; font-size: 22px; line-height: 23px; font-weight: 400; }
+.page-promotions .promo__copy .promo__text { margin: 8px 0 0; font-size: 14px; line-height: 17px; }
+.page-promotions .promo__title br,
+.page-promotions .promo__text br { display: initial; }
+.page-promotions .promo__book { height: 46.06px; min-height: 0; padding: 13.03px 20px; margin: 0; border-radius: 93.0851px; font-size: 16px; line-height: 20px; font-weight: 400; }
+.page-promotions .offers-section + .section { display: none; }
+
+body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
+.page-house .house-title h1 { font: 500 36px/38px var(--font-heading); text-align: left; }
+.page-house .booking-panel { padding: 0 0 60px; }
+.page-house .booking-panel > .container { display: flex; flex-direction: column; gap: 20px; }
+.page-house .booking-panel__fields,
+.page-house .booking-panel__cards,
+.page-house .booking-panel__sidebar { display: contents; }
+.page-house .booking-field { width: 100%; flex: none; height: 45px; min-height: 45px; padding: 12px 24px; border-radius: 16px; background: #e6dfd1; }
+.page-house .booking-field--dates { order: 0; gap: 6px; margin-bottom: -10px; }
+.page-house .booking-field__slot { min-height: 21px; font-size: 16px; line-height: 21px; gap: 8px; }
+.page-house .booking-field__slot .icon { width: 18px; height: 20px; }
+.page-house .booking-field--dates [data-field="date_to"] .icon { display: none; }
+.page-house .booking-field--guests { order: 2; margin-bottom: -10px; }
+.page-house .calendar { order: 1; width: 100%; flex: none; min-height: 412.77px; padding: 26.6215px; border-radius: 16px; }
+.page-house .calendar__months { display: block; }
+.page-house .calendar__month { width: 100%; }
+.page-house .calendar__month + .calendar__month { display: none; }
+.page-house .mobile-calendar-next { display: block; }
+.page-house .calendar__head { min-height: 35px; margin-bottom: 14px; }
+.page-house .calendar__title { font-size: 18px; line-height: 22px; }
+.page-house .calendar__arrow { width: 35px; height: 35px; margin-top: -17.5px; }
+.page-house .calendar__grid { border-spacing: 0 4px; }
+.page-house .calendar__grid th { padding-bottom: 12px; font-size: 14px; line-height: 17px; }
+.page-house .calendar__cell { height: 42px; }
+.page-house .calendar__day { width: 36px; height: 36px; font-size: 14px; line-height: 17px; }
+.page-house .guests { order: 3; min-height: 326.71px; padding: 24px; gap: 22.9px; border-radius: 16px; }
+.page-house .guests__title { font-size: 20px; line-height: 24px; font-weight: 500; }
+.page-house .guests__label { font-size: 20px; line-height: 24px; }
+.page-house .guests__control { gap: 12px; }
+.page-house .guests__step { width: 30px; height: 30px; font-size: 24px; }
+.page-house .guests__value { font-size: 20px; line-height: 24px; }
+.page-house .guests__note { margin-top: 10px; font-size: 18px; line-height: 22px; }
+.page-house .booking-summary { order: 4; font-size: 20px; line-height: 24px; gap: 24.71px; }
+.page-house .booking-total { order: 5; margin-top: -6px; font-size: 24px; line-height: 29px; }
+.page-house .booking-error { order: 6; }
+.page-house .booking-submit { order: 7; min-height: 70.18px; height: 70.18px; padding: 20.59px 20px; margin-top: 4px; font-size: 24px; line-height: 29px; }
+.page-house .house-mosaic-section { padding: 0 0 32px; }
+.page-house .house-mosaic { display: flex; width: 100%; height: 210px; gap: 10px; margin: 0; padding: 0; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.page-house .house-mosaic::-webkit-scrollbar { display: none; }
+.page-house .house-mosaic__item { flex: 0 0 100%; width: 100%; height: 210px; scroll-snap-align: start; }
+.page-house .house-mosaic__item .house-mosaic__link { height: 210px; min-height: 0; border-radius: 10px; }
+.page-house .house-mosaic__more { display: none; }
+.page-house .house-mosaic--empty { height: 210px; border-radius: 10px; }
+.page-house .mobile-gallery-more { display: flex; width: min(325px, 100%); min-height: 50px; height: 50px; padding: 14px 20px; margin: 24px auto 0; font-size: 16px; line-height: 20px; }
+.page-house .house-facts-section { padding: 0 0 32px; }
+.page-house .house-facts { flex-direction: column; gap: 32px; }
+.page-house .fact-card { flex: none; width: 100%; gap: 12px; padding: 14px 16px; border-radius: 6.20567px; }
+.page-house .fact-card__title { font-size: 16px; line-height: 20px; gap: 6.21px; }
+.page-house .fact-card__title .icon { width: 14px; height: 14px; }
+.page-house .fact-card__chips { gap: 12px; }
+.page-house .fact-card + .fact-card .fact-card__chips { flex-direction: column; gap: 10px; }
+.page-house .chip { min-height: 20px; gap: 6.21px; font-size: 16px; line-height: 20px; }
+.page-house .chip .icon { width: 12px; height: 12px; }
+.page-house .chip .house-icon--sofa_bed { width: 21.1px; height: 14.78px; }
+.page-house .chip :is(.house-icon--bunk_bed, .house-icon--bed) { width: 14.89px; height: 13.2px; }
+.page-house .house-about-section { padding: 0 0 32px; }
+.page-house .house-about { flex-direction: column; gap: 24px; }
+.page-house .house-about .section__title,
+.page-house .house-reviews-section .section__title { margin: 0 0 14px; font-size: 28px; line-height: 29px; font-weight: 500; color: #9b5026; }
+.page-house .house-about .prose { font-size: 14px; line-height: 17px; }
+.page-house .amenity-tags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.page-house .amenity-tag { min-height: 37px; padding: 10px 16px; font-size: 14px; line-height: 17px; border-radius: 10.6164px; }
+.page-house .equipment-section { padding: 0 0 80px; }
+.page-house .equipment { padding: 24px 24px 20px; gap: 20px; border-radius: 10px; }
+.page-house .equipment__columns { flex-direction: column; gap: 24px; }
+.page-house .equipment__column { width: 100%; gap: 24px; }
+.page-house .equipment__group { gap: 16px; }
+.page-house .equipment__title { font-size: 18px; line-height: 22px; }
+.page-house .equipment__list { gap: 10px; }
+.page-house .equipment__list li { font-size: 16px; line-height: 20px; }
+.page-house .equipment__switch:not(:checked) ~ .equipment__columns { max-height: 178px; }
+.page-house .equipment__switch:checked ~ .equipment__columns { min-height: 0; }
+.page-house .equipment__toggle { align-self: center; margin: 0; width: 173px; min-height: 40px; height: 40px; padding: 10px 32px; font-size: 16px; line-height: 20px; }
+.page-house .reviews { display: flex; overflow-x: auto; gap: 10px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.page-house .reviews::-webkit-scrollbar { display: none; }
+.page-house .reviews__item { flex: 0 0 100%; width: 100%; min-width: 0; scroll-snap-align: start; gap: 24px; }
+.page-house .reviews__media { height: 194px; }
+.page-house .reviews__text p { font-size: 14px; line-height: 17px; }
+.page-house .reviews__author { font-size: 16px; line-height: 20px; font-weight: 500; }
+.page-house .house-reviews-section { padding-bottom: 32px; }
+.page-house .house-reviews-section .section__title { margin-bottom: 24px; }
+
+@media (max-width: 374px) {
+  .page-house .house-title h1 { font-size: 30px; }
+  .page-house .calendar { padding-inline: 16px; }
+  .page-house .calendar__day { width: 30px; height: 30px; }
+  .page-house .guests { padding-inline: 16px; }
+  .page-house .guests__label { font-size: 18px; }
+  .page-house .amenity-tag { padding-inline: 10px; font-size: 12px; }
+}

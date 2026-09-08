@@ -1,6 +1,7 @@
 /* Мобильные карусели и разделы подвала; контент доступен и без JS. */
 (function () {
   'use strict';
+  if (!document.body.matches('.page-home, .page-houses, .page-promotions, .page-house')) return;
   const mobile = window.matchMedia('(max-width: 699px)');
   const cleanups = [];
 
@@ -41,7 +42,7 @@
         if (delta < distance) { distance = delta; active = index; }
       });
       buttons.forEach((button, index) => button.setAttribute('aria-current', String(index === active)));
-      if (track.classList.contains('cards--nearby')) track.style.height = `${slides[active].getBoundingClientRect().height}px`;
+      if (track.matches('.cards--nearby, .reviews')) track.style.height = `${slides[active].getBoundingClientRect().height}px`;
     }
     function onScroll() { if (!frame) frame = requestAnimationFrame(update); }
     track.addEventListener('scroll', onScroll, { passive: true });
@@ -57,8 +58,8 @@
   function sync() {
     cleanups.splice(0).forEach(cleanup => cleanup());
     if (!mobile.matches) return;
-    document.querySelectorAll('.cards--houses, .cards--nearby, .photo-mosaic__tiles').forEach(track => {
-      carousel(track, track.classList.contains('cards--houses') ? 'Домики' : track.classList.contains('cards--nearby') ? 'Интересное рядом' : 'Фотогалерея');
+    document.querySelectorAll('.cards--houses, .cards--nearby, .photo-mosaic__tiles, .house-mosaic:not(.house-mosaic--empty), .reviews').forEach(track => {
+      carousel(track, track.classList.contains('cards--houses') ? 'Домики' : track.classList.contains('cards--nearby') ? 'Интересное рядом' : track.classList.contains('reviews') ? 'Отзывы' : 'Фотогалерея');
     });
     document.querySelectorAll('.footer__column-title').forEach((title, index) => {
       const links = title.nextElementSibling;
@@ -82,5 +83,8 @@
     });
   }
   mobile.addEventListener('change', sync);
+  document.querySelector('[data-mobile-gallery-open]')?.addEventListener('click', () => {
+    document.querySelector('.house-mosaic [data-gallery-item]')?.click();
+  });
   sync();
 })();

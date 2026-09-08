@@ -25,13 +25,13 @@
         <span class="booking-field__dash" aria-hidden="true">—</span>
         <button type="button" class="booking-field__slot" data-field="date_to">
           {% house_icon "calendar" %}
-          <span data-label-date-to>Дата выезда</span>
+          <span data-label-date-to><span class="home-desktop-copy">Дата выезда</span><span class="home-mobile-copy">выезда</span></span>
         </button>
       </div>
       <div class="booking-field booking-field--guests">
         <span class="booking-field__slot booking-field__slot--static">
           {% house_icon "guest" %}
-          <span data-label-guests>{{ quote.guests|guests }}</span>
+          <span class="home-desktop-copy" data-label-guests>{{ quote.guests|guests }}</span><span class="home-mobile-copy">Количество гостей</span>
         </span>
       </div>
     </div>

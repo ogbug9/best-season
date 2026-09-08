@@ -82,11 +82,12 @@
         </li>
       {% endfor %}
     </ul>
+    <button type="button" class="btn btn--outline mobile-gallery-more" data-mobile-gallery-open>Смотреть все фотографии</button>
   </div>
 </section>
 {% else %}
 <section class="house-mosaic-section" aria-hidden="true">
-  <div class="container"><div class="house-mosaic house-mosaic--empty"></div></div>
+  <div class="container"><div class="house-mosaic house-mosaic--empty"><span class="ph"></span></div><button type="button" class="btn btn--outline mobile-gallery-more" disabled>Смотреть все фотографии</button></div>
 </section>
 {% endif %}
 {% endwith %}

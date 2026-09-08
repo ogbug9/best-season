@@ -127,6 +127,11 @@ def calendar_months(house, start=None, months=MONTHS_SHOWN, selection=None):
         "months": result,
         "start": first.isoformat(),
         "prev": prev_month.isoformat() if prev_month >= today.replace(day=1) else "",
+        "next_mobile": (
+            _shift_month(first, 1).isoformat()
+            if _shift_month(first, 1) <= _shift_month(today.replace(day=1), MAX_MONTHS_AHEAD)
+            else ""
+        ),
         "next": (
             next_month.isoformat()
             if next_month <= _shift_month(today.replace(day=1), MAX_MONTHS_AHEAD)
