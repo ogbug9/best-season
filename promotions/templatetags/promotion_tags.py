@@ -1,4 +1,6 @@
 """Переносы стандартных предложений из макета Special Offers."""
+import re
+
 from django import template
 
 register = template.Library()
@@ -28,12 +30,25 @@ def promotion_title(value):
     return TITLES.get(value.replace('«', '"').replace('»', '"'), value)
 
 
+def _key(text):
+    """Ключ сравнения без пробелов.
+
+    В базе описание лежит одной строкой без переносов — редактор их
+    потерял («От 3-х суток скидка 10%От 5 суток - 20%…»), и сравнение по
+    схлопнутым пробелам ничего не находило. Пробелы вырезаем целиком,
+    тире всех начертаний приводим к дефису, «ё» к «е».
+    """
+    text = re.sub('[‐-―−]', '-', str(text))
+    text = text.replace('ё', 'е').replace('Ё', 'Е')
+    return re.sub(r'\s+', '', text).casefold()
+
+
+DESCRIPTIONS_BY_KEY = {_key(text): text for text in DESCRIPTIONS}
+
+
 @register.filter
 def promotion_description(value):
-    for text in DESCRIPTIONS:
-        if ' '.join(value.split()) == ' '.join(text.split()):
-            return text
-    return value
+    return DESCRIPTIONS_BY_KEY.get(_key(value), value)
 
 
 @register.filter

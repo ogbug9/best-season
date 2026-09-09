@@ -224,10 +224,11 @@ PROMOTIONS = [
 # дизайнером с карточки домика, для почасового объекта она неверна.
 # Вопрос вынесен в открытые (design/spec.json).
 SERVICES = [
-    # Цены почасовых объектов — с флажков макета, по прямому указанию
-    # заказчика 05.09: баня 8 000, беседка 6 000
-    ("Русская баня", "russkaya-banya", True, "Описание", 8000),
-    ("Большая беседка", "bolshaya-besedka", True, "Описание", 6000),
+    # Цены почасовых объектов — за час: баня 1 500, беседка 4 000.
+    # На флажках макета стоит «от 8 000 ₽ за ночь» — подпись перенесена
+    # с карточки домика и для почасового объекта неверна.
+    ("Русская баня", "russkaya-banya", True, "Описание", 1500),
+    ("Большая беседка", "bolshaya-besedka", True, "Описание", 4000),
     # Переносы в названиях — как в макете: «Финская сауна» и «Аренда
     # велосипедов» стоят в две строки (блок 58 против 29 у остальных)
     ("Финская\nсауна", "finskaya-sauna", False, "", None),
@@ -734,7 +735,9 @@ class Command(BaseCommand):
             self.mark(f"удобство: {name}")
 
     def fill_houses(self):
-        from houses.models import HouseIndexPage, HousePage
+        from houses.models import (
+            DEFAULT_SERVICES_INTRO, HouseIndexPage, HousePage,
+        )
 
         index = HouseIndexPage.objects.first()
         if index is None:
@@ -754,10 +757,7 @@ class Command(BaseCommand):
             index_changed = True
             self.mark("раздел «Размещение»: вступительный текст с макета")
         if not index.services_intro:
-            index.services_intro = (
-                "Описание доп услуг за дополнительную плату.\n"
-                "Можно добавить сюда те самые якоря."
-            )
+            index.services_intro = DEFAULT_SERVICES_INTRO
             index_changed = True
             self.mark("раздел «Размещение»: подпись «Доп услуги» с макета")
         if index_changed and not self.dry:

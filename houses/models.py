@@ -15,6 +15,22 @@ MIN_GALLERY_IMAGES = 15
 # возможности сломать вёрстку. Заголовки и произвольный HTML недоступны.
 BODY_FEATURES = ["bold", "italic", "link", "ul", "ol"]
 
+# Подпись под заголовком «Что можно добавить» — текст с макета.
+DEFAULT_SERVICES_INTRO = (
+    "Чем можно разнообразить ваш отдых: русская баня, беседка, "
+    "фотосессия с животными.\n"
+    "Скажите заранее — подготовим к вашему приезду."
+)
+# Заглушка, засеянная до появления текста с макета. Она сидит в ревизиях
+# страницы, поэтому вычистить её миграцией нельзя: публикация старого
+# черновика вернула бы её обратно. Подменяем при выводе.
+STALE_SERVICES_INTRO = {
+    "Описание доп услуг за дополнительную плату.\n"
+    "Можно добавить сюда те самые якоря.",
+    "Описание доп услуг за дополнительную плату. "
+    "Можно добавить сюда те самые якоря.",
+}
+
 
 class HouseIndexPage(Page):
     """Раздел «Наши домики» / «Размещение» — родитель для страниц домов."""
@@ -55,6 +71,14 @@ class HouseIndexPage(Page):
 
     class Meta:
         verbose_name = "Раздел «Наши домики»"
+
+    @property
+    def services_intro_display(self):
+        """Подпись под заголовком: текст редактора либо текст с макета."""
+        text = (self.services_intro or "").replace("\r\n", "\n").strip()
+        if not text or text in STALE_SERVICES_INTRO:
+            return DEFAULT_SERVICES_INTRO
+        return text
 
     def get_context(self, request):
         from services.models import Service

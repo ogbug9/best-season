@@ -26,7 +26,9 @@ class Promotion(models.Model):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    short_description = models.CharField("Краткое описание", max_length=255, blank=True)
+    # TextField, а не CharField: в админке однострочный input срезает
+    # переносы, а описание акции в макете стоит в три строки.
+    short_description = models.TextField("Краткое описание", max_length=255, blank=True)
     description = RichTextField("Условия акции", blank=True, features=BODY_FEATURES)
 
     date_from = models.DateField("Показывать с", null=True, blank=True)

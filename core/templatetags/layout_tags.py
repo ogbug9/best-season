@@ -18,6 +18,10 @@ LINES = {
         'и панорамным видом на лес для 2-4 гостей.\n'
         'Идеальное место для семейного отдыха или\n'
         'романтических выходных.',
+        'Уютный домик-лофт №1 с собственной сауной\n'
+        'и панорамным видом на лес для 2-4 гостей.\n'
+        'Идеальное место для семейного отдыха или\n'
+        'романтических выходных.',
         'Площадь дома 30 м² + терраса 24 м².\n'
         'Безлимитный беспроводной интернет,\n'
         'оснащённая кухня, отдельная мангальная зона\n'
@@ -25,6 +29,10 @@ LINES = {
     ],
     'house_mobile': [
         'Уютный домик-лофт с собственной сауной\n'
+        'и панорамным видом на лес для 2-4 гостей.\n'
+        'Идеальное место для семейного отдыха\n'
+        'или романтических выходных.',
+        'Уютный домик-лофт №1 с собственной сауной\n'
         'и панорамным видом на лес для 2-4 гостей.\n'
         'Идеальное место для семейного отдыха\n'
         'или романтических выходных.',
@@ -175,7 +183,7 @@ def layout_lines(value, key):
 def layout_richtext(value, key):
     """После richtext; не трогаем абзацы со ссылками/выделениями."""
     def paragraph(match):
-        content = re.sub(r'<br\s*/?>', ' ', match[1], flags=re.I)
+        content = re.sub(r'<br\s*/?>', ' ', match[2], flags=re.I)
         if '<' in content:
             return match[0]
         plain = unescape(content)
@@ -183,10 +191,13 @@ def layout_richtext(value, key):
         mobile = layout_lines(plain, key + '_mobile')
         if desktop == plain and mobile == plain:
             return match[0]
-        return str(format_html(
-            '<p><span class="home-desktop-copy">{}</span>'
-            '<span class="home-mobile-copy">{}</span></p>',
+        return match[1] + str(format_html(
+            '<span class="home-desktop-copy">{}</span>'
+            '<span class="home-mobile-copy">{}</span>',
             mark_safe(str(escape(desktop)).replace('\n', '<br>')),
             mark_safe(str(escape(mobile)).replace('\n', '<br>')),
-        ))
-    return mark_safe(re.sub(r'<p>(.*?)</p>', paragraph, str(conditional_escape(value)), flags=re.S))
+        )) + '</p>'
+    # Draftail пишет абзацы с атрибутом (<p data-block-key="...">), и
+    # регексп по голому <p> не находил ни одного текста, правленного
+    # в админке. Открывающий тег возвращаем как есть, spans кладём внутрь.
+    return mark_safe(re.sub(r'(<p\b[^>]*>)(.*?)</p>', paragraph, str(conditional_escape(value)), flags=re.S))
