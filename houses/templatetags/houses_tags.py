@@ -38,6 +38,16 @@ def featured_label(value):
     return str(value).replace(" (электропечь)", "")
 
 
+@register.filter
+def review_quote(value):
+    """Одна пара кавычек независимо от оформления текста в CMS."""
+    text = str(value).strip()
+    pairs = {'«': '»', '“': '”', '"': '"'}
+    if len(text) > 1 and pairs.get(text[0]) == text[-1]:
+        text = text[1:-1].strip()
+    return f'«{text}»'
+
+
 @register.filter(is_safe=True)
 def description_breaks(value):
     """Сохраняем смысловые строки первого домика после richtext."""

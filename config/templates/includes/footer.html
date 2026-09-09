@@ -50,6 +50,12 @@
           {% else %}
             <li><span class="socials__item"><img src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">ВКонтакте</span></span></li>
           {% endif %}
+          {% if s.tiktok_url %}
+            <li><a class="socials__item" href="{{ s.tiktok_url }}" rel="noopener" target="_blank">
+              <img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></a></li>
+          {% else %}
+            <li><span class="socials__item"><img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></span></li>
+          {% endif %}
           {% if s.whatsapp_url %}
             <li><a class="socials__item" href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">
               <img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">WhatsApp</span></a><span class="socials__note" aria-hidden="true">*</span></li>
@@ -61,12 +67,6 @@
               <img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Instagram</span></a><span class="socials__note" aria-hidden="true">*</span></li>
           {% else %}
             <li><span class="socials__item"><img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Instagram</span></span><span class="socials__note" aria-hidden="true">*</span></li>
-          {% endif %}
-          {% if s.tiktok_url %}
-            <li><a class="socials__item" href="{{ s.tiktok_url }}" rel="noopener" target="_blank">
-              <img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></a></li>
-          {% else %}
-            <li><span class="socials__item"><img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></span></li>
           {% endif %}
         </ul>
 

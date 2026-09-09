@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags wagtailimages_tags media_tags nearby_tags territory_tags %}
+{% load static wagtailcore_tags wagtailimages_tags media_tags nearby_tags territory_tags layout_tags %}
 
 {% comment %}
   Каталог домов. Карточка повторяет карточку главной (п. 9.2 ТЗ — единый
@@ -24,13 +24,12 @@
       {% comment %}
         Заголовок и текст берутся из страницы, а не зашиты в шаблон:
         по п. 8 ТЗ содержимое правит редактор в админке. Текст макета
-        доставляется наполнением (seed_content), переносы строк не
-        закрепляем — в макете абзац занимает 4 строки при ширине 1240,
-        браузер их даёт сам.
+        доставляется наполнением (seed_content); стандартные переносы
+        Desktop/Mobile задаёт layout_richtext, авторский текст сохраняется.
       {% endcomment %}
       <h1 class="section__title section__title--center">{{ page.heading|default:page.title }}</h1>
       {% if page.intro %}
-        <div class="houses-catalog__intro"><div class="home-desktop-copy">{{ page.intro|richtext }}</div><div class="home-mobile-copy">{{ page.intro|mobile_intro|linebreaksbr }}</div></div>
+        <div class="houses-catalog__intro">{{ page.intro|richtext|layout_richtext:"intro" }}</div>
       {% endif %}
     </div>
 

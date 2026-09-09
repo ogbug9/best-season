@@ -45,7 +45,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero__subtitle { margin: 10px 0 0; max-width: none; font-size: 14px; line-height: 17px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .quote__para br,
 :is(.page-home, .page-houses, .page-promotions, .page-house) .place__description br,
-:is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic__text .section__lead br { display: none; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic__text .section__lead br { display: initial; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero__links { display: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero .searchbar { display: flex; flex-direction: column; gap: 10px; width: 240px; max-width: 100%; margin: 28px auto 0; padding: 0; border: 0; background: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero .searchbar__field { width: 100%; height: 36px; padding: 10px 24px; justify-content: flex-start; font-size: 13px; line-height: 16px; }

@@ -34,3 +34,13 @@ def promotion_description(value):
         if ' '.join(value.split()) == ' '.join(text.split()):
             return text
     return value
+
+
+@register.filter
+def mobile_promotion_description(value):
+    text = promotion_description(value)
+    mobile_lines = {
+        DESCRIPTIONS[1]: 'При бронировании 3-х дней: пятницы,\nсубботы и воскресения,\nна пятницу действует скидка 50%',
+        DESCRIPTIONS[4]: 'При бронировании напрямую комплимент\nот хозяев: набор фермерских продуктов\nили дополнительный час в бане',
+    }
+    return mobile_lines.get(text, text)

@@ -36,6 +36,12 @@ def mobile_gallery(value):
 
 
 @register.filter
+def slogan_lines(value):
+    reference = 'Не ждите подходящего момента,\nваш лучший сезон уже начался'
+    return reference if mobile_text(value) == mobile_text(reference) else value
+
+
+@register.filter
 def brand_title(value):
     return "Лучший сезон" if value == "Лучший Сезон" else value
 

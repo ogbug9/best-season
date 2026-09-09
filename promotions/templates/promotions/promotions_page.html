@@ -12,7 +12,7 @@
         <div class="promo__media">{% if promo.image %}{% picture promo.image preset="card" alt=promo.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
         <div class="promo__copy">
           <h2 class="promo__title">{{ promo.title|promotion_title|linebreaksbr }}</h2>
-          {% if promo.short_description %}<p class="promo__text">{{ promo.short_description|promotion_description|linebreaksbr }}</p>{% endif %}
+          {% if promo.short_description %}<p class="promo__text"><span class="home-desktop-copy">{{ promo.short_description|promotion_description|linebreaksbr }}</span><span class="home-mobile-copy">{{ promo.short_description|mobile_promotion_description|linebreaksbr }}</span></p>{% endif %}
           {% if promo.description %}<div class="promo__text prose">{{ promo.description|richtext }}</div>{% endif %}
           {% if promo.date_to %}<p class="promo__text">Действует до {{ promo.date_to|date:"d.m.Y" }}</p>{% endif %}
         </div>

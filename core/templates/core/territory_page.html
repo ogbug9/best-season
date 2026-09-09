@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags media_tags %}
+{% load wagtailcore_tags media_tags territory_tags %}
 
 {% block content %}
 <section class="section page-head">
@@ -21,7 +21,7 @@
         <li class="mosaic__item{% if item.is_large %} mosaic__item--large{% endif %}">
           {% picture item.image preset="card" alt=item.title %}
           <div class="mosaic__caption">
-            <h2 class="mosaic__title">{{ item.title }}</h2>
+            <h2 class="mosaic__title">{{ item.title|territory_lines|linebreaksbr }}</h2>
             {% if item.description %}<p>{{ item.description }}</p>{% endif %}
           </div>
         </li>

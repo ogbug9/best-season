@@ -2566,6 +2566,10 @@ body[data-modal-open] {
 }
 /* Зазор задаёт колонка фрейма (gap: 32) — margin здесь складывался бы с ним */
 @media (max-width: 899px) { .quote__para + .quote__para { margin-top: 32px; } }
+@media (min-width: 1280px) {
+  /* На ширине макета сохраняем заданные строки, включая слово «друзей». */
+  .quote__para .home-desktop-copy:has(br) { white-space: nowrap; }
+}
 .quote__text cite {
   display: block;
   margin-top: var(--s-5);
@@ -3450,6 +3454,18 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
 .page-home .header__bar .header__paw {
   color: var(--c-dark);
 }
+
+/* Раскрытое меню имеет собственный кремовый фон на любой странице. */
+.header__bar .nav--mobile .nav__link {
+  color: var(--c-dark);
+  white-space: normal;
+  hyphens: none;
+}
+.header__bar .nav--mobile .nav__sublink {
+  white-space: normal;
+  hyphens: none;
+}
+.card__title, .mosaic__title { hyphens: none; }
 
 /* ---------- Страница «Размещение»: типографика карточек ----------
    Инспектор карточки домика: название Montserrat 600 24/29 #FFFFFF,
