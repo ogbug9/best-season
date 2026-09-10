@@ -1361,6 +1361,10 @@ body {
 }
 @media (min-width: 700px) { .mosaic { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 1100px) { .mosaic { grid-template-columns: repeat(4, 1fr); } }
+/* Замер десктопа главной: от низа фрейма «Наша территория» до заголовка
+   «Интересное рядом» ровно 120 (60 + 60 на полях секций). Собственный
+   нижний отступ списка добавлял к ним ещё 32. */
+.page-home .section--pattern .mosaic { margin-bottom: 0; }
 
 .mosaic__item {
   position: relative;
@@ -2605,6 +2609,11 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
      gap:60 распускал колонку до 808 и она вылезала из секции. */
   .about__text .split__actions { margin-top: 60px; }
   .about__text { max-width: 572px; }
+  /* Замер десктопа: «О нас» → текст 40, между абзацами 40,
+     от текста до ряда кнопок 60 (правило выше). */
+  .about__text .section__title { margin-bottom: 40px; }
+  .about__text > p:not(.split__actions) { margin: 0; }
+  .about__text > p:not(.split__actions) + p:not(.split__actions) { margin-top: 40px; }
 }
 
 /* ---------- Блок-цитата ----------
@@ -2614,6 +2623,12 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   gap: var(--s-7);
   align-items: center;
   margin-block: var(--s-9);
+}
+@media (min-width: 900px) {
+  /* Замер десктопа: от низа блока «О нас» (фото/кнопки) до верхней
+     кавычки 218, от нижней кавычки до фрейма слогана 153. Нижняя
+     кавычка выступает на 60px ниже фото, поэтому здесь 153, а не 213. */
+  .quote { margin-block: 218px 153px; }
 }
 @media (min-width: 900px) {
   /* 58 к 42 — доли из макета. Раньше здесь стояло 1fr к 42fr, то есть
@@ -3804,7 +3819,8 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
    две строки, перенос после «восстановиться» стоит в самом тексте. */
 .hero__subtitle {
   max-width: 865px;
-  margin: var(--s-4) auto 0;
+  /* Замер десктопа: от заголовка первого экрана до подзаголовка 10px. */
+  margin: 10px auto 0;
   font-family: var(--font-body);
   font-weight: 400;
   font-size: 18px;
