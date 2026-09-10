@@ -194,6 +194,13 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .footer__center p { margin: 0; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .footer__center .footer__meta-note { margin-top: 20px; }
 
+/* «Акции» на мобильном: от последней карточки до блока вопросов 80px и
+   столько же от вопросов до подвала. Нижний отступ секции обнулён,
+   зазор до подвала держит сам подвал — иначе к нему прибавились бы
+   его собственные 32. */
+.page-promotions main > .section:last-child { padding-top: 80px; padding-bottom: 0; }
+.page-promotions .footer { margin-top: 80px; }
+
 @media (max-width: 374px) {
   :is(.page-home, .page-houses, .page-promotions, .page-house) .header__bar { gap: 10px; }
   :is(.page-home, .page-houses, .page-promotions, .page-house) .header__phone { font-size: 13px; gap: 4px; }

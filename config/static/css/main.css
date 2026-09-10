@@ -1929,8 +1929,9 @@ body:not(.page-home) main > :first-child {
 .footer { padding-top: 100px; }
 .footer__top { display: grid; gap: 48px; margin-bottom: 0; }
 .footer__brand { display: flex; flex-direction: column; align-items: center; width: 240px; gap: 40px; }
-/* Инспектор: группа 240×70 = знак 70 + зазор 17 + подпись 153. */
-.footer__logo { display: flex; align-items: center; gap: 17px; width: 240px; height: 70px; color: var(--c-olive); }
+/* Инспектор (Frame 2087326550): группа 240×70, знак 70, подпись 153,
+   зазор 16.3, выравнивание по нижнему краю. */
+.footer__logo { display: flex; align-items: flex-end; gap: 16.3px; width: 240px; height: 70px; color: var(--c-olive); }
 .footer__mark { flex: 0 0 70px; }
 .footer__mark svg { display: block; width: 70px; height: 70px; }
 .footer__name {
@@ -2357,15 +2358,21 @@ body[data-modal-open] {
 
 /* Фон 1: верх SVG y=817, верх «О нас» y=920 в макете 1440×9060.
    Привязка к секции сохраняет разницу -103px при любой высоте hero. */
-/* Первый экран главной «залипает» под содержимым: блок «О нас» наезжает
-   на него при прокрутке, и резкого стыка двух фотографий больше нет.
-   Собственный фон обязателен — без него сквозь блок виден первый экран. */
-.page-home .hero { position: sticky; top: 0; }
+/* Первый экран главной пролистывается слайдом: прокрутка «доводит»
+   его до конца и ставит следующий блок в начало экрана, поэтому две
+   фотографии не встречаются посреди кадра. Точки притяжения стоят
+   только на этих двух блоках — остальная страница прокручивается как
+   обычно. proximity, а не mandatory: с mandatory браузер перехватывает
+   и короткие жесты по всей длине страницы. */
+/* Тип притяжения задаётся прокручиваемому элементу — это <html>, а не
+   <body>: с body браузер его не подхватывает. */
+html:has(> body.page-home) { scroll-snap-type: y proximity; }
+.page-home .hero { scroll-snap-align: start; }
+.page-home .about { scroll-snap-align: start; scroll-snap-stop: always; }
 .home-after-hero {
   position: relative;
   display: flow-root;
   isolation: isolate;
-  background: var(--c-cream);
 }
 .home-background {
   position: absolute;
@@ -3718,6 +3725,10 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   }
   .hero .searchbar > :nth-child(4) { margin-left: 26px; }
 }
+/* Инспектор: от подзаголовка до ряда плашек 60px. */
+@media (min-width: 700px) {
+  .hero .searchbar { margin-top: 60px; }
+}
 .hero .searchbar__field,
 .hero .searchbar__cta {
   box-sizing: border-box;
@@ -3831,9 +3842,7 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   top: 58px;
   width: 50px;
   height: 50px;
-  /* Наклон против часовой: в файле heart.png контур уже развёрнут, и
-     поворот по часовой уводил сердце в другую сторону, чем в макете. */
-  transform: rotate(-13.25deg);
+  transform: rotate(14deg);
   pointer-events: none;
 }
 @media (min-width: 1240px) {
@@ -3959,6 +3968,12 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   width: 40px;
   height: 40px;
   margin-top: -20px;
+  /* Явное центрирование: уголок — блочный ::before, и в потоке кнопки
+     он вставал по верхнему краю, отчего стрелка выглядела смещённой. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: 1px solid #E0E0E0;
   border-radius: 50%;
   background: var(--c-white);
@@ -3973,7 +3988,6 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   display: block;
   width: 8px;
   height: 8px;
-  margin: 0 auto;
   border-top: 1.5px solid var(--text);
   border-right: 1.5px solid var(--text);
   /* Уголок нарисован рамкой, его видимая масса смещена к острию: без
@@ -4517,8 +4531,6 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   background: #0000001A;
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
-  opacity: 0;
-  transition: opacity .2s ease;
   pointer-events: none;
 }
 /* Без backdrop-filter подложка в 10% чёрного просто исчезает, и подпись
@@ -4529,7 +4541,6 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 /* Подпись поверх подложки: position ей задаёт базовое правило мозаики,
    здесь нужен только слой. */
 .territory-card .mosaic__caption { z-index: 1; }
-.territory-card:is(:hover, :focus-within, .is-open)::after { opacity: 1; }
 .territory-card:is(:hover, :focus-within, .is-open) > picture,
 .territory-card:is(:hover, :focus-within, .is-open) > .ph { filter: brightness(.5); }
 .territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption { background: none; }
@@ -4557,9 +4568,12 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 .promo__media picture { display: block; width: 100%; aspect-ratio: 360 / 220; border-radius: 10px; overflow: hidden; }
 .promo__media img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
 
-/* На «Акциях» блок вопросов идёт последним перед подвалом, а у подвала
-   свой верхний отступ: собственный нижний здесь давал бы двойной. */
-.page-promotions main > .section:last-child { padding-bottom: 0; }
+/* «Акции»: от последней карточки до блока вопросов 120px, от вопросов
+   до подвала 60px. Нижний отступ секции обнулён, весь зазор до подвала
+   держит сам подвал — иначе к нему прибавились бы его собственные 100. */
+.page-promotions .offers-section { padding-bottom: 0; }
+.page-promotions main > .section:last-child { padding-top: 120px; padding-bottom: 0; }
+.page-promotions .footer { padding-top: 60px; }
 
 .faq__answer p { margin: 0; }
 .faq__answer p + p { margin-top: 29px; }
