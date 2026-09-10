@@ -303,7 +303,7 @@
       {% endfor %}
     </ul>
     {% if page.nearby_more_page %}
-      <p class="center"><a class="btn btn--ghost nearby-more" href="{% pageurl page.nearby_more_page %}">{{ page.nearby_more_label }} <img src="{% static 'img/nearby-arrow.png' %}" width="13" height="10" alt=""></a></p>
+      <p class="center"><a class="btn btn--ghost nearby-more" href="{% pageurl page.nearby_more_page %}">{{ page.nearby_more_label }} <span class="nearby-more__arrow" aria-hidden="true"></span></a></p>
     {% endif %}
   </div>
 </section>

@@ -220,21 +220,18 @@ class HomePage(Page):
         context["promotions"] = [p for p in Promotion.objects.all() if p.is_active][:3]
         context["reviews"] = Review.objects.filter(is_published=True)[:3]
 
-        from core.models import FaqItem, NearbyPlace, TerritoryItem
+        from core.models import FaqItem, NearbyPlace, TerritoryItem, TerritoryPage
 
         context["territory"] = list(TerritoryItem.objects.filter(is_published=True))
-        # Переносы в названиях услуг не меняют соответствие карточек.
-        services_by_name = {
-            " ".join(service.name.casefold().split()): service
-            for service in Service.objects.filter(is_published=True)
-        }
-        catalog = context["houses_index"]
-        catalog_url = catalog.get_url(request) if catalog else None
+        # Кнопка «Подробнее» должна быть у КАЖДОЙ карточки: раньше она
+        # появлялась только там, где заведена своя ссылка или нашлась
+        # одноимённая платная услуга, и у бесплатных (батут, костровая
+        # зона, спортивные игры) кнопки не было вовсе. Запасной адрес —
+        # страница «Наша территория», а не каталог с бронированием.
+        territory_page = TerritoryPage.objects.live().first()
+        territory_url = territory_page.get_url(request) if territory_page else ""
         for item in context["territory"]:
-            item.details_url = item.link_url
-            service = services_by_name.get(" ".join(item.title.casefold().split()))
-            if not item.details_url and service and catalog_url:
-                item.details_url = f"{catalog_url}#service-{service.slug}"
+            item.details_url = item.link_url or territory_url
         context["nearby"] = NearbyPlace.objects.filter(is_published=True)[:3]
         context["faq"] = FaqItem.objects.filter(is_published=True, show_on_home=True)
         return context

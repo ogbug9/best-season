@@ -1456,8 +1456,12 @@ body {
 .btn.is-success::after { content: "✓"; font-weight: 700; }
 
 /* ---------- Шапка-пилюля поверх первого экрана ---------- */
+/* Шапка закреплена сверху и на десктопе, и на мобильном: при прокрутке
+   вниз она остаётся на экране. Именно fixed, а не sticky: пилюля лежит
+   ПОВЕРХ первого экрана, а sticky-элемент занимает место в потоке и
+   сдвинул бы первый экран вниз на свою высоту. */
 .header {
-  position: absolute;
+  position: fixed;
   z-index: 30;
   inset-inline: 0;
   top: var(--s-4);
@@ -1574,8 +1578,8 @@ body:not(.page-home) main > :first-child {
   mask: url("../img/paw-big.png") no-repeat center / 30px 28px;
   color: var(--c-deep);
 }
-.header__paw:hover,
-.header__paw:focus-visible {
+.header__paw-wrap:hover .header__paw,
+.header__paw-wrap:focus-visible .header__paw {
   -webkit-mask: url("../img/paw-small.png") no-repeat center / 30px 23px;
   mask: url("../img/paw-small.png") no-repeat center / 30px 23px;
 }
@@ -1639,6 +1643,11 @@ body:not(.page-home) main > :first-child {
   margin: 0;
   padding: var(--s-2);
   list-style: none;
+  /* Зазор именно между заливками пунктов, а не за счёт их внутренних
+     полей: иначе «бабблы» соседних пунктов слипаются. */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   border-radius: var(--radius);
   background: var(--c-cream);
   box-shadow: 0 8px 24px rgba(73, 73, 73, 0.22);
@@ -1920,10 +1929,25 @@ body:not(.page-home) main > :first-child {
 .footer { padding-top: 100px; }
 .footer__top { display: grid; gap: 48px; margin-bottom: 0; }
 .footer__brand { display: flex; flex-direction: column; align-items: center; width: 240px; gap: 40px; }
-.footer__logo { display: flex; align-items: center; gap: 16px; width: 240px; height: 70px; color: var(--c-olive); }
+/* Инспектор: группа 240×70 = знак 70 + зазор 17 + подпись 153. */
+.footer__logo { display: flex; align-items: center; gap: 17px; width: 240px; height: 70px; color: var(--c-olive); }
 .footer__mark { flex: 0 0 70px; }
 .footer__mark svg { display: block; width: 70px; height: 70px; }
-.footer__name { font-family: var(--font-heading); font-size: 32.61px; font-weight: 400; line-height: .9; color: var(--c-olive); width: 154px; }
+.footer__name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 153px;
+  height: 58px;
+  font-family: var(--font-heading);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 32.6089px;
+  /* 90% от 32.6089 — это 29.35px; в макете подпись в две строки, 58 = 2×29 */
+  line-height: 90%;
+  text-align: center;
+  color: #847F57;
+}
 .footer__contacts { display: grid; gap: 14px; text-align: center; font-size: 16px; line-height: 18px; }
 .footer__contacts p { margin: 0; }
 .footer__phone { font-size: 20px; font-weight: 400; line-height: 24px; }
@@ -2333,10 +2357,15 @@ body[data-modal-open] {
 
 /* Фон 1: верх SVG y=817, верх «О нас» y=920 в макете 1440×9060.
    Привязка к секции сохраняет разницу -103px при любой высоте hero. */
+/* Первый экран главной «залипает» под содержимым: блок «О нас» наезжает
+   на него при прокрутке, и резкого стыка двух фотографий больше нет.
+   Собственный фон обязателен — без него сквозь блок виден первый экран. */
+.page-home .hero { position: sticky; top: 0; }
 .home-after-hero {
   position: relative;
   display: flow-root;
   isolation: isolate;
+  background: var(--c-cream);
 }
 .home-background {
   position: absolute;
@@ -2981,7 +3010,18 @@ body[data-modal-open] {
 .place__actions { margin-bottom: 13px; }
 .place__more { min-height: 50px; height: 50px; padding: 14px 40px; font-size: 18px; line-height: 22px; font-weight: 400; color: #494949; }
 .nearby-more { width: 443px; max-width: 100%; height: 52px; padding: 13px 39px; font-size: 20px; line-height: 24px; font-weight: 400; color: #494949; white-space: nowrap; }
-.nearby-more img { flex: none; width: 13px; height: 10px; }
+/* Стрелка рисуется маской и красится currentColor: файл от дизайнера —
+   PNG, у <img> цвет не наследуется, и на наведении стрелка оставалась
+   тёмной, пока подпись становилась кремовой. */
+.nearby-more__arrow {
+  flex: none;
+  width: 13px;
+  height: 10px;
+  background-color: currentColor;
+  -webkit-mask: url("../img/nearby-arrow.png") center / contain no-repeat;
+  mask: url("../img/nearby-arrow.png") center / contain no-repeat;
+  transition: background-color 0.2s ease;
+}
 @media (max-width: 899px) {
   .place__description br { display: none; }
   .nearby-more { height: auto; padding-inline: 20px; font-size: 16px; }
@@ -2993,6 +3033,7 @@ body[data-modal-open] {
 @media (max-width: 420px) {
   .place__title { font-size: 32px; line-height: 36px; }
 }
+.btn--ghost { transition: background-color 0.2s ease, color 0.2s ease; }
 .btn--ghost:hover { background: var(--c-terra); color: var(--c-cream); }
 
 /* ---------- Аккордеон вопросов ---------- */
@@ -3689,16 +3730,26 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   font-weight: 400;
   font-size: 1rem;
 }
+/* Матовое стекло — только у плашек «Дата въезда / Дата выезда / Гости»
+   первого экрана главной. Размытие подложки даёт читаемость белого
+   текста на любом кадре. */
 .hero .searchbar__field {
   height: 46px;
   min-height: 0;
   justify-content: center;
   padding: 14px 60px 14px 32px;
   background: rgba(255, 255, 255, 0.3);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
   color: var(--c-cream);
   line-height: 1.15;
   letter-spacing: -0.02em;
   white-space: nowrap;
+}
+/* Без backdrop-filter полупрозрачный белый на светлом кадре нечитаем:
+   там подложка плотнее. */
+@supports not ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
+  .hero .searchbar__field { background: rgba(73, 73, 73, 0.55); }
 }
 .hero .searchbar__field:nth-child(3) { justify-content: flex-start; }
 .hero .searchbar__cta {
@@ -3739,8 +3790,11 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   pointer-events: none;
   transition: opacity 0.15s ease;
 }
+/* Именно :focus-visible, а не :focus-within: при клике мышью браузер
+   оставляет фокус на обёртке, и облачко висело на экране после нажатия.
+   С клавиатуры :focus-visible срабатывает — подсказка остаётся доступной. */
 .header__paw-wrap:hover .header__paw-note,
-.header__paw-wrap:focus-within .header__paw-note { opacity: 1; }
+.header__paw-wrap:focus-visible .header__paw-note { opacity: 1; }
 
 /* «Подробнее»: панель инспектора даёт межстрочный 20, в выгрузке JSON
    он записан как 19.5 — то же значение до округления. */
@@ -3777,7 +3831,9 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   top: 58px;
   width: 50px;
   height: 50px;
-  transform: rotate(13.25deg);
+  /* Наклон против часовой: в файле heart.png контур уже развёрнут, и
+     поворот по часовой уводил сердце в другую сторону, чем в макете. */
+  transform: rotate(-13.25deg);
   pointer-events: none;
 }
 @media (min-width: 1240px) {
@@ -3920,9 +3976,12 @@ body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom
   margin: 0 auto;
   border-top: 1.5px solid var(--text);
   border-right: 1.5px solid var(--text);
-  transform: rotate(45deg);
+  /* Уголок нарисован рамкой, его видимая масса смещена к острию: без
+     сдвига стрелка «вправо» начинается от центра кнопки. Сдвиг именно
+     transform, margin здесь сложился бы с авто-полями. */
+  transform: translateX(-3px) rotate(45deg);
 }
-.page-house .calendar__arrow--prev::before { transform: rotate(-135deg); }
+.page-house .calendar__arrow--prev::before { transform: translateX(3px) rotate(-135deg); }
 .page-house .calendar__arrow:hover:not([disabled]) { background: var(--c-hover); border-color: transparent; }
 .page-house .calendar__arrow[disabled] { cursor: default; }
 .page-house .calendar__arrow[disabled]::before { border-color: #CBD2E0; }
@@ -4431,7 +4490,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   padding: 20px 38px;
   background: linear-gradient(transparent, rgba(0, 0, 0, .5));
 }
-.territory-card .mosaic__caption h3 { font-size: 24px; line-height: 29px; font-weight: 600; }
+.territory-card .mosaic__caption :is(h2, h3) { margin: 0; font-size: 24px; line-height: 29px; font-weight: 600; }
 .territory-card__details { display: none; width: 100%; }
 .territory-card .territory-card__details p { margin: 0; font-size: 18px; line-height: 22px; }
 .territory-card__link {
@@ -4447,14 +4506,40 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   font: 500 16px/20px var(--font-body);
   text-decoration: none;
 }
-.territory-card:is(:hover, :focus-within) > picture,
-.territory-card:is(:hover, :focus-within) > .ph { filter: blur(2px) brightness(.5); }
-.territory-card:is(:hover, :focus-within) .mosaic__caption { background: none; }
-.territory-card:is(:hover, :focus-within) .territory-card__details { display: block; }
+/* Подложка карточки: параметры из макета (Rectangle 34624283).
+   Кликов не перехватывает — кнопка «Подробнее» лежит под ней по слоям. */
+.territory-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: #0000001A;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity .2s ease;
+  pointer-events: none;
+}
+/* Без backdrop-filter подложка в 10% чёрного просто исчезает, и подпись
+   на светлом кадре пропадает — там фон плотнее и без размытия. */
+@supports not ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
+  .territory-card::after { background: rgba(0, 0, 0, .45); }
+}
+/* Подпись поверх подложки: position ей задаёт базовое правило мозаики,
+   здесь нужен только слой. */
+.territory-card .mosaic__caption { z-index: 1; }
+.territory-card:is(:hover, :focus-within, .is-open)::after { opacity: 1; }
+.territory-card:is(:hover, :focus-within, .is-open) > picture,
+.territory-card:is(:hover, :focus-within, .is-open) > .ph { filter: brightness(.5); }
+.territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption { background: none; }
+.territory-card:is(:hover, :focus-within, .is-open) .territory-card__details { display: block; }
 .territory-card:focus-visible { outline: 2px solid var(--c-olive); outline-offset: 3px; }
+/* На тач-устройствах раскрытие вешает скрипт по нажатию (.is-open):
+   постоянно раскрытая карточка прячет фотографию, а наведения там нет. */
 @media (hover: none) {
-  .territory-card .territory-card__details { display: block; }
-  .territory-card .mosaic__caption { background: rgba(0, 0, 0, .65); }
+  .territory-card .territory-card__details { display: none; }
+  .territory-card.is-open .territory-card__details { display: block; }
 }
 @media (max-width: 699px) {
   .territory-card { aspect-ratio: auto; min-height: 295px; }
@@ -4465,10 +4550,16 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .territory-card > picture, .territory-card > .ph { transition: none; }
 }
 
-.service-card[id], .service-tile[id] { scroll-margin-top: 32px; }
+/* Якорные ссылки: цель не должна уезжать под закреплённую шапку. */
+.service-card[id], .service-tile[id] { scroll-margin-top: calc(var(--header-h) + 32px); }
+:target { scroll-margin-top: calc(var(--header-h) + 32px); }
 
 .promo__media picture { display: block; width: 100%; aspect-ratio: 360 / 220; border-radius: 10px; overflow: hidden; }
 .promo__media img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+
+/* На «Акциях» блок вопросов идёт последним перед подвалом, а у подвала
+   свой верхний отступ: собственный нижний здесь давал бы двойной. */
+.page-promotions main > .section:last-child { padding-bottom: 0; }
 
 .faq__answer p { margin: 0; }
 .faq__answer p + p { margin-top: 29px; }

@@ -116,10 +116,10 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card .mosaic__caption { position: absolute; inset: 0; min-height: 0; justify-content: flex-end; padding: 12px 16px; gap: 0; background: linear-gradient(transparent 45%, #000b); }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card .mosaic__caption h3 { margin: 0; font-size: 14px; line-height: 17px; font-weight: 600; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card .territory-card__details { display: none; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card:is(:hover, :focus-within) > picture,
-:is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card:is(:hover, :focus-within) > .ph { filter: none; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card:focus-within .territory-card__details { display: block; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card:focus-within .mosaic__caption { overflow-y: auto; justify-content: start; background: #232323; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card:is(:hover, :focus-within):not(.is-open) > picture,
+:is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card:is(:hover, :focus-within):not(.is-open) > .ph { filter: none; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card.is-open .territory-card__details { display: block; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card.is-open .mosaic__caption { overflow-y: auto; justify-content: center; background: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card .territory-card__details p { font-size: 12px; line-height: 15px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card__link { margin-top: 10px; padding: 6px 12px; font-size: 12px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .mosaic__item--more { grid-column: 1 / -1; aspect-ratio: auto; margin-top: 14px; height: 44px; border-radius: 100px; background: none; }
@@ -130,8 +130,8 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .mosaic__more-arrow { display: none; }
 
 :is(.page-home, .page-houses, .page-promotions, .page-house) .home-nearby .section__title { max-width: 340px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .cards--nearby { align-items: flex-start; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .place { min-height: 493.37px; padding: 24px 16px 20.87px; gap: 24px; border-radius: 20px; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .cards--nearby { align-items: stretch; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .place { min-height: 493.37px; padding: 24px 16px; gap: 24px; border-radius: 18px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .place__head { min-height: 64px; gap: 14px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .place__number { font-size: 24px; line-height: 25px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .place .place__title { width: 100%; font-size: 24px; line-height: 25px; white-space: normal; }
@@ -144,7 +144,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .place__more { min-height: 44px; height: 44px; padding: 12px 35px; font-size: 16px; line-height: 20px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .home-nearby .center { margin: 24px 0 0; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .nearby-more { width: 100%; min-height: 48px; height: 48px; padding: 14px 10px; font-size: 16px; line-height: 20px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .nearby-more img { display: none; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .nearby-more__arrow { display: none; }
 
 :is(.page-home, .page-houses, .page-promotions, .page-house) .section--gallery { padding-top: 45px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .section--gallery + .section { padding-top: 36px; }
@@ -155,6 +155,10 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic__tiles { order: 2; display: flex; gap: 10px; padding: 0 45px; width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic__item:nth-child(n) { position: static; display: block; flex: 0 0 min(300px, calc(100vw - 90px)); width: 300px; height: 200px; aspect-ratio: auto; border-radius: 10px; scroll-snap-align: center; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic__item:nth-child(n + 4) { display: none; }
+/* В режиме бесконечной прокрутки лишние кадры скрипт вынимает из
+   разметки, а по краям ряда добавляет копии крайних: правило по
+   порядковому номеру спрятало бы копию и последний настоящий кадр. */
+:is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic__tiles.is-loop .photo-mosaic__item { display: block; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic > .mobile-carousel-dots { order: 3; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic__text > p:last-child { order: 4; margin: 24px auto 0; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic__text .btn { width: 177px; min-height: 48px; height: 48px; padding: 14px 40px; font-size: 16px; line-height: 20px; }

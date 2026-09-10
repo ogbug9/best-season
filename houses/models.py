@@ -15,7 +15,7 @@ MIN_GALLERY_IMAGES = 15
 # возможности сломать вёрстку. Заголовки и произвольный HTML недоступны.
 BODY_FEATURES = ["bold", "italic", "link", "ul", "ol"]
 
-# Подпись под заголовком «Что можно добавить» — текст с макета.
+# Подпись под заголовком «Что добавить» — текст с макета.
 DEFAULT_SERVICES_INTRO = (
     "Чем можно разнообразить ваш отдых: русская баня, беседка, "
     "фотосессия с животными.\n"
@@ -171,7 +171,8 @@ class HousePage(Page):
     )
     pet_fee = models.PositiveIntegerField(
         "Доплата за питомца, ₽", default=0,
-        help_text="За одного питомца за всё проживание. Выводится подсказкой у счётчика.",
+        help_text="Только для подписи у счётчика. Ставки расчёта общие "
+                  "для всех домиков и заданы в настройках сайта.",
     )
     max_adults = models.PositiveSmallIntegerField("Максимум взрослых", default=4)
     max_children = models.PositiveSmallIntegerField("Максимум детей", default=4)
@@ -346,11 +347,17 @@ class HousePage(Page):
 
     @property
     def pet_fee_note(self):
-        """Подпись у счётчика питомцев: «Доплата за питомца 1000 ₽»."""
-        if not self.pet_fee:
+        """Подпись у счётчика питомцев: «Доплата за питомца 1000 ₽».
+
+        Ставку берём оттуда же, откуда её берёт расчёт — из настроек
+        сайта: подпись и сумма не должны расходиться.
+        """
+        from houses.booking import rates
+
+        amount = self.pet_fee or rates().pet_small_fee
+        if not amount:
             return ""
-        amount = f"{self.pet_fee:,}".replace(",", " ")
-        return f"Доплата за питомца {amount} ₽"
+        return f"Доплата за питомца {amount:,} ₽".replace(",", " ")
 
     def nightly_price(self, day):
         """Цена ночи, начинающейся в этот день.

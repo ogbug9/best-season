@@ -218,3 +218,52 @@
     }, { passive: true });
   });
 })();
+
+/* Карточки «Наша территория» на тач-устройствах.
+
+   На десктопе описание и кнопка появляются при наведении, чистым CSS.
+   Наведения на телефоне нет, поэтому там то же состояние включает
+   нажатие: первый тап раскрывает карточку, второй по кнопке
+   «Подробнее» уводит на страницу. Тап по кнопке до карточки не
+   всплывает — иначе первое же нажатие и раскрывало бы, и уводило. */
+(function () {
+  "use strict";
+
+  var cards = document.querySelectorAll(".territory-card");
+  if (!cards.length) return;
+  if (!window.matchMedia || !window.matchMedia("(hover: none)").matches) return;
+
+  function close(except) {
+    cards.forEach(function (card) {
+      if (card !== except) {
+        card.classList.remove("is-open");
+        card.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  cards.forEach(function (card) {
+    card.setAttribute("aria-expanded", "false");
+
+    card.addEventListener("click", function (event) {
+      // Ссылка внутри карточки работает сама: раскрытие ей не мешает
+      if (event.target.closest("a, button")) return;
+      var open = !card.classList.contains("is-open");
+      close(card);
+      card.classList.toggle("is-open", open);
+      card.setAttribute("aria-expanded", String(open));
+    });
+
+    card.addEventListener("keydown", function (event) {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      if (event.target !== card) return;
+      event.preventDefault();
+      card.click();
+    });
+  });
+
+  // Нажатие мимо карточек закрывает раскрытую
+  document.addEventListener("click", function (event) {
+    if (!event.target.closest(".territory-card")) close(null);
+  });
+})();

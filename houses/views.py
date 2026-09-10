@@ -53,6 +53,10 @@ def price(request, slug):
         adults=request.GET.get("adults"),
         children=request.GET.get("children"),
         pets=request.GET.get("pets"),
+        # Ввода возраста ребёнка и роста питомца в интерфейсе пока нет —
+        # параметры остаются нулевыми, расчёт к ним уже готов.
+        paid_children=request.GET.get("paid_children"),
+        pets_large=request.GET.get("pets_large"),
     )
     # Подписи считает сервер: русские окончания «ночь/ночи/ночей» —
     # одна логика на шаблон и на скрипт, иначе они разъедутся.

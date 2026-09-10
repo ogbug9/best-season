@@ -249,6 +249,28 @@ class SiteSettings(BaseSiteSetting):
         "Подпись у счётчика «Дети»", max_length=120, blank=True,
         default="Бесплатно до 7 лет",
     )
+    # --- Надбавки к цене домика (п. 30 правок 09.09) ---
+    # Базовая цена своя у каждого домика, а надбавки одинаковые везде,
+    # поэтому живут здесь, а не повторяются на четырёх страницах.
+    guests_included = models.PositiveSmallIntegerField(
+        "Гостей в базовой цене", default=2,
+        help_text="Сколько платных гостей входит в цену домика без доплаты.",
+    )
+    extra_guest_fee = models.PositiveIntegerField(
+        "Доплата за гостя сверх базы, ₽/сутки", default=1000,
+        help_text="За каждого платного гостя сверх «Гостей в базовой цене».",
+    )
+    pet_small_fee = models.PositiveIntegerField(
+        "Доплата за питомца до 45 см, ₽/сутки", default=1000,
+    )
+    pet_large_fee = models.PositiveIntegerField(
+        "Доплата за питомца выше 45 см, ₽/сутки", default=1500,
+    )
+    child_free_max_age = models.PositiveSmallIntegerField(
+        "Дети бесплатно до возраста включительно", default=7,
+        help_text="Ребёнок этого возраста и младше не оплачивается. "
+                  "Старше — считается обычным гостем.",
+    )
     yandex_metrika_id = models.CharField(
         "Номер счётчика Яндекс.Метрики",
         max_length=16,
@@ -312,6 +334,11 @@ class SiteSettings(BaseSiteSetting):
                 FieldPanel("booking_lead_text"),
                 FieldPanel("guests_adults_note"),
                 FieldPanel("guests_children_note"),
+                FieldPanel("guests_included"),
+                FieldPanel("extra_guest_fee"),
+                FieldPanel("pet_small_fee"),
+                FieldPanel("pet_large_fee"),
+                FieldPanel("child_free_max_age"),
                 FieldPanel("yandex_metrika_id"),
             ],
             heading="Бронирование и аналитика",
@@ -630,7 +657,13 @@ class TerritoryPage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        context["territory"] = TerritoryItem.objects.filter(is_published=True)
+        items = list(TerritoryItem.objects.filter(is_published=True))
+        # Тот же запасной адрес, что и в блоке на главной: кнопка есть у
+        # каждой карточки, даже если своя ссылка не заведена.
+        own_url = self.get_url(request) or ""
+        for item in items:
+            item.details_url = item.link_url or own_url
+        context["territory"] = items
         return context
 
 

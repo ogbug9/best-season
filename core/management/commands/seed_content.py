@@ -793,6 +793,12 @@ class Command(BaseCommand):
                     existing.area = area
                     changed = True
                     self.mark(f"дом, площадь по макету: {title}")
+                # Домики выводятся выпадающим списком в пункте меню
+                # «Размещение» — так же, как «Территория» и «О нас».
+                if not existing.show_in_menus:
+                    existing.show_in_menus = True
+                    changed = True
+                    self.mark(f"дом в меню: {title}")
                 if changed and not self.dry:
                     existing.save()
                 self.fill_house_details(existing)
@@ -811,7 +817,8 @@ class Command(BaseCommand):
                 price_from=price,
                 capacity=capacity,
                 area=area,
-                show_in_menus=False,
+                # Пункт меню «Размещение» раскрывается списком домиков
+                show_in_menus=True,
             )
             index.add_child(instance=page)
             page.save_revision().publish()

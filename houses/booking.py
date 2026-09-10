@@ -181,8 +181,51 @@ def _range(selection):
     return _parse(date_from), _parse(date_to)
 
 
-def quote(house, date_from=None, date_to=None, adults=None, children=0, pets=0):
+class Rates:
+    """Надбавки к цене домика. Одни на весь сайт, редактируются в
+    настройках; значения по умолчанию совпадают с прайсом на 09.09."""
+
+    guests_included = 2
+    extra_guest_fee = 1000
+    pet_small_fee = 1000
+    pet_large_fee = 1500
+    child_free_max_age = 7
+
+
+def rates():
+    """Настройки сайта, если они заведены. Без них считаем по умолчанию:
+    расчёт не должен падать на пустой базе (тесты, первый запуск)."""
+    from core.models import SiteSettings
+
+    try:
+        settings = SiteSettings.objects.first()
+    except Exception:  # база ещё не мигрирована
+        settings = None
+    return settings or Rates
+
+
+def quote(
+    house,
+    date_from=None,
+    date_to=None,
+    adults=None,
+    children=0,
+    pets=0,
+    paid_children=0,
+    pets_large=0,
+):
     """Итог для правой карточки: ночей, гостей, сумма.
+
+    Что считается платным гостем: взрослые и дети старше бесплатного
+    возраста (`paid_children`). Счётчик «Дети» на странице дома — это
+    дети до 7 лет включительно, они занимают место, но не оплачиваются;
+    ребёнок постарше вводится взрослым. Отдельный `paid_children`
+    оставлен для будущего ввода возраста — расчёт к нему уже готов.
+
+    `pets_large` — питомцы выше 45 см в холке, у них своя ставка.
+    Как спрашивать рост и возраст в интерфейсе, пока не решено
+    (ждёт разбора модуля Контура), поэтому оба параметра
+    необязательные и по умолчанию нулевые.
 
     Пока даты не выбраны, суммы нет — показывается цена «от». Ошибку
     отдаём текстом, чтобы её можно было показать и в шаблоне, и в JSON,
@@ -193,6 +236,13 @@ def quote(house, date_from=None, date_to=None, adults=None, children=0, pets=0):
     adults = _clamp(adults, 1, house.max_adults, default=min(2, house.max_adults))
     children = _clamp(children, 0, house.max_children, default=0)
     pets = _clamp(pets, 0, house.max_pets, default=0)
+    paid_children = _clamp(paid_children, 0, children, default=0)
+    pets_large = _clamp(pets_large, 0, pets, default=0)
+
+    price = rates()
+    # Платные гости: взрослые плюс дети, которым бесплатный возраст
+    # уже не положен. Бесплатные дети место занимают, но не считаются.
+    billable = adults + paid_children
 
     result = {
         "date_from": date_from.isoformat() if date_from else "",
@@ -200,6 +250,8 @@ def quote(house, date_from=None, date_to=None, adults=None, children=0, pets=0):
         "adults": adults,
         "children": children,
         "pets": pets,
+        "paid_children": paid_children,
+        "pets_large": pets_large,
         "guests": adults + children,
         "nights": 0,
         "total": None,
@@ -225,16 +277,26 @@ def quote(house, date_from=None, date_to=None, adults=None, children=0, pets=0):
         return result
 
     provider = get_provider(house)
+    # Надбавки считаются за сутки и умножаются на число ночей вместе с
+    # ценой домика: тариф может отличаться по дням (сезонные правила),
+    # а доплаты одинаковы, но начисляются за каждую ночь.
+    extra_guests = max(0, billable - price.guests_included)
+    surcharge = (
+        extra_guests * price.extra_guest_fee
+        + (pets - pets_large) * price.pet_small_fee
+        + pets_large * price.pet_large_fee
+    )
+
     total = 0
     for offset in range(nights):
         day = date_from + timedelta(days=offset)
         if not provider.is_available(house, day):
             result["error"] = "Часть выбранных дат занята."
             return result
-        total += provider.nightly_price(house, day)
+        total += provider.nightly_price(house, day) + surcharge
 
     result["nights"] = nights
-    result["total"] = total + pets * house.pet_fee
+    result["total"] = total
     return result
 
 

@@ -9,6 +9,7 @@
     const slides = Array.from(track.children).filter(slide => getComputedStyle(slide).display !== 'none');
     if (slides.length < 2) return;
     const originalHeight = track.style.height;
+    const loop = track.classList.contains('photo-mosaic__tiles') ? makeLoop(track, slides) : null;
     const dots = document.createElement('div');
     dots.className = 'mobile-carousel-dots';
     dots.setAttribute('role', 'group');
@@ -42,17 +43,99 @@
         if (delta < distance) { distance = delta; active = index; }
       });
       buttons.forEach((button, index) => button.setAttribute('aria-current', String(index === active)));
-      if (track.matches('.cards--nearby, .reviews')) track.style.height = `${slides[active].getBoundingClientRect().height}px`;
+    }
+    // Высоту ряда закрепляем по самой высокой карточке и один раз.
+    // Раньше она пересчитывалась под текущий слайд на каждом кадре
+    // прокрутки, и при горизонтальном свайпе карточка ездила вверх-вниз.
+    function fixHeight() {
+      if (!track.matches('.cards--nearby, .reviews')) return;
+      track.style.height = '';
+      const tallest = slides.reduce((max, slide) => Math.max(max, slide.getBoundingClientRect().height), 0);
+      if (tallest) track.style.height = `${tallest}px`;
     }
     function onScroll() { if (!frame) frame = requestAnimationFrame(update); }
     track.addEventListener('scroll', onScroll, { passive: true });
-    if (track.classList.contains('photo-mosaic__tiles')) {
+    if (loop) loop.start(); else if (track.classList.contains('photo-mosaic__tiles')) {
       track.scrollLeft = slides[1].getBoundingClientRect().left - track.getBoundingClientRect().left - (track.clientWidth - slides[1].clientWidth) / 2;
     }
+    fixHeight();
     update();
-    const resize = new ResizeObserver(onScroll);
+    const resize = new ResizeObserver(() => { fixHeight(); onScroll(); });
     slides.forEach(slide => resize.observe(slide));
-    cleanups.push(() => { track.removeEventListener('scroll', onScroll); cancelAnimationFrame(frame); resize.disconnect(); track.style.height = originalHeight; dots.remove(); });
+    cleanups.push(() => {
+      track.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(frame);
+      resize.disconnect();
+      track.style.height = originalHeight;
+      dots.remove();
+      if (loop) loop.stop();
+    });
+  }
+
+  /* Бесконечная прокрутка фотогалереи: с последнего кадра свайп идёт на
+     первый и наоборот. Библиотеки нет, поэтому по краям ряда лежат
+     копии крайних кадров, а когда прокрутка на них останавливается,
+     позиция без анимации переставляется на настоящий кадр.
+     Лишние кадры (в мобильном макете их прячет nth-child) на время
+     вынимаем из разметки: иначе копии сдвинули бы нумерацию правил. */
+  function makeLoop(track, slides) {
+    if (slides.length < 2) return null;
+    const hidden = Array.from(track.children).filter(item => !slides.includes(item));
+    const marks = hidden.map(item => {
+      const mark = document.createComment('');
+      item.replaceWith(mark);
+      return mark;
+    });
+    const head = slides[0].cloneNode(true);
+    const tail = slides[slides.length - 1].cloneNode(true);
+    [head, tail].forEach(clone => {
+      clone.setAttribute('aria-hidden', 'true');
+      clone.dataset.clone = 'true';
+    });
+    track.prepend(tail);
+    track.append(head);
+    track.classList.add('is-loop');
+
+    function offsetOf(slide) {
+      return track.scrollLeft + slide.getBoundingClientRect().left - track.getBoundingClientRect().left
+        - (track.clientWidth - slide.clientWidth) / 2;
+    }
+    function jump(slide) {
+      const behavior = track.style.scrollBehavior;
+      const snap = track.style.scrollSnapType;
+      // Снятый snap обязателен: с ним браузер возвращает прокрутку
+      // обратно на копию, и переход выглядит как рывок туда-обратно.
+      track.style.scrollSnapType = 'none';
+      track.style.scrollBehavior = 'auto';
+      track.scrollLeft = offsetOf(slide);
+      track.style.scrollBehavior = behavior;
+      track.style.scrollSnapType = snap;
+    }
+    let timer = 0;
+    function onScroll() {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const box = track.getBoundingClientRect();
+        const center = box.left + box.width / 2;
+        const near = item => Math.abs(item.getBoundingClientRect().left + item.getBoundingClientRect().width / 2 - center) < item.clientWidth / 2;
+        if (near(head)) jump(slides[0]);
+        else if (near(tail)) jump(slides[slides.length - 1]);
+      }, 120);
+    }
+    return {
+      start() {
+        track.addEventListener('scroll', onScroll, { passive: true });
+        jump(slides[0]);
+      },
+      stop() {
+        clearTimeout(timer);
+        track.removeEventListener('scroll', onScroll);
+        track.classList.remove('is-loop');
+        head.remove();
+        tail.remove();
+        marks.forEach((mark, index) => mark.replaceWith(hidden[index]));
+      }
+    };
   }
 
   function sync() {

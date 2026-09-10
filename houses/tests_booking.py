@@ -53,8 +53,37 @@ class QuoteTests(TestCase):
         self.assertEqual(result["error"], "")
 
     def test_pet_fee_is_added_per_pet(self):
-        self.assertEqual(self._quote(pets=1)["total"], 17000)
-        self.assertEqual(self._quote(pets=2)["total"], 18000)
+        # Доплата за питомца начисляется за каждую ночь: 16 000 за две
+        # ночи плюс 2 × 1 000 за питомца.
+        self.assertEqual(self._quote(pets=1)["total"], 18000)
+        self.assertEqual(self._quote(pets=2)["total"], 20000)
+
+    def test_large_pet_has_own_rate(self):
+        """Питомец выше 45 см — 1 500 ₽ за ночь, ниже — 1 000 ₽."""
+        self.assertEqual(self._quote(pets=1, pets_large=1)["total"], 19000)
+        # Двое разного размера: 1 000 + 1 500 за каждую из двух ночей
+        self.assertEqual(self._quote(pets=2, pets_large=1)["total"], 21000)
+
+    def test_one_and_two_guests_cost_the_same(self):
+        """Базовая цена рассчитана на двоих: один гость платит столько же."""
+        self.assertEqual(self._quote(adults=1)["total"], 16000)
+        self.assertEqual(self._quote(adults=2)["total"], 16000)
+
+    def test_third_and_fourth_guest_add_a_thousand(self):
+        # 8 000 → 9 000 → 10 000 за сутки
+        self.assertEqual(self._quote(nights=1, adults=3)["total"], 9000)
+        self.assertEqual(self._quote(nights=1, adults=4)["total"], 10000)
+        self.assertEqual(self._quote(nights=2, adults=4)["total"], 20000)
+
+    def test_free_children_do_not_change_the_total(self):
+        """Дети до 7 лет включительно место занимают, но не оплачиваются."""
+        self.assertEqual(self._quote(adults=2, children=2)["total"], 16000)
+        self.assertEqual(self._quote(adults=2, children=2)["guests"], 4)
+
+    def test_child_over_free_age_counts_as_a_guest(self):
+        """Ребёнок старше бесплатного возраста считается обычным гостем."""
+        result = self._quote(nights=1, adults=2, children=1, paid_children=1)
+        self.assertEqual(result["total"], 9000)
 
     def test_season_rule_overrides_base_price(self):
         """Сезонная цена перекрывает базовую только в свои даты."""
