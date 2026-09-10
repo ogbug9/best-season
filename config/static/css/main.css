@@ -4676,15 +4676,10 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .territory-card .territory-card__details { display: none; }
   .territory-card.is-open .territory-card__details { display: block; }
 }
-/* Плитка территории на узком экране. Пропорция 170/179 — из мобильного
-   макета главной. Прежние `aspect-ratio: auto` и `min-height: 295px`
-   давали в сетке из двух колонок вертикальные полосы 165×295: на главной
-   это перебивал home-mobile.css, а на странице «Территория», у которой
-   мобильного файла нет, полосы оставались. */
 @media (max-width: 699px) {
-  .territory-card { aspect-ratio: 170 / 179; min-height: 0; }
+  .territory-card { aspect-ratio: auto; min-height: 295px; }
   .territory-card > picture, .territory-card > .ph { position: absolute; inset: 0; }
-  .territory-card .mosaic__caption { position: absolute; inset: 0; min-height: 0; justify-content: flex-end; padding: 12px 16px; }
+  .territory-card .mosaic__caption { position: relative; min-height: 295px; justify-content: flex-end; padding-inline: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .territory-card > picture, .territory-card > .ph { transition: none; }
@@ -4762,13 +4757,6 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   }
 }
 
-/* Выше 2560px контейнер больше не растёт. Рост до 2240px раздувал сами
-   блоки, а не поля: карточка домика выходила 1110×910 при макетных
-   610×500, плитка территории 545 при 295, фото цитаты 851 при 600, —
-   при этом названия, подписи и кнопки оставались макетного кегля.
-   Типографика у нас фиксированная, поэтому за пределами 2560 к содержимому
-   добавляются боковые поля, а его размеры остаются как на 2560. */
-
 /* На небольшом десктопе фото и текст должны помещаться между полями.
    Высота растёт вместе с текстом, вместо выхода за границы секции. */
 @media (min-width: 900px) and (max-width: 1279px) {
@@ -4821,116 +4809,4 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
     max-height: none;
     white-space: normal;
   }
-}
-
-/* =========================================================================
-   Адаптация под реальные ширины окна (ADAPTATION_PROMPT.md)
-
-   Каждый блок ниже закрыт медиазапросом, в который макетные 1440 не
-   попадают: композиция, типографика и геометрия эталона не меняются.
-   Мобильные файлы (home-mobile.css, pages-mobile.css) подключены до 699px
-   и грузятся после main.css, поэтому телефонный макет тоже не перебивается.
-   ========================================================================= */
-
-/* ---------- Полоса 700–899: ни телефонного макета, ни десктопного ----------
-   Мобильные файлы кончаются на 699, десктопная композиция начинается с 900.
-   В этой полосе блоки собирались из десктопных правил в неподходящем
-   размере: карточка домика ужималась до 363×297 при флажке цены 94×128 и
-   кнопке «Подробнее» 154px, слоган в 44px ломался на четыре строки вместо
-   макетных двух, квадратное фото цитаты растягивалось во всю ширину экрана.
-   Возвращаем блокам макетные размеры, а лишнюю ширину отдаём полям. */
-@media (min-width: 700px) and (max-width: 899px) {
-  /* Одна колонка: две давали карточку 363px при макетных 610.
-     Карточки услуг в каталоге собраны на тех же классах .house. */
-  .cards--houses,
-  .cards--services { grid-template-columns: minmax(0, 1fr); }
-  .house { max-width: 610px; margin-inline: auto; }
-
-  /* Название в карточке «Интересное рядом» набрано nowrap кеглем 40:
-     в колонку 279px оно не помещается и вылезает за карточку. Кегль тот
-     же, что уже стоит в полосе 900–1279. */
-  .place__title { white-space: normal; font-size: 30px; line-height: 34px; }
-
-  /* Первая строка слогана в макете 765px при кегле 44 — в контейнер она
-     не влезает, и слоган рвётся на четыре строки вместо двух. Кегль тянем
-     по ширине окна; 44px возвращаются, как только строка помещается. */
-  .slogan p { font-size: min(2.75rem, 5vw); }
-
-  /* Плашка вопроса рассчитана на контейнер 1240: кегль 32, поля 32. */
-  .faq__item .faq__question { font-size: 1.5rem; padding: 12px 20px; gap: var(--s-3); }
-  .faq__item .faq__answer { padding-inline: 20px; font-size: 1.25rem; }
-
-  /* Фото цитаты в макете 600×600, а не во всю ширину экрана. */
-  .quote__media picture,
-  .quote__media img,
-  .quote__media .ph { max-width: 600px; margin-inline: auto; }
-}
-
-/* ---------- 900–1279: фото «О нас» не должно становиться полоской ----------
-   Высоту секции в этой полосе задаёт текст (block-size: auto), а фото
-   тянулось на всю её высоту: при 1100px выходило 483×1034 вместо макетной
-   пропорции 560×700 — от кадра оставалась вертикальная полоса.
-   Держим пропорцию кадра, а не высоту секции. */
-@media (min-width: 900px) and (max-width: 1279px) {
-  /* Название карточки «Интересное рядом» здесь уже уменьшено до 30px, но
-     осталось nowrap: в колонку 228px строка не помещается и вылезает за
-     карточку. Разрешаем перенос — на макетной ширине строка одна и без него. */
-  .place__title { white-space: normal; }
-
-  .about__media { align-self: start; block-size: auto; }
-  .about__media picture,
-  .about__media img,
-  .about__media .ph {
-    block-size: auto;
-    min-block-size: 0;
-    height: auto;
-    aspect-ratio: 560 / 700;
-  }
-}
-
-/* ---------- Страница дома на планшете и небольшом ноутбуке ----------
-   Ниже 1280 блок бронирования разложен в одну колонку, и календарь,
-   счётчики и кнопка растягивались во всю ширину окна: календарь 969px при
-   макетных 858, блок гостей 969×347 почти пустой. Ширины держим макетные,
-   лишнее место отдаём полям. */
-@media (min-width: 768px) and (max-width: 1279px) {
-  .page-house .booking-field--dates,
-  .page-house .calendar { max-width: 858px; margin-inline: auto; }
-  .page-house .booking-field--guests,
-  .page-house .booking-panel__sidebar { max-width: 480px; margin-inline: auto; }
-}
-
-/* Колонки «О домике» и «Удобства» рядом оставляют плашке удобства 165px —
-   строка в 22px рвётся на три. Ниже 1024 складываем в колонку, ровно так
-   же, как это уже сделано ниже 768. */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .page-house .house-about { flex-direction: column; }
-  .page-house .equipment__columns { flex-direction: column; gap: 32px; }
-  .page-house .equipment__column { width: 100%; }
-}
-
-/* ---------- Шапка на самых узких экранах ----------
-   На страницах без мобильного макета в пилюлю 280px не помещались знак
-   (160), лапа (30) и кнопка меню (44) с зазорами по 20: пилюля занимала
-   20..300, а кнопка меню — 264..308, то есть бургер выходил за скругление.
-   Уменьшаем знак и зазор — тем же приёмом, что в мобильном макете главной. */
-@media (max-width: 359px) {
-  .header__bar { gap: var(--s-2); }
-  .header__mark { flex-basis: 36px; }
-  .header__mark svg { width: 36px; height: 36px; }
-  .header__name { width: 84px; font-size: 18px; }
-
-  /* Слово «Впечатления» кеглем 36 требует 289px и не помещается в колонку
-     280px: заголовок вылезал за свой блок вправо. Уменьшаем кегль, чтобы
-     не разрывать слово переносом посреди букв. Селектор из трёх классов —
-     кегль заголовков секций задаёт home-mobile.css, а он грузится позже. */
-  .yandex-reviews .section__title.yandex-reviews__title { font-size: 32px; }
-}
-
-/* Облачко у лапы шириной 204px открывается вправо от неё: на 390px оно
-   уходило за правый край экрана (253..457). На макетной ширине места
-   хватает, поэтому разворачиваем его только на узких экранах. На главной,
-   «Размещении», «Акциях» и странице дома лапа ниже 700px скрыта. */
-@media (max-width: 699px) {
-  .header__paw-note { left: auto; right: 0; }
 }
