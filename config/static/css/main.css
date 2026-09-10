@@ -905,6 +905,41 @@ body {
   }
 }
 
+/* ---------- Отзывы Яндекса ---------- */
+.yandex-reviews__widget {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  height: 800px;
+  margin: var(--s-7) auto 0;
+  overflow: hidden;
+}
+.yandex-reviews__frame {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  background: var(--c-white);
+}
+.yandex-reviews__attribution {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 14px;
+  padding: 0 16px;
+  overflow: hidden;
+  color: #b3b3b3;
+  font: 10px/14px "YS Text", sans-serif;
+  text-align: center;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ---------- Отзывы о домике ----------
    Инспектор (Frame 2087326587 на странице «The First»): три колонки по
    397px с зазором 24, фото 397×220 сверху, под ним 20px до текста.
