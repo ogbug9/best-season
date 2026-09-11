@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags media_tags territory_tags %}
+{% load wagtailcore_tags media_tags territory_tags layout_tags %}
 
 {% block content %}
 <section class="section page-head">
@@ -28,7 +28,7 @@
           <div class="mosaic__caption">
             <h2 class="mosaic__title">{{ item.title|territory_lines|linebreaksbr }}</h2>
             <div class="territory-card__details">
-              {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+              {% if item.description %}<p>{{ item.description|layout_lines:"territory_description"|linebreaksbr }}</p>{% endif %}
               {% if item.details_url %}
                 <a class="territory-card__link" href="{{ item.details_url }}">Подробнее</a>
               {% endif %}

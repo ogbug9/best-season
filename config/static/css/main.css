@@ -4693,6 +4693,21 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   padding: 20px 38px 20px 39px;
 }
 .territory-card:is(:hover, :focus-within, .is-open) .territory-card__details { display: block; }
+/* Десктоп: строки заголовка и описания — ровно как в макете. Переносы
+   стоят в шаблоне (territory_lines / layout_lines), браузер своих не
+   добавляет. Описание 262px в плитке 295 — поля по 16px; строка длиннее
+   («и съёмочная команда Алины») свисает поровну в обе стороны. */
+@media (min-width: 1280px) {
+  .territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption { padding-inline: 16px; }
+  .territory-card:is(:hover, :focus-within, .is-open) .territory-card__details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .territory-card .mosaic__caption :is(h2, h3),
+  .territory-card .territory-card__details p { white-space: nowrap; }
+  .territory-card .territory-card__details p { width: max-content; min-width: 262px; margin: 0; }
+}
 .territory-card:focus-visible { outline: 2px solid var(--c-olive); outline-offset: 3px; }
 /* На тач-устройствах раскрытие вешает скрипт по нажатию (.is-open):
    наведения там нет, а :focus-within срабатывал бы от одного касания. */
