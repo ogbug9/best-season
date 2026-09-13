@@ -18,6 +18,17 @@
 }
 
 .booking-system::backdrop { background: rgb(17 24 43 / 65%); }
+/* The SDK owns the active overlay/backdrop while our native top layer is suspended. */
+.booking-system.booking-system--vendor-open {
+  position: fixed;
+  inset: auto;
+  top: min(var(--booking-layer-top), max(0px, calc(100dvh - var(--booking-layer-height))));
+  left: max(0px, calc((100vw - var(--booking-layer-width)) / 2));
+  width: min(100vw, var(--booking-layer-width));
+  height: min(100dvh, var(--booking-layer-height));
+  margin: 0;
+  z-index: var(--booking-layer-z, 0);
+}
 .booking-system .booking-modal__inner { padding: 60px 32px 32px; }
 .booking-system .booking-modal__title {
   margin: 0 64px 40px;

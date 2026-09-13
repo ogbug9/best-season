@@ -15,6 +15,7 @@
 
   var modal = document.querySelector("[data-booking-modal]");
   if (!modal) return;
+  var layers = window.BookingLayers ? window.BookingLayers(modal) : null;
 
   // Настройки приходят из шаблона отдельным блоком JSON, а не инлайновым
   // скриптом: так значения из админки экранируются самим Django и кавычка
@@ -297,6 +298,7 @@
     } else {
       modal.setAttribute("open", "");
     }
+    if (layers) layers.open();
 
     if (state.failed || state.ready) return;
 
@@ -347,6 +349,7 @@
   }
 
   function closeModal() {
+    if (layers && !layers.close()) return;
     clearTimeout(state.timer);
     var offset = Math.abs(parseInt(document.body.style.top || "0", 10)) || 0;
     document.body.removeAttribute("data-modal-open");
@@ -393,6 +396,10 @@
   // close срабатывает и на Esc, и на кнопке — восстановление прокрутки
   // вешаем сюда, чтобы не дублировать в двух местах.
   modal.addEventListener("close", closeModal);
+  modal.addEventListener("cancel", function (event) {
+    // Let the SDK handle Esc for its active popup, including before the next frame.
+    if (layers && layers.ownsPopup()) event.preventDefault();
+  });
 
   // Клик по подложке закрывает окно. Проверяем именно сам <dialog>:
   // у него подложка — это его собственная площадь вне содержимого.
