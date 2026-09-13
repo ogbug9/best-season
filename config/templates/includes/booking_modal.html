@@ -17,13 +17,13 @@
   (п. 5.6.5), и он обязан работать, когда от виджета не осталось ничего.
 {% endcomment %}
 
-<dialog class="booking-modal" data-booking-modal aria-labelledby="booking-modal-title">
+<dialog class="booking-modal booking-system" data-booking-modal aria-labelledby="booking-modal-title">
   <div class="booking-modal__inner">
 
     <button type="button" class="booking-modal__close" data-booking-close
             aria-label="Закрыть окно бронирования">×</button>
 
-    <h2 class="booking-modal__title" id="booking-modal-title">Бронирование</h2>
+    <h2 class="booking-modal__title" id="booking-modal-title">Онлайн-бронирование</h2>
 
     {% comment %} Подводящий текст обязателен по п. 5.4.3 и п. 5.4.4 {% endcomment %}
     <p class="booking-modal__lead" data-booking-note>
@@ -39,6 +39,26 @@
       в appearance.container.
     {% endcomment %}
     <div class="kontur-host" id="BookingFormWidget" data-booking-host hidden></div>
+
+    <div data-booking-catalog hidden>
+      <section class="booking-system__section" aria-labelledby="booking-rooms-title">
+        <h3 id="booking-rooms-title">Домики</h3>
+        <div class="kontur-host" id="BookingRoomsWidget" data-kontur-type="roomsList"></div>
+      </section>
+      <section class="booking-system__section" aria-labelledby="booking-hourly-title">
+        <h3 id="booking-hourly-title">Баня и беседки</h3>
+        <div class="kontur-host" id="BookingHourlyWidget" data-kontur-type="hourlyObjectsList"></div>
+      </section>
+      <section class="booking-system__section" aria-labelledby="booking-calendar-title">
+        <h3 id="booking-calendar-title">Календарь доступности</h3>
+        <div class="kontur-host" id="BookingCalendarWidget" data-kontur-type="availabilityCalendar"></div>
+      </section>
+    </div>
+
+    <div class="booking-system__help" data-booking-help hidden>
+      <p>Нет подходящего домика или свободных дат? Попробуйте другие даты или оставьте заявку — поможем с выбором.</p>
+      <button type="button" class="btn btn--outline" data-booking-request>Оставить заявку</button>
+    </div>
 
     {% comment %} ---- Резервный блок, п. 5.6.2 ---- {% endcomment %}
     <div class="booking-fallback" data-booking-fallback hidden>
@@ -56,6 +76,10 @@
         Онлайн-бронирование временно недоступно. Оставьте заявку — подберём
         свободный домик на ваши даты и ответим лично.
       </p>
+
+      <button type="button" class="btn btn--outline booking-system__retry" data-booking-retry hidden>
+        Повторить загрузку
+      </button>
 
       <div data-fallback-form>
         {% include "forms/request_form.html" with form=fallback_booking_form form_type="fallback" submit_label="Отправить заявку" %}

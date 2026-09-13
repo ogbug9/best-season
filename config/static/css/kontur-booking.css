@@ -1,0 +1,115 @@
+/* Booking shell: dimensions from the supplied desktop Figma export css.md.
+   Provider internals are styled only through the official widget theme. */
+.booking-system {
+  width: min(1240px, calc(100% - 64px));
+  max-width: 1240px;
+  max-height: calc(100dvh - 64px);
+  margin: 32px auto;
+  padding: 0;
+  border: 0;
+  border-radius: 40px;
+  background: #f7f0e6;
+  color: #494949;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+  overscroll-behavior: contain;
+}
+
+.booking-system::backdrop { background: rgb(17 24 43 / 65%); }
+.booking-system .booking-modal__inner { padding: 60px 32px 32px; }
+.booking-system .booking-modal__title {
+  margin: 0 64px 40px;
+  color: #847f57;
+  font-family: 'Etude Noire', sans-serif;
+  font-weight: 500;
+  font-size: 64px;
+  line-height: 67px;
+  text-align: center;
+}
+.booking-system .booking-modal__close {
+  position: absolute;
+  z-index: 2;
+  top: 32px;
+  right: 32px;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: rgb(132 127 87 / 15%);
+  color: #847f57;
+  font-size: 36px;
+  line-height: 1;
+}
+.booking-system .booking-modal__close:hover { background: rgb(132 127 87 / 25%); }
+.booking-system .booking-modal__lead { max-width: none; margin: 0 0 24px; }
+.booking-system .booking-modal__loading { margin: 24px 0; }
+.booking-system .kontur-host { min-width: 0; min-height: 100px; }
+.booking-system #BookingFormWidget { margin-top: 0; }
+.booking-system .booking-system__section { margin-top: 32px; min-width: 0; }
+.booking-system .booking-system__section > h3 {
+  margin: 0 0 24px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 29px;
+}
+.booking-system .booking-fallback {
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: 16px;
+  background: #fff;
+}
+.booking-system .booking-fallback__note {
+  padding: 0;
+  background: transparent;
+  color: #494949;
+  font-weight: 400;
+}
+.booking-system .booking-system__retry { margin: 16px 0 24px; }
+.booking-system .booking-system__help {
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: 16px;
+  background: #fff;
+  font-size: 16px;
+  line-height: 24px;
+}
+.booking-system .booking-system__help .btn { margin-top: 16px; }
+.booking-system [hidden] { display: none !important; }
+
+@media (min-width: 1280px) and (min-height: 960px) {
+  .booking-system { margin-top: 160px; max-height: calc(100dvh - 192px); }
+}
+
+/* No mobile frame was supplied: fluid adaptation of the desktop shell. */
+@media (max-width: 1100px) {
+  .booking-system .booking-modal__title { font-size: 44px; line-height: 48px; }
+}
+@media (max-width: 767px) {
+  .booking-system {
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  .booking-system .booking-modal__inner { padding: 80px 16px 32px; }
+  .booking-system .booking-modal__title {
+    margin: 0 0 24px;
+    font-size: clamp(24px, 5.5vw, 40px);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+  .booking-system .booking-modal__close { top: 16px; right: 16px; }
+  .booking-system .booking-fallback,
+  .booking-system .booking-system__help { padding: 16px; }
+  .booking-system .form__grid { grid-template-columns: minmax(0, 1fr); }
+  .booking-system .form__field { min-width: 0; }
+  .booking-system .booking-fallback__contacts .btn { max-width: 100%; overflow-wrap: anywhere; }
+}

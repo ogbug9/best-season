@@ -30,6 +30,9 @@
   var fallback = modal.querySelector("[data-booking-fallback]");
   var spinner = modal.querySelector("[data-booking-loading]");
   var noteBox = modal.querySelector("[data-booking-note]");
+  var retryButton = modal.querySelector("[data-booking-retry]");
+  var help = modal.querySelector("[data-booking-help]");
+  var catalog = modal.querySelector("[data-booking-catalog]");
 
   // Сколько ждём инициализации, прежде чем показать резервный блок — п. 5.6.1.
   var TIMEOUT_MS = 5000;
@@ -43,6 +46,12 @@
     entryPoint: "",
     timer: null,
     opener: null,
+    script: null,
+    attempt: 0,
+    initializing: false,
+    initialized: false,
+    registered: false,
+    initSignalled: false,
   };
 
   /* ---------- Аналитика точек входа (п. 5.5) ----------
@@ -77,7 +86,7 @@
       body.append("entry_point", state.entryPoint || "");
       body.append("csrfmiddlewaretoken", config.csrfToken || "");
       // keepalive: сообщение должно уйти, даже если гость сразу закроет вкладку
-      fetch(config.errorUrl, { method: "POST", body: body, keepalive: true });
+      fetch(config.errorUrl, { method: "POST", body: body, keepalive: true }).catch(function () {});
     } catch (e) {
       /* не смогли сообщить — гость всё равно увидит форму заявки */
     }
@@ -91,8 +100,17 @@
 
     if (spinner) spinner.hidden = true;
     if (host) host.hidden = true;
+    if (catalog) catalog.hidden = true;
     if (noteBox) noteBox.hidden = true;
     if (fallback) fallback.hidden = false;
+    if (help) help.hidden = true;
+    modal.removeAttribute("aria-busy");
+    if (retryButton) {
+      retryButton.hidden = !config.hotelId;
+      // The vendor has no verified teardown API. Never register a second
+      // singleton over a partially initialized widget.
+      retryButton.textContent = state.initialized ? "Перезагрузить страницу" : "Повторить загрузку";
+    }
 
     // «Ещё не подключено» и «сломалось» — разные ситуации, и гостю они
     // должны читаться по-разному. Пустой hotelId это штатное состояние
@@ -108,11 +126,14 @@
   }
 
   function showWidget() {
+    if (state.failed || state.ready || !state.registered || !state.initSignalled) return;
     state.ready = true;
     clearTimeout(state.timer);
     if (spinner) spinner.hidden = true;
     if (host) host.hidden = false;
     if (noteBox) noteBox.hidden = false;
+    if (help) help.hidden = false;
+    modal.removeAttribute("aria-busy");
     track("booking_widget_ready", {});
   }
 
@@ -120,19 +141,17 @@
      ⚠️ onBooking отдаёт ФИО, телефон и почту гостя. В аналитику уходят
      только идентификатор брони и сумма: персональные данные в чужие
      системы не передаём (раздел 12 договора, раздел 11 ТЗ). */
-  function bookingHooks() {
+  function bookingHooks(attempt) {
     return {
       onInit: function () {
+        if (attempt !== state.attempt || state.failed) return;
+        state.initSignalled = true;
         showWidget();
       },
       onError: function (error) {
-        var text = "";
-        try {
-          text = String((error && (error.message || error.code)) || error || "");
-        } catch (e) {
-          text = "unknown";
-        }
-        showFallback("widget_error: " + text.slice(0, 200));
+        if (attempt !== state.attempt) return;
+        // Vendor errors may include guest details; send only a fixed code.
+        showFallback("widget_error");
       },
       onBooking: function (bookings) {
         sendBookingGoal(bookings, "booking_completed");
@@ -182,45 +201,79 @@
   }
 
   function initWidget() {
+    if (state.failed || state.ready || state.initializing || state.initialized) return;
+    // The script can finish downloading after the guest has closed the dialog.
+    // Defer init/add until the next opening, including the layout frame.
+    if (!modal.open) return;
     if (typeof window.HotelWidget === "undefined") {
       showFallback("hotelwidget_undefined");
       return;
     }
     try {
+      // Контур валидирует контейнер в момент add(). Скрытый контейнер
+      // (hidden) считается недоступным, даже если модальное окно уже открыто.
+      // Показываем его до регистрации виджета, а при ошибке showFallback()
+      // снова скроет его.
+      if (host) host.hidden = false;
+      if (catalog) catalog.hidden = false;
+      if (!host || !host.getClientRects().length || !host.getBoundingClientRect().width) {
+        showFallback("container_not_visible");
+        return;
+      }
+      state.initializing = true;
+      state.initialized = true;
       window.HotelWidget.init({
         hotelId: config.hotelId,
         version: "2",
         baseUrl: "https://bookonline24.ru",
-        hooks: bookingHooks(),
+        hooks: bookingHooks(state.attempt),
         theme: widgetTheme(),
       });
+      if (state.failed) return;
       window.HotelWidget.add({
         type: "bookingForm",
         appearance: { container: host.id, inline: false },
       });
-      // Подстраховка: если Контур почему-то не позовёт onInit, но разметку
-      // всё же вставит — считаем виджет живым, как только в контейнере
-      // что-то появилось.
-      setTimeout(function () {
-        if (!state.ready && !state.failed && host.children.length) showWidget();
-      }, 1200);
+      if (state.failed) return;
+      modal.querySelectorAll("[data-kontur-type]").forEach(function (container) {
+        if (state.failed) return;
+        if (!container.getClientRects().length || !container.getBoundingClientRect().width) {
+          throw new Error("Widget container is not visible");
+        }
+        window.HotelWidget.add({
+          type: container.getAttribute("data-kontur-type"),
+          appearance: { container: container.id },
+        });
+      });
+      state.registered = true;
+      state.initializing = false;
+      showWidget();
     } catch (e) {
       showFallback("init_exception");
     }
   }
 
   function loadScript() {
+    if (window.HotelWidget) {
+      initWidget();
+      return;
+    }
     if (state.requested) return;
     state.requested = true;
 
     var script = document.createElement("script");
+    var attempt = state.attempt;
+    state.script = script;
     script.src = WIDGET_SRC;
     script.async = true;
-    script.onload = initWidget;
-    // Домен заблокирован, нет сети, домен сайта не добавлен в разрешённые
-    // у Контура — во всех случаях сюда. Ждать оставшиеся секунды таймера
-    // незачем, гость получает форму заявки сразу.
+    script.onload = function () {
+      if (attempt === state.attempt && !state.failed) requestAnimationFrame(initWidget);
+    };
+    // Сетевые ошибки загрузки скрипта. Запрет домена со стороны SDK
+    // обрабатывается отдельно через onError или таймаут.
     script.onerror = function () {
+      if (attempt !== state.attempt) return;
+      state.requested = false;
       showFallback("script_load_failed");
     };
     document.head.appendChild(script);
@@ -228,6 +281,7 @@
 
   /* ---------- Открытие и закрытие окна (п. 5.2) ---------- */
   function openModal(button) {
+    if (modal.open) return;
     state.entryPoint = button.getAttribute("data-entry-point") || "";
     state.opener = button;
 
@@ -253,14 +307,47 @@
       return;
     }
 
+    startLoading();
+  }
+
+  function startLoading() {
+    clearTimeout(state.timer);
     if (spinner) spinner.hidden = false;
+    if (host) host.hidden = false;
+    modal.setAttribute("aria-busy", "true");
+    var attempt = state.attempt;
     state.timer = setTimeout(function () {
-      showFallback("timeout_5s");
+      if (attempt === state.attempt) showFallback("timeout_5s");
     }, TIMEOUT_MS);
-    loadScript();
+    requestAnimationFrame(function () {
+      if (attempt === state.attempt && modal.open && !state.failed) loadScript();
+    });
+  }
+
+  function retry() {
+    if (!state.failed || !modal.open) return;
+    if (state.initialized) {
+      // A page reload is the only verified way to reset the vendor singleton.
+      window.location.reload();
+      return;
+    }
+    state.attempt += 1;
+    state.failed = false;
+    state.requested = false;
+    if (state.script) {
+      state.script.onload = null;
+      state.script.onerror = null;
+      state.script.remove();
+      state.script = null;
+    }
+    // Do not replace the fallback DOM: typed values survive load retries.
+    if (fallback) fallback.hidden = true;
+    if (noteBox) noteBox.hidden = false;
+    startLoading();
   }
 
   function closeModal() {
+    clearTimeout(state.timer);
     var offset = Math.abs(parseInt(document.body.style.top || "0", 10)) || 0;
     document.body.removeAttribute("data-modal-open");
     document.body.style.top = "";
@@ -286,7 +373,20 @@
     }
     if (event.target.closest("[data-booking-close]")) {
       if (typeof modal.close === "function") modal.close();
-      else modal.removeAttribute("open");
+      else {
+        modal.removeAttribute("open");
+        closeModal();
+      }
+    }
+    if (event.target.closest("[data-booking-retry]")) retry();
+    if (event.target.closest("[data-booking-request]")) {
+      if (fallback) fallback.hidden = false;
+      var idle = modal.querySelector("[data-fallback-note-idle]");
+      var error = modal.querySelector("[data-fallback-note-error]");
+      if (idle) idle.hidden = false;
+      if (error) error.hidden = true;
+      var field = fallback && fallback.querySelector("input:not([type='hidden'])");
+      if (field) field.focus();
     }
   });
 

@@ -7,6 +7,8 @@
 """
 
 from pathlib import Path
+import json
+import re
 from unittest.mock import patch
 
 from django.core.cache import cache
@@ -42,6 +44,18 @@ class BookingModalTests(TestCase):
         до нажатия кнопки их на странице нет вообще."""
         body = self.client.get(self.home).content.decode()
         self.assertNotIn("bookonline24.ru", body)
+
+    def test_hotel_id_comes_from_site_settings(self):
+        settings_obj = SiteSettings.for_site(Site.objects.first())
+        settings_obj.kontur_hotel_id = "hotel-from-admin"
+        settings_obj.save()
+        body = self.client.get(self.home).content.decode()
+        payload = re.search(r'<script id="booking-config"[^>]*>(.*?)</script>', body, re.S)
+        self.assertEqual(json.loads(payload.group(1))["hotelId"], "hotel-from-admin")
+        self.assertIn('data-booking-retry', body)
+        self.assertIn('data-kontur-type="roomsList"', body)
+        self.assertIn('data-kontur-type="hourlyObjectsList"', body)
+        self.assertIn('data-kontur-type="availabilityCalendar"', body)
 
     def test_modal_has_no_forbidden_global_selectors(self):
         """Контур снимает поддержку при глобальных `* {}` и `div {}`
