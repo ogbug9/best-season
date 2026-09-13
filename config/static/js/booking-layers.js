@@ -14,7 +14,15 @@
     var parkedPortals = new Map();
 
     function portals() {
-      var containers = Array.from(document.querySelectorAll(".react-ui[data-rendered-container-id]"));
+      // Kontur normally annotates portal roots with data-rendered-container-id.
+      // Some booking screens (notably the availability result) mount the same
+      // .react-ui root without that attribute, so keep the direct body roots
+      // in the candidate set as well. They are still restricted to Kontur's
+      // own root class and to visible children below.
+      var containers = Array.from(document.querySelectorAll(".react-ui[data-rendered-container-id], body > .react-ui"));
+      containers = containers.filter(function (container, index, all) {
+        return all.indexOf(container) === index;
+      });
       var owners = [modal];
       var result = [];
       // Follow nested portal ownership too (calendar/guest picker inside a modal).
