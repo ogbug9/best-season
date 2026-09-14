@@ -116,6 +116,9 @@
   а раскладка во всю ширину: контейнерные поля тут только у текста.
 {% endcomment %}
 <section class="about">
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.png' %}" width="2120" height="2152" alt="">
+  </div>
   <div class="about__media">
     {% if page.about_image %}
       {% picture page.about_image preset="gallery" alt=page.about_title %}
@@ -170,6 +173,9 @@
 {% comment %} 4. Слоган {% endcomment %}
 {% if page.slogan %}
 <section class="slogan">
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--4" src="{% static 'img/home-backgrounds/bg-4.png' %}" width="1252" height="1416" alt="">
+  </div>
   <div class="container">
     <div class="slogan__frame">
       <p>{{ page.slogan|slogan_lines|linebreaksbr }}</p>
@@ -186,6 +192,12 @@
 {% comment %} 5. Наши домики — сетка карточек {% endcomment %}
 {% if houses %}
 <section class="section" id="houses">
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--5" src="{% static 'img/home-backgrounds/bg-5.png' %}" width="1251" height="1411" alt="">
+  </div>
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--2" src="{% static 'img/home-backgrounds/bg-2.png' %}" width="3101" height="3152" alt="">
+  </div>
   <div class="container">
     <h2 class="section__title section__title--center">Наши домики</h2>
     <ul class="cards cards--houses">
@@ -258,6 +270,9 @@
 {% comment %} 7. Интересное рядом — три карточки с номерами {% endcomment %}
 {% if nearby %}
 <section class="section home-nearby">
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--8" src="{% static 'img/home-backgrounds/bg-8.png' %}" width="1576" height="1544" alt="">
+  </div>
   <div class="container">
     <h2 class="section__title section__title--center"><span class="home-desktop-copy">Интересное рядом</span><span class="home-mobile-copy">Интересное<br>рядом</span></h2>
     <ul class="cards cards--nearby">
@@ -313,6 +328,12 @@
 {# Единственная секция главной во всю ширину фрейма — так в макете. #}
 {# Поэтому .container здесь намеренно нет, текст стоит внутри мозаики. #}
 <section class="section section--gallery">
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--6" src="{% static 'img/home-backgrounds/bg-6.png' %}" width="1883" height="1916" alt="">
+  </div>
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--7" src="{% static 'img/home-backgrounds/bg-7.png' %}" width="1571" height="1570" alt="">
+  </div>
   <div class="photo-mosaic">
     <ul class="photo-mosaic__tiles">
       {% for item in page.gallery_images.all %}
@@ -356,7 +377,14 @@
   тег раскрывается сам, работает с клавиатуры и читалками экрана,
   и не тянет вес на страницу — скорость на мобильных предмет приёмки (п. 1.2).
 {% endcomment %}
+{% if faq %}
+<div class="home-faq-background-anchor">
 {% include "includes/faq_section.html" %}
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--bottom" src="{% static 'img/home-backgrounds/bg-bottom.png' %}" width="2579" height="2457" alt="">
+  </div>
+</div>
+{% endif %}
 </div>
 
 <section class="section yandex-reviews" id="yandex-reviews" aria-labelledby="yandex-reviews-title">

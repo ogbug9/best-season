@@ -2472,23 +2472,98 @@ body[data-modal-open] {
 html:has(> body.page-home) { scroll-snap-type: y proximity; }
 .page-home .hero { scroll-snap-align: start; }
 .page-home .about { scroll-snap-align: start; scroll-snap-stop: always; }
-/* Обёртка сохраняет границы схлопывания отступов и существующее
-   горизонтальное отсечение контента. Координаты секций от неё не зависят. */
+/* Секции задают только локальные координаты. Общая изоляция удерживает
+   декор позади всего контента, включая элементы соседних секций. */
 .home-after-hero {
   display: flow-root;
   overflow-x: clip;
-}
-/* Локальная система координат и слоёв для самостоятельных секций.
-   Будущий декор размещается внутри секции: absolute, inset: 0,
-   z-index: -1, pointer-events: none; overflow: clip — на самом слое.
-   About и quote сохраняют общий порядок отрисовки: на промежуточных
-   ширинах их содержимое пересекается. Локальные координаты уже задают
-   about__media и quote__text; отдельный слой можно привязать к ним.
-   Секции не обрезаем: кавычки и другие элементы выходят за их границы. */
-.page-home .home-after-hero > section:not(.about):not(.quote),
-.page-home #main > .yandex-reviews {
-  position: relative;
   isolation: isolate;
+}
+.page-home .home-after-hero > section:not(.quote),
+.page-home .home-faq-background-anchor { position: relative; }
+.page-home #main > .yandex-reviews { position: relative; isolation: isolate; }
+.page-home .home-background {
+  position: absolute;
+  inset: 0;
+  display: none;
+  pointer-events: none;
+  user-select: none;
+}
+.page-home .home-background__image {
+  position: absolute;
+  z-index: -1;
+  display: block;
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+}
+.page-home .about__media,
+.page-home .about__panel {
+  position: relative;
+  z-index: 1;
+}
+.page-home .about > .home-background { display: block; }
+.page-home .home-background__image--1 { width: 100%; left: 0; top: -103px; }
+@media (min-width: 900px) {
+  .page-home .home-background {
+    display: block;
+    width: min(1440px, 100%);
+    right: auto;
+    left: max(0px, (100% - 1440px) / 2);
+  }
+  .page-home .about > .home-background {
+    width: min(1440px, 100vw);
+    left: calc(max(0px, (100vw - 1440px) / 2) - max(var(--gutter), (100vw - var(--container)) / 2));
+  }
+  .page-home .home-background__image--1 {
+    width: 2165px;
+    height: 1879px;
+    left: -43px;
+    object-fit: cover;
+    object-position: center 20%;
+  }
+  /* Git 86226b8: исходные координаты от низа hero пересчитаны по
+     секциям эталона 1440px после загрузки шрифтов. Размеры сохранены.
+     Слоган: 1166 - 1585.828125; домики: 1747/2689 - 1802.609375;
+     рядом: 4795 - 4452.609375; галерея: 6390/6200 - 5534.609375. */
+  .page-home .home-background__image--4 {
+    width: 537.13px;
+    height: 1200.13px;
+    left: 0;
+    top: -419.828125px;
+    object-fit: cover;
+  }
+  .page-home .home-background__image--5 {
+    width: 37.291667%;
+    left: 62.708333%;
+    top: -55.609375px;
+  }
+  .page-home .home-background__image--2 {
+    width: 80.555556%;
+    left: 0;
+    top: 886.390625px;
+    transform: matrix(0, 1, 1, 0, 0, 0);
+  }
+  .page-home .home-background__image--8 {
+    width: 86.111111%;
+    left: 13.888889%;
+    top: 342.390625px;
+  }
+  .page-home .home-background__image--6 {
+    width: 39.027778%;
+    left: 0;
+    top: 855.390625px;
+  }
+  .page-home .home-background__image--7 {
+    width: 61.458333%;
+    left: 38.541667%;
+    top: 665.390625px;
+  }
+  .page-home .home-background__image--bottom {
+    width: 99.513889%;
+    left: 45%;
+    bottom: 0;
+  }
 }
 .page-home .about__panel { background: transparent; }
 
