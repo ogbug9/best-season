@@ -81,7 +81,6 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .slogan__frame { width: 100%; margin: 0; min-height: 43px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .slogan p { width: calc(100% - 24px); max-width: 326px; margin: 0; font: 400 19.54px/1.1 'Berold', serif; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .slogan__heart { display: block; left: auto; right: 4.5px; top: 20.87px; width: 22.2px; height: 22.2px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .home-background__image--1 { top: 846px; width: 1440px; left: -525px; }
 
 :is(.page-home, .page-houses, .page-promotions, .page-house) .cards--houses,
 :is(.page-home, .page-houses, .page-promotions, .page-house) .cards--nearby { display: flex; gap: 10px; margin: 0; padding: 0; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
@@ -133,6 +132,8 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .mosaic__more-arrow { display: none; }
 
 :is(.page-home, .page-houses, .page-promotions, .page-house) .home-nearby .section__title { max-width: 340px; }
+.page-home .home-nearby .section__title { width: 350px; max-width: 100%; }
+.page-home .home-nearby .home-mobile-copy { display: block; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .cards--nearby { align-items: stretch; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .place { min-height: 493.37px; padding: 24px 16px; gap: 24px; border-radius: 18px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .place__head { min-height: 64px; gap: 14px; }

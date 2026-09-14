@@ -2461,8 +2461,6 @@ body[data-modal-open] {
    Главная: блоки по макету SITE DESKTOP
    ========================================================================= */
 
-/* Фон 1 строится вокруг неизменного фрейма «О нас» (1212×700):
-   142.78px слева, 812.57px сверху, 810.52px справа и 367px снизу. */
 /* Первый экран главной пролистывается слайдом: прокрутка «доводит»
    его до конца и ставит следующий блок в начало экрана, поэтому две
    фотографии не встречаются посреди кадра. Точки притяжения стоят
@@ -2474,98 +2472,23 @@ body[data-modal-open] {
 html:has(> body.page-home) { scroll-snap-type: y proximity; }
 .page-home .hero { scroll-snap-align: start; }
 .page-home .about { scroll-snap-align: start; scroll-snap-stop: always; }
+/* Обёртка сохраняет границы схлопывания отступов и существующее
+   горизонтальное отсечение контента. Координаты секций от неё не зависят. */
 .home-after-hero {
-  --hero-background-overlap: 43px;
-  position: relative;
   display: flow-root;
-  isolation: isolate;
-  /* Фоны выходят за 1440px макетного полотна, но не должны создавать
-     горизонтальную прокрутку за границей окна браузера. */
   overflow-x: clip;
 }
-.home-background {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-  user-select: none;
-}
-.home-background__image {
-  position: absolute;
-  display: block;
-  max-width: none;
-  height: auto;
-}
-.home-background__image--1 {
-  width: 100%;
-  left: 0;
-  top: 9.02%;
-}
-/* CSS-пиксели сохраняют масштабирование рисунка браузерным zoom. */
-@media (min-width: 900px) {
-  /* Слои расположены внутри центрированного фрейма макета 1440px.
-     Вертикальные координаты пересчитаны от y=920 — начала блока после hero. */
-  .home-background {
-    width: min(1440px, 100%);
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
-    overflow: visible;
-  }
-  .home-background__image--1 {
-    /* Начало Фона 1 всегда на 43px выше фактического низа hero,
-       независимо от высоты окна браузера. */
-    width: 2165px;
-    height: 1879px;
-    left: -43px;
-    top: calc(-1 * var(--hero-background-overlap));
-    object-fit: cover;
-    /* При cover по вертикали скрывается около 300px исходника.
-       Смещаем область просмотра вниз примерно на 100px, как в макете. */
-    object-position: center 20%;
-  }
-  .home-background__image--4 {
-    /* От неизменного фрейма слогана 809.13×118.13 в точке 315×1520:
-       354px сверху, правый край на 587px раньше, 728px снизу. */
-    width: 537.13px;
-    height: 1200.13px;
-    left: 0;
-    top: 1166px;
-    object-fit: cover;
-  }
-  .home-background__image--5 {
-    width: 37.291667%;
-    left: 62.708333%;
-    top: 1747px;
-  }
-  .home-background__image--2 {
-    width: 80.555556%;
-    left: 0;
-    top: 2689px;
-    transform: matrix(0, 1, 1, 0, 0, 0);
-  }
-  .home-background__image--8 {
-    width: 86.111111%;
-    left: 13.888889%;
-    top: 4795px;
-  }
-  .home-background__image--6 {
-    width: 39.027778%;
-    left: 0;
-    top: 6390px;
-  }
-  .home-background__image--7 {
-    width: 61.458333%;
-    left: 38.541667%;
-    top: 6200px;
-  }
-  .home-background__image--bottom {
-    width: 99.513889%;
-    height: auto;
-    left: 45%;
-    bottom: 0;
-  }
+/* Локальная система координат и слоёв для самостоятельных секций.
+   Будущий декор размещается внутри секции: absolute, inset: 0,
+   z-index: -1, pointer-events: none; overflow: clip — на самом слое.
+   About и quote сохраняют общий порядок отрисовки: на промежуточных
+   ширинах их содержимое пересекается. Локальные координаты уже задают
+   about__media и quote__text; отдельный слой можно привязать к ним.
+   Секции не обрезаем: кавычки и другие элементы выходят за их границы. */
+.page-home .home-after-hero > section:not(.about):not(.quote),
+.page-home #main > .yandex-reviews {
+  position: relative;
+  isolation: isolate;
 }
 .page-home .about__panel { background: transparent; }
 
@@ -2687,8 +2610,6 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
      кавычки 218, от нижней кавычки до фрейма слогана 153. Нижняя
      кавычка выступает на 60px ниже фото, поэтому здесь 153, а не 213. */
   .quote { margin-block: 218px 153px; }
-}
-@media (min-width: 900px) {
   /* 58 к 42 — доли из макета. Раньше здесь стояло 1fr к 42fr, то есть
      текст получал одну долю против сорока двух и схлопывался в столбик
      по одному слову. */

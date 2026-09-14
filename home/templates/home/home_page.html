@@ -107,18 +107,6 @@
 </section>
 
 <div class="home-after-hero">
-  {% if page.about_text or page.about_title %}
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.png' %}" width="2120" height="2152" alt="">
-    <img class="home-background__image home-background__image--4" src="{% static 'img/home-backgrounds/bg-4.png' %}" width="1252" height="1416" alt="">
-    <img class="home-background__image home-background__image--5" src="{% static 'img/home-backgrounds/bg-5.png' %}" width="1251" height="1411" alt="">
-    <img class="home-background__image home-background__image--2" src="{% static 'img/home-backgrounds/bg-2.png' %}" width="3101" height="3152" alt="">
-    <img class="home-background__image home-background__image--8" src="{% static 'img/home-backgrounds/bg-8.png' %}" width="1576" height="1544" alt="">
-    <img class="home-background__image home-background__image--6" src="{% static 'img/home-backgrounds/bg-6.png' %}" width="1883" height="1916" alt="">
-    <img class="home-background__image home-background__image--7" src="{% static 'img/home-backgrounds/bg-7.png' %}" width="1571" height="1570" alt="">
-    <img class="home-background__image home-background__image--bottom" src="{% static 'img/home-backgrounds/bg-bottom.png' %}" width="2579" height="2457" alt="">
-  </div>
-  {% endif %}
 
 {% comment %} 2. О ферме — фото слева, текст справа {% endcomment %}
 {% if page.about_text or page.about_title %}
