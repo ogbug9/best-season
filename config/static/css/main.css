@@ -2478,6 +2478,9 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   position: relative;
   display: flow-root;
   isolation: isolate;
+  /* Фоны выходят за 1440px макетного полотна, но не должны создавать
+     горизонтальную прокрутку за границей окна браузера. */
+  overflow-x: clip;
 }
 .home-background {
   position: absolute;
@@ -2507,6 +2510,7 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
     right: auto;
     left: 50%;
     transform: translateX(-50%);
+    overflow: visible;
   }
   .home-background__image--1 {
     /* Фрейм «О нас» 1170×647 в прежней точке 100×60 относительно начала
@@ -2516,6 +2520,9 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
     left: -43px;
     top: -752px;
     object-fit: cover;
+    /* При cover по вертикали скрывается около 300px исходника.
+       Смещаем область просмотра вниз примерно на 100px, как в макете. */
+    object-position: center 20%;
   }
   .home-background__image--4 {
     /* От неизменного фрейма слогана 809.13×118.13 в точке 315×1520:
