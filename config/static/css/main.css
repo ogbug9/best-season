@@ -2502,55 +2502,53 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
 @media (min-width: 900px) {
   /* Слои расположены внутри центрированного фрейма макета 1440px.
      Вертикальные координаты пересчитаны от y=920 — начала блока после hero. */
+  .home-background {
+    width: min(1440px, 100%);
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
   .home-background__image--1 {
-    width: 1440px;
-    left: calc(50% - 720px);
+    width: 100%;
+    left: 0;
     top: -103px;
-    opacity: .5;
-    transform: rotate(180deg);
   }
   .home-background__image--4 {
-    width: 1191.38px;
-    left: calc(50% - 720px);
+    width: 37.291667%;
+    left: 0;
     top: 1155px;
-    transform: rotate(-90deg);
   }
   .home-background__image--5 {
-    width: 1191.38px;
-    left: calc(50% - 720px + 903px);
+    width: 37.291667%;
+    left: 62.708333%;
     top: 1747px;
-    transform: rotate(90deg);
   }
   .home-background__image--2 {
-    width: 2629px;
-    left: calc(50% - 720px);
+    width: 80.555556%;
+    left: 0;
     top: 2689px;
     transform: matrix(0, 1, 1, 0, 0, 0);
   }
   .home-background__image--8 {
-    width: 1270.11px;
-    left: calc(50% - 720px + 200px);
+    width: 86.111111%;
+    left: 13.888889%;
     top: 4795px;
-    transform: rotate(-17.23deg);
   }
   .home-background__image--6 {
-    width: 1341px;
-    left: calc(50% - 720px - 234px);
+    width: 39.027778%;
+    left: 0;
     top: 6390px;
-    transform: rotate(-80.93deg);
   }
   .home-background__image--7 {
-    width: 1104.41px;
-    left: calc(50% - 720px + 555px);
+    width: 61.458333%;
+    left: 38.541667%;
     top: 6200px;
-    transform: matrix(.67, -.75, -.75, -.67, 0, 0);
   }
   .home-background__image--bottom {
-    height: 1440px;
-    width: auto;
-    left: calc(50% - 720px + 7px);
-    bottom: -821px;
-    transform: matrix(-.98, .2, .2, .98, 0, 0);
+    width: 99.513889%;
+    height: auto;
+    left: 45%;
+    bottom: 0;
   }
 }
 .page-home .about__panel { background: transparent; }
