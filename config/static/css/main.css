@@ -2500,16 +2500,58 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
 }
 /* CSS-пиксели сохраняют масштабирование рисунка браузерным zoom. */
 @media (min-width: 900px) {
-  /* Координаты макета 1440x9060 пересчитаны относительно начала
-     .home-after-hero (y=920 в исходном макете). */
-  .home-background__image--1 { width: 1440px; left: calc(50% - 720px); top: -103px; }
-  .home-background__image--4 { width: 537px; left: 0; top: 1155px; }
-  .home-background__image--5 { width: 537px; right: 0; top: 1747px; }
-  .home-background__image--2 { width: 1160px; left: 0; top: 2689px; }
-  .home-background__image--8 { width: 1240px; left: calc(50% - 620px); top: 4795px; }
-  .home-background__image--6 { width: 562px; left: 0; top: 6390px; }
-  .home-background__image--7 { width: 885px; right: 0; top: 6200px; }
-  .home-background__image--bottom { width: 1433px; right: 0; bottom: 0; }
+  /* Слои расположены внутри центрированного фрейма макета 1440px.
+     Вертикальные координаты пересчитаны от y=920 — начала блока после hero. */
+  .home-background__image--1 {
+    width: 1440px;
+    left: calc(50% - 720px);
+    top: -103px;
+    opacity: .5;
+    transform: rotate(180deg);
+  }
+  .home-background__image--4 {
+    width: 1191.38px;
+    left: calc(50% - 720px);
+    top: 1155px;
+    transform: rotate(-90deg);
+  }
+  .home-background__image--5 {
+    width: 1191.38px;
+    left: calc(50% - 720px + 903px);
+    top: 1747px;
+    transform: rotate(90deg);
+  }
+  .home-background__image--2 {
+    width: 2629px;
+    left: calc(50% - 720px);
+    top: 2689px;
+    transform: matrix(0, 1, 1, 0, 0, 0);
+  }
+  .home-background__image--8 {
+    width: 1270.11px;
+    left: calc(50% - 720px + 200px);
+    top: 4795px;
+    transform: rotate(-17.23deg);
+  }
+  .home-background__image--6 {
+    width: 1341px;
+    left: calc(50% - 720px - 234px);
+    top: 6390px;
+    transform: rotate(-80.93deg);
+  }
+  .home-background__image--7 {
+    width: 1104.41px;
+    left: calc(50% - 720px + 555px);
+    top: 6200px;
+    transform: matrix(.67, -.75, -.75, -.67, 0, 0);
+  }
+  .home-background__image--bottom {
+    height: 1440px;
+    width: auto;
+    left: calc(50% - 720px + 7px);
+    bottom: -821px;
+    transform: matrix(-.98, .2, .2, .98, 0, 0);
+  }
 }
 .page-home .about__panel { background: transparent; }
 
