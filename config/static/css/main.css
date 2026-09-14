@@ -6,8 +6,8 @@
    и снимает поддержку (см. 03-kontur-widget.md). Поэтому здесь:
      - нет ни одного `*` и ни одного голого `div`;
      - нормализация элементов живёт только внутри `.site` через :where();
-     - контейнер виджета `.kontur-host` откатывает нашу нормализацию,
-       чтобы разметка Контура рендерилась в своём исходном виде.
+     - элементы `.kontur-host` и порталов `.react-ui` исключены из
+       нормализации, чтобы сохранить собственные стили виджета.
    ========================================================================= */
 
 /* ---------- Токены ---------- */
@@ -118,7 +118,7 @@ html {
    этого кнопка с width:100% и полями 40px вылезала за экран. */
 .site :where(div, section, article, aside, header, footer, nav, ul, ol, li,
              p, h1, h2, h3, h4, h5, h6, a, button, input, select, textarea,
-             figure, blockquote, details, summary, span, picture, img) {
+             figure, blockquote, details, summary, span, picture, img):not(:where(.kontur-host *, .react-ui, .react-ui *)) {
   box-sizing: border-box;
 }
 
@@ -133,7 +133,7 @@ body {
 }
 
 /* ---------- Скоупленная нормализация ---------- */
-.site :where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd) {
+.site :where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd):not(:where(.kontur-host *, .react-ui, .react-ui *)) {
   margin: 0;
 }
 
@@ -141,11 +141,11 @@ body {
    «бронирования» на 375px требует 366px при доступных 335. Переносим по
    слогам — у документа lang="ru", браузер знает правила переноса,
    а break-word оставляем на случай, если словарь недоступен. */
-.site :where(h1, h2, h3, h4, h5, h6) {
+.site :where(h1, h2, h3, h4, h5, h6):not(:where(.kontur-host *, .react-ui, .react-ui *)) {
   hyphens: auto;
   overflow-wrap: break-word;
 }
-.site :where(h1, h2, h3, h4, h5, h6) {
+.site :where(h1, h2, h3, h4, h5, h6):not(:where(.kontur-host *, .react-ui, .react-ui *)) {
   font-family: var(--font-heading);
   line-height: var(--lh-heading);
   color: var(--text-heading);
@@ -157,59 +157,52 @@ body {
 /* Верхние границы — размеры макета: h1 90/95 Etude Noire 500,
    h2 40/42 Etude Noire 400. Нижние подобраны так, чтобы на 360px
    заголовок не разъезжался. */
-.site :where(h1) {
+.site :where(h1):not(:where(.kontur-host *, .react-ui, .react-ui *)) {
   font-size: clamp(2.5rem, 1.4rem + 5vw, 5.625rem);
   font-weight: 500;
   line-height: 1.06;
 }
-.site :where(h2) {
+.site :where(h2):not(:where(.kontur-host *, .react-ui, .react-ui *)) {
   font-size: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
   font-weight: 400;
   line-height: 1.05;
 }
-.site :where(h3) {
+.site :where(h3):not(:where(.kontur-host *, .react-ui, .react-ui *)) {
   font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
   font-weight: 600;
   font-family: var(--font-body);
   line-height: 1.21;
 }
 
-.site :where(ul, ol) { margin: 0; padding-left: 1.25em; }
+.site :where(ul, ol):not(:where(.kontur-host *, .react-ui, .react-ui *)) { margin: 0; padding-left: 1.25em; }
 
-.site :where(img, picture, video, canvas, svg) {
+.site :where(img, picture, video, canvas, svg):not(:where(.kontur-host *, .react-ui, .react-ui *)) {
   display: block;
   max-width: 100%;
   height: auto;
 }
 
-.site :where(button, input, select, textarea) {
+.site :where(button, input, select, textarea):not(:where(.kontur-host *, .react-ui, .react-ui *)) {
   font: inherit;
   color: inherit;
 }
 
-.site :where(a) {
+.site :where(a):not(:where(.kontur-host *, .react-ui, .react-ui *)) {
   color: var(--accent);
   text-underline-offset: 0.15em;
 }
-.site :where(a:hover) { color: var(--accent-hover); }
+.site :where(a:hover):not(:where(.kontur-host *, .react-ui, .react-ui *)) { color: var(--accent-hover); }
 
-.site :where(p + p) { margin-top: var(--s-4); }
+.site :where(p + p):not(:where(.kontur-host *, .react-ui, .react-ui *)) { margin-top: var(--s-4); }
 /* Заголовок и следующий за ним абзац стояли вплотную: сброс margin
    снимает отступ у обоих, а правило было только для пары абзацев. */
-.site :where(h1, h2, h3) + :where(p, ul, ol) { margin-top: var(--s-4); }
+.site :where(h1, h2, h3):not(:where(.kontur-host *, .react-ui, .react-ui *)) + :where(p, ul, ol) { margin-top: var(--s-4); }
 
 /* Фокус виден всегда — п. 10.13 ТЗ, работа с клавиатуры */
-.site :where(a, button, input, select, textarea, summary):focus-visible {
+.site :where(a, button, input, select, textarea, summary):not(:where(.kontur-host *, .react-ui, .react-ui *)):focus-visible {
   outline: 3px solid var(--c-terra);
   outline-offset: 2px;
   border-radius: 2px;
-}
-
-/* ---------- Контейнер виджета Контура ----------
-   Откатывает нашу нормализацию: внутри виджет рисует свою разметку,
-   и наши правила не должны на неё влиять. */
-.kontur-host :where(h1, h2, h3, h4, h5, h6, p, ul, ol, li, a, button, input, label, img, svg) {
-  all: revert;
 }
 
 /* ---------- Раскладка ---------- */
