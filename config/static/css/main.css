@@ -2516,9 +2516,13 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
     object-fit: cover;
   }
   .home-background__image--4 {
-    width: 37.291667%;
+    /* От неизменного фрейма слогана 809.13×118.13 в точке 315×1520:
+       354px сверху, правый край на 587px раньше, 728px снизу. */
+    width: 537.13px;
+    height: 1200.13px;
     left: 0;
-    top: 1155px;
+    top: 1166px;
+    object-fit: cover;
   }
   .home-background__image--5 {
     width: 37.291667%;
