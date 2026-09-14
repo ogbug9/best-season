@@ -117,6 +117,12 @@ class QuoteTests(TestCase):
         result = self._quote(adults=4, children=4)
         self.assertTrue(result["error"])
 
+    def test_capacity_is_checked_before_dates_are_complete(self):
+        for start in (None, self.start):
+            result = quote(self.house, date_from=start, adults=4, children=1)
+            self.assertTrue(result["error"])
+            self.assertIsNone(result["total"])
+
     def test_counters_are_clamped_to_house_limits(self):
         """Гость может подставить что угодно — сервер приводит к пределам."""
         result = self._quote(adults=99, children=-5, pets="ой")

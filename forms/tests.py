@@ -42,6 +42,70 @@ def payload(**extra):
     return data
 
 
+class BookingRegressionTests(FormTestCase):
+    def test_invalid_dates_phone_and_guest_limits(self):
+        from datetime import timedelta
+        from django.utils.timezone import localdate
+        cases = [
+            ({"date_from": localdate() - timedelta(days=1)}, "date_from"),
+            ({"guests": 0}, "guests"),
+            ({"guests": 21}, "guests"),
+            ({"phone": "не телефон"}, "phone"),
+            ({"guests": 2, "children": 2}, "children"),
+        ]
+        for values, field in cases:
+            with self.subTest(values=values):
+                form = FallbackBookingForm(payload(**values))
+                self.assertFalse(form.is_valid())
+                self.assertIn(field, form.errors)
+
+    def test_house_capacity_and_pet_limit(self):
+        from houses.models import HousePage
+        house = HousePage(title="Test house", slug="test-house", capacity=4,
+                          max_adults=4, max_children=4, max_pets=1)
+        Page.get_first_root_node().add_child(instance=house)
+        form = FallbackBookingForm(payload(house=house.pk, guests=5, children=1, pets=2))
+        self.assertFalse(form.is_valid())
+        self.assertIn("guests", form.errors)
+        self.assertIn("pets", form.errors)
+
+    def test_children_and_pets_reach_notification(self):
+        from forms.notifications import _lines
+        form = FallbackBookingForm(payload(guests=3, children=1, pets=1))
+        self.assertTrue(form.is_valid(), form.errors)
+        submission = form.save(commit=False)
+        self.assertIn("Питомцев: 1", "\n".join(_lines(submission)))
+        self.assertIn("Детей: 1", submission.message)
+        self.assertIn("Заберите со станции", submission.message)
+
+    @patch("forms.views.notify")
+    def test_invalid_post_preserves_data_and_shows_errors(self, notify):
+        response = self.client.post(reverse("forms:submit", args=["fallback"]),
+                                    payload(phone="ошибка", guests=0, pets=1))
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, 'value="ошибка"', status_code=400)
+        self.assertEqual(response.context["form"]["pets"].value(), "1")
+        self.assertIn("phone", response.context["form"].errors)
+        self.assertContains(response, "Проверьте данные заявки", status_code=400)
+        notify.assert_not_called()
+        self.assertFalse(FormSubmission.objects.exists())
+
+    @patch("forms.views.notify")
+    def test_external_redirect_rejected_and_success_visible(self, notify):
+        response = self.client.post(reverse("forms:submit", args=["fallback"]),
+                                    payload(source_url="https://example.org/"))
+        self.assertEqual(response["Location"], "/?form=ok")
+        page = self.client.get(response["Location"])
+        body = page.content.decode()
+        self.assertIn("Заявка отправлена", body.split('<main id="main">')[1].split("</main>")[0])
+
+    @patch("forms.views.notify")
+    def test_redirect_keeps_query_and_fragment(self, notify):
+        response = self.client.post(reverse("forms:submit", args=["fallback"]),
+                                    payload(source_url="/?x=1#main"))
+        self.assertEqual(response["Location"], "/?x=1&form=ok#main")
+
+
 class ConsentTests(FormTestCase):
     """Раздел 11 ТЗ: чекбокс без предзаполнения, факт согласия хранится
     с датой и версией текста."""

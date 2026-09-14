@@ -15,6 +15,7 @@ function fixture(options = {}) {
       setAttribute(k, v) { this.attrs[k] = v; },
       removeAttribute(k) { delete this.attrs[k]; },
       getAttribute(k) { return this.attrs[k] || ''; },
+      hasAttribute(k) { return Object.hasOwn(this.attrs, k); },
       addEventListener(k, fn) { this[k] = fn; },
       getClientRects() { return modal.open && !this.hidden ? [{}] : []; },
       getBoundingClientRect() { return { width: modal.open && !this.hidden ? 1176 : 0 }; },
@@ -26,6 +27,7 @@ function fixture(options = {}) {
   modal.close = () => { modal.open = false; modal.onclose(); };
   modal.addEventListener = (k, fn) => { modal['on' + k] = fn; };
   const nodes = {};
+  if (options.fields) nodes['[data-fallback-form] form'] = {elements: options.fields};
   for (const name of ['host', 'fallback', 'loading', 'note', 'retry', 'help', 'catalog']) {
     nodes['[data-booking-' + name + ']'] = node(name);
   }
@@ -45,6 +47,7 @@ function fixture(options = {}) {
     getElementById: () => ({ textContent: JSON.stringify(config) }),
     createElement: () => node(),
     addEventListener: (k, fn) => { events[k] = fn; },
+    dispatchEvent: () => !options.cancelPrepare,
   };
   const window = { scrollY: 123, scrollTo() {}, location: { reload() { reloads++; } } };
   const sdk = {
@@ -63,12 +66,14 @@ function fixture(options = {}) {
     },
   };
   vm.runInNewContext(source, {
+    CustomEvent: class { constructor(type, options) { this.type = type; Object.assign(this, options); } },
     document, window, requestAnimationFrame(fn) { frames.push(fn); },
     setTimeout(fn) { timers.set(++timerId, fn); return timerId; },
     clearTimeout(id) { timers.delete(id); },
   });
-  function click(selector) {
+  function click(selector, houseId) {
     const target = node(); target.closest = s => s === selector ? target : null;
+    if (houseId !== undefined) target.attrs['data-house-id'] = houseId;
     events.click({ target, preventDefault() {} });
   }
   function frame() { while (frames.length) frames.shift()(); }
@@ -146,4 +151,18 @@ test('empty configuration shows the working request form without network', () =>
 test('provider runtime/booking failure exposes fallback', () => {
   const f = fixture(); f.open(); f.load(); f.hooks.onError(new Error('booking'));
   assert.equal(f.fallback.hidden, false); assert.equal(f.host.hidden, true);
+});
+
+test("invalid panel selection prevents opening and loading", () => {
+  const f = fixture({cancelPrepare: true}); f.open();
+  assert.equal(f.modal.open, false); assert.equal(f.scripts.length, 0);
+});
+
+test('card house transfers and generic entry clears previous card context', () => {
+  const fields = Object.fromEntries(['house','date_from','date_to','guests','children','pets'].map(k=>[k,{value:'old'}]));
+  const f = fixture({fields});
+  f.click('[data-booking-open]', '28');
+  assert.equal(fields.house.value, '28'); assert.equal(fields.date_to.value, '');
+  f.close(); f.open();
+  assert.equal(fields.house.value, '');
 });

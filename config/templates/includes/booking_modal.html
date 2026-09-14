@@ -28,6 +28,7 @@
     {% comment %} Подводящий текст обязателен по п. 5.4.3 и п. 5.4.4 {% endcomment %}
     <p class="booking-modal__lead" data-booking-note>
       {{ s.booking_lead_text|default:"Выберите даты и количество гостей — система покажет свободные домики и стоимость." }}
+      Выбранные на сайте даты, дом и гости автоматически в виджет не переносятся. Укажите их повторно; в резервную заявку они подставляются.
     </p>
 
     <p class="booking-modal__loading" data-booking-loading hidden role="status">

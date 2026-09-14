@@ -17,7 +17,7 @@
   {% if lead %}<p>{{ lead }}</p>{% endif %}
 
   {% comment %} Куда вернуть гостя и что записать в источник заявки {% endcomment %}
-  <input type="hidden" name="source_url" value="{{ request.path }}">
+  <input type="hidden" name="source_url" value="{{ back_to|default:request.path }}">
   <input type="hidden" name="utm_source" value="{{ request.GET.utm_source|default:'' }}">
   <input type="hidden" name="utm_medium" value="{{ request.GET.utm_medium|default:'' }}">
   <input type="hidden" name="utm_campaign" value="{{ request.GET.utm_campaign|default:'' }}">
@@ -63,6 +63,7 @@
         </div>
       {% elif field.field.widget.input_type == "hidden" %}
         {{ field }}
+        {% if field.errors %}<p class="form__error" role="alert">{{ field.label }}: {{ field.errors|join:" " }}</p>{% endif %}
       {% else %}
         <div class="form__field{% if field.name == 'message' %} form__field--wide{% endif %}">
           <label class="form__label" for="{{ field.id_for_label }}">{{ field.label }}</label>

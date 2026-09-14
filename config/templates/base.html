@@ -65,6 +65,7 @@
     {% include "includes/header.html" %}
 
     <main id="main">
+        {% if request.GET.form == "ok" %}<p class="container form__note form__note--ok" role="status">Заявка отправлена. Свяжемся с вами в ближайшее время.</p>{% endif %}
         {% block content %}{% endblock %}
     </main>
 
@@ -84,9 +85,9 @@
     <script src="{% static 'js/site.js' %}" defer></script>
     {% comment %} Блок бронирования есть только на странице дома — на
        остальных скрипт выходит сразу, ничего не найдя. {% endcomment %}
-    <script src="{% static 'js/calendar.js' %}" defer></script>
+    <script src="{% static 'js/calendar.js' %}?v=20260914" defer></script>
     <script src="{% static 'js/booking-layers.js' %}" defer></script>
-    <script src="{% static 'js/kontur.js' %}" defer></script>
+    <script src="{% static 'js/kontur.js' %}?v=20260914" defer></script>
     <script src="{% static 'js/home-mobile.js' %}" defer></script>
     {% block extra_js %}{% endblock %}
 </body>

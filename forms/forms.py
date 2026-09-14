@@ -9,6 +9,8 @@
 здесь нужно с примитивными ботами, которые заполняют все поля подряд.
 """
 
+import re
+
 from django import forms
 from django.utils import timezone
 
@@ -59,6 +61,12 @@ class BaseRequestForm(forms.ModelForm):
         }
 
     form_type = FormType.FEEDBACK
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone", "").strip()
+        if phone and (not re.fullmatch(r"\+?[0-9 ()-]+", phone) or not 10 <= len(re.sub(r"\D", "", phone)) <= 15):
+            raise forms.ValidationError("Введите телефон: от 10 до 15 цифр, можно использовать +, пробелы, скобки и дефисы.")
+        return phone
 
     def clean_website(self):
         """Ловушка сработала — значит перед нами бот."""
@@ -150,11 +158,26 @@ class FallbackBookingForm(BaseRequestForm):
     """
 
     form_type = FormType.FALLBACK
+    guests = forms.IntegerField(label="Гостей", min_value=1, max_value=20, required=False)
+    children = forms.IntegerField(label="Детей (входят в число гостей)", min_value=0, max_value=20, required=False)
+    pets = forms.IntegerField(label="Питомцев", min_value=0, max_value=20, required=False)
+
+    def save(self, commit=True, **kwargs):
+        submission = super().save(commit=False, **kwargs)
+        details = []
+        for name, label in (("children", "Детей"), ("pets", "Питомцев")):
+            value = self.cleaned_data.get(name)
+            if value is not None:
+                details.append(f"{label}: {value}")
+        submission.message = "\n".join(filter(None, [submission.message, *details]))
+        if commit:
+            submission.save()
+        return submission
 
     class Meta(BaseRequestForm.Meta):
         fields = [
             "name", "phone", "email", "house",
-            "date_from", "date_to", "guests", "message", "consent_given",
+            "date_from", "date_to", "guests", "children", "pets", "message", "consent_given",
         ]
         widgets = {
             **BaseRequestForm.Meta.widgets,
@@ -174,6 +197,26 @@ class FallbackBookingForm(BaseRequestForm):
     def clean(self):
         cleaned = super().clean()
         start, end = cleaned.get("date_from"), cleaned.get("date_to")
+        guests, children, pets = (cleaned.get(key) for key in ("guests", "children", "pets"))
+        house = cleaned.get("house")
+        for field in ("date_from", "date_to"):
+            if cleaned.get(field) and cleaned[field] < timezone.localdate():
+                self.add_error(field, "Дата не может быть в прошлом.")
+        if end and not start:
+            self.add_error("date_from", "Укажите дату заезда.")
+        if start and end and (end - start).days > 60:
+            self.add_error("date_to", "Максимальный срок — 60 ночей.")
+        if children and (not guests or children >= guests):
+            self.add_error("children", "В числе гостей должен быть хотя бы один взрослый.")
+        if house:
+            if guests and guests > house.capacity:
+                self.add_error("guests", f"В домике размещается до {house.capacity} гостей.")
+            if guests and guests - (children or 0) > house.max_adults:
+                self.add_error("guests", "Превышено допустимое число взрослых.")
+            if children and children > house.max_children:
+                self.add_error("children", "Превышено допустимое число детей.")
+            if pets and pets > house.max_pets:
+                self.add_error("pets", "Превышено допустимое число питомцев.")
         if start and end and end <= start:
             self.add_error("date_to", "Дата выезда должна быть позже заезда.")
         return cleaned

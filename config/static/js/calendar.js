@@ -29,8 +29,11 @@
     pets: count("pets")
   };
 
+  var calendarRevision = 0, priceRevision = 0, pending = null;
+
   restore();
   updateGuestLabel();
+  validateSelection();
 
   /* ---------- Выбор дат ---------- */
 
@@ -63,9 +66,10 @@
   }
 
   function drawCalendar() {
+    var revision = ++calendarRevision;
     request(calendarUrl, { start: state.start })
       .then(function (response) { return response.text(); })
-      .then(function (html) { months.innerHTML = html; })
+      .then(function (html) { if (revision === calendarRevision) months.innerHTML = html; })
       .catch(function () { /* сеть отвалилась — на экране остаётся прежний месяц */ });
   }
 
@@ -82,6 +86,7 @@
     var min = Number(row.dataset.min);
     var max = Number(row.dataset.max);
     if (next < min || next > max) return;
+    if (key !== "pets" && Number(step.dataset.step) > 0 && state.adults + state.children >= Number(panel.dataset.capacity)) return;
 
     state[key] = next;
     updateGuestLabel();
@@ -92,6 +97,10 @@
   });
 
   function updateGuestLabel() {
+    ["adults", "children", "pets"].forEach(function (key) {
+      var row = panel.querySelector('[data-counter="' + key + '"]');
+      if (row) limits(row, state[key], Number(row.dataset.min), Number(row.dataset.max));
+    });
     var total = Number(state.adults) + Number(state.children);
     var last = total % 10;
     var hundred = total % 100;
@@ -103,17 +112,20 @@
   function limits(row, value, min, max) {
     row.querySelectorAll("[data-step]").forEach(function (button) {
       var target = value + Number(button.dataset.step);
-      button.disabled = target < min || target > max;
+      button.disabled = target < min || target > max || (row.dataset.counter !== "pets" && Number(button.dataset.step) > 0 && state.adults + state.children >= Number(panel.dataset.capacity));
     });
   }
 
   /* ---------- Расчёт ---------- */
 
-  var pending = null;
-
   function recalc() {
     // Небольшая задержка: гость может нажать «плюс» несколько раз
     // подряд, и каждый клик не должен уходить отдельным запросом.
+    var revision = ++priceRevision;
+    validateSelection();
+    label("[data-label-date-from]", state.dateFrom, "Дата заезда");
+    label("[data-label-date-to]", state.dateTo, "Дата выезда");
+    text("[data-total]", "Уточняем расчёт…");
     clearTimeout(pending);
     pending = setTimeout(function () {
       request(priceUrl, {
@@ -124,8 +136,8 @@
         pets: state.pets
       })
         .then(function (response) { return response.json(); })
-        .then(render)
-        .catch(function () { /* сумма остаётся прежней, врать не начинаем */ });
+        .then(function (data) { if (revision === priceRevision) render(data); })
+        .catch(function () { if (revision === priceRevision) text("[data-total]", "Расчёт недоступен. Уточните стоимость при бронировании."); });
     }, 250);
   }
 
@@ -140,6 +152,7 @@
         : "от " + money(data.price_from) + " ₽";
     }
 
+    validateSelection(data.error || "");
     var error = panel.querySelector("[data-error]");
     if (error) {
       error.textContent = data.error || "";
@@ -158,22 +171,35 @@
   // Виджет Контура не принимает даты при инициализации, поэтому
   // выбранное кладём в хранилище и подставляем в резервную форму: если
   // виджет не поднимется, гость не будет вводить даты заново.
-  panel.addEventListener("click", function (event) {
-    if (!event.target.closest("[data-booking-open]")) return;
-    fillFallback();
+  document.addEventListener("booking:prepare", function (event) {
+    var button = event.detail.button;
+    if (button.hasAttribute("data-house-id") && button.dataset.houseId !== panel.dataset.houseId) return;
+    if (validateSelection()) { event.preventDefault(); return; }
+    var form = document.querySelector("[data-booking-modal] [data-fallback-form] form");
+    if (!form) return;
+    var values = {date_from: state.dateFrom, date_to: state.dateTo,
+      guests: state.adults + state.children, children: state.children,
+      pets: state.pets, house: panel.dataset.houseId};
+    Object.keys(values).forEach(function (key) {
+      if (form.elements[key]) form.elements[key].value = values[key];
+    });
   });
 
-  function fillFallback() {
-    fill("[data-booking-modal] [name='date_from']", state.dateFrom);
-    fill("[data-booking-modal] [name='date_to']", state.dateTo);
-    fill("[data-booking-modal] [name='guests']", state.adults + state.children);
-    // Дом тоже подставляем: заявка должна прийти про этот домик
-    fill("[data-booking-modal] [name='house']", panel.dataset.houseId);
+  function todayISO() {
+    var now = new Date();
+    return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
   }
 
-  function fill(selector, value) {
-    var field = document.querySelector(selector);
-    if (field && value) field.value = value;
+  function validateSelection(serverError) {
+    var error = serverError || "";
+    if (state.adults + state.children > Number(panel.dataset.capacity)) error = "Превышена вместимость дома. Уменьшите число гостей.";
+    if (state.dateFrom && state.dateFrom < todayISO()) error = "Заезд не может быть в прошлом.";
+    if (state.dateTo && (!state.dateFrom || state.dateTo <= state.dateFrom)) error = "Дата выезда должна быть позже заезда.";
+    if (state.dateFrom && state.dateTo && (Date.parse(state.dateTo) - Date.parse(state.dateFrom)) / 86400000 > 60) error = "Максимальный срок — 60 ночей.";
+    panel.querySelectorAll("[data-booking-open]").forEach(function (button) { button.disabled = Boolean(error); });
+    var note = panel.querySelector("[data-error]");
+    if (note) { note.textContent = error; note.hidden = !error; }
+    return error;
   }
 
   /* ---------- Хранилище ---------- */
@@ -196,12 +222,19 @@
     if (!saved) return;
 
     // Прошлые даты после возврата на страницу уже не годятся
-    var today = new Date().toISOString().slice(0, 10);
+    var today = todayISO();
     if (saved.dateFrom && saved.dateFrom < today) return;
 
     Object.keys(state).forEach(function (key) {
       if (saved[key] !== undefined && saved[key] !== null) state[key] = saved[key];
     });
+
+    ["adults", "children", "pets"].forEach(function (key) {
+      var row = panel.querySelector('[data-counter="' + key + '"]');
+      var value = Number(state[key]);
+      state[key] = Number.isInteger(value) ? Math.max(Number(row.dataset.min), Math.min(value, Number(row.dataset.max))) : count(key);
+    });
+    if (state.dateTo && state.dateTo <= state.dateFrom) state.dateTo = "";
 
     // Счётчики в разметке пришли с сервера и о сохранённом не знают:
     // без этого на экране «0 питомцев», а сумма посчитана с питомцем.

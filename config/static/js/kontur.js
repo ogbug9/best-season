@@ -45,6 +45,7 @@
     failed: false, // ушли в резервный сценарий
     reported: false, // о сбое уже сообщили на сервер
     entryPoint: "",
+    contextHouse: null,
     timer: null,
     opener: null,
     script: null,
@@ -283,6 +284,21 @@
   /* ---------- Открытие и закрытие окна (п. 5.2) ---------- */
   function openModal(button) {
     if (modal.open) return;
+    if (button.disabled) return;
+    var form = modal.querySelector("[data-fallback-form] form");
+    var panel = document.querySelector("[data-booking-panel]");
+    var houseId = button.hasAttribute("data-house-id")
+      ? button.getAttribute("data-house-id")
+      : panel && panel.dataset ? panel.dataset.houseId : "";
+    if (form && houseId !== state.contextHouse) {
+      ["date_from", "date_to", "guests", "children", "pets"].forEach(function (name) {
+        if (form.elements[name]) form.elements[name].value = "";
+      });
+      form.elements.house.value = houseId || "";
+    }
+    var prepare = new CustomEvent("booking:prepare", {cancelable: true, detail: {button: button}});
+    if (!document.dispatchEvent(prepare)) return;
+    state.contextHouse = houseId;
     state.entryPoint = button.getAttribute("data-entry-point") || "";
     state.opener = button;
 

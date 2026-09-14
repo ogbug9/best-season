@@ -259,6 +259,10 @@ def quote(
         "error": "",
     }
 
+    if adults + children > house.capacity:
+        result["error"] = f"В домике размещается до {house.capacity} гостей."
+        return result
+
     if not (date_from and date_to):
         return result
 
@@ -271,9 +275,6 @@ def quote(
         return result
     if date_from < _today():
         result["error"] = "Заезд не может быть в прошлом."
-        return result
-    if adults + children > house.capacity:
-        result["error"] = f"В домике размещается до {house.capacity} гостей."
         return result
 
     provider = get_provider(house)

@@ -10,7 +10,9 @@ import logging
 
 from django.core.cache import cache
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
+from django.utils.http import url_has_allowed_host_and_scheme
+from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 from django.views.decorators.http import require_POST
 from wagtail.models import Site
 
@@ -83,12 +85,26 @@ def submit(request, form_type):
 
     wants_json = request.headers.get("X-Requested-With") == "XMLHttpRequest"
     back_to = request.POST.get("source_url") or "/"
+    if not url_has_allowed_host_and_scheme(back_to, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+        back_to = "/"
+    def outcome_url(status):
+        parts = urlsplit(back_to)
+        query = [(k, v) for k, v in parse_qsl(parts.query) if k != "form"]
+        return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query + [("form", status)]), parts.fragment))
+
+    def fallback_response(form, status, message=""):
+        return render(request, "forms/request_result.html", {
+            "form": form, "form_type": form_type, "back_to": back_to,
+            "result_message": message,
+        }, status=status)
 
     if _rate_limited(request):
         message = "Слишком много заявок подряд. Позвоните нам — так быстрее."
         if wants_json:
             return JsonResponse({"ok": False, "error": message}, status=429)
-        return redirect(f"{back_to}?form=rate")
+        if form_type == FormType.FALLBACK:
+            return fallback_response(FORM_CLASSES[form_type](request.POST), 429, message)
+        return redirect(outcome_url("rate"))
 
     form_class = FORM_CLASSES[form_type]
     form = form_class(request.POST)
@@ -96,7 +112,9 @@ def submit(request, form_type):
     if not form.is_valid():
         if wants_json:
             return JsonResponse({"ok": False, "errors": form.errors}, status=400)
-        return redirect(f"{back_to}?form=error")
+        if form_type == FormType.FALLBACK:
+            return fallback_response(form, 400)
+        return redirect(outcome_url("error"))
 
     submission = form.save(request=request, consent_version=_consent_version(request))
     _count_submission(request)
@@ -104,7 +122,7 @@ def submit(request, form_type):
 
     if wants_json:
         return JsonResponse({"ok": True})
-    return redirect(f"{back_to}?form=ok")
+    return redirect(outcome_url("ok"))
 
 
 def form_types():

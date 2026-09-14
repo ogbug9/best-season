@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Заявка на бронирование{% endblock %}
+{% block content %}
+<section class="container">
+  <h1>Заявка на бронирование</h1>
+  {% if result_message %}<p role="alert">{{ result_message }}</p>{% endif %}
+  {% include "forms/request_form.html" with title="Проверьте данные заявки" %}
+  <p><a href="{{ back_to }}">Вернуться на страницу</a></p>
+</section>
+{% endblock %}

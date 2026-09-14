@@ -108,9 +108,9 @@ def footer(request):
 
 
 def booking(request):
-    # Ошибки формы после неудачной отправки показываются на самой странице
-    # (вьюха возвращает гостя с ?form=error), поэтому здесь всегда пустая.
-    context = {"fallback_booking_form": FallbackBookingForm()}
+    # Ошибочный POST получает отдельную страницу с заполненной формой.
+    # У модальной формы свои ID: на странице может быть ещё одна заявка.
+    context = {"fallback_booking_form": FallbackBookingForm(auto_id="booking_%s")}
 
     hotel_id, metrika_id = "", ""
     try:
