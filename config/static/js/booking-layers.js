@@ -151,6 +151,33 @@
       }
     }
 
+    // The date-range calendar attached to a plain "Заезд"/"Выезд" field has no
+    // close/apply control of its own and does not react to a click outside it
+    // either (confirmed live: it only ever disappears when the whole booking
+    // modal closes, via the forced hide() in close() below). Left alone it
+    // just sits there covering whatever the page has under it — including,
+    // in practice, the general "Проверить наличие" button right next to the
+    // fields. Hiding a Kontur portal ourselves is already known-safe: that is
+    // exactly what close() below does. So do the same thing here, a moment
+    // after the guest stops clicking days, instead of only at modal close.
+    // Scoped to plain calendar popups only (they carry day-picker cells and
+    // nothing that looks like a full dialog screen) so a date picker that is
+    // genuinely part of a bigger vendor dialog — the nested "check
+    // availability" flow — is left for that dialog to manage.
+    var rangePickTimer = null;
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest("[data-date-range-picker-day]")) return;
+      clearTimeout(rangePickTimer);
+      rangePickTimer = setTimeout(function () {
+        Array.from(document.querySelectorAll("body > .react-ui")).forEach(function (container) {
+          if (container.hidden) return;
+          if (!container.querySelector("[data-date-range-picker-day]")) return;
+          if (container.querySelector('[data-tid="modal-content"][role="dialog"]')) return;
+          container.hidden = true;
+        });
+      }, 400);
+    }, true);
+
     return {
       open: function () {
         if (observer) return;

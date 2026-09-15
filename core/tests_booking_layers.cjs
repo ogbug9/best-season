@@ -91,13 +91,28 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
   const field=document.querySelector('[data-rendered-container-id="datepicker"]');
   // A real floating popup is always positioned (fixed/absolute) — that's
   // what makes it a popup rather than inline content — so this mirrors that.
-  field.innerHTML='<button id="pick-day-in-field" style="position:fixed;top:200px;left:20px">14 сентября</button>';
+  // data-date-range-picker-day matches the real widget's own attribute name
+  // (seen live) — it's what the auto-hide-after-picking logic keys off.
+  field.innerHTML='<button id="pick-day-in-field" data-date-range-picker-day="12.10.2026" style="position:fixed;top:200px;left:20px">12</button>'
+   +'<button id="pick-second-day" data-date-range-picker-day="14.10.2026" style="position:fixed;top:200px;left:60px">14</button>';
   // Per the file header: Kontur's RenderContainer re-appends a portal to the
   // end of body on every render, so a real reveal also moves it there.
   document.body.appendChild(field);
   frame(()=>{
    const btn=document.getElementById('pick-day-in-field'), r=btn.getBoundingClientRect();
    record('pre-mounted field portal is clickable once revealed', !btn.inert && btn.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)));
+   // Confirmed live: this widget's own date-range picker has no close/apply
+   // control and does not react to a click outside it either — it only ever
+   // disappeared when the whole booking modal closed. We now hide it
+   // ourselves a moment after the guest stops picking days, instead of
+   // leaving it sitting on top of the page (it was covering the general
+   // "Проверить наличие" button next to the fields on the live site).
+   document.getElementById('pick-day-in-field').click();
+   setTimeout(()=>document.getElementById('pick-second-day').click(),150);
+   setTimeout(()=>record('date-range popup still open mid-pick (debounce not fired yet)',
+     !document.querySelector('[data-rendered-container-id="datepicker"]').hidden),300);
+   setTimeout(()=>record('date-range popup hides itself once picking settles',
+     document.querySelector('[data-rendered-container-id="datepicker"]').hidden),750);
   });
  };
 }}};
