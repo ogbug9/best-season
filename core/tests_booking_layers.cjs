@@ -25,12 +25,20 @@ const html = `<!doctype html><html lang="ru"><meta charset="utf-8">
 let sequence=0, initCount=0; const results=[];
 function record(label, pass){results.push((pass?'PASS ':'FAIL ')+label);document.getElementById('results').textContent=results.join(' | ');}
 function frame(fn){requestAnimationFrame(()=>requestAnimationFrame(fn));}
-function openPortal(owner, popup=false){
- const id='fixture-'+(++sequence), marker=document.createElement('noscript');marker.setAttribute('data-render-container-id',id);owner.append(marker);
- const portal=document.createElement('div');portal.className='react-ui';portal.setAttribute('data-rendered-container-id',id);
+function openPortal(owner, popup=false, unannotated=false){
+ const portal=document.createElement('div');portal.className='react-ui';
+ let marker=null;
+ if(!unannotated){
+  // Kontur normally links a portal to its owner via a noscript marker + matching id.
+  const id='fixture-'+(++sequence); marker=document.createElement('noscript');marker.setAttribute('data-render-container-id',id);owner.append(marker);
+  portal.setAttribute('data-rendered-container-id',id);
+ }
+ // Some real screens (the availability result, and the date picker opened from it)
+ // mount a .react-ui root with NEITHER the marker NOR the id attribute — this is
+ // the case that used to be silently dropped from the active-portal list.
  portal.innerHTML=popup?'<div class="test-popup" style="z-index: 10002"><button>Выбрать дату</button></div>':'<div class="test-overlay" style="z-index: 9000"><div class="test-dialog" data-tid="modal-content" role="dialog" aria-modal="true"><button>Закрыть внутреннее</button><input aria-label="Гость"><button>Открыть календарь</button></div></div>';
  document.body.append(portal);
- const close=()=>{document.removeEventListener('keydown',escape);portal.remove();marker.remove();frame(()=>{
+ const close=()=>{document.removeEventListener('keydown',escape);portal.remove();if(marker)marker.remove();frame(()=>{
   const outer=document.querySelector('dialog');
   if(!document.querySelector('.react-ui')){record('outer modality restored',outer.matches(':modal'));record('focus restored',outer.contains(document.activeElement));record('still initialized once',initCount===1);}
  });};
@@ -47,8 +55,8 @@ function openPortal(owner, popup=false){
 }
 window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='bookingForm'){
  const host=document.getElementById(c.appearance.container);
- host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button>';
- host.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>openPortal(host,i===2));
+ host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button>';
+ host.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>openPortal(host,i===2,i===3));
 }}};
 </script>
 <script src="/config/static/js/booking-layers.js"></script><script src="/config/static/js/kontur.js"></script></body></html>`;

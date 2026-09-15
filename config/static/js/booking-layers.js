@@ -15,29 +15,22 @@
 
     function portals() {
       // Kontur normally annotates portal roots with data-rendered-container-id.
-      // Some booking screens (notably the availability result) mount the same
-      // .react-ui root without that attribute, so keep the direct body roots
-      // in the candidate set as well. They are still restricted to Kontur's
-      // own root class and to visible children below.
+      // Some booking screens (the availability result, and the date picker
+      // opened from inside it) mount the same .react-ui root WITHOUT that
+      // attribute. Those un-annotated roots carry no id a <noscript> marker
+      // could ever match, so a marker-matching pass can never find them —
+      // that used to leave them out of `result` entirely, which is the bug:
+      // an un-annotated portal was never treated as an active layer, so it
+      // stayed BEHIND the native <dialog>'s top layer (invisible stacking,
+      // unclickable) while our own inert/tab-trap bookkeeping ignored it.
+      // Every Kontur widget on this site lives inside this one modal, so
+      // there is no unrelated portal to filter out — any body-level
+      // .react-ui root is ours. Just take all of them directly.
       var containers = Array.from(document.querySelectorAll(".react-ui[data-rendered-container-id], body > .react-ui"));
       containers = containers.filter(function (container, index, all) {
         return all.indexOf(container) === index;
       });
-      var owners = [modal];
-      var result = [];
-      // Follow nested portal ownership too (calendar/guest picker inside a modal).
-      for (var i = 0; i < owners.length; i++) {
-        owners[i].querySelectorAll("noscript[data-render-container-id]").forEach(function (marker) {
-          var id = marker.getAttribute("data-render-container-id");
-          containers.forEach(function (container) {
-            if (container.getAttribute("data-rendered-container-id") === id && result.indexOf(container) < 0) {
-              result.push(container);
-              owners.push(container);
-            }
-          });
-        });
-      }
-      return result.filter(function (container) {
+      return containers.filter(function (container) {
         return Array.from(container.children).some(function (child) {
           var style = getComputedStyle(child);
           return child.getClientRects().length && style.display !== "none" && style.visibility !== "hidden";
