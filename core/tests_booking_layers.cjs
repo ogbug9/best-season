@@ -13,6 +13,7 @@ const html = `<!doctype html><html lang="ru"><meta charset="utf-8">
 <style>.test-panel{padding:24px}.test-panel button{margin:8px;padding:12px}.test-overlay{position:fixed;inset:0;background:#0008;display:grid;place-items:center}.test-dialog{background:white;padding:20px;max-width:90vw}.test-popup{background:white;position:fixed;top:150px;left:5%;padding:16px;max-width:90vw}</style>
 <body><main class="test-panel"><button data-booking-open>Открыть бронирование</button><output id="results">Готово к проверке</output></main>
 <div id="already-inert" inert></div>
+<div class="react-ui" data-rendered-container-id="datepicker"></div>
 <dialog class="booking-modal booking-system" data-booking-modal aria-label="Бронирование">
 <div class="booking-modal__inner test-panel"><button data-booking-close>Закрыть внешнее</button>
 <h2 class="booking-modal__title">Бронирование</h2>
@@ -58,7 +59,10 @@ function openPortal(owner, popup=false, unannotated=false){
  };
  const close=()=>{document.removeEventListener('keydown',escape);portal.remove();if(marker)marker.remove();frame(()=>{
   const outer=document.querySelector('dialog');
-  if(!document.querySelector('.react-ui')){record('outer modality restored',outer.matches(':modal'));record('focus restored',outer.contains(document.activeElement));record('still initialized once',initCount===1);}
+  // The permanent, empty datepicker placeholder is always present — exclude
+  // it, it carries no active content and closing never touches it.
+  const stillOpen=Array.from(document.querySelectorAll('.react-ui')).some(el=>el!==document.querySelector('[data-rendered-container-id="datepicker"]'));
+  if(!stillOpen){record('outer modality restored',outer.matches(':modal'));record('focus restored',outer.contains(document.activeElement));record('still initialized once',initCount===1);}
  });};
  const escape=e=>{if(e.key==='Escape' && portal===Array.from(document.querySelectorAll('.react-ui')).pop()){e.preventDefault();e.stopImmediatePropagation();close();}};
  document.addEventListener('keydown',escape);
@@ -73,8 +77,29 @@ function openPortal(owner, popup=false, unannotated=false){
 }
 window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='bookingForm'){
  const host=document.getElementById(c.appearance.container);
- host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button>';
+ host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button><button>Поле даты</button>';
  host.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>openPortal(host,i===2,i===3));
+ // The date-picker portal is mounted ONCE, empty, before anyone opens the
+ // modal — invisible to our own visibility check for as long as it stays
+ // empty. This mirrors what a plain "Заезд"/"Выезд" field's own calendar
+ // does in production: Kontur pre-mounts the container and only fills it
+ // in on click. If that empty container ever got marked inert while empty,
+ // the click that should reveal it would be silently swallowed (inert
+ // blocks pointer events on the whole subtree) — a permanent deadlock,
+ // since it can never look "active" to us again once nothing can click it.
+ host.querySelector('button:last-child').onclick=function(){
+  const field=document.querySelector('[data-rendered-container-id="datepicker"]');
+  // A real floating popup is always positioned (fixed/absolute) — that's
+  // what makes it a popup rather than inline content — so this mirrors that.
+  field.innerHTML='<button id="pick-day-in-field" style="position:fixed;top:200px;left:20px">14 сентября</button>';
+  // Per the file header: Kontur's RenderContainer re-appends a portal to the
+  // end of body on every render, so a real reveal also moves it there.
+  document.body.appendChild(field);
+  frame(()=>{
+   const btn=document.getElementById('pick-day-in-field'), r=btn.getBoundingClientRect();
+   record('pre-mounted field portal is clickable once revealed', !btn.inert && btn.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)));
+  });
+ };
 }}};
 </script>
 <script src="/config/static/js/booking-layers.js"></script><script src="/config/static/js/kontur.js"></script></body></html>`;

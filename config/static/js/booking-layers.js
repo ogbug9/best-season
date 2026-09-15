@@ -81,17 +81,22 @@
         // Derive the shell's layer from the actual SDK layer, never an arbitrary high z-index.
         var layer = String(zIndexes.length ? Math.min.apply(Math, zIndexes) - 1 : 0);
         if (modal.style.getPropertyValue("--booking-layer-z") !== layer) modal.style.setProperty("--booking-layer-z", layer);
+        // Never inert a Kontur portal itself, only unrelated body children —
+        // not just the ones active RIGHT NOW. A portal Kontur mounts once and
+        // toggles internally (the date-picker attached to a plain field is
+        // exactly this) can be genuinely empty/invisible at the instant this
+        // runs (still loading, mid-transition), which used to get it inerted
+        // here. inert blocks pointer events on the whole subtree, including
+        // future clicks that would have opened it — so an un-lucky first
+        // check permanently deadlocked that control: it could never become
+        // "active" by our own visibility check again, because inert stopped
+        // the very click that would have shown it. Kontur portals are never
+        // background noise on this site (every one belongs to our modal), so
+        // just leave the whole .react-ui class alone, active or not.
         Array.from(document.body.children).forEach(function (element) {
-          if (element === modal || active.indexOf(element) >= 0 || /^(SCRIPT|STYLE|LINK)$/.test(element.tagName)) return;
+          if (element === modal || element.classList.contains("react-ui") || /^(SCRIPT|STYLE|LINK)$/.test(element.tagName)) return;
           if (!inertElements.has(element)) inertElements.set(element, element.inert);
           element.inert = true;
-        });
-        // A previously inactive portal may become active again in a nested workflow.
-        active.forEach(function (element) {
-          if (inertElements.has(element)) {
-            element.inert = inertElements.get(element);
-            inertElements.delete(element);
-          }
         });
         var inner = active.map(function (container) {
           return container.querySelector('[data-tid="modal-content"][role="dialog"]');
