@@ -57,13 +57,16 @@ function openPortal(owner, popup=false, unannotated=false){
      record('focus not re-stolen to first control after a same-dialog redraw', !stolen);
    });
  };
- const close=()=>{document.removeEventListener('keydown',escape);portal.remove();if(marker)marker.remove();frame(()=>{
+ const close=()=>{document.removeEventListener('keydown',escape);portal.remove();if(marker)marker.remove();setTimeout(()=>{
   const outer=document.querySelector('dialog');
   // The permanent, empty datepicker placeholder is always present — exclude
   // it, it carries no active content and closing never touches it.
   const stillOpen=Array.from(document.querySelectorAll('.react-ui')).some(el=>el!==document.querySelector('[data-rendered-container-id="datepicker"]'));
+  // Leaving vendor mode now waits out a short grace window (see
+  // "Переключение полей" above) in case Kontur is about to swap in a new
+  // popup rather than actually being done — real close needs to wait past it.
   if(!stillOpen){record('outer modality restored',outer.matches(':modal'));record('focus restored',outer.contains(document.activeElement));record('still initialized once',initCount===1);}
- });};
+ },350);};
  const escape=e=>{if(e.key==='Escape' && portal===Array.from(document.querySelectorAll('.react-ui')).pop()){e.preventDefault();e.stopImmediatePropagation();close();}};
  document.addEventListener('keydown',escape);
  portal.querySelector('button').onclick=close;
@@ -77,8 +80,8 @@ function openPortal(owner, popup=false, unannotated=false){
 }
 window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='bookingForm'){
  const host=document.getElementById(c.appearance.container);
- host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button><button>Поле даты</button>';
- host.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>openPortal(host,i===2,i===3));
+ host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button><button>Поле даты</button><button>Переключение полей</button>';
+ host.querySelectorAll('button').forEach((b,i)=>{if(i<5)b.onclick=()=>openPortal(host,i===2,i===3);});
  // The date-picker portal is mounted ONCE, empty, before anyone opens the
  // modal — invisible to our own visibility check for as long as it stays
  // empty. This mirrors what a plain "Заезд"/"Выезд" field's own calendar
@@ -111,8 +114,58 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
    setTimeout(()=>document.getElementById('pick-second-day').click(),150);
    setTimeout(()=>record('date-range popup still open mid-pick (debounce not fired yet)',
      !document.querySelector('[data-rendered-container-id="datepicker"]').hidden),300);
+   // Simulates switching "Заезд" -> "Выезд": Kontur redraws the SAME popup
+   // container in place, with no day click involved. A global re-query at
+   // fire time used to hide whatever matched right now regardless of this —
+   // the popup for the field the guest just switched to. The redraw itself
+   // must restart the debounce instead.
+   setTimeout(()=>{
+    const container=document.querySelector('[data-rendered-container-id="datepicker"]');
+    const marker=document.createElement('span'); container.appendChild(marker); marker.remove();
+   },450);
+   setTimeout(()=>record('date-range popup survives a same-container redraw (field switch) without an early hide',
+     !document.querySelector('[data-rendered-container-id="datepicker"]').hidden),700);
    setTimeout(()=>record('date-range popup hides itself once picking settles',
-     document.querySelector('[data-rendered-container-id="datepicker"]').hidden),750);
+     document.querySelector('[data-rendered-container-id="datepicker"]').hidden),1000);
+  });
+ };
+ // Confirmed live on best-season-sfnvsd24.amvera.io: picking "Заезд" doesn't
+ // just redraw Kontur's range-picker popup — it TEARS DOWN the whole
+ // .react-ui container. A new one only appears once the guest clicks
+ // "Выезд". Exiting vendor mode (back to a native showModal()) the instant
+ // portals() is momentarily empty, then re-entering the moment the new
+ // container shows up, is a visible close-then-reopen flash — reported live
+ // as "не успеваю нажать на Выезд, всё закрывается". The fix gives the exit
+ // a short grace window instead of acting on the gap immediately.
+ host.querySelectorAll('button')[5].onclick=function(){
+  const outer=document.querySelector('dialog');
+  let flickered=false;
+  const poll=setInterval(()=>{ if(outer.matches(':modal')) flickered=true; },10);
+  const a=document.createElement('div'); a.className='react-ui';
+  a.innerHTML='<button data-date-range-picker-day="a" style="position:fixed;top:250px;left:20px">A</button>';
+  document.body.appendChild(a);
+  frame(()=>{
+   record('entered vendor mode for the first popup', !outer.matches(':modal')&&outer.open);
+   // Kontur destroys container A almost immediately after the pick.
+   setTimeout(()=>{
+    a.remove();
+    // The guest clicks "Выезд" well inside the grace window — container B
+    // appears before the delayed exit would have fired.
+    setTimeout(()=>{
+     const b=document.createElement('div'); b.className='react-ui';
+     b.innerHTML='<button data-date-range-picker-day="b" style="position:fixed;top:250px;left:20px">B</button>';
+     document.body.appendChild(b);
+     setTimeout(()=>{
+      clearInterval(poll);
+      record('no dialog flicker while Kontur tears down and recreates the popup between Заезд/Выезд', !flickered);
+      // Now genuinely finish: remove B and don't recreate anything — this
+      // time the grace window should elapse and modality should restore.
+      b.remove();
+      setTimeout(()=>record('outer modality restored once nothing reappears after the grace window',
+        outer.matches(':modal')), 500);
+     }, 200);
+    }, 150);
+   }, 20);
   });
  };
 }}};
