@@ -2552,7 +2552,12 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   .page-home .home-background__image--8 {
     width: 86.111111%;
     left: 13.888889%;
-    top: 342.390625px;
+    /* Уточнено по прямым координатам из Figma (get_metadata, Desktop Main
+       2729:4229): «Фон 8» начинается на y=6091.16 при старте секции
+       «Интересное рядом» на y=5313.13 — офсет 778.03px, а не 342.39.
+       left 13.888889% (=200px от 1440) совпал с макетом точно — сверено
+       по x-координате узла, левая позиция не менялась. */
+    top: 778.029296875px;
   }
   .page-home .home-background__image--6 {
     width: 39.027778%;
