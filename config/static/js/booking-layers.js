@@ -12,6 +12,7 @@
     var scrollTop = 0;
     var inertElements = new Map();
     var parkedPortals = new Map();
+    var focusedInner = null;
 
     function portals() {
       // Kontur normally annotates portal roots with data-rendered-container-id.
@@ -96,12 +97,22 @@
           return container.querySelector('[data-tid="modal-content"][role="dialog"]');
         }).filter(Boolean).pop();
         modal.inert = Boolean(inner);
-        if (!inner && entered) focus(returnFocus);
-        if (inner && !active.some(function (container) { return container.contains(document.activeElement); })) {
-          // SDK autofocus may have run while the native dialog still made the portal inert.
+        if (!inner) {
+          focusedInner = null;
+          if (entered) focus(returnFocus);
+        } else if (inner !== focusedInner && !active.some(function (container) { return container.contains(document.activeElement); })) {
+          // Steal focus into a newly opened vendor dialog once (SDK autofocus may
+          // have run while the native dialog still made the portal inert). Every
+          // later mutation — picking a day, the grid redrawing — also moves focus
+          // out of the DOM for a tick, but re-stealing it back to the FIRST control
+          // on every one of those renders is what snapped the calendar back to its
+          // opening date and trapped guests inside it. Only the dialog's first
+          // appearance gets this nudge; after that its own focus handling is left
+          // alone even if it transiently loses focus during a re-render.
           var control = inner.querySelector('button:not([disabled]), input:not([type="hidden"]):not([disabled]), [tabindex="0"]');
           if (!control) { inner.setAttribute("tabindex", "-1"); control = inner; }
           focus(control);
+          focusedInner = inner;
         }
       } else if (suspended) {
         suspended = false;
@@ -162,6 +173,7 @@
         observer = null;
         pending = false;
         suspended = false;
+        focusedInner = null;
         modal.inert = false;
         restoreInert();
         modal.classList.remove("booking-system--vendor-open");

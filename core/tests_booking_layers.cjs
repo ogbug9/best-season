@@ -36,8 +36,26 @@ function openPortal(owner, popup=false, unannotated=false){
  // Some real screens (the availability result, and the date picker opened from it)
  // mount a .react-ui root with NEITHER the marker NOR the id attribute — this is
  // the case that used to be silently dropped from the active-portal list.
- portal.innerHTML=popup?'<div class="test-popup" style="z-index: 10002"><button>Выбрать дату</button></div>':'<div class="test-overlay" style="z-index: 9000"><div class="test-dialog" data-tid="modal-content" role="dialog" aria-modal="true"><button>Закрыть внутреннее</button><input aria-label="Гость"><button>Открыть календарь</button></div></div>';
+ portal.innerHTML=popup?'<div class="test-popup" style="z-index: 10002"><button>Выбрать дату</button></div>':'<div class="test-overlay" style="z-index: 9000"><div class="test-dialog" data-tid="modal-content" role="dialog" aria-modal="true"><button>Закрыть внутреннее</button><input aria-label="Гость"><button>Открыть календарь</button><button data-day-pick>День 12</button></div></div>';
  document.body.append(portal);
+ // Picking a day in the real widget redraws the grid — a childList mutation that
+ // transiently moves focus off the DOM (activeElement reverts to body) even though
+ // the same dialog stays open. Our sync() used to treat that exactly like a brand
+ // new dialog appearing and yank focus back to the FIRST control every time,
+ // which is what snapped the calendar back to its opening date and trapped
+ // guests who could only escape by closing the whole thing.
+ var dayPick = portal.querySelector('[data-day-pick]');
+ if (dayPick) dayPick.onclick = function () {
+   dayPick.focus();
+   dayPick.blur();
+   var marker = document.createElement('span');
+   portal.querySelector('[data-tid="modal-content"]').appendChild(marker);
+   marker.remove();
+   frame(function () {
+     var stolen = document.activeElement === portal.querySelector('button');
+     record('focus not re-stolen to first control after a same-dialog redraw', !stolen);
+   });
+ };
  const close=()=>{document.removeEventListener('keydown',escape);portal.remove();if(marker)marker.remove();frame(()=>{
   const outer=document.querySelector('dialog');
   if(!document.querySelector('.react-ui')){record('outer modality restored',outer.matches(':modal'));record('focus restored',outer.contains(document.activeElement));record('still initialized once',initCount===1);}
