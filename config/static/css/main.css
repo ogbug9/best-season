@@ -4671,7 +4671,13 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-home .quote__media { align-self: start; }
 }
 @media (min-width: 900px) and (max-width: 1279px) {
-  .page-home .quote { grid-template-columns: minmax(0, 1fr) minmax(0, 455fr); gap: 40px; padding-inline: 40px; }
+  /* Доли, а не 1fr против 455fr: при 1fr текст получал одну долю из 456
+     и колонка схлопывалась в ~2px, а абзацы с max-width 635 уезжали за
+     левый край экрана (замер: left −131 при 1024). Секция выглядела
+     пустой кремовой полосой на всём диапазоне 900–1279. Пропорция
+     635:455 сохраняет замысел этого брейкпоинта — фото уже, чем на
+     десктопе, — и стыкуется с правилом 1280 без скачка. */
+  .page-home .quote { grid-template-columns: minmax(0, 635fr) minmax(0, 455fr); gap: 40px; padding-inline: 40px; }
   .page-home .quote__text { width: auto; height: auto; margin-left: 0; }
   .page-home .quote__mark--open { left: -40px; }
   .page-home .quote__mark--close { left: auto; right: 0; top: auto; bottom: -95px; }

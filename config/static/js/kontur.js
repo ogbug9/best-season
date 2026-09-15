@@ -269,7 +269,10 @@
     script.src = WIDGET_SRC;
     script.async = true;
     script.onload = function () {
-      if (attempt === state.attempt && !state.failed) requestAnimationFrame(initWidget);
+      // setTimeout, а не requestAnimationFrame: если скрипт догрузился, пока
+      // страница скрыта (гость свернул вкладку), кадр не наступит и виджет
+      // не поднимется никогда. Таймер срабатывает в обоих состояниях.
+      if (attempt === state.attempt && !state.failed) setTimeout(initWidget, 0);
     };
     // Сетевые ошибки загрузки скрипта. Запрет домена со стороны SDK
     // обрабатывается отдельно через onError или таймаут.
@@ -334,12 +337,30 @@
     if (host) host.hidden = false;
     modal.setAttribute("aria-busy", "true");
     var attempt = state.attempt;
-    state.timer = setTimeout(function () {
-      if (attempt === state.attempt) showFallback("timeout_5s");
+    state.timer = setTimeout(function countdown() {
+      if (attempt !== state.attempt || state.failed || state.ready) return;
+      // Пока страница не на экране, отсчёт не идёт: гость свернул вкладку или
+      // переключился в другое приложение, и «не успели за 5 секунд» к его
+      // опыту отношения не имеет. Досчитываем, когда он вернётся — п. 5.6.1
+      // про ожидание гостя, а не про время в фоне.
+      if (document.visibilityState === "hidden") {
+        state.timer = setTimeout(countdown, TIMEOUT_MS);
+        return;
+      }
+      showFallback("timeout_5s");
     }, TIMEOUT_MS);
-    requestAnimationFrame(function () {
+    // Раньше загрузка висела на requestAnimationFrame. Пока страница не
+    // перерисовывается (фоновая вкладка, свёрнутое окно, переключение
+    // приложения на телефоне), rAF не вызывается вообще: скрипт Контура не
+    // запрашивался НИ РАЗУ, а таймер при этом шёл и через 5 секунд показывал
+    // «онлайн-бронирование временно недоступно» — плюс уходило ложное
+    // уведомление владельцу о сбое. Кадр здесь не нужен: loadScript только
+    // добавляет <script>, а проверка размеров контейнера живёт в initWidget
+    // и отрабатывает на скрытой странице тоже (замер: 1161×100 при
+    // visibilityState === "hidden"). Сам скрипт грузится за ~55 мс.
+    setTimeout(function () {
       if (attempt === state.attempt && modal.open && !state.failed) loadScript();
-    });
+    }, 0);
   }
 
   function retry() {

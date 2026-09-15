@@ -42,6 +42,9 @@ function fixture(options = {}) {
   modal.querySelectorAll = () => containers;
   const config = { hotelId: options.missing ? '' : 'configured-in-settings' };
   const document = {
+    // Отсчёт до резервного блока стоит на паузе, пока страница скрыта —
+    // в тестах она всегда на экране, иначе таймаут не наступал бы вовсе.
+    visibilityState: options.hidden ? 'hidden' : 'visible',
     body: node(), head: { appendChild(s) { scripts.push(s); } },
     querySelector: () => modal,
     getElementById: () => ({ textContent: JSON.stringify(config) }),
@@ -68,7 +71,13 @@ function fixture(options = {}) {
   vm.runInNewContext(source, {
     CustomEvent: class { constructor(type, options) { this.type = type; Object.assign(this, options); } },
     document, window, requestAnimationFrame(fn) { frames.push(fn); },
-    setTimeout(fn) { timers.set(++timerId, fn); return timerId; },
+    // Отложенная на нулевой задержке работа (загрузка скрипта) раньше висела
+    // на requestAnimationFrame и разбиралась через frame(). Кадр заменён на
+    // setTimeout(…, 0), потому что в скрытой вкладке rAF не наступает вообще
+    // и виджет не запрашивался ни разу. Здесь нулевые таймеры собираются
+    // отдельно и по-прежнему разбираются через frame(), а в timers остаётся
+    // только пятисекундный отсчёт до резервного блока — его гоняет timeout().
+    setTimeout(fn, delay) { if (!delay) { frames.push(fn); return ++timerId; } timers.set(++timerId, fn); return timerId; },
     clearTimeout(id) { timers.delete(id); },
   });
   function click(selector, houseId) {
@@ -165,4 +174,22 @@ test('card house transfers and generic entry clears previous card context', () =
   assert.equal(fields.house.value, '28'); assert.equal(fields.date_to.value, '');
   f.close(); f.open();
   assert.equal(fields.house.value, '');
+});
+
+// Свёрнутая вкладка: гость нажал «Забронировать» и переключился в другое
+// приложение. Раньше загрузка скрипта висела на requestAnimationFrame, кадр
+// в скрытой вкладке не наступал, и виджет не запрашивался ни разу — зато
+// пятисекундный таймер шёл и подменял бронирование резервной формой с
+// текстом «онлайн-бронирование временно недоступно», а владельцу уходило
+// ложное уведомление о сбое. Проверено на живом виджете: сам скрипт
+// Контура поднимается за ~55 мс и на скрытой странице тоже.
+test('hidden tab still requests the widget and does not fall back while away', () => {
+  const f = fixture({ hidden: true });
+  f.open();
+  assert.equal(f.scripts.length, 1, 'скрипт должен быть запрошен и в скрытой вкладке');
+  f.timeout();
+  assert.equal(f.fallback.hidden, true, 'пока страница скрыта, отсчёт до резервного блока не идёт');
+  f.load();
+  assert.equal(f.initCount, 1);
+  assert.equal(f.host.hidden, false);
 });

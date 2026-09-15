@@ -1,5 +1,8 @@
 /* Booking shell: dimensions from the supplied desktop Figma export css.md.
-   Provider internals are styled only through the official widget theme. */
+   Раньше здесь стояло «внутренности виджета настраиваются только штатной
+   темой». Это оказалось не так: проверено на живом виджете — портал Контура
+   это обычный DOM в body (ни iframe, ни shadow DOM), наши правила к нему
+   применяются. Карта устойчивых зацепок — в конце файла. */
 .booking-system {
   width: min(1240px, calc(100% - 64px));
   max-width: 1240px;
@@ -123,4 +126,45 @@
   .booking-system .form__grid { grid-template-columns: minmax(0, 1fr); }
   .booking-system .form__field { min-width: 0; }
   .booking-system .booking-fallback__contacts .btn { max-width: 100%; overflow-wrap: anywhere; }
+}
+
+/* =========================================================================
+   Внутренности виджета Контура
+
+   Модель темы Контура (см. widgetTheme() в kontur.js) умеет только цвета
+   кнопок, скругления и порог адаптива — шрифта в ней нет вообще. Но сам
+   виджет рендерится обычным DOM: портал лежит в body как <div class="react-ui">,
+   без iframe и без shadow DOM, поэтому наш CSS до него достаёт.
+
+   Классы виджета захешированы (react-ui-1tkv7o8) и меняются от сборки к
+   сборке — цепляться только за атрибуты data-tid и data-*, они смысловые.
+   Снято с живого виджета:
+     [data-tid="Calendar__root"]              календарь целиком
+     [data-tid="DayCellView__root"]           ячейка дня
+     [data-date-range-picker-day]             она же, у выбора диапазона
+     [data-tid="MonthView__month"]            сетка месяца
+     [data-tid="MonthView__headerMonth"]      подпись месяца
+     [data-tid="MonthView__headerYear"]       подпись года
+     [data-tid="DateRangePicker__root"]       блок «Заезд — Выезд»
+     [data-tid="DateRangePicker__start"]      поле заезда
+     [data-tid="DateRangePicker__end"]        поле выезда
+     [data-tid="InputLikeText__input"]        поле ввода даты
+     [data-tid="DateInput__icon"]             иконка календаря в поле
+     [data-tid="DateFragmentsView__placeholder"] плейсхолдер дд.мм.гггг
+     [data-tid="Button__rootElement"]         кнопка виджета
+     [data-tid="Select__root"]                выпадающий список
+     [data-tid="PopupContent"]                всплывающий слой
+
+   Ниже — только типографика: виджет приходит с фирменным шрифтом Контура
+   (Lab Grotesque), и внутри нашего окна он читается как чужой. Замер до и
+   после подмены: ячейка дня 32×32, календарь 260×450, кнопка 278, поле 83
+   — размеры не изменились ни на пиксель, обрезанных элементов нет.
+   Остальное оформление (цвета, рамки) не трогаем, пока Настя не скажет,
+   как именно календарь должен выглядеть.
+   ========================================================================= */
+body > .react-ui,
+body > .react-ui *,
+.booking-system .kontur-host .react-ui,
+.booking-system .kontur-host .react-ui * {
+  font-family: 'Montserrat', system-ui, sans-serif !important;
 }
