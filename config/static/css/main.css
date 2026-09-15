@@ -2479,7 +2479,7 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   overflow-x: clip;
   isolation: isolate;
 }
-.page-home .home-after-hero > section:not(.quote),
+.page-home .home-after-hero > section:not(.about):not(.quote),
 .page-home .home-faq-background-anchor { position: relative; }
 .page-home #main > .yandex-reviews { position: relative; isolation: isolate; }
 .page-home .home-background {
@@ -2497,13 +2497,18 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   height: auto;
   pointer-events: none;
 }
-.page-home .about__media,
-.page-home .about__panel {
-  position: relative;
-  z-index: 1;
+/* Используем уже позиционированное фото: сами about и quote сохраняют
+   исходный порядок отрисовки пересекающегося контента. Стили фотографии
+   не должны задавать декоративному изображению высоту и скругления. */
+.page-home .about__media > .home-background { display: block; }
+.page-home .about__media .home-background .home-background__image--1 {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  border-radius: 0;
+  left: 0;
+  top: -103px;
 }
-.page-home .about > .home-background { display: block; }
-.page-home .home-background__image--1 { width: 100%; left: 0; top: -103px; }
 @media (min-width: 900px) {
   .page-home .home-background {
     display: block;
@@ -2511,11 +2516,11 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
     right: auto;
     left: max(0px, (100% - 1440px) / 2);
   }
-  .page-home .about > .home-background {
+  .page-home .about__media > .home-background {
     width: min(1440px, 100vw);
     left: calc(max(0px, (100vw - 1440px) / 2) - max(var(--gutter), (100vw - var(--container)) / 2));
   }
-  .page-home .home-background__image--1 {
+  .page-home .about__media .home-background .home-background__image--1 {
     width: 2165px;
     height: 1879px;
     left: -43px;

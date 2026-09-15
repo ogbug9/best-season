@@ -116,10 +116,10 @@
   а раскладка во всю ширину: контейнерные поля тут только у текста.
 {% endcomment %}
 <section class="about">
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.png' %}" width="2120" height="2152" alt="">
-  </div>
   <div class="about__media">
+    <div class="home-background" aria-hidden="true">
+      <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.png' %}" width="2120" height="2152" alt="">
+    </div>
     {% if page.about_image %}
       {% picture page.about_image preset="gallery" alt=page.about_title %}
     {% else %}
