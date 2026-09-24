@@ -203,6 +203,15 @@
 </section>
 {% endif %}
 
+{# ---------- 8. Нижняя точка входа в бронирование ---------- #}
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Выбрали домик?</h2>
+    <p>Свободные даты и стоимость — в системе бронирования.</p>
+    {% include "includes/booking_cta.html" with entry_point="4" house_id=page.pk %}
+  </div>
+</section>
+
 {% comment %} Просмотрщик галереи. Разметка пустая: скрипт подставляет в неё
    кадр, а <dialog> сам держит фокус и закрывается по Esc. {% endcomment %}
 {% if page.gallery_images.all %}

@@ -2481,7 +2481,7 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
 }
 .page-home .home-after-hero > section:not(.about):not(.quote),
 .page-home .home-faq-background-anchor { position: relative; }
-.page-home #main > .yandex-reviews { position: relative; isolation: isolate; }
+.page-home .yandex-reviews { position: relative; isolation: isolate; }
 .page-home .home-background {
   position: absolute;
   inset: 0;
@@ -2510,6 +2510,7 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   top: -103px;
 }
 @media (min-width: 900px) {
+  .page-home .home-faq-background-anchor > .yandex-reviews { background: transparent; }
   .page-home .home-background {
     display: block;
     width: min(1440px, 100%);
@@ -2523,7 +2524,8 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   .page-home .about__media .home-background .home-background__image--1 {
     width: 2165px;
     height: 1879px;
-    left: -43px;
+    left: -76px;
+    top: -792px;
     object-fit: cover;
     object-position: center 20%;
   }
@@ -2550,14 +2552,9 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
     transform: matrix(0, 1, 1, 0, 0, 0);
   }
   .page-home .home-background__image--8 {
-    width: 86.111111%;
+    width: 109.444444%;
     left: 13.888889%;
-    /* Уточнено по прямым координатам из Figma (get_metadata, Desktop Main
-       2729:4229): «Фон 8» начинается на y=6091.16 при старте секции
-       «Интересное рядом» на y=5313.13 — офсет 778.03px, а не 342.39.
-       left 13.888889% (=200px от 1440) совпал с макетом точно — сверено
-       по x-координате узла, левая позиция не менялась. */
-    top: 778.029296875px;
+    top: 367.390625px;
   }
   .page-home .home-background__image--6 {
     width: 39.027778%;
@@ -2570,9 +2567,9 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
     top: 665.390625px;
   }
   .page-home .home-background__image--bottom {
-    width: 99.513889%;
-    left: 45%;
-    bottom: 0;
+    width: 179.097222%;
+    left: 41.5%;
+    top: -1523px;
   }
 }
 .page-home .about__panel { background: transparent; }

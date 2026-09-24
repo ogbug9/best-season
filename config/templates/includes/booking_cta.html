@@ -11,6 +11,7 @@
 
 <div class="booking-cta">
   <button type="button" class="btn btn--primary" data-booking-open
+          {% if house_id %}data-house-id="{{ house_id }}"{% endif %}
           {% if entry_point %}data-entry-point="{{ entry_point }}"{% endif %}>
     Забронировать
   </button>

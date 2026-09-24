@@ -380,12 +380,7 @@
 {% if faq %}
 <div class="home-faq-background-anchor">
 {% include "includes/faq_section.html" %}
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--bottom" src="{% static 'img/home-backgrounds/bg-bottom.png' %}" width="2579" height="2457" alt="">
-  </div>
-</div>
 {% endif %}
-</div>
 
 <section class="section yandex-reviews" id="yandex-reviews" aria-labelledby="yandex-reviews-title">
   <div class="container yandex-reviews__layout">
@@ -409,5 +404,13 @@
     </div>
   </div>
 </section>
+
+{% if faq %}
+  <div class="home-background" aria-hidden="true">
+    <img class="home-background__image home-background__image--bottom" src="{% static 'img/home-backgrounds/bg-bottom.png' %}" width="2579" height="2457" alt="">
+  </div>
+</div>
+{% endif %}
+</div>
 
 {% endblock %}

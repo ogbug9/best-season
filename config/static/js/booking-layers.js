@@ -7,12 +7,16 @@
     var observer = null;
     var pending = false;
     var suspended = false;
+    var vendorExitTimer = null;
     var ignoredCloses = 0;
     var returnFocus = null;
     var scrollTop = 0;
     var inertElements = new Map();
     var parkedPortals = new Map();
     var focusedInner = null;
+    var rangePickTimer = null;
+    var rangePickContainer = null;
+    var hiddenRangePickContainer = null;
 
     function portals() {
       // Kontur normally annotates portal roots with data-rendered-container-id.
@@ -62,6 +66,8 @@
       var active = portals();
       var entered = false;
       if (active.length) {
+        clearTimeout(vendorExitTimer);
+        vendorExitTimer = null;
         if (!suspended) {
           entered = true;
           returnFocus = document.activeElement;
@@ -119,15 +125,22 @@
           focus(control);
           focusedInner = inner;
         }
-      } else if (suspended) {
-        suspended = false;
-        modal.inert = false;
-        restoreInert();
-        modal.classList.remove("booking-system--vendor-open");
-        switchMode(true);
-        modal.scrollTop = scrollTop;
-        focus(modal.contains(returnFocus) ? returnFocus : modal.querySelector("[data-booking-close]"));
-        returnFocus = null;
+      } else if (suspended && !vendorExitTimer) {
+        // Kontur briefly removes one date portal before mounting the next one
+        // when the guest switches from arrival to departure. Restoring native
+        // modality in that gap makes the whole widget visibly close and reopen.
+        vendorExitTimer = setTimeout(function () {
+          vendorExitTimer = null;
+          if (!observer || !modal.open || !suspended || portals().length) return;
+          suspended = false;
+          modal.inert = false;
+          restoreInert();
+          modal.classList.remove("booking-system--vendor-open");
+          switchMode(true);
+          modal.scrollTop = scrollTop;
+          focus(modal.contains(returnFocus) ? returnFocus : modal.querySelector("[data-booking-close]"));
+          returnFocus = null;
+        }, 250);
       }
     }
 
@@ -164,18 +177,28 @@
     // nothing that looks like a full dialog screen) so a date picker that is
     // genuinely part of a bigger vendor dialog — the nested "check
     // availability" flow — is left for that dialog to manage.
-    var rangePickTimer = null;
-    document.addEventListener("click", function (event) {
-      if (!event.target.closest("[data-date-range-picker-day]")) return;
+    function scheduleRangePickHide(container) {
       clearTimeout(rangePickTimer);
+      rangePickContainer = container;
       rangePickTimer = setTimeout(function () {
-        Array.from(document.querySelectorAll("body > .react-ui")).forEach(function (container) {
-          if (container.hidden) return;
-          if (!container.querySelector("[data-date-range-picker-day]")) return;
-          if (container.querySelector('[data-tid="modal-content"][role="dialog"]')) return;
-          container.hidden = true;
-        });
+        rangePickTimer = null;
+        rangePickContainer = null;
+        if (!container.isConnected || container.hidden) return;
+        if (!container.querySelector("[data-date-range-picker-day]")) return;
+        if (container.querySelector('[data-tid="modal-content"][role="dialog"]')) return;
+        container.hidden = true;
+        hiddenRangePickContainer = container;
       }, 400);
+    }
+    document.addEventListener("click", function (event) {
+      var dateField = event.target.closest('[data-tid="DateRangePicker__start"], [data-tid="DateRangePicker__end"]');
+      if (dateField && modal.contains(dateField) && hiddenRangePickContainer) {
+        if (hiddenRangePickContainer.isConnected) hiddenRangePickContainer.hidden = false;
+        hiddenRangePickContainer = null;
+      }
+      if (!modal.open || !event.target.closest("[data-date-range-picker-day]")) return;
+      var container = event.target.closest(".react-ui");
+      if (container && container.parentElement === document.body) scheduleRangePickHide(container);
     }, true);
 
     return {
@@ -187,7 +210,10 @@
           if (element.isConnected) element.hidden = hidden;
         });
         parkedPortals.clear();
-        observer = new MutationObserver(function () {
+        observer = new MutationObserver(function (mutations) {
+          if (rangePickTimer && rangePickContainer && mutations.some(function (mutation) {
+            return mutation.type === "childList" && rangePickContainer.contains(mutation.target);
+          })) scheduleRangePickHide(rangePickContainer);
           if (!pending) { pending = true; requestAnimationFrame(sync); }
         });
         observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class", "hidden"] });
@@ -202,6 +228,11 @@
           element.hidden = true;
         });
         document.removeEventListener("keydown", trapTab);
+        clearTimeout(vendorExitTimer);
+        vendorExitTimer = null;
+        clearTimeout(rangePickTimer);
+        rangePickTimer = null;
+        rangePickContainer = null;
         observer = null;
         pending = false;
         suspended = false;

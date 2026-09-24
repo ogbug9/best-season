@@ -80,7 +80,7 @@ function openPortal(owner, popup=false, unannotated=false){
 }
 window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='bookingForm'){
  const host=document.getElementById(c.appearance.container);
- host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button><button>Поле даты</button><button>Переключение полей</button>';
+ host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button><button data-tid="DateRangePicker__start">Поле даты</button><button>Переключение полей</button>';
  host.querySelectorAll('button').forEach((b,i)=>{if(i<5)b.onclick=()=>openPortal(host,i===2,i===3);});
  // The date-picker portal is mounted ONCE, empty, before anyone opens the
  // modal — invisible to our own visibility check for as long as it stays
@@ -90,7 +90,7 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
  // the click that should reveal it would be silently swallowed (inert
  // blocks pointer events on the whole subtree) — a permanent deadlock,
  // since it can never look "active" to us again once nothing can click it.
- host.querySelector('button:last-child').onclick=function(){
+ host.querySelectorAll('button')[4].onclick=function(){
   const field=document.querySelector('[data-rendered-container-id="datepicker"]');
   // A real floating popup is always positioned (fixed/absolute) — that's
   // what makes it a popup rather than inline content — so this mirrors that.
@@ -127,6 +127,11 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
      !document.querySelector('[data-rendered-container-id="datepicker"]').hidden),700);
    setTimeout(()=>record('date-range popup hides itself once picking settles',
      document.querySelector('[data-rendered-container-id="datepicker"]').hidden),1000);
+   setTimeout(()=>{
+    host.querySelectorAll('button')[4].click();
+    frame(()=>record('date-range popup can reopen after auto-hide',
+      !document.querySelector('[data-rendered-container-id="datepicker"]').hidden));
+   },1100);
   });
  };
  // Confirmed live on best-season-sfnvsd24.amvera.io: picking "Заезд" doesn't
