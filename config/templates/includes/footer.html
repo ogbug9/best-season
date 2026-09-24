@@ -11,6 +11,8 @@
 {% endcomment %}
 
 <footer class="footer">
+  {# Нижний слой фона главной. На остальных страницах скрыт стилями, а loading="lazy" не даёт его скачать. #}
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--footer" src="{% static 'img/home-backgrounds/fon-footer.svg' %}" width="1452" height="1386" alt="" loading="lazy" decoding="async"></div>
   <div class="container">
     <div class="footer__top">
 

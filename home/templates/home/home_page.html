@@ -107,6 +107,8 @@
 </section>
 
 <div class="home-after-hero">
+{# Фон главной: слои из Desktop Main.svg, каждый привязан к своей секции — см. main.css «Фон главной». #}
+<div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--about" src="{% static 'img/home-backgrounds/fon-about.svg' %}" width="2124" height="1144" alt="" loading="lazy" decoding="async"></div>
 
 {% comment %} 2. О ферме — фото слева, текст справа {% endcomment %}
 {% if page.about_text or page.about_title %}
@@ -118,7 +120,7 @@
 <section class="about">
   <div class="about__media">
     <div class="home-background" aria-hidden="true">
-      <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.png' %}" width="2120" height="2152" alt="">
+      <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.png' %}" width="2120" height="2152" alt="" loading="lazy">
     </div>
     {% if page.about_image %}
       {% picture page.about_image preset="gallery" alt=page.about_title %}
@@ -173,9 +175,7 @@
 {% comment %} 4. Слоган {% endcomment %}
 {% if page.slogan %}
 <section class="slogan">
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--4" src="{% static 'img/home-backgrounds/bg-4.png' %}" width="1252" height="1416" alt="">
-  </div>
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--slogan" src="{% static 'img/home-backgrounds/fon-slogan.svg' %}" width="1186" height="1192" alt="" loading="lazy" decoding="async"></div>
   <div class="container">
     <div class="slogan__frame">
       <p>{{ page.slogan|slogan_lines|linebreaksbr }}</p>
@@ -192,12 +192,7 @@
 {% comment %} 5. Наши домики — сетка карточек {% endcomment %}
 {% if houses %}
 <section class="section" id="houses">
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--5" src="{% static 'img/home-backgrounds/bg-5.png' %}" width="1251" height="1411" alt="">
-  </div>
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--2" src="{% static 'img/home-backgrounds/bg-2.png' %}" width="3101" height="3152" alt="">
-  </div>
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--houses" src="{% static 'img/home-backgrounds/fon-houses.svg' %}" width="1186" height="1192" alt="" loading="lazy" decoding="async"></div>
   <div class="container">
     <h2 class="section__title section__title--center">Наши домики</h2>
     <ul class="cards cards--houses">
@@ -214,6 +209,7 @@
 {% comment %} 6. Наша территория — мозаика плиток {% endcomment %}
 {% if territory %}
 <section class="section section--pattern">
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--territory" src="{% static 'img/home-backgrounds/fon-territory.svg' %}" width="1714" height="2584" alt="" loading="lazy" decoding="async"></div>
   <div class="container">
     <ul class="mosaic">
       {% comment %}
@@ -270,9 +266,6 @@
 {% comment %} 7. Интересное рядом — три карточки с номерами {% endcomment %}
 {% if nearby %}
 <section class="section home-nearby">
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--8" src="{% static 'img/home-backgrounds/bg-8.png' %}" width="1576" height="1544" alt="">
-  </div>
   <div class="container">
     <h2 class="section__title section__title--center"><span class="home-desktop-copy">Интересное рядом</span><span class="home-mobile-copy">Интересное<br>рядом</span></h2>
     <ul class="cards cards--nearby">
@@ -328,12 +321,7 @@
 {# Единственная секция главной во всю ширину фрейма — так в макете. #}
 {# Поэтому .container здесь намеренно нет, текст стоит внутри мозаики. #}
 <section class="section section--gallery">
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--6" src="{% static 'img/home-backgrounds/bg-6.png' %}" width="1883" height="1916" alt="">
-  </div>
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--7" src="{% static 'img/home-backgrounds/bg-7.png' %}" width="1571" height="1570" alt="">
-  </div>
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--gallery" src="{% static 'img/home-backgrounds/fon-gallery.svg' %}" width="1165" height="1152" alt="" loading="lazy" decoding="async"></div>
   <div class="photo-mosaic">
     <ul class="photo-mosaic__tiles">
       {% for item in page.gallery_images.all %}
@@ -379,6 +367,8 @@
 {% endcomment %}
 {% if faq %}
 <div class="home-faq-background-anchor">
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--faq-left" src="{% static 'img/home-backgrounds/fon-faq-left.svg' %}" width="734" height="1314" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--faq-right" src="{% static 'img/home-backgrounds/fon-faq-right.svg' %}" width="1269" height="1274" alt="" loading="lazy" decoding="async"></div>
 {% include "includes/faq_section.html" %}
 {% endif %}
 
@@ -406,9 +396,6 @@
 </section>
 
 {% if faq %}
-  <div class="home-background" aria-hidden="true">
-    <img class="home-background__image home-background__image--bottom" src="{% static 'img/home-backgrounds/bg-bottom.png' %}" width="2579" height="2457" alt="">
-  </div>
 </div>
 {% endif %}
 </div>
