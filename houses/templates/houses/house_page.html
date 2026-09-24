@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags media_tags icon_tags houses_tags layout_tags %}
+{% load static wagtailcore_tags wagtailimages_tags media_tags icon_tags houses_tags layout_tags %}
 
 {% comment %}
   Страница дома. Порядок блоков — по макету «Первый домик»: заголовок,
@@ -37,6 +37,8 @@
 
 {# ---------- 1. Заголовок ---------- #}
 <section class="house-title">
+  {# Фон страницы домика: координаты — в main.css, блок «Фон страницы домика» #}
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--house-top" src="{% static 'img/home-backgrounds/fon-house-top.svg' %}" width="1111" height="872" alt="" loading="lazy" decoding="async"></div>
   <div class="container">
     <h1>{{ page.title }}</h1>
   </div>
@@ -52,6 +54,7 @@
 {% with mosaic=page.mosaic_images %}
 {% if mosaic %}
 <section class="house-mosaic-section">
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--house-gallery" src="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}" width="1172" height="1199" alt="" loading="lazy" decoding="async"></div>
   <div class="container">
     <h2 class="visually-hidden">Фотографии домика</h2>
     <ul class="house-mosaic gallery" data-gallery>
@@ -87,6 +90,7 @@
 </section>
 {% else %}
 <section class="house-mosaic-section" aria-hidden="true">
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--house-gallery" src="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}" width="1172" height="1199" alt="" loading="lazy" decoding="async"></div>
   <div class="container"><div class="house-mosaic house-mosaic--empty"><span class="ph"></span></div><button type="button" class="btn btn--outline mobile-gallery-more" disabled>Смотреть все фотографии</button></div>
 </section>
 {% endif %}
@@ -94,6 +98,7 @@
 
 {# ---------- 4. Карточки-факты ---------- #}
 <section class="house-facts-section">
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--house-left" src="{% static 'img/home-backgrounds/fon-house-left.svg' %}" width="1186" height="1394" alt="" loading="lazy" decoding="async"></div>
   <div class="container">
     <div class="house-facts">
       <div class="fact-card">

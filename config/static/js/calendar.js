@@ -13,6 +13,18 @@
   var panel = document.querySelector("[data-booking-panel]");
   if (!panel) return;
 
+  // Подсказка у цены: показ — стилями (:hover, :focus-within). Здесь только
+  // закрытие по Esc (WCAG 1.4.13) — подсказка прячется, пока курсор или
+  // фокус не уйдут с неё.
+  var hint = panel.querySelector("[data-booking-hint]");
+  if (hint && typeof hint.addEventListener === "function") {
+    hint.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") hint.classList.add("is-dismissed");
+    });
+    hint.addEventListener("mouseleave", function () { hint.classList.remove("is-dismissed"); });
+    hint.addEventListener("focusout", function () { hint.classList.remove("is-dismissed"); });
+  }
+
   var months = panel.querySelector("[data-calendar-months]");
   var calendarUrl = panel.dataset.calendarUrl;
   var priceUrl = panel.dataset.priceUrl;

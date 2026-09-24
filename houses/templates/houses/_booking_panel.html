@@ -69,14 +69,21 @@
           Пока даты не выбраны, суммы нет — показываем цену «от». Врать
           итоговой суммой до выбора дат нельзя: гость запомнит её.
         {% endcomment %}
-        <p class="booking-total" data-total>
-          {% if quote.total %}{{ quote.total|price_ru }} ₽
-          {% else %}от {{ quote.price_from|price_ru }} ₽{% endif %}
+        <p class="booking-total">
+          <span data-total>{% if quote.total %}{{ quote.total|price_ru }} ₽{% else %}от {{ quote.price_from|price_ru }} ₽{% endif %}</span>
+          {% comment %}
+            Пояснение к расчёту — подсказкой у цены, а не абзацем: в макете
+            абзаца нет, а без него гость может принять календарь за
+            настоящую занятость (виджет Контура не принимает выбранные здесь
+            даты). Открывается наведением, фокусом и касанием, Esc закрывает.
+          {% endcomment %}
+          <span class="booking-hint" data-booking-hint>
+            <button type="button" class="booking-hint__toggle" aria-label="Как считается стоимость" aria-describedby="booking-hint-{{ page.pk }}">i</button>
+            <span class="booking-hint__text" id="booking-hint-{{ page.pk }}" role="tooltip">Предварительный расчёт. Календарь не показывает занятость домов. Доступность и итоговая стоимость — в онлайн-бронировании.</span>
+          </span>
         </p>
 
         <p class="booking-error" data-error{% if not quote.error %} hidden{% endif %}>{{ quote.error }}</p>
-
-        <p class="booking-estimate-note">Предварительный расчёт. Календарь не показывает занятость домов. Доступность и итоговая стоимость — в онлайн-бронировании.</p>
 
         <button type="button" class="btn btn--primary booking-submit"
                 data-booking-open data-house-id="{{ page.pk }}" data-entry-point="3">
