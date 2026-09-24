@@ -2541,19 +2541,19 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   /* clip, а не hidden: не создаёт прокрутку. Сверху срезает часть слоя
      «О нас», заходящую на первый экран, — в макете её так же закрывает фото. */
   .page-home .home-after-hero { position: relative; overflow: clip; }
-  :is(.page-home, .page-houses) .footer { position: relative; isolation: isolate; overflow: clip; }
+  :is(.page-home, .page-houses, .page-promotions) .footer { position: relative; isolation: isolate; overflow: clip; }
   /* Секция территории от старой заглушки узора обрезала всё по своему
      краю (overflow: hidden) — слой территории обрывался прямыми линиями
      сверху и снизу. На главной фон живёт в общем контексте .home-after-hero. */
   .page-home .section--pattern { overflow: visible; isolation: auto; }
-  :is(.page-home, .page-houses) .home-bg {
+  :is(.page-home, .page-houses, .page-promotions) .home-bg {
     display: block;
     position: absolute;
     inset: 0;
     pointer-events: none;
     user-select: none;
   }
-  :is(.page-home, .page-houses) .home-bg__layer {
+  :is(.page-home, .page-houses, .page-promotions) .home-bg__layer {
     position: absolute;
     z-index: -1;
     left: calc(50% - 720px + var(--x));
@@ -2596,6 +2596,27 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   .page-houses .home-bg__layer--catalog  { --x: 512px; --y: -696px; --w: 2124px; --h: 1827px; }
   .page-houses .home-bg__layer--services { --x: -666px; --y: -166.91px; --w: 1186px; --h: 1332px; }
   .page-houses .home-bg__layer--footer   { --x: 221px; --y: 307.61px; --w: 2069px; --h: 1853px; }
+}
+
+/* ---------- Фон «Акций» (десктоп, от 900px) ----------
+   Четыре слоя из Special Offers.svg (фрейм 1440×3309). Два — рисунки
+   главной со сдвигом: fon-about и fon-footer. Два своих, вырезаны тем же
+   способом, что fon-* главной (маски сняты — в пределах фрейма они ничего
+   не прятали, сверхтонкие кольца заменены обводкой 0,6 px):
+     fon-about        → x 359,  y −704  секция акций, её верх = верх фрейма
+     fon-offers-left  → x −400, y 400   (первая карточка 381 и там и там)
+     fon-offers-right → x 1063, y 1282
+     fon-footer       → x 221,  y 3028  иконки соцсетей 3035.48, в подвале
+                                        они на 318 от его верха
+   Контекст наложения — #main, как на «Размещении»: правый слой заходит
+   на блок вопросов и должен лежать под плашками. */
+@media (min-width: 900px) {
+  body.page-promotions #main { position: relative; isolation: isolate; overflow: clip; }
+  .page-promotions .offers-section { position: relative; }
+  .page-promotions .home-bg__layer--offers-about { --x: 359px; --y: -704px; --w: 2124px; --h: 1827px; }
+  .page-promotions .home-bg__layer--offers-left  { --x: -400px; --y: 400px; --w: 1177px; --h: 1774px; }
+  .page-promotions .home-bg__layer--offers-right { --x: 1063px; --y: 1282px; --w: 1036px; --h: 1031px; }
+  .page-promotions .home-bg__layer--footer       { --x: 221px; --y: 310.53px; --w: 2069px; --h: 1853px; }
 }
 .page-home .about__panel { background: transparent; }
 
@@ -3637,7 +3658,8 @@ body.page-houses main > .houses-catalog {
 
 
 /* ---------- Акции: Special Offers, карточки 404×540 ---------- */
-body.page-promotions main > .offers-section { padding-top: 225px; padding-bottom: 0; }
+/* Рамка «Акции» 226–321 (по нижнему выносу «ц»), первая карточка 381. */
+body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom: 0; }
 .page-promotions .offers-title { margin: 0; font-family: var(--font-heading); font-weight: 500; font-size: 90px; line-height: 95px; color: #847F57; text-align: center; }
 .page-promotions .offers-intro { margin: 20px 0 0; text-align: center; }
 .promos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 80px 0 0; padding: 0; list-style: none; }
@@ -4832,12 +4854,23 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 .promo__media picture { display: block; width: 100%; aspect-ratio: 360 / 220; border-radius: 10px; overflow: hidden; }
 .promo__media img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
 
-/* «Акции»: от последней карточки до блока вопросов 120px, от вопросов
-   до подвала 60px. Нижний отступ секции обнулён, весь зазор до подвала
-   держит сам подвал — иначе к нему прибавились бы его собственные 100. */
+/* «Акции» по выгрузке Special Offers.svg (фрейм 3309): карточки
+   кончаются на 2071, рамка заголовка вопросов 2201–2296 (по нижнему
+   выносу «р», как на «Размещении»), первая плашка 2346, от последней
+   плашки до знака в подвале 160. Значит сверху 130, заголовок 95 и под
+   ним 50, до подвала 60 его отступа + 100 его поля. Прежние 120/90/60 и
+   60 были сняты с Special Offers.png старой версии; ниже 900 они
+   оставлены (мобильного макета с этими блоками нет). */
 .page-promotions .offers-section { padding-bottom: 0; }
 .page-promotions main > .section:last-child { padding-top: 120px; padding-bottom: 0; }
 .page-promotions .footer { padding-top: 60px; }
+@media (min-width: 900px) {
+  .page-promotions main > .section:last-child { padding-top: 130px; }
+  .page-promotions .footer { padding-top: 100px; }
+}
+@media (min-width: 1280px) {
+  .page-promotions main > .section:last-child .section__title { line-height: 95px; margin-bottom: 50px; }
+}
 
 .faq__answer p { margin: 0; }
 .faq__answer p + p { margin-top: 29px; }

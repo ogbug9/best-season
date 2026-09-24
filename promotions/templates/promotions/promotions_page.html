@@ -1,8 +1,10 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags promotion_tags media_tags %}
+{% load static wagtailcore_tags promotion_tags media_tags %}
 {% block body_class %}page-promotions{% endblock %}
 {% block content %}
 <section class="section offers-section">
+  {# Фон «Акций»: координаты слоёв — в main.css, блок «Фон „Акций“» #}
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--offers-about" src="{% static 'img/home-backgrounds/fon-about.svg' %}" width="2124" height="1827" alt="" loading="lazy" decoding="async"><img class="home-bg__layer home-bg__layer--offers-left" src="{% static 'img/home-backgrounds/fon-offers-left.svg' %}" width="1177" height="1774" alt="" loading="lazy" decoding="async"><img class="home-bg__layer home-bg__layer--offers-right" src="{% static 'img/home-backgrounds/fon-offers-right.svg' %}" width="1036" height="1031" alt="" loading="lazy" decoding="async"></div>
   <div class="container container--wide">
     <h1 class="offers-title">{{ page.title }}</h1>
     {% if promotions %}
