@@ -2541,19 +2541,19 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   /* clip, а не hidden: не создаёт прокрутку. Сверху срезает часть слоя
      «О нас», заходящую на первый экран, — в макете её так же закрывает фото. */
   .page-home .home-after-hero { position: relative; overflow: clip; }
-  .page-home .footer { position: relative; isolation: isolate; overflow: clip; }
+  :is(.page-home, .page-houses) .footer { position: relative; isolation: isolate; overflow: clip; }
   /* Секция территории от старой заглушки узора обрезала всё по своему
      краю (overflow: hidden) — слой территории обрывался прямыми линиями
      сверху и снизу. На главной фон живёт в общем контексте .home-after-hero. */
   .page-home .section--pattern { overflow: visible; isolation: auto; }
-  .page-home .home-bg {
+  :is(.page-home, .page-houses) .home-bg {
     display: block;
     position: absolute;
     inset: 0;
     pointer-events: none;
     user-select: none;
   }
-  .page-home .home-bg__layer {
+  :is(.page-home, .page-houses) .home-bg__layer {
     position: absolute;
     z-index: -1;
     left: calc(50% - 720px + var(--x));
@@ -2570,6 +2570,32 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   .page-home .home-bg__layer--faq-left  { --x: -1051px; --y: -726.13px; --w: 1554px; --h: 1618px; }
   .page-home .home-bg__layer--faq-right { --x: 844px; --y: -491.13px; --w: 1279px; --h: 1274px; }
   .page-home .home-bg__layer--footer    { --x: 221px; --y: 281.1px; --w: 2069px; --h: 1853px; }
+}
+
+/* ---------- Фон «Размещения» (десктоп, от 900px) ----------
+   Три слоя из Houses.svg (экспорт фрейма 1440×4282) — это те же рисунки,
+   что на главной, только в других местах: рисунок совпадает с файлом
+   главной после сдвига на целое число пикселей. Поэтому новые файлы не
+   нужны, берутся fon-about, fon-slogan и fon-footer (уже в кеше после
+   главной). Маски сняты так же, как на главной.
+   Рамки слоёв в макете и опорные элементы:
+     fon-about  → x 512,  y −696  секция каталога, её верх = верх фрейма
+                                  (первая карточка 577.91 и там и там)
+     fon-slogan → x −666, y 1431  первая карточка доп услуг   1900.91
+     fon-footer → x 221,  y 3998  иконки соцсетей             4008.39
+   top считается так же, как на главной: (Y слоя − Y опоры в макете)
+   + (Y опоры − верх секции на сайте при 1440).
+   Слои лежат под карточками, поэтому общий контекст наложения — #main:
+   у секций своего контекста и обрезки нет, иначе слой доп услуг, который
+   заходит на ряд домиков, либо обрезался бы по верху секции, либо ложился
+   поверх карточек. */
+@media (min-width: 900px) {
+  body.page-houses #main { position: relative; isolation: isolate; overflow: clip; }
+  .page-houses .section--pattern { overflow: visible; isolation: auto; }
+  .page-houses .houses-services { position: relative; }
+  .page-houses .home-bg__layer--catalog  { --x: 512px; --y: -696px; --w: 2124px; --h: 1827px; }
+  .page-houses .home-bg__layer--services { --x: -666px; --y: -166.91px; --w: 1186px; --h: 1332px; }
+  .page-houses .home-bg__layer--footer   { --x: 221px; --y: 307.61px; --w: 2069px; --h: 1853px; }
 }
 .page-home .about__panel { background: transparent; }
 

@@ -19,6 +19,8 @@
 {% block content %}
 
 <section class="section section--pattern houses-catalog">
+  {# Фон «Размещения» — те же рисунки, что на главной; координаты в main.css #}
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--catalog" src="{% static 'img/home-backgrounds/fon-about.svg' %}" width="2124" height="1827" alt="" loading="lazy" decoding="async"></div>
   <div class="container houses-catalog__inner">
     <div class="houses-catalog__head">
       {% comment %}
@@ -76,6 +78,7 @@
 {% include "houses/_mobile_services.html" %}
 {% if hourly_services or tile_services %}
 <section class="section houses-services">
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--services" src="{% static 'img/home-backgrounds/fon-slogan.svg' %}" width="1186" height="1332" alt="" loading="lazy" decoding="async"></div>
   <div class="container houses-services__inner">
     <div class="houses-catalog__head houses-catalog__head--services">
       <h2 class="section__title section__title--center">Что добавить</h2>
