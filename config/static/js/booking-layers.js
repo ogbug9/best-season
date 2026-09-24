@@ -15,7 +15,6 @@
     var parkedPortals = new Map();
     var focusedInner = null;
     var rangePickTimer = null;
-    var rangePickContainer = null;
     var hiddenRangePickContainer = null;
 
     function portals() {
@@ -60,6 +59,23 @@
       else modal.show();
     }
 
+    function fitRangePickers() {
+      if (window.innerWidth < 768) return;
+      document.querySelectorAll('body > .react-ui [data-tid="DateRangePicker__root"]').forEach(function (picker) {
+        if (picker.closest('[data-tid="modal-content"]') || !picker.getClientRects().length) return;
+        // Keep the full-width date fields clickable; scroll the popup's own
+        // final rows instead of shifting it up across the departure field.
+        var room = Math.floor(window.innerHeight - picker.getBoundingClientRect().top - 8);
+        // Once capped, client/scroll height can collapse to the cap itself.
+        // Keep that state stable instead of toggling max-height on every
+        // observed style mutation (which would create an observer loop).
+        var cap = room >= 160 && (picker.scrollHeight > room || picker.style.maxHeight) ? room + "px" : "";
+        if (picker.style.maxHeight !== cap) picker.style.maxHeight = cap;
+        var overflow = cap ? "auto" : "";
+        if (picker.style.overflowY !== overflow) picker.style.overflowY = overflow;
+      });
+    }
+
     function sync() {
       pending = false;
       if (!observer || !modal.open) return;
@@ -87,6 +103,7 @@
         // Derive the shell's layer from the actual SDK layer, never an arbitrary high z-index.
         var layer = String(zIndexes.length ? Math.min.apply(Math, zIndexes) - 1 : 0);
         if (modal.style.getPropertyValue("--booking-layer-z") !== layer) modal.style.setProperty("--booking-layer-z", layer);
+        fitRangePickers();
         // Never inert a Kontur portal itself, only unrelated body children —
         // not just the ones active RIGHT NOW. A portal Kontur mounts once and
         // toggles internally (the date-picker attached to a plain field is
@@ -179,10 +196,8 @@
     // availability" flow — is left for that dialog to manage.
     function scheduleRangePickHide(container) {
       clearTimeout(rangePickTimer);
-      rangePickContainer = container;
       rangePickTimer = setTimeout(function () {
         rangePickTimer = null;
-        rangePickContainer = null;
         if (!container.isConnected || container.hidden) return;
         if (!container.querySelector("[data-date-range-picker-day]")) return;
         if (container.querySelector('[data-tid="modal-content"][role="dialog"]')) return;
@@ -192,6 +207,10 @@
     }
     document.addEventListener("click", function (event) {
       var dateField = event.target.closest('[data-tid="DateRangePicker__start"], [data-tid="DateRangePicker__end"]');
+      if (dateField && modal.contains(dateField)) {
+        clearTimeout(rangePickTimer);
+        rangePickTimer = null;
+      }
       if (dateField && modal.contains(dateField) && hiddenRangePickContainer) {
         if (hiddenRangePickContainer.isConnected) hiddenRangePickContainer.hidden = false;
         hiddenRangePickContainer = null;
@@ -211,13 +230,12 @@
         });
         parkedPortals.clear();
         observer = new MutationObserver(function (mutations) {
-          if (rangePickTimer && rangePickContainer && mutations.some(function (mutation) {
-            return mutation.type === "childList" && rangePickContainer.contains(mutation.target);
-          })) scheduleRangePickHide(rangePickContainer);
+          fitRangePickers();
           if (!pending) { pending = true; requestAnimationFrame(sync); }
         });
         observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class", "hidden"] });
         document.addEventListener("keydown", trapTab);
+        window.addEventListener("resize", fitRangePickers);
         if (!pending) { pending = true; requestAnimationFrame(sync); }
       },
       close: function () {
@@ -228,11 +246,11 @@
           element.hidden = true;
         });
         document.removeEventListener("keydown", trapTab);
+        window.removeEventListener("resize", fitRangePickers);
         clearTimeout(vendorExitTimer);
         vendorExitTimer = null;
         clearTimeout(rangePickTimer);
         rangePickTimer = null;
-        rangePickContainer = null;
         observer = null;
         pending = false;
         suspended = false;

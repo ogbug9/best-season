@@ -23,7 +23,7 @@ const html = `<!doctype html><html lang="ru"><meta charset="utf-8">
 <p data-booking-note></p></div></dialog>
 <script id="booking-config" type="application/json">{"hotelId":"fixture"}</script>
 <script>
-let sequence=0, initCount=0; const results=[];
+let sequence=0, initCount=0, datePickerReopened=false; const results=[];
 function record(label, pass){results.push((pass?'PASS ':'FAIL ')+label);document.getElementById('results').textContent=results.join(' | ');}
 function frame(fn){requestAnimationFrame(()=>requestAnimationFrame(fn));}
 function openPortal(owner, popup=false, unannotated=false){
@@ -80,7 +80,7 @@ function openPortal(owner, popup=false, unannotated=false){
 }
 window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='bookingForm'){
  const host=document.getElementById(c.appearance.container);
- host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button><button data-tid="DateRangePicker__start">Поле даты</button><button>Переключение полей</button>';
+ host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button><button data-tid="DateRangePicker__start">Поле даты</button><button>Переключение полей</button><button data-tid="DateRangePicker__end">Поле выезда</button>';
  host.querySelectorAll('button').forEach((b,i)=>{if(i<5)b.onclick=()=>openPortal(host,i===2,i===3);});
  // The date-picker portal is mounted ONCE, empty, before anyone opens the
  // modal — invisible to our own visibility check for as long as it stays
@@ -96,14 +96,25 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
   // what makes it a popup rather than inline content — so this mirrors that.
   // data-date-range-picker-day matches the real widget's own attribute name
   // (seen live) — it's what the auto-hide-after-picking logic keys off.
-  field.innerHTML='<button id="pick-day-in-field" data-date-range-picker-day="12.10.2026" style="position:fixed;top:200px;left:20px">12</button>'
-   +'<button id="pick-second-day" data-date-range-picker-day="14.10.2026" style="position:fixed;top:200px;left:60px">14</button>';
+  field.innerHTML='<div data-tid="DateRangePicker__root" style="position:fixed;top:'+ (innerHeight-300) +'px;left:20px;width:260px;height:466px;z-index:5000;background:white">'
+   +'<button id="pick-day-in-field" data-date-range-picker-day="12.10.2026">12</button>'
+   +'<button id="pick-second-day" data-date-range-picker-day="14.10.2026">14</button>'
+   +'<button id="pick-last-day" style="position:absolute;top:430px;left:20px">31</button></div>';
   // Per the file header: Kontur's RenderContainer re-appends a portal to the
   // end of body on every render, so a real reveal also moves it there.
   document.body.appendChild(field);
   frame(()=>{
    const btn=document.getElementById('pick-day-in-field'), r=btn.getBoundingClientRect();
    record('pre-mounted field portal is clickable once revealed', !btn.inert && btn.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)));
+   setTimeout(()=>{
+    const picker=field.querySelector('[data-tid="DateRangePicker__root"]');
+    const bottom=picker.getBoundingClientRect().bottom;
+    record('date-range popup fits below viewport edge', bottom<=innerHeight-6 && picker.style.maxHeight!=='' && picker.style.overflowY==='auto');
+    picker.scrollTop=picker.scrollHeight-picker.clientHeight;
+    const last=document.getElementById('pick-last-day'), lastRect=last.getBoundingClientRect();
+    record('last calendar row is reachable by scrolling', lastRect.bottom<=innerHeight && last.contains(document.elementFromPoint(lastRect.x+lastRect.width/2,lastRect.y+lastRect.height/2)));
+   },650);
+   if(datePickerReopened) return;
    // Confirmed live: this widget's own date-range picker has no close/apply
    // control and does not react to a click outside it either — it only ever
    // disappeared when the whole booking modal closed. We now hide it
@@ -114,24 +125,24 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
    setTimeout(()=>document.getElementById('pick-second-day').click(),150);
    setTimeout(()=>record('date-range popup still open mid-pick (debounce not fired yet)',
      !document.querySelector('[data-rendered-container-id="datepicker"]').hidden),300);
-   // Simulates switching "Заезд" -> "Выезд": Kontur redraws the SAME popup
-   // container in place, with no day click involved. A global re-query at
-   // fire time used to hide whatever matched right now regardless of this —
-   // the popup for the field the guest just switched to. The redraw itself
-   // must restart the debounce instead.
+   // Switching from arrival to departure cancels the pending auto-hide; a
+   // redraw alone must not keep extending that timer indefinitely.
    setTimeout(()=>{
+    host.querySelector('[data-tid="DateRangePicker__end"]').click();
     const container=document.querySelector('[data-rendered-container-id="datepicker"]');
     const marker=document.createElement('span'); container.appendChild(marker); marker.remove();
    },450);
-   setTimeout(()=>record('date-range popup survives a same-container redraw (field switch) without an early hide',
+   setTimeout(()=>record('date-range popup survives field switch without an early hide',
      !document.querySelector('[data-rendered-container-id="datepicker"]').hidden),700);
+   setTimeout(()=>document.getElementById('pick-second-day').click(),750);
    setTimeout(()=>record('date-range popup hides itself once picking settles',
-     document.querySelector('[data-rendered-container-id="datepicker"]').hidden),1000);
+     document.querySelector('[data-rendered-container-id="datepicker"]').hidden),1250);
    setTimeout(()=>{
+    datePickerReopened=true;
     host.querySelectorAll('button')[4].click();
     frame(()=>record('date-range popup can reopen after auto-hide',
       !document.querySelector('[data-rendered-container-id="datepicker"]').hidden));
-   },1100);
+   },1300);
   });
  };
  // Confirmed live on best-season-sfnvsd24.amvera.io: picking "Заезд" doesn't

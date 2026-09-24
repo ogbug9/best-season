@@ -54,6 +54,7 @@
     initialized: false,
     registered: false,
     initSignalled: false,
+    renderObserver: null,
   };
 
   /* ---------- Аналитика точек входа (п. 5.5) ----------
@@ -99,6 +100,7 @@
     if (state.failed) return;
     state.failed = true;
     clearTimeout(state.timer);
+    if (state.renderObserver) state.renderObserver.disconnect();
 
     if (spinner) spinner.hidden = true;
     if (host) host.hidden = true;
@@ -129,8 +131,13 @@
 
   function showWidget() {
     if (state.failed || state.ready || !state.registered || !state.initSignalled) return;
+    // onInit confirms SDK initialization, not that a usable booking form was
+    // rendered. An unavailable organization can signal init and leave empty
+    // containers behind; keep the five-second fallback active in that case.
+    if (!host || !host.querySelector("input, button, select, textarea, [role='button']")) return;
     state.ready = true;
     clearTimeout(state.timer);
+    if (state.renderObserver) state.renderObserver.disconnect();
     if (spinner) spinner.hidden = true;
     if (host) host.hidden = false;
     if (noteBox) noteBox.hidden = false;
@@ -224,6 +231,10 @@
       }
       state.initializing = true;
       state.initialized = true;
+      if (typeof MutationObserver !== "undefined") {
+        state.renderObserver = new MutationObserver(showWidget);
+        state.renderObserver.observe(host, { childList: true, subtree: true });
+      }
       window.HotelWidget.init({
         hotelId: config.hotelId,
         version: "2",

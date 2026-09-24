@@ -9,7 +9,7 @@ const source = fs.readFileSync(path.join(__dirname, '../config/static/js/kontur.
 
 function fixture(options = {}) {
   const events = {}, timers = new Map(), frames = [], scripts = [], added = [];
-  let timerId = 0, initCount = 0, hooks, reloads = 0;
+  let timerId = 0, initCount = 0, hooks, reloads = 0, renderObserver;
   function node(id = '') {
     return { id, hidden: false, textContent: '', style: {}, attrs: {},
       setAttribute(k, v) { this.attrs[k] = v; },
@@ -32,6 +32,8 @@ function fixture(options = {}) {
     nodes['[data-booking-' + name + ']'] = node(name);
   }
   const host = nodes['[data-booking-host]']; host.id = 'BookingFormWidget'; host.hidden = true;
+  host.rendered = false;
+  host.querySelector = () => host.rendered ? node('booking-control') : null;
   const fallback = nodes['[data-booking-fallback]']; fallback.hidden = true;
   nodes['[data-fallback-note-idle]'] = node();
   nodes['[data-fallback-note-error]'] = node();
@@ -65,6 +67,7 @@ function fixture(options = {}) {
       assert.equal(host.hidden, false, 'booking form must be visible before add');
       assert.equal(nodes['[data-booking-catalog]'].hidden, false);
       added.push(config.type);
+      if (config.type === 'bookingForm' && !options.emptyRender) host.rendered = true;
       if (options.failAdd) hooks.onError({ message: 'private details' });
     },
   };
@@ -79,6 +82,11 @@ function fixture(options = {}) {
     // только пятисекундный отсчёт до резервного блока — его гоняет timeout().
     setTimeout(fn, delay) { if (!delay) { frames.push(fn); return ++timerId; } timers.set(++timerId, fn); return timerId; },
     clearTimeout(id) { timers.delete(id); },
+    MutationObserver: class {
+      constructor(callback) { this.callback = callback; renderObserver = this; }
+      observe() {}
+      disconnect() { this.disconnected = true; }
+    },
   });
   function click(selector, houseId) {
     const target = node(); target.closest = s => s === selector ? target : null;
@@ -88,6 +96,7 @@ function fixture(options = {}) {
   function frame() { while (frames.length) frames.shift()(); }
   function load() { window.HotelWidget = sdk; scripts.at(-1).onload(); frame(); }
   return { window, modal, nodes, host, fallback, scripts, added, click, frame, load,
+    render() { host.rendered = true; if (renderObserver && !renderObserver.disconnected) renderObserver.callback(); },
     open() { click('[data-booking-open]'); frame(); },
     close() { click('[data-booking-close]'); },
     timeout() { const pending = [...timers.values()]; timers.clear(); pending.forEach(fn => fn()); },
@@ -192,4 +201,17 @@ test('hidden tab still requests the widget and does not fall back while away', (
   f.load();
   assert.equal(f.initCount, 1);
   assert.equal(f.host.hidden, false);
+});
+test('onInit without a rendered booking form falls back after five seconds', () => {
+  const f = fixture({ emptyRender: true }); f.open(); f.load();
+  assert.equal(f.fallback.hidden, true);
+  f.timeout();
+  assert.equal(f.fallback.hidden, false); assert.equal(f.host.hidden, true);
+  f.render();
+  assert.equal(f.fallback.hidden, false, 'late rendering must not undo the fallback');
+});
+test('booking form rendered after onInit becomes ready before timeout', () => {
+  const f = fixture({ emptyRender: true }); f.open(); f.load();
+  f.render(); f.timeout();
+  assert.equal(f.fallback.hidden, true); assert.equal(f.host.hidden, false);
 });

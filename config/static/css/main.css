@@ -2532,7 +2532,8 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   /* Git 86226b8: исходные координаты от низа hero пересчитаны по
      секциям эталона 1440px после загрузки шрифтов. Размеры сохранены.
      Слоган: 1166 - 1585.828125; домики: 1747/2689 - 1802.609375;
-     рядом: 4795 - 4452.609375; галерея: 6390/6200 - 5534.609375. */
+      рядом: 4795 - 4452.609375. Позиции галереи уточнены ниже
+      по контурам Desktop Main.png на ширине 1440px. */
   .page-home .home-background__image--4 {
     width: 537.13px;
     height: 1200.13px;
@@ -2557,14 +2558,14 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
     top: 367.390625px;
   }
   .page-home .home-background__image--6 {
-    width: 39.027778%;
-    left: 0;
-    top: 855.390625px;
+    width: 43.017544%;
+    left: -8.421053%;
+    top: calc(100% - 240px);
   }
   .page-home .home-background__image--7 {
     width: 61.458333%;
-    left: 38.541667%;
-    top: 665.390625px;
+    left: 46.877193%;
+    top: calc(100% - 633px);
   }
   .page-home .home-background__image--bottom {
     width: 179.097222%;
