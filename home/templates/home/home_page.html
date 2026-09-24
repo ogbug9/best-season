@@ -108,7 +108,7 @@
 
 <div class="home-after-hero">
 {# Фон главной: слои из Desktop Main.svg, каждый привязан к своей секции — см. main.css «Фон главной». #}
-<div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--about" src="{% static 'img/home-backgrounds/fon-about.svg' %}" width="2124" height="1144" alt="" loading="lazy" decoding="async"></div>
+<div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--about" src="{% static 'img/home-backgrounds/fon-about.svg' %}" width="2124" height="1827" alt="" loading="lazy" decoding="async"></div>
 
 {% comment %} 2. О ферме — фото слева, текст справа {% endcomment %}
 {% if page.about_text or page.about_title %}
@@ -175,7 +175,7 @@
 {% comment %} 4. Слоган {% endcomment %}
 {% if page.slogan %}
 <section class="slogan">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--slogan" src="{% static 'img/home-backgrounds/fon-slogan.svg' %}" width="1186" height="1192" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--slogan" src="{% static 'img/home-backgrounds/fon-slogan.svg' %}" width="1186" height="1332" alt="" loading="lazy" decoding="async"></div>
   <div class="container">
     <div class="slogan__frame">
       <p>{{ page.slogan|slogan_lines|linebreaksbr }}</p>
@@ -192,7 +192,7 @@
 {% comment %} 5. Наши домики — сетка карточек {% endcomment %}
 {% if houses %}
 <section class="section" id="houses">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--houses" src="{% static 'img/home-backgrounds/fon-houses.svg' %}" width="1186" height="1192" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--houses" src="{% static 'img/home-backgrounds/fon-houses.svg' %}" width="1186" height="1333" alt="" loading="lazy" decoding="async"></div>
   <div class="container">
     <h2 class="section__title section__title--center">Наши домики</h2>
     <ul class="cards cards--houses">
@@ -367,8 +367,8 @@
 {% endcomment %}
 {% if faq %}
 <div class="home-faq-background-anchor">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--faq-left" src="{% static 'img/home-backgrounds/fon-faq-left.svg' %}" width="734" height="1314" alt="" loading="lazy" decoding="async"></div>
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--faq-right" src="{% static 'img/home-backgrounds/fon-faq-right.svg' %}" width="1269" height="1274" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--faq-left" src="{% static 'img/home-backgrounds/fon-faq-left.svg' %}" width="1554" height="1618" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--faq-right" src="{% static 'img/home-backgrounds/fon-faq-right.svg' %}" width="1279" height="1274" alt="" loading="lazy" decoding="async"></div>
 {% include "includes/faq_section.html" %}
 {% endif %}
 

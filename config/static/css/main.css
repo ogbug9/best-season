@@ -2513,8 +2513,10 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
    Восемь слоёв сняты из Desktop Main.svg (экспорт фрейма целиком) без
    перерисовки: у каждого SVG viewBox равен рамке слоя в координатах
    макета, поэтому размер и рисунок совпадают с Figma один в один.
-   Обрезку краем фрейма (x = 0 / 1440) с масок снята — на экранах шире
-   1440 линии продолжаются в боковые поля. Обрезки внутри фрейма оставлены.
+   Маски Figma сняты целиком: каждый слой — полный рисунок без обрезки,
+   иначе на сайте, где блоки стоят чуть иначе, чем в макете, срезы маски
+   видны как обрывки линий. Без масок браузер и рисует линии чётче:
+   маска растеризуется отдельным слоем и мылит тонкие линии.
 
    Привязка: слой лежит в своей секции. left — от левого края фрейма
    1440, который всегда стоит по центру (50% - 720px), как контейнер.
@@ -2540,6 +2542,10 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
      «О нас», заходящую на первый экран, — в макете её так же закрывает фото. */
   .page-home .home-after-hero { position: relative; overflow: clip; }
   .page-home .footer { position: relative; isolation: isolate; overflow: clip; }
+  /* Секция территории от старой заглушки узора обрезала всё по своему
+     краю (overflow: hidden) — слой территории обрывался прямыми линиями
+     сверху и снизу. На главной фон живёт в общем контексте .home-after-hero. */
+  .page-home .section--pattern { overflow: visible; isolation: auto; }
   .page-home .home-bg {
     display: block;
     position: absolute;
@@ -2556,14 +2562,14 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
     height: var(--h);
     max-width: none;
   }
-  .page-home .home-bg__layer--about     { --x: -43px;  --y: -70px;      --w: 2124px; --h: 1144px; }
-  .page-home .home-bg__layer--slogan    { --x: -654px; --y: -290.3px;   --w: 1186px; --h: 1192px; }
-  .page-home .home-bg__layer--houses    { --x: 908px;  --y: 63.87px;    --w: 1186px; --h: 1192px; }
-  .page-home .home-bg__layer--territory { --x: -583px; --y: -277.13px;  --w: 1714px; --h: 2584px; }
-  .page-home .home-bg__layer--gallery   { --x: 353px;  --y: -464.13px;  --w: 1165px; --h: 1152px; }
-  .page-home .home-bg__layer--faq-left  { --x: -231px; --y: -422.13px;  --w: 734px;  --h: 1314px; }
-  .page-home .home-bg__layer--faq-right { --x: 844px;  --y: -491.13px;  --w: 1269px; --h: 1274px; }
-  .page-home .home-bg__layer--footer    { --x: 230px;  --y: 281.1px;    --w: 1452px; --h: 1386px; }
+  .page-home .home-bg__layer--about     { --x: -43px; --y: -753px; --w: 2124px; --h: 1827px; }
+  .page-home .home-bg__layer--slogan    { --x: -654px; --y: -294.3px; --w: 1186px; --h: 1332px; }
+  .page-home .home-bg__layer--houses    { --x: 908px; --y: -73.13px; --w: 1186px; --h: 1333px; }
+  .page-home .home-bg__layer--territory { --x: -583px; --y: -277.13px; --w: 1714px; --h: 2584px; }
+  .page-home .home-bg__layer--gallery   { --x: 353px; --y: -464.13px; --w: 1165px; --h: 1152px; }
+  .page-home .home-bg__layer--faq-left  { --x: -1051px; --y: -726.13px; --w: 1554px; --h: 1618px; }
+  .page-home .home-bg__layer--faq-right { --x: 844px; --y: -491.13px; --w: 1279px; --h: 1274px; }
+  .page-home .home-bg__layer--footer    { --x: 221px; --y: 281.1px; --w: 2069px; --h: 1853px; }
 }
 .page-home .about__panel { background: transparent; }
 
