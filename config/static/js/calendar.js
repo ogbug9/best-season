@@ -42,10 +42,18 @@
   };
 
   var calendarRevision = 0, priceRevision = 0, pending = null;
+  var activeField = "", quoteError = "";
+  var calendarStatus = panel.querySelector("[data-calendar-status]");
+
+  ["date_from", "date_to"].forEach(function (name) {
+    var field = panel.querySelector('[data-input="' + name + '"]');
+    if (field && validISO(field.value)) state[name === "date_from" ? "dateFrom" : "dateTo"] = field.value;
+  });
 
   restore();
   updateGuestLabel();
   validateSelection();
+  paintSelection();
 
   /* ---------- Выбор дат ---------- */
 
@@ -65,29 +73,126 @@
   });
 
   function pickDay(iso) {
-    if (!state.dateFrom || state.dateTo || iso <= state.dateFrom) {
+    if (!validISO(iso) || iso < todayISO()) return;
+    if (activeField === "date_from") {
+      state.dateFrom = iso;
+      if (state.dateTo && state.dateTo <= iso) state.dateTo = "";
+    } else if (activeField === "date_to" && state.dateFrom && iso > state.dateFrom) {
+      state.dateTo = iso;
+    } else if (!state.dateFrom || state.dateTo || iso <= state.dateFrom) {
       // Клик до заезда — не ошибка, а новый выбор: гость передумал
       state.dateFrom = iso;
       state.dateTo = "";
     } else {
       state.dateTo = iso;
     }
+    activeField = state.dateTo ? "" : "date_to";
     save();
-    drawCalendar();
+    paintSelection();
     recalc();
   }
 
-  function drawCalendar() {
+  function paintSelection(preview) {
+    // Selection is immediate and independent of the availability of the
+    // month endpoint. Keep the existing grid and focus while picking dates.
+    months.querySelectorAll("[data-calendar-date]").forEach(function (cell) {
+      var iso = cell.dataset.calendarDate;
+      var end = state.dateTo || (preview > state.dateFrom ? preview : "");
+      var selected = iso === state.dateFrom || iso === state.dateTo;
+      cell.classList.toggle("calendar__cell--selected", selected);
+      cell.classList.toggle("calendar__cell--range", Boolean(state.dateFrom && end && iso > state.dateFrom && iso < end));
+      cell.classList.toggle("calendar__cell--range-start", Boolean(end && iso === state.dateFrom));
+      cell.classList.toggle("calendar__cell--range-end", Boolean(state.dateFrom && iso === end));
+      var button = cell.querySelector("[data-day]");
+      if (button) button.setAttribute("aria-pressed", String(selected));
+    });
+    panel.querySelectorAll("[data-field]").forEach(function (button) {
+      var selected = button.dataset.field === activeField;
+      button.classList.toggle("is-active", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    input("date_from", state.dateFrom);
+    input("date_to", state.dateTo);
+  }
+
+  function drawCalendar(focusDate) {
     var revision = ++calendarRevision;
+    months.setAttribute("aria-busy", "true");
     request(calendarUrl, { start: state.start })
       .then(function (response) { return response.text(); })
-      .then(function (html) { if (revision === calendarRevision) months.innerHTML = html; })
-      .catch(function () { /* сеть отвалилась — на экране остаётся прежний месяц */ });
+      .then(function (html) {
+        if (revision !== calendarRevision) return;
+        var oldFocus = document.activeElement;
+        var ownedFocus = months.contains(oldFocus);
+        var direction = oldFocus && oldFocus.hasAttribute("data-calendar-prev") ? "prev" : "next";
+        months.innerHTML = html;
+        paintSelection();
+        if (calendarStatus) calendarStatus.textContent = "";
+        if (ownedFocus) {
+          var target = focusDate ? months.querySelector('[data-day="' + focusDate + '"]') :
+            Array.from(months.querySelectorAll('[data-calendar-' + direction + ']:not([disabled])')).find(function (el) { return el.getClientRects().length; });
+          if (!target) target = months.querySelector("[data-day]");
+          if (target) target.focus({preventScroll: true});
+        }
+      })
+      .catch(function () {
+        if (revision === calendarRevision && calendarStatus) calendarStatus.textContent = "Не удалось загрузить месяц. Нажмите стрелку ещё раз.";
+      })
+      .finally(function () { if (revision === calendarRevision) months.removeAttribute("aria-busy"); });
   }
+
+  months.addEventListener("pointerover", function (event) {
+    var day = event.target.closest("[data-day]");
+    if (day && state.dateFrom && !state.dateTo) paintSelection(day.dataset.day);
+  });
+  months.addEventListener("pointerleave", function () { paintSelection(); });
+  months.addEventListener("keydown", function (event) {
+    var day = event.target.closest("[data-day]");
+    if (!day) return;
+    if (event.key === "Escape") {
+      var field = panel.querySelector('[data-field="' + (activeField || "date_from") + '"]');
+      if (field) field.focus({preventScroll: true});
+      return;
+    }
+    var date = new Date(day.dataset.day + "T12:00:00");
+    var weekday = (date.getDay() + 6) % 7;
+    var offsets = {ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7, Home: -weekday, End: 6 - weekday};
+    if (event.key === "PageUp" || event.key === "PageDown") {
+      var number = date.getDate();
+      date.setDate(1);
+      date.setMonth(date.getMonth() + (event.key === "PageUp" ? -1 : 1));
+      var last = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+      date.setDate(Math.min(number, last));
+    } else if (Object.prototype.hasOwnProperty.call(offsets, event.key)) {
+      date.setDate(date.getDate() + offsets[event.key]);
+    } else return;
+    event.preventDefault();
+    var iso = localISO(date);
+    if (iso < todayISO()) return;
+    var target = months.querySelector('[data-day="' + iso + '"]');
+    if (target && target.getClientRects().length) target.focus({preventScroll: true});
+    else {
+      var start = iso.slice(0, 7) + "-01";
+      var limit = new Date(); limit.setDate(1); limit.setMonth(limit.getMonth() + 12);
+      if (start > localISO(limit)) return;
+      state.start = start;
+      drawCalendar(iso);
+    }
+  });
 
   /* ---------- Счётчики гостей ---------- */
 
   panel.addEventListener("click", function (event) {
+    var field = event.target.closest("[data-field]");
+    if (field) {
+      activeField = field.dataset.field;
+      paintSelection();
+      var selected = activeField === "date_to" ? state.dateTo || state.dateFrom : state.dateFrom;
+      var target = selected && months.querySelector('[data-day="' + selected + '"]');
+      if (!target || !target.getClientRects().length) target = months.querySelector("[data-day]");
+      if (target) target.focus({preventScroll: true});
+      return;
+    }
     var step = event.target.closest("[data-step]");
     if (!step) return;
     var row = step.closest("[data-counter]");
@@ -134,6 +239,7 @@
     // Небольшая задержка: гость может нажать «плюс» несколько раз
     // подряд, и каждый клик не должен уходить отдельным запросом.
     var revision = ++priceRevision;
+    quoteError = "";
     validateSelection();
     label("[data-label-date-from]", state.dateFrom, "Дата заезда");
     label("[data-label-date-to]", state.dateTo, "Дата выезда");
@@ -164,12 +270,8 @@
         : "от " + money(data.price_from) + " ₽";
     }
 
-    validateSelection(data.error || "");
-    var error = panel.querySelector("[data-error]");
-    if (error) {
-      error.textContent = data.error || "";
-      error.hidden = !data.error;
-    }
+    quoteError = data.error || "";
+    validateSelection();
 
     label("[data-label-date-from]", data.date_from, "Дата заезда");
     label("[data-label-date-to]", data.date_to, "Дата выезда");
@@ -198,12 +300,22 @@
   });
 
   function todayISO() {
-    var now = new Date();
+    return localISO(new Date());
+  }
+
+  function localISO(now) {
     return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
   }
 
+  function validISO(value) {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    var parsed = new Date(value + "T12:00:00");
+    return Number.isFinite(parsed.getTime()) && localISO(parsed) === value;
+  }
+
   function validateSelection(serverError) {
-    var error = serverError || "";
+    var error = serverError || quoteError;
+    if ((state.dateFrom && !validISO(state.dateFrom)) || (state.dateTo && !validISO(state.dateTo))) error = "Выберите корректные даты в календаре.";
     if (state.adults + state.children > Number(panel.dataset.capacity)) error = "Превышена вместимость дома. Уменьшите число гостей.";
     if (state.dateFrom && state.dateFrom < todayISO()) error = "Заезд не может быть в прошлом.";
     if (state.dateTo && (!state.dateFrom || state.dateTo <= state.dateFrom)) error = "Дата выезда должна быть позже заезда.";
@@ -232,6 +344,7 @@
       saved = null;
     }
     if (!saved) return;
+    if ((saved.dateFrom && !validISO(saved.dateFrom)) || (saved.dateTo && !validISO(saved.dateTo))) return;
 
     // Прошлые даты после возврата на страницу уже не годятся
     var today = todayISO();
@@ -247,6 +360,7 @@
       state[key] = Number.isInteger(value) ? Math.max(Number(row.dataset.min), Math.min(value, Number(row.dataset.max))) : count(key);
     });
     if (state.dateTo && state.dateTo <= state.dateFrom) state.dateTo = "";
+    if (state.dateFrom && !state.start) state.start = state.dateFrom.slice(0, 7) + "-01";
 
     // Счётчики в разметке пришли с сервера и о сохранённом не знают:
     // без этого на экране «0 питомцев», а сумма посчитана с питомцем.
@@ -276,6 +390,9 @@
     }
     return fetch(url + (query ? "?" + query : ""), {
       headers: { "X-Requested-With": "XMLHttpRequest" }
+    }).then(function (response) {
+      if (response.ok === false) throw new Error("Booking request failed");
+      return response;
     });
   }
 

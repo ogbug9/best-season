@@ -63,6 +63,11 @@ function fixture(options = {}) {
       if (!options.asyncInit) hooks.onInit();
     },
     add(config) {
+      if (config.type === 'bookingForm') {
+        assert.equal(config.inline, true, 'inline belongs to the widget, as in the supplied embed');
+        assert.equal(config.appearance.inline, undefined);
+      }
+      if (config.type === 'availabilityCalendar') assert.equal(config.months, 2);
       assert.equal(modal.open, true, 'add must never run in a closed dialog');
       assert.equal(host.hidden, false, 'booking form must be visible before add');
       assert.equal(nodes['[data-booking-catalog]'].hidden, false);

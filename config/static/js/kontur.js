@@ -245,7 +245,8 @@
       if (state.failed) return;
       window.HotelWidget.add({
         type: "bookingForm",
-        appearance: { container: host.id, inline: false },
+        inline: true,
+        appearance: { container: host.id },
       });
       if (state.failed) return;
       modal.querySelectorAll("[data-kontur-type]").forEach(function (container) {
@@ -253,10 +254,12 @@
         if (!container.getClientRects().length || !container.getBoundingClientRect().width) {
           throw new Error("Widget container is not visible");
         }
-        window.HotelWidget.add({
+        var widget = {
           type: container.getAttribute("data-kontur-type"),
           appearance: { container: container.id },
-        });
+        };
+        if (widget.type === "availabilityCalendar") widget.months = 2;
+        window.HotelWidget.add(widget);
       });
       state.registered = true;
       state.initializing = false;

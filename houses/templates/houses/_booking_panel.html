@@ -18,12 +18,12 @@
     {% comment %} Строка полей: даты 858 и гости 362 по замерам макета {% endcomment %}
     <div class="booking-panel__fields">
       <div class="booking-field booking-field--dates">
-        <button type="button" class="booking-field__slot" data-field="date_from">
+        <button type="button" class="booking-field__slot" data-field="date_from" aria-controls="house-calendar" aria-pressed="false">
           {% house_icon "calendar" %}
           <span data-label-date-from>Дата заезда</span>
         </button>
         <span class="booking-field__dash" aria-hidden="true">—</span>
-        <button type="button" class="booking-field__slot" data-field="date_to">
+        <button type="button" class="booking-field__slot" data-field="date_to" aria-controls="house-calendar" aria-pressed="false">
           {% house_icon "calendar" %}
           <span data-label-date-to><span class="home-desktop-copy">Дата выезда</span><span class="home-mobile-copy">выезда</span></span>
         </button>
@@ -39,10 +39,11 @@
     <div class="booking-panel__cards">
 
       {% comment %} ---------- Календарь на два месяца ---------- {% endcomment %}
-      <div class="calendar" data-calendar>
+      <div class="calendar" data-calendar id="house-calendar" aria-label="Выбор дат проживания">
         <div class="calendar__months" data-calendar-months>
           {% include "houses/_calendar_months.html" with calendar=calendar %}
         </div>
+        <p class="calendar__status" data-calendar-status role="status"></p>
       </div>
 
       {% comment %} ---------- Гости, итог, кнопка ---------- {% endcomment %}

@@ -45,10 +45,10 @@
         {% for week in month.weeks %}
           <tr>
             {% for cell in week %}
-              <td class="calendar__cell{% if cell.outside %} calendar__cell--outside{% endif %}{% if cell.past %} calendar__cell--past{% endif %}{% if cell.today %} calendar__cell--today{% endif %}{% if cell.selected %} calendar__cell--selected{% endif %}{% if cell.in_range %} calendar__cell--range{% endif %}{% if cell.range_start %} calendar__cell--range-start{% endif %}{% if cell.range_end %} calendar__cell--range-end{% endif %}">
+              <td data-calendar-date="{{ cell.iso }}" class="calendar__cell{% if cell.outside %} calendar__cell--outside{% endif %}{% if cell.past %} calendar__cell--past{% endif %}{% if cell.today %} calendar__cell--today{% endif %}{% if cell.selected %} calendar__cell--selected{% endif %}{% if cell.in_range %} calendar__cell--range{% endif %}{% if cell.range_start %} calendar__cell--range-start{% endif %}{% if cell.range_end %} calendar__cell--range-end{% endif %}">
                 {% if cell.available and not cell.outside %}
                   <button type="button" class="calendar__day" data-day="{{ cell.iso }}"
-                          {% if cell.selected %}aria-pressed="true"{% endif %}>{{ cell.day }}</button>
+                          aria-label="{{ cell.date|date:'j E Y' }}" aria-pressed="{{ cell.selected|yesno:'true,false' }}">{{ cell.day }}</button>
                 {% else %}
                   <span class="calendar__day calendar__day--off">{{ cell.day }}</span>
                 {% endif %}

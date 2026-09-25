@@ -14,8 +14,7 @@
     var inertElements = new Map();
     var parkedPortals = new Map();
     var focusedInner = null;
-    var rangePickTimer = null;
-    var hiddenRangePickContainer = null;
+    var hiddenRangePickContainers = new Set();
 
     function portals() {
       // Kontur normally annotates portal roots with data-rendered-container-id.
@@ -60,9 +59,20 @@
     }
 
     function fitRangePickers() {
-      if (window.innerWidth < 768) return;
       document.querySelectorAll('body > .react-ui [data-tid="DateRangePicker__root"]').forEach(function (picker) {
         if (picker.closest('[data-tid="modal-content"]') || !picker.getClientRects().length) return;
+        // The SDK writes viewport coordinates to an absolute popup. Our
+        // scroll lock moves body upwards; an absolute popup then disappears
+        // above the screen by that exact scroll offset. Keep its coordinates
+        // in the viewport, including when opened from a scrolled mobile page.
+        if (picker.style.position !== "fixed") picker.style.position = "fixed";
+        var maxWidth = Math.max(0, window.innerWidth - 16) + "px";
+        if (picker.style.maxWidth !== maxWidth) picker.style.maxWidth = maxWidth;
+        var rect = picker.getBoundingClientRect();
+        var top = Math.max(8, Math.min(rect.top, window.innerHeight - 168));
+        var left = Math.max(8, Math.min(rect.left, window.innerWidth - rect.width - 8));
+        if (Math.abs(rect.top - top) > 1) picker.style.top = top + "px";
+        if (Math.abs(rect.left - left) > 1) picker.style.left = left + "px";
         // Keep the full-width date fields clickable; scroll the popup's own
         // final rows instead of shifting it up across the departure field.
         var room = Math.floor(window.innerHeight - picker.getBoundingClientRect().top - 8);
@@ -73,6 +83,11 @@
         if (picker.style.maxHeight !== cap) picker.style.maxHeight = cap;
         var overflow = cap ? "auto" : "";
         if (picker.style.overflowY !== overflow) picker.style.overflowY = overflow;
+        // PopupContent is a separate, overflow:hidden layer with a 100%
+        // height. Capping only the outer root hides its last dates instead
+        // of making them scrollable, so scroll this inner layer as well.
+        var content = picker.querySelector(':scope > [data-tid="PopupContent"]');
+        if (content && content.style.overflowY !== overflow) content.style.overflowY = overflow;
       });
     }
 
@@ -181,44 +196,44 @@
       }
     }
 
-    // The date-range calendar attached to a plain "Заезд"/"Выезд" field has no
-    // close/apply control of its own and does not react to a click outside it
-    // either (confirmed live: it only ever disappears when the whole booking
-    // modal closes, via the forced hide() in close() below). Left alone it
-    // just sits there covering whatever the page has under it — including,
-    // in practice, the general "Проверить наличие" button right next to the
-    // fields. Hiding a Kontur portal ourselves is already known-safe: that is
-    // exactly what close() below does. So do the same thing here, a moment
-    // after the guest stops clicking days, instead of only at modal close.
-    // Scoped to plain calendar popups only (they carry day-picker cells and
-    // nothing that looks like a full dialog screen) so a date picker that is
-    // genuinely part of a bigger vendor dialog — the nested "check
-    // availability" flow — is left for that dialog to manage.
-    function scheduleRangePickHide(container) {
-      clearTimeout(rangePickTimer);
-      rangePickTimer = setTimeout(function () {
-        rangePickTimer = null;
-        if (!container.isConnected || container.hidden) return;
-        if (!container.querySelector("[data-date-range-picker-day]")) return;
+    // Do not auto-hide on a timer after a day click: the SDK switches focus
+    // to checkout and still needs the same popup for the second selection.
+    // Only dismiss plain field calendars on an explicit outside click/Esc.
+    function dismissRangePickers() {
+      var dismissed = false;
+      portals().forEach(function (container) {
+        if (!container.querySelector('[data-tid="DateRangePicker__root"]')) return;
         if (container.querySelector('[data-tid="modal-content"][role="dialog"]')) return;
         container.hidden = true;
-        hiddenRangePickContainer = container;
-      }, 400);
+        hiddenRangePickContainers.add(container);
+        dismissed = true;
+      });
+      return dismissed;
     }
     document.addEventListener("click", function (event) {
+      if (!modal.open) return;
       var dateField = event.target.closest('[data-tid="DateRangePicker__start"], [data-tid="DateRangePicker__end"]');
       if (dateField && modal.contains(dateField)) {
-        clearTimeout(rangePickTimer);
-        rangePickTimer = null;
+        hiddenRangePickContainers.forEach(function (container) {
+          if (container.isConnected) container.hidden = false;
+        });
+        hiddenRangePickContainers.clear();
+        return;
       }
-      if (dateField && modal.contains(dateField) && hiddenRangePickContainer) {
-        if (hiddenRangePickContainer.isConnected) hiddenRangePickContainer.hidden = false;
-        hiddenRangePickContainer = null;
-      }
-      if (!modal.open || !event.target.closest("[data-date-range-picker-day]")) return;
-      var container = event.target.closest(".react-ui");
-      if (container && container.parentElement === document.body) scheduleRangePickHide(container);
+      // Month/year dropdowns are separate vendor portals too.
+      if (event.target.closest(".react-ui")) return;
+      dismissRangePickers();
     }, true);
+    document.addEventListener("keydown", function (event) {
+      if (!modal.open || event.key !== "Escape" || event.defaultPrevented) return;
+      var active = portals();
+      // Nested menus/dialogs handle Escape themselves first.
+      if (active.some(function (container) { return container.querySelector('[role="listbox"], [role="menu"], [role="dialog"]'); })) return;
+      if (dismissRangePickers()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    });
 
     return {
       open: function () {
@@ -249,8 +264,6 @@
         window.removeEventListener("resize", fitRangePickers);
         clearTimeout(vendorExitTimer);
         vendorExitTimer = null;
-        clearTimeout(rangePickTimer);
-        rangePickTimer = null;
         observer = null;
         pending = false;
         suspended = false;

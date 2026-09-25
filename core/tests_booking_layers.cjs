@@ -92,14 +92,14 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
  // since it can never look "active" to us again once nothing can click it.
  host.querySelectorAll('button')[4].onclick=function(){
   const field=document.querySelector('[data-rendered-container-id="datepicker"]');
-  // A real floating popup is always positioned (fixed/absolute) — that's
-  // what makes it a popup rather than inline content — so this mirrors that.
-  // data-date-range-picker-day matches the real widget's own attribute name
-  // (seen live) — it's what the auto-hide-after-picking logic keys off.
-  field.innerHTML='<div data-tid="DateRangePicker__root" style="position:fixed;top:'+ (innerHeight-300) +'px;left:20px;width:260px;height:466px;z-index:5000;background:white">'
+  // Live mobile failure: SDK absolute popup uses viewport coordinates,
+  // but the body's scroll lock shifts it 912px above those coordinates.
+  document.body.style.top='-912px';
+  field.innerHTML='<div data-tid="DateRangePicker__root" style="position:absolute;top:'+ (innerHeight-300) +'px;left:20px;width:260px;height:466px;z-index:5000;background:white">'
+   +'<div data-tid="PopupContent" style="position:relative;height:100%;overflow:hidden">'
    +'<button id="pick-day-in-field" data-date-range-picker-day="12.10.2026">12</button>'
    +'<button id="pick-second-day" data-date-range-picker-day="14.10.2026">14</button>'
-   +'<button id="pick-last-day" style="position:absolute;top:430px;left:20px">31</button></div>';
+   +'<button id="pick-last-day" style="position:absolute;top:430px;left:20px">31</button></div></div>';
   // Per the file header: Kontur's RenderContainer re-appends a portal to the
   // end of body on every render, so a real reveal also moves it there.
   document.body.appendChild(field);
@@ -109,24 +109,21 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
    setTimeout(()=>{
     const picker=field.querySelector('[data-tid="DateRangePicker__root"]');
     const bottom=picker.getBoundingClientRect().bottom;
-    record('date-range popup fits below viewport edge', bottom<=innerHeight-6 && picker.style.maxHeight!=='' && picker.style.overflowY==='auto');
-    picker.scrollTop=picker.scrollHeight-picker.clientHeight;
+    record('popup stays in viewport despite a scrolled body', picker.getBoundingClientRect().top>=8 && getComputedStyle(picker).position==='fixed');
+    record('date-range popup fits below viewport edge on every viewport', bottom<=innerHeight-6 && picker.style.maxHeight!=='' && picker.style.overflowY==='auto');
+    const content=picker.querySelector('[data-tid="PopupContent"]');
+    record('vendor popup content becomes scrollable', content.style.overflowY==='auto' && content.scrollHeight>content.clientHeight);
+    content.scrollTop=content.scrollHeight-content.clientHeight;
     const last=document.getElementById('pick-last-day'), lastRect=last.getBoundingClientRect();
     record('last calendar row is reachable by scrolling', lastRect.bottom<=innerHeight && last.contains(document.elementFromPoint(lastRect.x+lastRect.width/2,lastRect.y+lastRect.height/2)));
    },650);
    if(datePickerReopened) return;
-   // Confirmed live: this widget's own date-range picker has no close/apply
-   // control and does not react to a click outside it either — it only ever
-   // disappeared when the whole booking modal closed. We now hide it
-   // ourselves a moment after the guest stops picking days, instead of
-   // leaving it sitting on top of the page (it was covering the general
-   // "Проверить наличие" button next to the fields on the live site).
+   // Date selection must not disappear after 400ms. An explicit outside
+   // click closes the field calendar, and the same field reopens it.
    document.getElementById('pick-day-in-field').click();
    setTimeout(()=>document.getElementById('pick-second-day').click(),150);
-   setTimeout(()=>record('date-range popup still open mid-pick (debounce not fired yet)',
+   setTimeout(()=>record('date-range popup still open mid-pick',
      !document.querySelector('[data-rendered-container-id="datepicker"]').hidden),300);
-   // Switching from arrival to departure cancels the pending auto-hide; a
-   // redraw alone must not keep extending that timer indefinitely.
    setTimeout(()=>{
     host.querySelector('[data-tid="DateRangePicker__end"]').click();
     const container=document.querySelector('[data-rendered-container-id="datepicker"]');
@@ -135,12 +132,15 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
    setTimeout(()=>record('date-range popup survives field switch without an early hide',
      !document.querySelector('[data-rendered-container-id="datepicker"]').hidden),700);
    setTimeout(()=>document.getElementById('pick-second-day').click(),750);
-   setTimeout(()=>record('date-range popup hides itself once picking settles',
-     document.querySelector('[data-rendered-container-id="datepicker"]').hidden),1250);
+   setTimeout(()=>{
+    record('calendar remains open after a pause between date choices', !field.hidden);
+    document.querySelector('.booking-modal__title').click();
+    record('outside click closes only the calendar', field.hidden && document.querySelector('dialog').open);
+   },1250);
    setTimeout(()=>{
     datePickerReopened=true;
     host.querySelectorAll('button')[4].click();
-    frame(()=>record('date-range popup can reopen after auto-hide',
+    frame(()=>record('date-range popup can reopen after dismissal',
       !document.querySelector('[data-rendered-container-id="datepicker"]').hidden));
    },1300);
   });
@@ -194,4 +194,6 @@ http.createServer((req, res) => {
   if (!allowed.has(url)) { res.writeHead(404); return res.end(); }
   res.setHeader('Content-Type', url.endsWith('.js') ? 'text/javascript; charset=utf-8' : 'text/css; charset=utf-8');
   res.end(fs.readFileSync(path.join(root, url)));
-}).listen(8766, '127.0.0.1', () => console.log('Layer regression: http://127.0.0.1:8766/'));
+}).listen(Number(process.argv[2]) || 8766, '127.0.0.1', function () {
+  console.log('Layer regression: http://127.0.0.1:' + this.address().port + '/');
+});

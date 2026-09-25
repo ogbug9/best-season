@@ -120,7 +120,7 @@
     line-height: 1.15;
     overflow-wrap: anywhere;
   }
-  .booking-system .booking-modal__close { top: 16px; right: 16px; }
+  .booking-system .booking-modal__close { position: fixed; top: 16px; right: 16px; }
   .booking-system .booking-fallback,
   .booking-system .booking-system__help { padding: 16px; }
   .booking-system .form__grid { grid-template-columns: minmax(0, 1fr); }
@@ -167,4 +167,30 @@ body > .react-ui *,
 .booking-system .kontur-host .react-ui,
 .booking-system .kontur-host .react-ui * {
   font-family: 'Montserrat', system-ui, sans-serif !important;
+}
+
+/* Calendar palette from Pop-up Бронь 1 шаг.svg. Keep SDK sizing and
+   virtual scrolling intact; selectors were checked on the live widget. */
+body[data-modal-open] > .react-ui [data-tid="DateRangePicker__root"] > [data-tid="PopupContent"] {
+  border-radius: 16px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #847f57 #f7f0e6;
+}
+body[data-modal-open] > .react-ui [data-tid="DateRangePicker__root"] [data-tid="DayCellView__root"] {
+  color: #667595;
+}
+body[data-modal-open] > .react-ui [data-tid="DateRangePicker__root"] [data-tid="DayCellView__root"]:disabled {
+  color: #cbd2e0;
+}
+body[data-modal-open] > .react-ui :is([data-tid="DateRangePicker__rangeStart"], [data-tid="DateRangePicker__rangeEnd"]) {
+  background-color: #fff0e4;
+}
+body[data-modal-open] > .react-ui :is([data-tid="DateRangePicker__rangeStart"], [data-tid="DateRangePicker__rangeEnd"])::before {
+  background-color: #ffcda6;
+  border-radius: 50%;
+}
+body[data-modal-open] > .react-ui [data-tid="DateRangePicker__root"] [data-tid="DayCellView__root"]:focus-visible {
+  outline: 2px solid #9b5026;
+  outline-offset: -2px;
 }
