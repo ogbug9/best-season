@@ -49,12 +49,15 @@ function fixture(options = {}) {
     visibilityState: options.hidden ? 'hidden' : 'visible',
     body: node(), head: { appendChild(s) { scripts.push(s); } },
     querySelector: () => modal,
+    // Разметка кнопок Контура (data-bs-kind): в заглушке кнопок нет.
+    querySelectorAll: () => options.buttons || [],
     getElementById: () => ({ textContent: JSON.stringify(config) }),
     createElement: () => node(),
     addEventListener: (k, fn) => { events[k] = fn; },
     dispatchEvent: () => !options.cancelPrepare,
   };
-  const window = { scrollY: 123, scrollTo() {}, location: { reload() { reloads++; } } };
+  const window = { scrollY: 123, scrollTo() {}, location: { reload() { reloads++; } },
+    getComputedStyle: el => ({ backgroundColor: el.bg }) };
   const sdk = {
     init(config) {
       initCount++; hooks = config.hooks;
@@ -219,4 +222,14 @@ test('booking form rendered after onInit becomes ready before timeout', () => {
   const f = fixture({ emptyRender: true }); f.open(); f.load();
   f.render(); f.timeout();
   assert.equal(f.fallback.hidden, true); assert.equal(f.host.hidden, false);
+});
+test('Kontur buttons get data-bs-kind by their themed background; disabled ones wait', () => {
+  const pay = { bg: 'rgb(155, 80, 38)', dataset: {} };
+  const more = { bg: 'rgb(255, 255, 255)', dataset: {} };
+  const book = { bg: 'rgb(230, 223, 209)', dataset: {}, disabled: true };
+  const f = fixture({ buttons: [pay, more, book] });
+  f.open(); f.load(); f.timeout();
+  assert.equal(pay.dataset.bsKind, 'primary');
+  assert.equal(more.dataset.bsKind, 'neutral');
+  assert.equal(book.dataset.bsKind, undefined, 'выключенная кнопка помечается после включения');
 });

@@ -159,8 +159,8 @@
    (Lab Grotesque), и внутри нашего окна он читается как чужой. Замер до и
    после подмены: ячейка дня 32×32, календарь 260×450, кнопка 278, поле 83
    — размеры не изменились ни на пиксель, обрезанных элементов нет.
-   Остальное оформление (цвета, рамки) не трогаем, пока Настя не скажет,
-   как именно календарь должен выглядеть.
+   Цвета, кнопки, поля и карточки — в блоке «Оформление виджета Контура»
+   в конце файла.
    ========================================================================= */
 body > .react-ui,
 body > .react-ui *,
@@ -194,3 +194,211 @@ body[data-modal-open] > .react-ui [data-tid="DateRangePicker__root"] [data-tid="
   outline: 2px solid #9b5026;
   outline-offset: -2px;
 }
+
+/* =========================================================================
+   Оформление виджета Контура по макетам «Pop-up Бронь 1–3 шаг»
+
+   Контур красит интерфейс своими токенами --k-color-* (у каждого есть
+   запасное значение) и переменными темы --bm-theme-*, которые SDK пишет
+   прямо в style у body. Переопределяем их внутри нашего окна и порталов
+   виджета: одна замена перекрашивает все экраны сразу, включая те, до
+   которых сейчас не дойти (выбор тарифа, данные гостя, оплата).
+   Палитра сайта: кремовый #F7F0E6, плашки #E6DFD1, терракота #9B5026,
+   олива #847F57, текст #494949, выделение #FFF0E4 / #FFCDA6.
+   ========================================================================= */
+.booking-system,
+body > .react-ui {
+  --k-color-shape-bold-warning: #9b5026;
+  --k-color-shape-bold-warning-hover: #843f1b;
+  --k-color-shape-bold-warning-pressed: #6f3515;
+  --k-color-line-warning-bold: #9b5026;
+  --k-color-text-const-heavy-black: #f7f0e6;
+  --k-color-shape-faint-warning: #fff0e4;
+  --k-color-shape-faint-success: #fff0e4;
+  --k-color-text-success-heavy: #847f57;
+  --k-color-text-warning-heavy: #9b5026;
+  --k-color-text-neutral-heavy: #494949;
+  --k-color-text-accent-heavy: #494949;
+  --k-color-text-accent-heavy-hover: #9b5026;
+  --k-color-text-accent-heavy-pressed: #843f1b;
+  --k-color-text-neutral-soft: #6f6a63;
+  --k-color-text-neutral-pale: #8c8780;
+  --k-color-text-neutral-faint: #a9a49c;
+  --k-color-line-neutral-pale: #d9cfbf;
+  --k-color-line-neutral-pale-hover: #b9ab96;
+  --k-color-line-neutral-faint: #e6dfd1;
+  --k-color-line-accent-bold: #9b5026;
+  --k-color-shape-bold-accent: #9b5026;
+  --k-color-shape-faint-neutral-alpha: #e6dfd1;
+  --k-color-shape-pale-neutral-alpha: #d9cfbf;
+  --k-color-shape-other-backless-hover: #efe8dc;
+  --k-color-shape-other-disabled: #efe8dc;
+  --k-color-customizable-bold-red: #9b5026;
+  --k-color-customizable-heavy-red: #9b5026;
+  --k-color-surface-modal-backdrop: rgb(17 24 43 / 65%);
+}
+/* Переменные темы SDK стоят в style у body — перебить их можно только с !important. */
+body[data-modal-open] {
+  --bm-theme-btnPayBg: #9b5026 !important;
+  --bm-theme-btnPayTextColor: #f7f0e6 !important;
+  --bm-theme-btnPayHoverBg: #843f1b !important;
+  --bm-theme-btnPayHoverTextColor: #fff !important;
+  --bm-theme-placeholderColor: #a9a49c !important;
+  --bm-theme-bgGreenLightColor: #fff0e4 !important;
+  --bm-theme-bgYellowLightColor: #fff0e4 !important;
+  --bm-theme-fontRedColor: #9b5026 !important;
+  --bm-theme-fontGreenColor: #847f57 !important;
+  --bm-theme-fontBlackColor: #494949 !important;
+  --bm-theme-fontBlackActiveColor: #494949 !important;
+  --bm-theme-fontGrayColor: #8c8780 !important;
+  --bm-theme-bgGrayLightColor: #e6dfd1 !important;
+  --bm-theme-bgGrayColor: #e6dfd1 !important;
+  --bm-theme-whiteColor: #fff !important;
+}
+
+/* Шрифт сайта во всём виджете: и в портале, и в карточках на странице окна. */
+.booking-system .kontur-host,
+.booking-system .kontur-host :not(svg, path, use) {
+  font-family: 'Montserrat', system-ui, sans-serif !important;
+}
+
+/* ---------- Кнопки ----------
+   Основные (терракотовые) — пилюля, как «Добавить»/«Оплатить» в макете;
+   остальные — плашка #E6DFD1 со скруглением 10, как «Продолжить
+   бронирование» и поля в шапке окна. Классы кнопок Контура захешированы,
+   поэтому kontur.js помечает кнопку data-bs-kind="primary" / "neutral"
+   по её исходному фону (терракотовый после замены токенов — основная). */
+:is(.booking-system .kontur-host, body > .react-ui) [data-tid="Button__rootElement"] {
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
+}
+:is(.booking-system .kontur-host, body > .react-ui) [data-tid="Button__rootElement"][data-bs-kind="neutral"]:not(:disabled) {
+  background-color: #e6dfd1 !important;
+  color: #494949 !important;
+}
+:is(.booking-system .kontur-host, body > .react-ui) [data-tid="Button__rootElement"][data-bs-kind="neutral"]:not(:disabled):hover {
+  background-color: #ddd3c1 !important;
+}
+:is(.booking-system .kontur-host, body > .react-ui) [data-tid="Button__rootElement"][data-bs-kind="primary"] {
+  border-radius: 100px !important;
+  color: #f7f0e6 !important;
+  padding-inline: 28px !important;
+}
+
+/* ---------- Поля ----------
+   Даты и гости — плашки #E6DFD1 без рамки, как строка «домик / даты /
+   гости» в макете шагов 2–3. Текстовые поля формы гостя — белые с
+   терракотовой рамкой 1px и скруглением 10, как в макете шага 3. */
+:is(.booking-system .kontur-host, body > .react-ui) :is([data-tid="DateRangePicker__start"], [data-tid="DateRangePicker__end"]) {
+  border-radius: 10px !important;
+  background-color: #e6dfd1 !important;
+  box-shadow: none !important;
+}
+:is(.booking-system .kontur-host, body > .react-ui) [data-tid="DateRangePicker__root"] > span:not([data-tid]) { color: #494949; }
+:is(.booking-system .kontur-host, body > .react-ui) :is(label[data-tid="Input__root"], [data-tid="Input__root"], [data-tid="Textarea__root"], [data-tid="PhoneInput__root"]) {
+  border-radius: 10px !important;
+  box-shadow: 0 0 0 1px #9b5026 !important;
+  background-color: #fff !important;
+}
+:is(.booking-system .kontur-host, body > .react-ui) [data-tid="InputLikeText__input"] { color: #494949 !important; }
+:is(.booking-system .kontur-host, body > .react-ui) [data-tid="DateInput__icon"],
+:is(.booking-system .kontur-host, body > .react-ui) [data-tid="Icon__root"] { color: #494949 !important; }
+
+/* ---------- Карточки ---------- */
+.booking-system .kontur-host {
+  --bm-theme-container-bg: #fff;
+  --bm-theme-container-border: 0;
+  --bm-theme-container-borderRadius: 20px;
+  --bm-theme-container-boxShadow: none;
+  --bm-theme-container-outline: 0;
+  --bm-theme-filterContainer-border: 0;
+  --bm-theme-filterContainer-borderRadius: 20px 20px 0 0;
+  --bm-theme-filterContainer-boxShadow: none;
+  --bm-theme-photo-border: 0;
+  --bm-theme-photo-borderRadius: 10px;
+  --bm-theme-photo-boxShadow: none;
+  --bm-theme-name-color: #494949;
+  --bm-theme-name-fontSize: 24px;
+  --bm-theme-name-fontWeight: 600;
+  --bm-theme-name-lineHeight: 29px;
+  --bm-theme-secondName-color: #6f6a63;
+  --bm-theme-description-color: #494949;
+  --bm-theme-description-fontSize: 16px;
+  --bm-theme-description-lineHeight: 22px;
+  --bm-theme-monthName-fontSize: 20px;
+  --bm-theme-monthName-fontWeight: 500;
+  --bm-theme-monthName-lineHeight: 24px;
+  --bm-theme-arrowButtons-bg: #fff0e4;
+}
+
+/* ---------- Строка поиска (bookingForm) ----------
+   В макете поля лежат прямо на кремовом фоне окна, без белой подложки. */
+.booking-system #BookingFormWidget {
+  --bm-theme-container-bg: transparent;
+  --bm-theme-container-border: 0;
+  --bm-theme-container-padding: 0;
+  --bm-theme-container-boxShadow: none;
+}
+.booking-system #BookingFormWidget .VwZTwv { padding: 0 !important; border: 0 !important; background: transparent !important; }
+.booking-system #BookingFormWidget :is([data-tid="DateRangePicker__start"], [data-tid="DateRangePicker__end"]) {
+  height: 48px !important;
+  padding: 0 16px !important;
+  font-size: 18px !important;
+}
+.booking-system #BookingFormWidget [data-tid="Button__rootElement"] { height: 48px !important; font-size: 18px !important; }
+
+/* ---------- Списки домиков и бани/беседок ----------
+   В макете шага 2 каждая позиция — отдельная белая карточка со
+   скруглением 20 и зазором, фото слева со скруглением 10. У Контура это
+   одна лента с разделителями. Классы ниже — имена CSS-модулей виджета
+   (не data-tid): зацепиться больше не за что. Если Контур пересоберёт
+   виджет и имена сменятся, откатится только эта раскладка — цвета и
+   шрифт держатся на токенах. */
+.booking-system :is(#BookingRoomsWidget, #BookingHourlyWidget) {
+  --bm-theme-container-bg: transparent;
+  --bm-theme-container-border: 0;
+  --bm-theme-container-padding: 0;
+}
+.booking-system :is(#BookingRoomsWidget, #BookingHourlyWidget) .ZAbtf8 { background: transparent !important; border: 0 !important; }
+.booking-system :is(#BookingRoomsWidget, #BookingHourlyWidget) .ZSaP3T {
+  margin-bottom: 20px;
+  padding: 0 20px;
+  border: 0 !important;
+  border-radius: 20px;
+  background: #fff;
+}
+
+/* ---------- Окна Контура поверх нашего (результаты поиска, номер, бронь) ----------
+   По макету это то же окно «Онлайн-бронирование»: кремовый фон, крупное
+   скругление, заголовок Etude Noire оливковым по центру, кнопка закрытия
+   квадратной плашкой. «BookingLightbox» — не хешированное имя виджета. */
+body > .react-ui .BookingLightbox [data-tid="modal-content"] > div:first-child {
+  background-color: #f7f0e6 !important;
+}
+@media (min-width: 768px) {
+  body > .react-ui .BookingLightbox [data-tid="modal-content"] > div:first-child { border-radius: 40px !important; }
+}
+body > .react-ui .BookingLightbox [data-tid="Sticky__root"] > * { background-color: #f7f0e6 !important; }
+body > .react-ui [data-tid="ModalHeader__root"] {
+  color: #847f57 !important;
+  font-family: 'Etude Noire', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 40px !important;
+  line-height: 44px !important;
+  text-align: center;
+}
+body > .react-ui [data-tid="ModalHeader__root"] :not(svg, path) { font-family: inherit !important; }
+body > .react-ui [data-tid="modal-close"] {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 14px !important;
+  background: rgb(132 127 87 / 15%) !important;
+  color: #847f57 !important;
+}
+body > .react-ui [data-tid="modal-close"]:hover { background: rgb(132 127 87 / 25%) !important; }
+body > .react-ui [data-tid="modal-close"] svg { color: #847f57 !important; }
+/* Строка поиска внутри окна Контура — тоже без белой подложки. */
+body > .react-ui .BookingLightbox .VwZTwv { padding-inline: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; }
+/* Крестик Контура стоит вплотную к углу — отодвигаем, как у нашего окна (32px). */
+body > .react-ui .BookingLightbox [data-tid="modal-close"] { translate: -24px 24px; }
