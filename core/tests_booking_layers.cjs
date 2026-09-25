@@ -80,8 +80,26 @@ function openPortal(owner, popup=false, unannotated=false){
 }
 window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='bookingForm'){
  const host=document.getElementById(c.appearance.container);
- host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button><button data-tid="DateRangePicker__start">Поле даты</button><button>Переключение полей</button><button data-tid="DateRangePicker__end">Поле выезда</button>';
+ host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button><button data-tid="DateRangePicker__start">Поле даты</button><button>Переключение полей</button><button data-tid="DateRangePicker__end">Поле выезда</button><button>Возврат фокуса после выбора дат</button>';
  host.querySelectorAll('button').forEach((b,i)=>{if(i<5)b.onclick=()=>openPortal(host,i===2,i===3);});
+ // Live bug: the SDK closes its calendar when a date is picked; our exit
+ // path returned focus to the date field, the SDK reopened the calendar on
+ // that focus, and the picker kept coming back. Focus must go on to the
+ // search button instead.
+ host.querySelectorAll('button')[7].onclick=function(){
+  const endField=host.querySelector('[data-tid="DateRangePicker__end"]');
+  endField.focus();
+  const portal=document.createElement('div'); portal.className='react-ui';
+  portal.innerHTML='<div data-tid="DateRangePicker__root" style="position:absolute;top:200px;left:20px;width:200px;height:200px;background:white"><button data-date-range-picker-day="20.10.2026">20</button></div>';
+  document.body.appendChild(portal);
+  setTimeout(()=>{
+   portal.remove();
+   setTimeout(()=>{
+    record('focus does not return to a date field after the calendar closes', document.activeElement!==endField && !document.activeElement.closest('[data-tid^="DateRangePicker"]'));
+    record('focus moves on to the search button', document.activeElement===host.querySelector('button'));
+   },450);
+  },200);
+ };
  // The date-picker portal is mounted ONCE, empty, before anyone opens the
  // modal — invisible to our own visibility check for as long as it stays
  // empty. This mirrors what a plain "Заезд"/"Выезд" field's own calendar

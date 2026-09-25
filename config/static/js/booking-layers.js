@@ -69,7 +69,11 @@
         var maxWidth = Math.max(0, window.innerWidth - 16) + "px";
         if (picker.style.maxWidth !== maxWidth) picker.style.maxWidth = maxWidth;
         var rect = picker.getBoundingClientRect();
-        var top = Math.max(8, Math.min(rect.top, window.innerHeight - 168));
+        // Only push the popup up when it would run off the bottom. Never pin
+        // it to the top edge: the SDK moves it together with its date field
+        // while the booking window scrolls, and a top clamp left it hanging
+        // over the site header after the field had scrolled away (live bug).
+        var top = Math.min(rect.top, window.innerHeight - 168);
         var left = Math.max(8, Math.min(rect.left, window.innerWidth - rect.width - 8));
         if (Math.abs(rect.top - top) > 1) picker.style.top = top + "px";
         if (Math.abs(rect.left - left) > 1) picker.style.left = left + "px";
@@ -170,10 +174,26 @@
           modal.classList.remove("booking-system--vendor-open");
           switchMode(true);
           modal.scrollTop = scrollTop;
-          focus(modal.contains(returnFocus) ? returnFocus : modal.querySelector("[data-booking-close]"));
+          focus(afterVendorFocus());
           returnFocus = null;
         }, 250);
       }
+    }
+
+    // Where focus goes when the SDK's popups are gone. Returning it to the
+    // date field that opened the calendar makes the SDK open the calendar
+    // again on focus — live, the picker kept reappearing after both dates
+    // were chosen. After a date field the next step is the search button of
+    // the same form, so focus goes there instead.
+    function afterVendorFocus() {
+      if (!modal.contains(returnFocus)) return modal.querySelector("[data-booking-close]");
+      var dateField = returnFocus.closest('[data-tid="DateRangePicker__root"], [data-tid="DateRangePicker__start"], [data-tid="DateRangePicker__end"]');
+      if (!dateField) return returnFocus;
+      var form = dateField.closest("[data-booking-host], .kontur-host") || modal;
+      var buttons = Array.from(form.querySelectorAll('[data-tid="Button__root"] button, button[data-tid="Button__root"], button')).filter(function (button) {
+        return !button.disabled && !button.closest('[data-tid^="DateRangePicker"]') && button.getClientRects().length;
+      });
+      return buttons[0] || modal.querySelector("[data-booking-close]");
     }
 
     function trapTab(event) {
