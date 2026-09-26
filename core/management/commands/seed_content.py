@@ -229,21 +229,21 @@ SERVICES = [
     # с карточки домика и для почасового объекта неверна.
     ("Русская баня", "russkaya-banya", True, "Описание", 1500),
     ("Большая беседка", "bolshaya-besedka", True, "Описание", 4000),
-    # Переносы в названиях — как в макете: «Финская сауна» и «Аренда
-    # велосипедов» стоят в две строки (блок 58 против 29 у остальных)
-    ("Финская\nсауна", "finskaya-sauna", False, "", None),
+    # В каталоге макет показывает сапы, мастер-классы, фотосессии и велосипеды.
+    ("Аренда сапов", "arenda-sapov", False, "", None),
     ("Мастер-классы", "master-klassy", False, "", None),
     ("Фотосессии", "fotosessii", False, "", None),
     ("Аренда\nвелосипедов", "arenda-velosipedov", False, "", None),
+    ("Финская\nсауна", "finskaya-sauna", False, "", None),
 ]
 
 HOUSES = [
     # 8000 у первого, 6000 у остальных — по макету (лента цены на карточке)
     # Площадь первого домика уточнена по макету страницы дома: 54 м²
     ("Первый домик", "финская сауна", 8000, 4, 54),
-    ("Второй домик", "камин", 6000, 4, 42),
-    ("Третий домик", "камин", 6000, 4, 42),
-    ("Четвёртый домик", "камин", 6000, 4, 42),
+    ("Второй домик", "камин", 6000, 4, 54),
+    ("Третий домик", "камин", 6000, 4, 54),
+    ("Четвёртый домик", "камин", 6000, 4, 54),
 ]
 
 # Прежние подписи домиков — их можно перезаписывать, это наши догадки
@@ -357,6 +357,7 @@ TILE_ONLY = {
     "Панорамные окна",
     "Мангальная зона",       # в списке — «Мангал и зона барбекю»
     "Wifi (оптоволокно)",    # в списке — «Wi-Fi»
+    "Камин",                 # плитка домов 2–4
 }
 
 # (группа, название, иконка, плиткой в «Удобствах»)
@@ -375,6 +376,7 @@ AMENITIES = [
     ("Кухня", "Мини-аптечка", "", False),
     ("Кухня", "Капсульная кофемашина Dolce Gusto (капсулы — за доп. плату)", "", False),
     ("Спальная зона", "Двухэтажная кровать", "bunk_bed", False),
+    ("Спальная зона", "Двуспальная кровать", "bed", False),
     ("Спальная зона", "Комплект постельного белья", "linen", False),
     ("Спальная зона", "Пледы", "", False),
     ("Спальная зона", "Одеяла + подушки", "", False),
@@ -409,6 +411,7 @@ AMENITIES = [
     ("Отопление", "Теплые полы", "heating", False),
     ("Отопление", "Дизайнерские радиаторы", "", False),
     ("Отопление", "Кондиционер", "conditioner", True),
+    ("Отопление", "Камин", "fireplace", True),
     ("Отопление", "Водонагреватель", "", False),
     ("Внешняя территория", "Крытая терраса 24 м²", "terrace", False),
     ("Внешняя территория", "Большая терраса", "terrace", True),
@@ -431,9 +434,7 @@ AMENITIES = [
     ("Внешняя территория", "Парковка", "parking", False),
 ]
 
-# Тексты и числа первого домика — дословно с макета «Первый домик».
-# Остальные три домика заполняет редактор: их макеты повторяют первый,
-# но содержимое у каждого своё, и выдумывать его за заказчика нельзя.
+# Тексты и числа четырёх домиков перенесены из предоставленного Desktop.svg.
 HOUSE_DETAILS = {
     "Первый домик": {
         "area": 54,
@@ -449,11 +450,46 @@ HOUSE_DETAILS = {
             "и ротанговая мебель на террасе.</p>"
         ),
     },
+    "Второй домик": {
+        "layout_note": "Свободная планировка",
+        "highlight": "Камин",
+        "description": (
+            "<p>Дом-лофт с настоящим камином и панорамными окнами в спальне "
+            "с видом на лес — фаворит наших гостей. Вечер здесь начинается "
+            "с треска дров, вкусного чая и долго не заканчивается.</p>"
+            "<p>На 2–4 гостей. Уютная гостиная, оснащённая кухня, отдельная "
+            "мангальная зона и ротанговая мебель на террасе.</p>"
+        ),
+    },
+    "Третий домик": {
+        "layout_note": "Свободная планировка",
+        "highlight": "Камин",
+        "description": (
+            "<p>Самый фотогеничный дом на поляне: идеальная каминная зона "
+            "расположена прямо у панорамного окна с видом на лес и реку — "
+            "кадр получается сам. Спальня выходит на поляну и ферму.</p>"
+            "<p>На 2–4 гостей. Уютная кухня, тихая гостиная, подвесное кресло "
+            "и ротанговая мебель на террасе.</p>"
+        ),
+    },
+    "Четвёртый домик": {
+        "layout_note": "Свободная планировка",
+        "highlight": "Камин",
+        "description": (
+            "<p>Самый уединённый дом и самый близкий к ферме: камин, панорамные "
+            "окна и лес почти у самой террасы. Здесь проходят самые интересные "
+            "дискуссии с колонкой Алисой и звучат самые утончённые музыкальные "
+            "подборки.</p>"
+            "<p>Уютная гостиная, оснащённая кухня, отдельная мангальная зона, "
+            "подвесные кресла и ротанговая мебель на террасе.</p>"
+        ),
+    },
 }
 
 # Спальные места первого домика — по карточке в макете
 SLEEPING_PLACES = ["Диван-кровать", "Двухэтажная кровать"]
-SLEEPING_ICONS = {"Диван-кровать": "sofa_bed", "Двухэтажная кровать": "bunk_bed"}
+SLEEPING_ICONS = {"Диван-кровать": "sofa_bed", "Двухэтажная кровать": "bunk_bed",
+                  "Двуспальная кровать": "bed"}
 
 
 class Command(BaseCommand):
@@ -559,6 +595,29 @@ class Command(BaseCommand):
                 )
             self.mark(f"вопрос: {question}")
 
+        from core.faq_sets import (
+            CATALOG_FAQ, PROMOTION_FAQ, PREVIOUS_PROMOTION_ANSWERS,
+        )
+
+        for offset, items in ((100, CATALOG_FAQ), (200, PROMOTION_FAQ)):
+            for order, (question, answer) in enumerate(items, start=1):
+                existing = FaqItem.objects.filter(question=question).first()
+                if existing:
+                    previous = PREVIOUS_PROMOTION_ANSWERS.get(question)
+                    if previous and _plain(existing.answer) == _plain(previous):
+                        if not self.dry:
+                            existing.answer = answer
+                            existing.save(update_fields=["answer"])
+                        self.mark(f"вопрос акции, ответ с макета: {question}")
+                    continue
+                if not self.dry:
+                    FaqItem.objects.create(
+                        question=question, answer=answer,
+                        show_on_home=False, sort_order=offset + order * 10,
+                        is_published=True,
+                    )
+                self.mark(f"вопрос страницы: {question}")
+
     # ---------- дома ----------
 
     def fill_promotions(self):
@@ -635,18 +694,36 @@ class Command(BaseCommand):
         if changed and not self.dry:
             house.save()
 
-        if not self.dry and not house.amenities.exists():
-            house.amenities.set(Amenity.objects.all())
+        desired_amenities = Amenity.objects.exclude(
+            name__in=(["Камин", "Двуспальная кровать"]
+                      if house.title == "Первый домик" else
+                      ["Двухэтажная кровать"])
+        )
+        if house.title != "Первый домик":
+            desired_amenities = desired_amenities.exclude(group__name="Сауна")
+        if not self.dry and (not house.amenities.exists() or
+                             (house.title == "Первый домик" and
+                              house.amenities.filter(name="Камин").exists()) or
+                             (house.title != "Первый домик" and
+                              house.amenities.filter(group__name="Сауна").exists())):
+            house.amenities.set(desired_amenities)
             house.save()
             self.mark(f"дом «{house.title}»: удобства с макета")
 
         if not self.dry and not house.sleeping_places.exists():
-            for order, name in enumerate(SLEEPING_PLACES, start=1):
+            sleeping_places = (SLEEPING_PLACES if house.title == "Первый домик"
+                               else ["Диван-кровать", "Двуспальная кровать"])
+            for order, name in enumerate(sleeping_places, start=1):
                 HouseSleepingPlace.objects.create(
                     page=house, name=name,
                     icon=SLEEPING_ICONS.get(name, ""), sort_order=order,
                 )
             self.mark(f"дом «{house.title}»: спальные места с макета")
+        elif not self.dry and house.title != "Первый домик":
+            # Прежнее общее наполнение поставило двухэтажную кровать всем.
+            house.sleeping_places.filter(name="Двухэтажная кровать").update(
+                name="Двуспальная кровать", icon="bed"
+            )
 
     def fill_services(self):
         """Заводит доп услуги с макета, если их ещё нет.
@@ -728,9 +805,8 @@ class Command(BaseCommand):
                 is_featured=featured,
                 in_list=name not in TILE_ONLY,
                 sort_order=order * 10,
-                featured_order=(
-                    TILE_ORDER.index(name) + 1 if name in TILE_ORDER else 100
-                ),
+                featured_order=(5 if name == "Камин" else
+                                TILE_ORDER.index(name) + 1 if name in TILE_ORDER else 100),
             )
             self.mark(f"удобство: {name}")
 

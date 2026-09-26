@@ -96,7 +96,7 @@
         {% for service in hourly_services %}
           <li class="house service-card" id="service-{{ service.slug }}">
             <div class="house__media">
-              {% if service.display_image %}{% picture service.display_image preset="card" alt=service.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+              {% if service.display_image %}{% picture service.display_image preset="house_card" alt=service.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
               {% if service.price %}
                 {% include "includes/price_flag.html" with amount=service.price_display unit=service.get_price_unit_display %}
               {% endif %}
@@ -119,7 +119,7 @@
       <ul class="cards cards--service-tiles">
         {% for service in tile_services %}
           <li class="service-tile" id="service-{{ service.slug }}">
-            {% if service.display_image %}{% picture service.display_image preset="card" alt=service.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+            {% if service.display_image %}{% picture service.display_image preset="mosaic" alt=service.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
             <h3 class="service-tile__title">{{ service.name }}</h3>
           </li>
         {% endfor %}
@@ -140,7 +140,7 @@
     <div class="faq">
       {% for item in faq %}
         <details class="faq__item{% if forloop.counter0|divisibleby:2 %} faq__item--dark{% else %} faq__item--olive{% endif %}">
-          <summary class="faq__question">{{ item.question }}</summary>
+          <summary class="faq__question"><span class="home-desktop-copy">{{ item.question|layout_lines:"catalog_faq"|linebreaksbr }}</span><span class="home-mobile-copy">{{ item.question }}</span></summary>
           <div class="faq__answer">{{ item.answer|richtext }}</div>
         </details>
       {% endfor %}

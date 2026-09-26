@@ -98,5 +98,7 @@ class PromotionsPage(Page):
 
         context = super().get_context(request)
         context["promotions"] = [p for p in Promotion.objects.all() if p.is_active]
-        context["faq"] = FaqItem.objects.filter(is_published=True, show_on_home=True)
+        from core.faq_sets import PROMOTION_FAQ, page_faq
+
+        context["faq"] = page_faq(PROMOTION_FAQ)
         return context

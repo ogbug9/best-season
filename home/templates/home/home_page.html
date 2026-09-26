@@ -235,7 +235,7 @@
         {% endif %}
         <li class="mosaic__item territory-card" tabindex="0">
           {% if item.image %}
-            {% picture item.image preset="card" alt=item.title %}
+            {% picture item.image preset="mosaic" alt=item.title %}
           {% else %}
             <span class="ph" aria-hidden="true"></span>
           {% endif %}
@@ -282,7 +282,7 @@
           </div>
           <div class="place__media">
             {% if place.image %}
-              {% picture place.image preset="card" alt=place.title %}
+              {% picture place.image preset="mosaic" alt=place.title %}
             {% else %}
               <span class="ph" aria-hidden="true"></span>
             {% endif %}
@@ -326,7 +326,7 @@
     <ul class="photo-mosaic__tiles">
       {% for item in page.gallery_images.all %}
         <li class="photo-mosaic__item">
-          {% picture item.image preset="card" alt=item.alt %}
+          {% picture item.image preset="mosaic" alt=item.alt %}
         </li>
       {% empty %}
         {% for i in "123456789" %}

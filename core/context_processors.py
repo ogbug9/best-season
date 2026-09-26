@@ -37,6 +37,8 @@ FOOTER_COLUMNS = [
             ("oferta", "Оферта"),
             ("politika-konfidencialnosti", "Политика конфиденциальности"),
             ("soglasie-na-obrabotku", "Персональные данные"),
+            ("politika-cookies", "Политика Cookies"),
+            ("soglasie-na-rassylku", "Согласие на рассылку"),
         ],
     },
     {

@@ -11,7 +11,7 @@
     <ul class="promos">
       {% for promo in promotions %}
       <li class="promo{% if forloop.counter0|divisibleby:2 %} promo--olive{% else %} promo--dark{% endif %}">
-        <div class="promo__media">{% if promo.image %}{% picture promo.image preset="card" alt=promo.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+        <div class="promo__media">{% if promo.image %}{% picture promo.image preset="promo" alt=promo.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
         <div class="promo__copy">
           <h2 class="promo__title">{{ promo.title|promotion_title|linebreaksbr }}</h2>
           {% if promo.short_description %}<p class="promo__text"><span class="home-desktop-copy">{{ promo.short_description|promotion_description|linebreaksbr }}</span><span class="home-mobile-copy">{{ promo.short_description|mobile_promotion_description|linebreaksbr }}</span></p>{% endif %}

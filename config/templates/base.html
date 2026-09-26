@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="{% static 'css/main.css' %}?v=20260925-calendar">
     <link rel="stylesheet" href="{% static 'css/home-mobile.css' %}" media="(max-width: 699px)">
     <link rel="stylesheet" href="{% static 'css/pages-mobile.css' %}" media="(max-width: 699px)">
-    <link rel="stylesheet" href="{% static 'css/kontur-booking.css' %}?v=20260925-theme">
+    <link rel="stylesheet" href="{% static 'css/kontur-booking.css' %}?v=20260925-theme2">
     {% block extra_css %}{% endblock %}
 
     {# Микроразметка организации — п. 10.5 ТЗ #}
@@ -81,6 +81,22 @@
     </button>
 
     {% include "includes/booking_modal.html" %}
+
+    <aside class="cookie-banner" data-cookie-banner hidden aria-label="Уведомление о cookie">
+      <span class="cookie-icon" aria-hidden="true">
+        <svg viewBox="0 0 36 36" width="36" height="36" fill="none" focusable="false">
+          <circle cx="18" cy="18" r="18" fill="#FFE5BF"/>
+          <path d="M25.8 16.2a4.5 4.5 0 0 1-5.1-5.1 9 9 0 1 0 5.1 5.1Z" fill="#D9984A"/>
+          <circle cx="14" cy="13.8" r="1.1" fill="#9B5026"/><circle cx="11.8" cy="20" r="1.2" fill="#9B5026"/>
+          <circle cx="18.7" cy="23.5" r="1" fill="#9B5026"/><circle cx="18.2" cy="17" r=".9" fill="#9B5026"/>
+        </svg>
+      </span>
+      <p class="cookie-text">{{ settings.core.SiteSettings.cookie_text|default:"Мы используем сторонние файлы cookie для обеспечения наилучшего пользовательского опыта и аналитики производительности." }}</p>
+      <div class="cookie-actions">
+        <button type="button" class="cookie-accept" data-cookie-accept>Согласиться</button>
+        <button type="button" class="cookie-close" data-cookie-close aria-label="Закрыть без согласия">×</button>
+      </div>
+    </aside>
 
     <script src="{% static 'js/site.js' %}" defer></script>
     {% comment %} Блок бронирования есть только на странице дома — на

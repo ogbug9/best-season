@@ -19,6 +19,10 @@ from django.db import transaction
 from wagtail.models import Page
 
 PLACEHOLDER = "Текст ожидается от заказчика."
+APPROVED_LEGAL_NAME = "ИП Новосад Софья Павловна"
+APPROVED_INN = "770902179335"
+APPROVED_OGRNIP = "323774600773141"
+PERSONAL_DATA_CONSENT_DATE = "01.01.2026"
 
 
 def rich(*paragraphs):
@@ -210,6 +214,16 @@ LEGAL = [
         "Текст согласия предоставляется заказчиком. Версия текста хранится "
         "вместе с каждой заявкой — раздел 11 ТЗ.",
     ),
+    (
+        "politika-cookies",
+        "Политика Cookies",
+        "Политика использования файлов Cookies.",
+    ),
+    (
+        "soglasie-na-rassylku",
+        "Согласие на рассылку",
+        "Согласие на получение информационных и рекламных сообщений.",
+    ),
 ]
 
 
@@ -282,6 +296,7 @@ class Command(BaseCommand):
             for node in TREE:
                 self.create_node(home, node)
             self.create_legal(home)
+            self.seed_legal_settings(site)
             self.hide_duplicates()
             self.order_menu(home)
             self.ensure_menu_visible(home)
@@ -500,6 +515,28 @@ class Command(BaseCommand):
                 {"body": rich(text), "show_booking_cta": False},
                 in_menu=False,
             )
+
+    def seed_legal_settings(self, site):
+        """Record owner-approved requisites without replacing editor values."""
+        from core.models import SiteSettings
+
+        settings = SiteSettings.for_site(site)
+        changed = []
+        for field, value in (
+            ("legal_name", APPROVED_LEGAL_NAME),
+            ("inn", APPROVED_INN),
+            ("ogrnip", APPROVED_OGRNIP),
+        ):
+            if not getattr(settings, field):
+                setattr(settings, field, value)
+                changed.append(field)
+        if settings.consent_version in ("", "1.0"):
+            settings.consent_version = PERSONAL_DATA_CONSENT_DATE
+            changed.append("consent_version")
+        if changed:
+            if not self.dry:
+                settings.save(update_fields=changed)
+            self.stdout.write(f"  правовые настройки: {', '.join(changed)}")
 
     def ensure(self, parent, model, slug, title, fields, in_menu=True):
         """Создаёт страницу, если её ещё нет. Существующую не трогает."""

@@ -477,7 +477,7 @@ class FaqItem(models.Model):
 
 
 def _consent_page():
-    """Страница политики обработки ПД для ссылки под чекбоксом согласия.
+    """Страница согласия на обработку ПД для ссылки под чекбоксом.
 
     Ищется по слагу, а не хранится настройкой: так редактору не нужно
     ничего связывать вручную, а если страницы ещё нет — ссылка просто
@@ -485,7 +485,7 @@ def _consent_page():
     """
     from wagtail.models import Page
 
-    return Page.objects.live().filter(slug__in=["politika", "politika-pd"]).first()
+    return Page.objects.live().filter(slug="soglasie-na-obrabotku").first()
 
 
 # =========================================================================

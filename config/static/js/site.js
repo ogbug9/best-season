@@ -52,6 +52,29 @@
   ).observe(hero);
 })();
 
+/* ---------- Уведомление о cookie ---------- */
+(function () {
+  "use strict";
+  var banner = document.querySelector("[data-cookie-banner]");
+  if (!banner) return;
+  var key = "bs-cookie-consent-v1";
+  var choice = null;
+  try { choice = window.localStorage.getItem(key); } catch (_) {}
+  if (!choice) banner.hidden = false;
+
+  function finish(value) {
+    try { window.localStorage.setItem(key, value); } catch (_) {}
+    banner.hidden = true;
+    document.dispatchEvent(new CustomEvent("bs:cookie-consent", { detail: value }));
+  }
+  banner.querySelector("[data-cookie-accept]").addEventListener("click", function () {
+    finish("accepted");
+  });
+  banner.querySelector("[data-cookie-close]").addEventListener("click", function () {
+    finish("dismissed");
+  });
+})();
+
 /* ---------- Галерея дома (п. 4.1.2) ----------
    Свёртывание и просмотрщик включает скрипт, а не разметка: при выключенном
    JS видны все кадры, и каждый остаётся обычной ссылкой на полный размер. */

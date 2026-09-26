@@ -38,6 +38,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .nav-toggle__button span::after { content: ''; position: absolute; top: 2px; left: 0; width: 14px; border-top: 2px solid #494949; }
 
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero { min-height: 570px; height: 570px; padding: 176px 0 0; align-items: start; box-shadow: 0 4px 4px #49494940; }
+.page-home .hero { min-height: 100svh; height: 100svh; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero::before { background: rgba(0, 0, 0, .2); }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero__media::after { background: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero__inner { transform: none; }

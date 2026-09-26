@@ -530,8 +530,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero__slide { animation: none !important; opacity: 0; }
-  .hero__slide:first-child { opacity: 1; }
+  .hero__media[data-count] .hero__slide { animation: none !important; opacity: 0; }
+  .hero__media[data-count] .hero__slide:first-child { opacity: 1; }
 }
 
 .hero__inner {
@@ -539,6 +539,12 @@ body {
   /* В макете группа «заголовок + подзаголовок + полоса поиска» стоит
      чуть ниже центра первого экрана — замер по эталону даёт +37px. */
   transform: translateY(37px);
+}
+@media (min-width: 900px) {
+  .page-home .hero::before { background: none; }
+  .page-home .hero__media::after { background: rgba(0, 0, 0, 0.5); }
+  /* Центр группы макета переносим на экран 900px: +20px от фрейма 860px. */
+  .page-home .hero__inner { transform: translateY(-11.5px); }
 }
 /* Цвет заголовка из макета — оливковый, не кремовый. Читаемость
    обеспечена затемнением .hero::before, см. комментарий выше. */
@@ -782,6 +788,9 @@ body {
   }
   .gallery--house .gallery__item { min-height: 0; }
   .gallery--house .gallery__link { aspect-ratio: auto; height: 100%; }
+  /* В SVG крупные фото домов 1 и 3 имеют вертикальное смещение 40% и 54%. */
+  .page-house--domik-1 .house-mosaic__item:first-child img { object-position: center 40%; }
+  .page-house--domik-3 .house-mosaic__item:first-child img { object-position: center 54%; }
 }
 
 .gallery__link {
@@ -895,6 +904,25 @@ body {
     top: auto;
     width: auto;
     margin-bottom: var(--s-5);
+  }
+}
+@media (min-width: 700px) and (max-width: 999px) {
+  .photo-mosaic { display: flex; flex-direction: column; }
+  .photo-mosaic__text .section__lead br { display: initial; }
+  .photo-mosaic__text { order: 0; padding-inline: 24px; margin-bottom: 32px; }
+  .photo-mosaic__tiles {
+    order: 1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding-inline: 20px;
+  }
+  .photo-mosaic__item:nth-child(n) {
+    position: static;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
   }
 }
 
@@ -1497,7 +1525,7 @@ body {
 /* ---------- Кнопки: 6 состояний по COMPONENTS ---------- */
 .btn--pill { border-radius: var(--radius-pill); }
 
-.btn--primary:hover { background: var(--c-hover-terra); }
+.btn--primary:hover { background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6); color: var(--c-dark); }
 .btn--primary:active,
 .btn--primary.is-pressed { background: var(--c-dark); }
 
@@ -1513,9 +1541,9 @@ body {
   padding: 14px 40px;
   gap: 10px;
 }
-.btn--outline:hover { background: var(--c-hover-warm); }
+.btn--outline:hover { background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6); }
 .btn--outline:active,
-.btn--outline.is-pressed { background: var(--c-muted); }
+.btn--outline.is-pressed { background: #D5CFC7; border-color: var(--c-dark); }
 
 /* Третий тип из макета — текстовая кнопка без рамки */
 .btn--ghost {
@@ -1523,14 +1551,93 @@ body {
   border-color: transparent;
   color: var(--c-dark);
 }
-.btn--ghost:hover { background: var(--c-hover-warm); color: var(--c-dark); }
+.btn--ghost:hover { background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6); color: var(--c-dark); }
+.btn--ghost:active,
+.btn--ghost.is-pressed { background: #D5CFC7; }
 
 /* Фокус: в макете он синий во всех трёх типах кнопок */
 .site :where(.btn):focus-visible {
   outline: 3px solid var(--c-focus);
   outline-offset: 2px;
-  background: var(--c-focus-soft);
+  border-radius: 100px;
+  background: #D7DAEC;
   color: var(--c-dark);
+}
+.site .btn--primary:focus-visible { background: #8CA8FB; }
+
+/* Cookie notice из отдельного фрейма Оверлеи.svg. */
+.cookie-banner[hidden] { display: none; }
+.cookie-banner {
+  position: fixed;
+  z-index: 50;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 747px;
+  height: 76px;
+  max-width: calc(100vw - 24px);
+  padding: 20px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(73, 73, 73, .12);
+  font-family: var(--font-body);
+  color: var(--c-dark);
+}
+.cookie-icon { flex: 0 0 36px; width: 36px; height: 36px; margin-right: 16px; }
+.cookie-text {
+  flex: 0 0 455px;
+  width: 455px;
+  margin: 0 24px 0 0;
+  font-size: 11px;
+  line-height: 15.5px;
+}
+.cookie-actions { display: flex; align-items: center; gap: 20px; }
+.cookie-actions button { flex: none; cursor: pointer; font-family: var(--font-body); }
+.cookie-accept {
+  width: 120px;
+  height: 36px;
+  border: 0;
+  border-radius: 100px;
+  background: linear-gradient(110deg, #847F57, #989366);
+  color: #fff;
+  font-size: 11px;
+}
+.cookie-close {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #D4CEBB;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--c-dark);
+  font-size: 18px;
+  line-height: 1;
+}
+@media (max-width: 699px) {
+  .cookie-banner {
+    bottom: 14px;
+    flex-direction: column;
+    width: 266px;
+    height: 154px;
+    max-width: calc(100vw - 20px);
+    padding: 14px;
+    text-align: center;
+  }
+  .cookie-icon { flex: 0 0 36px; margin: 0 0 10px; }
+  .cookie-text {
+    flex: 0 0 42px;
+    width: 238px;
+    max-width: 100%;
+    margin: 0;
+    font-size: 9px;
+    line-height: 14px;
+  }
+  .cookie-actions { gap: 14px; margin-top: 11px; }
+  .cookie-accept { width: 99px; height: 27px; font-size: 9px; }
+  .cookie-close { width: 27px; height: 27px; font-size: 15px; }
 }
 
 .btn[data-state="loading"],
@@ -1548,6 +1655,10 @@ body {
   border-radius: 50%;
   animation: btn-spin 0.8s linear infinite;
 }
+.btn--primary.is-loading { background: #E0D9C9; }
+.btn--outline.is-loading,
+.btn--ghost.is-loading { background: var(--c-cream); color: var(--c-dark); }
+.btn--outline.is-loading { border-color: var(--c-terra); }
 @keyframes btn-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) {
   .btn.is-loading::after { animation-duration: 3s; }
@@ -1559,6 +1670,20 @@ body {
   border-color: transparent;
 }
 .btn.is-success::after { content: "✓"; font-weight: 700; }
+.btn.is-success::after {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+.btn--outline.is-success,
+.btn--ghost.is-success { background: var(--c-cream); color: var(--c-olive); }
+.btn--outline.is-success { border-color: var(--c-olive); }
 
 /* ---------- Шапка-пилюля поверх первого экрана ---------- */
 /* Шапка закреплена сверху и на десктопе, и на мобильном: при прокрутке
@@ -1783,6 +1908,19 @@ body:not(.page-home) main > :first-child {
   font-size: 0.9375rem;
 }
 .nav__sublink:hover { background: var(--c-hover-warm); color: var(--c-dark); }
+@media (min-width: 1100px) {
+  .nav--desktop .nav__item:nth-child(3) > .nav__dropdown { min-width: 143px; width: 143px; }
+  .nav--desktop .nav__item:nth-child(5) > .nav__dropdown { min-width: 121px; width: 121px; }
+  .nav--desktop .nav__dropdown { padding: 10px; }
+  .nav--desktop .nav__item:nth-child(3) > .nav__dropdown { padding-bottom: 7px; }
+  .nav--desktop .nav__item:nth-child(5) > .nav__dropdown { padding-bottom: 11px; }
+  .nav--desktop .nav__sublink {
+    min-height: 30px;
+    padding-inline: 8px;
+    background: #C6C0B8;
+  }
+  .nav--desktop .nav__item:nth-child(5) .nav__sublink { min-height: 26px; }
+}
 
 /* ---------- Мобильное меню ---------- */
 .nav-toggle { display: none; }
@@ -1812,13 +1950,13 @@ body:not(.page-home) main > :first-child {
   list-style: none;
 }
 
-@media (max-width: 1099px) {
+@media (max-width: 1279px) {
   .nav--desktop { display: none; }
   .nav-toggle { display: block; }
   .header__bar { position: relative; }
   .header__phone { display: none; }
 }
-@media (min-width: 1100px) {
+@media (min-width: 1280px) {
   .nav--mobile, .nav-toggle { display: none; }
 }
 
@@ -2032,6 +2170,9 @@ body:not(.page-home) main > :first-child {
 
 /* ---------- Подвал по макету ---------- */
 .footer { padding-top: 100px; }
+@media (min-width: 900px) {
+  .footer { margin-top: 0; padding-top: 43px; padding-bottom: 13px; }
+}
 .footer__top { display: grid; gap: 48px; margin-bottom: 0; }
 .footer__brand { display: flex; flex-direction: column; align-items: center; width: 240px; gap: 40px; }
 /* Инспектор (Frame 2087326550): группа 240×70, знак 70, подпись 153,
@@ -2059,6 +2200,7 @@ body:not(.page-home) main > :first-child {
 .footer__phone { font-size: 20px; font-weight: 400; line-height: 24px; }
 .footer__hours { color: var(--c-dark); }
 .footer__brand .socials { margin-top: -20px; }
+@media (min-width: 900px) { .footer__brand .socials { margin-top: 13px; } }
 .socials { display: flex; gap: 5px; margin: 0; padding: 0; list-style: none; }
 .socials li { position: relative; display: flex; align-items: flex-start; }
 .socials__item { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 100px; background: transparent; color: var(--c-cream); }
@@ -2676,6 +2818,14 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   margin-block: var(--s-8);
 }
 @media (min-width: 900px) {
+  .page-home .about { margin-top: 87px; }
+  .page-home .home-faq-background-anchor > .section {
+    padding-top: 70px;
+    padding-bottom: 50px;
+  }
+  /* Отзывы доступны на странице отзывов; в десктопном фрейме главной
+     после FAQ сразу следует подвал. */
+  .page-home .yandex-reviews { display: none; }
   /* Инспектор по узлам «О нас» и Rectangle 27: блок 1212×800, фото
      560×800. Значит текстовая колонка — 652px, из них 572px занимает
      сам текст (замер колонки) и 80px остаётся зазором. Блок уже
@@ -2687,7 +2837,7 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
        и отбирала ширину у фото */
     /* Доли, а не пиксели: жёсткие 560px+652px давали горизонтальную
        прокрутку на экранах уже 1212 */
-    grid-template-columns: minmax(0, 560fr) minmax(0, 652fr);
+    grid-template-columns: minmax(0, 518fr) minmax(0, 694fr);
     column-gap: 0;
     max-width: 1212px;
     /* Left 100px при кадре 1440, как у контейнера «Наших домиков».
@@ -2701,7 +2851,7 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
        колонка в макете занимает 647 из 800 — запас на перенос есть */
     /* Правленый макет 04.09: фото 560×700 (было 800). 48.6vw даёт
        ровно 700 при 1440 */
-    block-size: clamp(420px, 48.6vw, 700px);
+    block-size: clamp(420px, 44.93vw, 647px);
   }
   .about__text p {
     font-size: 1.25rem;      /* 20px, инспектор */
@@ -2718,7 +2868,7 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   height: 100%;
   /* 800px — высота фото по инспектору (Rectangle 27). Ниже 1440
      ужимается пропорционально: 800/1440 = 55.5vw. */
-  min-height: clamp(420px, 48.6vw, 700px);
+  min-height: clamp(420px, 44.93vw, 647px);
   object-fit: cover;
   /* Созвон 04.09: фотографии больше не прилипают к краям кадра и
      скругляются со всех сторон на 20px — «они у нас не крепятся
@@ -2749,11 +2899,11 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
      800px секции и распирал её до 882 */
   /* Правленый макет: текстовая колонка начинается на 27px ниже верха
      фото (Top 947 против 920), внутренний зазор блоков 60px */
-  .about__panel { padding: 27px 0 0 80px; }
+  .about__panel { padding: 0 0 0 80px; }
   /* Зазор 60 в макете стоит между текстовым блоком и рядом кнопок,
      а не между абзацами: 647 = 535 текста + 60 + 52 кнопки. Сплошной
      gap:60 распускал колонку до 808 и она вылезала из секции. */
-  .about__text .split__actions { margin-top: 60px; }
+  .about__text .split__actions { margin-top: 65px; }
   .about__text { max-width: 572px; }
   /* Замер десктопа: «О нас» → текст 40, между абзацами 40,
      от текста до ряда кнопок 60 (правило выше). */
@@ -2774,7 +2924,7 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   /* Замер десктопа: от низа блока «О нас» (фото/кнопки) до верхней
      кавычки 218, от нижней кавычки до фрейма слогана 153. Нижняя
      кавычка выступает на 60px ниже фото, поэтому здесь 153, а не 213. */
-  .quote { margin-block: 218px 153px; }
+  .quote { margin-block: 218px 119.35px; }
   /* 58 к 42 — доли из макета. Раньше здесь стояло 1fr к 42fr, то есть
      текст получал одну долю против сорока двух и схлопывался в столбик
      по одному слову. */
@@ -2848,7 +2998,7 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
     margin: 0;
   }
   .quote__mark--open { left: -58px; top: -44px; right: auto; bottom: auto; }
-  .quote__mark--close { left: 602px; top: 431px; right: auto; bottom: auto; }
+  .quote__mark--close { left: 602px; top: 371px; right: auto; bottom: auto; }
 }
 /* Лесенка: каждый следующий абзац сдвинут правее предыдущего.
    Только на широких экранах: на мобильном сдвиг плюс ширина строки
@@ -2987,6 +3137,9 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
 .house__media::after {
   content: "";
   grid-area: 1 / 1;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
 }
 
@@ -3263,7 +3416,7 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
 /* Контурная кнопка-пилюля терракотой — «Больше интересных мест рядом».
    Инспектор (Frame 2087326585): 443×52, радиус 100, рамка 1px #9B5026,
    поля 14/40, зазор до стрелки 10px. */
-.btn--ghost {
+.nearby-more {
   background: transparent;
   border: 1px solid var(--c-terra);
   border-radius: 100px;
@@ -3304,11 +3457,14 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   .place__description br { display: none; }
   .place__title { font-size: 30px; line-height: 34px; }
 }
+@media (min-width: 700px) and (max-width: 1279px) {
+  .place__description br { display: initial; }
+}
 @media (max-width: 420px) {
   .place__title { font-size: 32px; line-height: 36px; }
 }
-.btn--ghost { transition: background-color 0.2s ease, color 0.2s ease; }
-.btn--ghost:hover { background: var(--c-terra); color: var(--c-cream); }
+.nearby-more { transition: background-color 0.2s ease, color 0.2s ease; }
+.nearby-more:hover { background: var(--c-terra); color: var(--c-cream); }
 
 /* ---------- Аккордеон вопросов ---------- */
 .faq { display: grid; gap: 20px; }  /* зазор плашек, замер инспектора */
@@ -3949,7 +4105,7 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
    радиальный градиент по тексту, из инспектора:
    radial-gradient(53.36% 122.5% at 46.64% -0.53%, #6A6C54 0%, #969044 100%).
    Начертание 700 у Etude Noire в проекте есть, подделывать нечего. */
-.searchbar__date-mobile, .home-mobile-copy, .header__phone--fallback,
+.searchbar__date-mobile, .home-mobile-copy,
 .mobile-catalog-services, .mobile-calendar-next, .mobile-gallery-more { display: none; }
 .hero__title {
   font-family: var(--font-heading);
@@ -4063,7 +4219,7 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 .header__paw-wrap { position: relative; display: inline-flex; }
 .header__paw-note {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 14px);
   left: 50%;
   transform: none;
   z-index: 5;
@@ -4630,6 +4786,9 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   line-height: 27px;
   color: var(--text);
 }
+@media (min-width: 1280px) {
+  .page-house .amenity-tag:nth-child(6) { padding-inline: 10px; white-space: nowrap; }
+}
 
 /* ---------- Развёрнутое описание ----------
    Оба состояния занимают контейнер 1240. Колонки по 320px
@@ -4751,10 +4910,10 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   gap: 16px;
   margin: 0;
 }
-.page-house .reviews__media { height: 220px; border-radius: 20px; overflow: hidden; }
+.page-house .reviews__media { height: 220px; margin-bottom: 0; border-radius: 20px; overflow: hidden; }
 .page-house .reviews__media img { width: 100%; height: 100%; object-fit: cover; }
 .page-house .reviews__text { margin: 0; }
-.page-house .reviews__text p { margin: 0; font-size: 18px; line-height: 22px; color: var(--text); }
+.page-house .reviews__text p { margin: 0; font-size: 18px; line-height: 22px; color: var(--text); white-space: pre-line; }
 .page-house .reviews__author {
   margin: 0;
   font-weight: 500;
@@ -4762,6 +4921,13 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   line-height: 24px;
   text-align: right;
   color: var(--text);
+}
+@media (min-width: 700px) and (max-width: 1099px) {
+  .page-house .reviews { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 700px) and (max-width: 1279px) {
+  .page-house .reviews__item { min-width: 0; }
+  .page-house .reviews__media picture { width: 100%; }
 }
 
 /* ---------- Узкие экраны ----------
@@ -4786,6 +4952,9 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   .page-house .equipment__columns { flex-direction: column; gap: 32px; }
   .page-house .equipment__column { width: 100%; }
   .page-house .reviews { grid-template-columns: 1fr; }
+}
+@media (min-width: 768px) and (max-width: 899px) {
+  .page-house .amenity-tags { grid-template-columns: 1fr; }
 }
 
 body.page-house main > .house-title:first-child { padding-top: 198.91px; }
@@ -4813,6 +4982,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 
 .page-house .chip .house-icon--sofa_bed { width: 36px; height: 25px; }
 .page-house .chip .house-icon--bunk_bed { width: 26px; height: 23px; }
+.page-house .chip .house-icon--bed { width: 26px; height: 23px; }
 .page-house .house-icon { object-fit: contain; flex-shrink: 0; }
 
 .page-house .house-mosaic--empty { height: 365.21px; }
@@ -4984,6 +5154,21 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 }
 @media (min-width: 1280px) {
   .page-promotions main > .section:last-child .section__title { line-height: 95px; margin-bottom: 50px; }
+}
+
+/* От последней плашки до логотипа в макетах: 160 px у каталога/акций,
+   100 px у домика. Сжатый промежуток перед иконками компенсируется
+   исходными 58 px перед нижней строкой — координаты обеих групп совпадают. */
+@media (min-width: 900px) {
+  .page-houses .footer, .page-promotions .footer { padding-top: 160px; }
+  .page-house .footer { padding-top: 100px; }
+  .page-houses .footer { padding-bottom: 15px; }
+  :is(.page-promotions, .page-house) .footer { padding-bottom: 14px; }
+  :is(.page-houses, .page-promotions, .page-house) .footer__brand .socials { margin-top: -21px; }
+  :is(.page-houses, .page-promotions, .page-house) .footer__legal { margin-top: 58px; }
+  .page-house--domik-1 .house-about-section,
+  .page-house--domik-4 .house-about-section { padding-bottom: 39.77px; }
+  .page-house .house-reviews-section { padding-bottom: 18px; }
 }
 
 .faq__answer p { margin: 0; }

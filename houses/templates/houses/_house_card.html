@@ -13,7 +13,7 @@
           {% for image in slides %}
             <div class="house__slide{% if forloop.first %} is-active{% endif %}"
                  {% if not forloop.first %}aria-hidden="true"{% endif %}>
-              {% picture image preset="card" alt=house.title %}
+              {% picture image preset="house_card" alt=house.title %}
             </div>
           {% endfor %}
         </div>

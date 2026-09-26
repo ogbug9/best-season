@@ -102,7 +102,10 @@ class HouseIndexPage(Page):
         services = Service.objects.filter(is_published=True)
         context["services"] = services
         context["hourly_services"] = services.filter(is_hourly=True)
-        context["tile_services"] = services.filter(is_hourly=False)
+        context["tile_services"] = services.filter(
+            is_hourly=False,
+            slug__in=("arenda-sapov", "master-klassy", "fotosessii", "arenda-velosipedov"),
+        )
         # Тот же аккордеон, что на главной — набор вопросов общий
         from core.models import FaqItem, TerritoryItem, TerritoryPage
 
@@ -113,7 +116,9 @@ class HouseIndexPage(Page):
         context['mobile_services'] = [mobile_tiles[title] for title in mobile_titles if title in mobile_tiles]
         context['mobile_services_page'] = TerritoryPage.objects.live().first()
 
-        context["faq"] = FaqItem.objects.filter(is_published=True, show_on_home=True)
+        from core.faq_sets import CATALOG_FAQ, page_faq
+
+        context["faq"] = page_faq(CATALOG_FAQ)
         return context
 
 
@@ -294,15 +299,20 @@ class HousePage(Page):
 
     @property
     def mosaic_images(self):
-        """Кадры мозаики: обложка плюс галерея, без повторов."""
+        """Кадры мозаики страницы: первые пять фото галереи, без повторов.
+
+        Обложка карточки может отличаться от крупного кадра страницы.
+        """
         if not self.pk:
             return []
-        images = [self.hero_image] if self.hero_image else []
+        images = []
         for item in self.gallery_images.all():
             if item.image and item.image not in images:
                 images.append(item.image)
             if len(images) >= self.MOSAIC_IMAGES:
                 break
+        if not images and self.hero_image:
+            images.append(self.hero_image)
         return images
 
     @property

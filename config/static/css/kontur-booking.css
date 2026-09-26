@@ -206,8 +206,12 @@ body[data-modal-open] > .react-ui [data-tid="DateRangePicker__root"] [data-tid="
    Палитра сайта: кремовый #F7F0E6, плашки #E6DFD1, терракота #9B5026,
    олива #847F57, текст #494949, выделение #FFF0E4 / #FFCDA6.
    ========================================================================= */
+/* Живой SDK ставит на портал data-k-brand/data-k-accent и задаёт по ним свои
+   токены (специфичность 0,2,0) — поэтому селекторы с запасом по весу. */
 .booking-system,
-body > .react-ui {
+body > .react-ui,
+:is(.booking-system, body > .react-ui)[data-k-brand][data-k-accent],
+:is(.booking-system, body > .react-ui) [data-k-brand][data-k-accent] {
   --k-color-shape-bold-warning: #9b5026;
   --k-color-shape-bold-warning-hover: #843f1b;
   --k-color-shape-bold-warning-pressed: #6f3515;
@@ -390,6 +394,8 @@ body > .react-ui [data-tid="ModalHeader__root"] {
 }
 body > .react-ui [data-tid="ModalHeader__root"] :not(svg, path) { font-family: inherit !important; }
 body > .react-ui [data-tid="modal-close"] {
+  box-sizing: border-box !important;
+  border: 0 !important;
   width: 50px !important;
   height: 50px !important;
   border-radius: 14px !important;

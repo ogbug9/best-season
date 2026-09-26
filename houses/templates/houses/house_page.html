@@ -8,7 +8,7 @@
   (п. 8 ТЗ).
 {% endcomment %}
 
-{% block body_class %}page-house{% endblock %}
+{% block body_class %}page-house page-house--{{ page.slug }}{% endblock %}
 
 {% block og_image %}
   {% if page.hero_image %}
@@ -63,7 +63,7 @@
         <li class="house-mosaic__item gallery__item">
           <a class="house-mosaic__link gallery__link" href="{{ full.url }}"
              data-gallery-item data-full="{{ full.url }}" data-caption="{{ page.title }}">
-            {% picture image preset="gallery" alt=page.title %}
+            {% picture image preset="mosaic" alt=page.title %}
             {% if forloop.last %}
               <span class="house-mosaic__more">{% house_icon "camera" %}Смотреть</span>
             {% endif %}
@@ -194,7 +194,7 @@
         <li class="reviews__item">
           {% if review.image %}
             <div class="reviews__media">
-              {% picture review.image preset="card" alt=review.author_name %}
+              {% picture review.image preset="review" alt=review.author_name %}
             </div>
           {% else %}
             <div class="reviews__media" aria-hidden="true"></div>

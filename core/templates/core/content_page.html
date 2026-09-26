@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags media_tags %}
+{% load wagtailcore_tags media_tags legal_docs %}
 
 {% block content %}
 <section class="section page-head">
@@ -15,7 +15,17 @@
 </section>
 {% endif %}
 
-{% if page.body %}
+{% legal_pdf_url page.slug as legal_pdf %}
+{% if legal_pdf %}
+<section class="section">
+  <div class="container container--narrow prose">
+    <p><a href="{{ legal_pdf }}" target="_blank" rel="noopener">Открыть документ PDF</a></p>
+    <object data="{{ legal_pdf }}" type="application/pdf" width="100%" height="800" aria-label="{{ page.title }}">
+      <p>Для просмотра документа <a href="{{ legal_pdf }}">откройте PDF</a>.</p>
+    </object>
+  </div>
+</section>
+{% elif page.body %}
 <section class="section">
   <div class="container container--narrow prose">{{ page.body|richtext }}</div>
 </section>

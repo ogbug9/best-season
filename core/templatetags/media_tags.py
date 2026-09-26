@@ -19,6 +19,10 @@ PRESETS = {
     # имя: (соотношение сторон ш/в, ширины, значение sizes)
     "hero":    (16 / 9, (480, 768, 1024, 1440, 1920), "100vw"),
     "card":    (3 / 2, (360, 480, 768), "(min-width: 900px) 380px, (min-width: 600px) 50vw, 100vw"),
+    "house_card": (61 / 50, (360, 610, 768, 1220), "(min-width: 900px) 610px, (min-width: 600px) 50vw, 100vw"),
+    "mosaic":  (None, (360, 500, 768, 1024), "(min-width: 900px) 500px, 100vw"),
+    "review":  (397 / 220, (397, 794), "(min-width: 900px) 397px, 100vw"),
+    "promo":   (360 / 220, (360, 480, 768), "(min-width: 900px) 360px, (min-width: 600px) 50vw, 100vw"),
     "gallery": (4 / 3, (480, 768, 1024, 1440), "(min-width: 900px) 800px, 100vw"),
     "square":  (1, (240, 360, 480), "(min-width: 600px) 240px, 40vw"),
 }
@@ -41,8 +45,7 @@ def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=
     fallback = None
 
     for width in widths:
-        height = max(1, round(width / ratio))
-        spec = f"fill-{width}x{height}"
+        spec = f"fill-{width}x{max(1, round(width / ratio))}" if ratio else f"width-{width}"
         try:
             webp = image.get_rendition(f"{spec}|format-webp")
             jpeg = image.get_rendition(f"{spec}|format-jpeg")

@@ -32,7 +32,7 @@ def icon(name, css_class="icon"):
 @register.simple_tag
 def house_icon(name):
     """Иконки страницы дома из присланного макета."""
-    if name not in {"sofa_bed", "bunk_bed", "layout", "area", "capacity",
+    if name not in {"sofa_bed", "bunk_bed", "bed", "layout", "area", "capacity",
                     "guest", "moon", "calendar", "camera"}:
         return icon(name)
     return mark_safe(
