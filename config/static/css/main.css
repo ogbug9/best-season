@@ -3008,6 +3008,9 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   font-size: 1.25rem;   /* 20px, инспектор */
   line-height: 1.2;     /* 24px: абзацы 120/96/96 = 5/4/4 строки */
 }
+/* Общий p + p добавляет ещё 20px поверх gap у цитаты. Из-за этого
+   закрывающая кавычка пересекает третью строку вместо конца цитаты. */
+@media (min-width: 900px) { .page-home .quote__para + .quote__para { margin-top: 0; } }
 @media (min-width: 900px) {
   /* Сдвиг больше не нужен: абзацы выровнены по правому краю фрейма */
   .quote__para { margin-left: 0; }
@@ -5009,6 +5012,20 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-home .quote__text { width: auto; height: auto; margin-left: 0; }
   .page-home .quote__mark--open { left: -40px; }
   .page-home .quote__mark--close { left: auto; right: 0; top: auto; bottom: -95px; }
+}
+@media (min-width: 900px) and (max-width: 1279px) {
+  /* На промежуточной ширине текст «О нас» выше прежней фиксированной
+     секции; естественная высота не даёт цитате наехать на этот текст. */
+  .page-home .about { block-size: auto; min-block-size: clamp(420px, 44.93vw, 647px); }
+  .page-home .about__media { align-self: start; height: clamp(420px, 44.93vw, 647px); }
+  .page-home .about__media picture, .page-home .about__media img { height: 100%; }
+  .page-home .about__text .section__title { margin-bottom: 24px; }
+  .page-home .about__text > p:not(.split__actions) { font-size: 16px; line-height: 22px; }
+  .page-home .about__text > p:not(.split__actions) + p:not(.split__actions) { margin-top: 24px; }
+  .page-home .about__text .split__actions { margin-top: 32px; }
+  .page-home .quote { margin-block: 80px; }
+  .page-home .quote__media { align-self: start; }
+  .page-home .quote__mark--close { right: -16px; bottom: -40px; }
 }
 
 /* Состояния карточек территории. Статика — чистый кадр с заголовком;
