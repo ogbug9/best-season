@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags wagtailimages_tags media_tags nearby_tags territory_tags layout_tags %}
+{% load static wagtailcore_tags media_tags nearby_tags territory_tags layout_tags %}
 
 {% comment %}
   Каталог домов. Карточка повторяет карточку главной (п. 9.2 ТЗ — единый
@@ -11,8 +11,7 @@
 
 {% block og_image %}
   {% if page.hero_image %}
-    {% image page.hero_image fill-1200x630 as og %}
-    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og.url }}">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ page.hero_image.file.url }}">
   {% endif %}
 {% endblock %}
 

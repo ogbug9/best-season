@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags wagtailimages_tags media_tags icon_tags houses_tags layout_tags %}
+{% load static wagtailcore_tags media_tags icon_tags houses_tags layout_tags %}
 
 {% comment %}
   Страница дома. Порядок блоков — по макету «Первый домик»: заголовок,
@@ -12,8 +12,7 @@
 
 {% block og_image %}
   {% if page.hero_image %}
-    {% image page.hero_image fill-1200x630 as og %}
-    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og.url }}">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ page.hero_image.file.url }}">
   {% endif %}
 {% endblock %}
 
@@ -59,10 +58,9 @@
     <h2 class="visually-hidden">Фотографии домика</h2>
     <ul class="house-mosaic gallery" data-gallery>
       {% for image in mosaic %}
-        {% image image width-1600 as full %}
         <li class="house-mosaic__item gallery__item">
-          <a class="house-mosaic__link gallery__link" href="{{ full.url }}"
-             data-gallery-item data-full="{{ full.url }}" data-caption="{{ page.title }}">
+          <a class="house-mosaic__link gallery__link" href="{{ image.file.url }}"
+             data-gallery-item data-full="{{ image.file.url }}" data-caption="{{ page.title }}">
             {% picture image preset="mosaic" alt=page.title %}
             {% if forloop.last %}
               <span class="house-mosaic__more">{% house_icon "camera" %}Смотреть</span>
@@ -76,10 +74,9 @@
        видно: показывать 15 плиток макет не просит. {% endcomment %}
     <ul class="house-mosaic__rest" hidden>
       {% for item in page.gallery_images.all %}
-        {% image item.image width-1600 as full %}
         <li class="gallery__item gallery__item--rest">
-          <a class="gallery__link" href="{{ full.url }}" data-gallery-item
-             data-full="{{ full.url }}" data-caption="{{ item.caption|default:page.title }}">
+          <a class="gallery__link" href="{{ item.image.file.url }}" data-gallery-item
+             data-full="{{ item.image.file.url }}" data-caption="{{ item.caption|default:page.title }}">
             {{ item.caption|default:page.title }}
           </a>
         </li>

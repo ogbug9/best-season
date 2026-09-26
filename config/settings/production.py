@@ -2,6 +2,10 @@ from .base import *
 
 DEBUG = False
 
+# Wagtail renditions are expensive to create on a cold /data volume. Generating
+# several variants for every photo while rendering a page times out Gunicorn.
+GENERATE_IMAGE_RENDITIONS_ON_REQUEST = False
+
 # HTTPS с автопродлением — Amvera выдаёт SSL на своём домене, здесь только заголовки (п.10 ТЗ).
 SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=True, cast=bool)
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags wagtailimages_tags media_tags territory_tags nearby_tags layout_tags %}
+{% load static wagtailcore_tags media_tags territory_tags nearby_tags layout_tags %}
 
 {% comment %}
   Главная. Порядок блоков — по макету Figma, канвас SITE DESKTOP
@@ -14,8 +14,7 @@
 {% block og_image %}
   {% with first=page.slides.first %}
     {% if first %}
-      {% image first.image fill-1200x630 as og %}
-      <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og.url }}">
+      <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ first.image.file.url }}">
     {% endif %}
   {% endwith %}
 {% endblock %}
@@ -25,19 +24,12 @@
     Предзагрузка первого кадра героя. Это элемент LCP, а он предмет
     приёмки (п. 1.2 ТЗ, ≤2,5 с). Без preload браузер находит картинку
     только после разбора CSS, и замер уходит к границе нормы.
-    imagesrcset повторяет набор из тега picture, чтобы браузер выбрал
-    ту же ширину и не скачал файл дважды.
+    В production picture использует тот же исходный файл: сервер не строит
+    варианты Wagtail во время ответа на первый запрос.
   {% endcomment %}
   {% with first=page.slides.first %}
     {% if first %}
-      {% image first.image fill-768x432 format-webp as w768 %}
-      {% image first.image fill-1024x576 format-webp as w1024 %}
-      {% image first.image fill-1440x810 format-webp as w1440 %}
-      {% image first.image fill-1920x1080 format-webp as w1920 %}
-      <link rel="preload" as="image" type="image/webp"
-            href="{{ w1024.url }}"
-            imagesrcset="{{ w768.url }} 768w, {{ w1024.url }} 1024w, {{ w1440.url }} 1440w, {{ w1920.url }} 1920w"
-            imagesizes="100vw" fetchpriority="high">
+      <link rel="preload" as="image" href="{{ first.image.file.url }}" fetchpriority="high">
     {% endif %}
   {% endwith %}
 {% endblock %}

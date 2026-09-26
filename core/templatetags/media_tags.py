@@ -6,6 +6,7 @@
 """
 
 from django import template
+from django.conf import settings
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
@@ -40,6 +41,20 @@ def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=
 
     ratio, widths, default_sizes = PRESETS.get(preset, PRESETS["card"])
     sizes = sizes or default_sizes
+
+    # On the small production container, building all WebP/JPEG srcset variants
+    # during the first page request can exceed Gunicorn's 120-second timeout.
+    # Serve the existing upload until renditions can be prepared outside requests.
+    if not getattr(settings, "GENERATE_IMAGE_RENDITIONS_ON_REQUEST", True):
+        alt_text = escape(alt if alt is not None else getattr(image, "title", ""))
+        class_attr = f' class="{escape(css_class)}"' if css_class else ""
+        return mark_safe(
+            "<picture>"
+            f'<img src="{escape(image.file.url)}"'
+            f' width="{image.width}" height="{image.height}"'
+            f' alt="{alt_text}" loading="{escape(loading)}" decoding="async"{class_attr}>'
+            "</picture>"
+        )
 
     webp_srcset, jpeg_srcset = [], []
     fallback = None
