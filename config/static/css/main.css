@@ -380,7 +380,10 @@ body {
 .footer__legal {
   margin-top: var(--s-6);
   padding-top: var(--s-5);
-  border-top: 1px solid var(--c-dark-soft);
+  border-top: 1px solid transparent;
+  background: linear-gradient(90deg,
+    rgba(73, 73, 73, .1), rgba(73, 73, 73, .5) 50%,
+    rgba(73, 73, 73, .1)) center top / min(1200px, 100%) 1px no-repeat;
   font-size: 0.875rem;
 }
 

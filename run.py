@@ -52,6 +52,9 @@ run("manage.py", "seed_pages")
 # Наполняет справочники текстами из макета. Тоже идемпотентно: то, что
 # уже заведено, не трогается.
 run("manage.py", "seed_content")
+# Фото, галереи, три кадра первого экрана и отзывы из Desktop.svg. Команда
+# применяет набор один раз; дальнейшие редакторские правки не перезаписывает.
+run("manage.py", "apply_desktop_reference", "--if-not-applied")
 run("manage.py", "collectstatic", "--noinput")
 
 print("[start] запускаю gunicorn", flush=True)
