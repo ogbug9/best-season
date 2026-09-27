@@ -8,6 +8,102 @@
    Виджет Контура подключается отдельно в Фазе 7.
 */
 
+/* ---------- Переход с первого экрана главной ---------- */
+(function () {
+  "use strict";
+
+  if (!document.body.classList.contains("page-home")) return;
+  var hero = document.querySelector(".hero");
+  var next = document.querySelector(".home-after-hero");
+  if (!hero || !next) return;
+
+  var sliding = false;
+  var slideStartedAt = 0;
+  var slideReleaseTimer = null;
+  var touchStart = null;
+  var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function targetFor(direction) {
+    // Если содержимое первого экрана выше окна, оставляем обычную прокрутку:
+    // прыжок иначе скрыл бы часть текста на небольшом телефоне.
+    if (hero.getBoundingClientRect().height > window.innerHeight + 2) return null;
+    var boundary = next.getBoundingClientRect().top + window.scrollY;
+    var y = window.scrollY;
+    if (direction > 0 && y < boundary - 2) return boundary;
+    if (direction < 0 && y > 1 && y <= boundary + Math.min(120, window.innerHeight * 0.15)) return 0;
+    return null;
+  }
+
+  function scheduleRelease() {
+    window.clearTimeout(slideReleaseTimer);
+    var now = window.performance.now();
+    var delay = Math.max(slideStartedAt + 650, now + 250) - now;
+    slideReleaseTimer = window.setTimeout(function () { sliding = false; }, delay);
+  }
+
+  function slideTo(y) {
+    sliding = true;
+    slideStartedAt = window.performance.now();
+    window.scrollTo({ top: Math.round(y), behavior: reducedMotion.matches ? "instant" : "smooth" });
+    scheduleRelease();
+  }
+
+  function isBlocked(event) {
+    return document.body.hasAttribute("data-modal-open") ||
+      (event.target.closest && event.target.closest("dialog[open], .react-ui"));
+  }
+
+  window.addEventListener("wheel", function (event) {
+    if (event.ctrlKey || event.metaKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || isBlocked(event)) return;
+    if (sliding) { event.preventDefault(); scheduleRelease(); return; }
+    var target = targetFor(Math.sign(event.deltaY));
+    if (target === null) return;
+    event.preventDefault();
+    slideTo(target);
+  }, { passive: false });
+
+  window.addEventListener("touchstart", function (event) {
+    if (event.touches.length !== 1 || isBlocked(event) ||
+        (targetFor(1) === null && targetFor(-1) === null)) return;
+    touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+  }, { passive: true });
+
+  window.addEventListener("touchmove", function (event) {
+    if (!touchStart || event.touches.length !== 1) return;
+    var dx = touchStart.x - event.touches[0].clientX;
+    var dy = touchStart.y - event.touches[0].clientY;
+    if (Math.abs(dy) >= 32 && Math.abs(dy) > Math.abs(dx) &&
+        (sliding || targetFor(Math.sign(dy)) !== null) && event.cancelable) {
+      event.preventDefault();
+    }
+  }, { passive: false });
+
+  window.addEventListener("touchend", function (event) {
+    if (!touchStart || !event.changedTouches.length) return;
+    var dx = touchStart.x - event.changedTouches[0].clientX;
+    var dy = touchStart.y - event.changedTouches[0].clientY;
+    touchStart = null;
+    if (sliding || Math.abs(dy) < 32 || Math.abs(dy) <= Math.abs(dx)) return;
+    var target = targetFor(Math.sign(dy));
+    if (target !== null) slideTo(target);
+  }, { passive: true });
+  window.addEventListener("touchcancel", function () { touchStart = null; }, { passive: true });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || isBlocked(event) ||
+        (event.target.closest && event.target.closest("a, button, input, select, textarea, summary, [contenteditable]"))) return;
+    var direction = 0;
+    if (event.key === "ArrowDown" || event.key === "PageDown" || event.key === " ") direction = event.shiftKey ? -1 : 1;
+    if (event.key === "ArrowUp" || event.key === "PageUp") direction = -1;
+    if (!direction) return;
+    if (sliding) { event.preventDefault(); scheduleRelease(); return; }
+    var target = targetFor(direction);
+    if (target === null) return;
+    event.preventDefault();
+    slideTo(target);
+  });
+})();
+
 /* ---------- Липкая кнопка бронирования ----------
    Точка входа №6 из таблицы п. 5.1 ТЗ: появляется после прокрутки первого экрана. */
 (function () {

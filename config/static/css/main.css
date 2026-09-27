@@ -2606,17 +2606,10 @@ body[data-modal-open] {
    Главная: блоки по макету SITE DESKTOP
    ========================================================================= */
 
-/* Первый экран главной пролистывается слайдом: прокрутка «доводит»
-   его до конца и ставит следующий блок в начало экрана, поэтому две
-   фотографии не встречаются посреди кадра. Точки притяжения стоят
-   только на этих двух блоках — остальная страница прокручивается как
-   обычно. proximity, а не mandatory: с mandatory браузер перехватывает
-   и короткие жесты по всей длине страницы. */
-/* Тип притяжения задаётся прокручиваемому элементу — это <html>, а не
-   <body>: с body браузер его не подхватывает. */
-html:has(> body.page-home) { scroll-snap-type: y proximity; }
-.page-home .hero { scroll-snap-align: start; }
-.page-home .about { scroll-snap-align: start; scroll-snap-stop: always; }
+/* Один жест между тёмным первым экраном и светлым контентом обрабатывает
+   site.js. CSS scroll-snap оставлял короткий жест на месте, а средний —
+   между двумя секциями; после перехода остальная страница прокручивается
+   свободно. */
 /* Секции задают только локальные координаты. Общая изоляция удерживает
    декор позади всего контента, включая элементы соседних секций. */
 .home-after-hero {
@@ -2683,9 +2676,12 @@ html:has(> body.page-home) { scroll-snap-type: y proximity; }
   .page-home .home-faq-background-anchor > .yandex-reviews { background: transparent; }
   /* Старый слой «О нас» остаётся только для мобильной версии. */
   .page-home .about__media > .home-background { display: none; }
-  /* clip, а не hidden: не создаёт прокрутку. Сверху срезает часть слоя
-     «О нас», заходящую на первый экран, — в макете её так же закрывает фото. */
-  .page-home .home-after-hero { position: relative; overflow: clip; }
+  /* Боковой выход декора не создаёт прокрутку; по вертикали FAQ должен
+     продолжаться за границу main и под прозрачным футером. */
+  .page-home .home-after-hero { position: relative; overflow-x: clip; overflow-y: visible; }
+  /* Раньше общий clip также скрывал часть фонового слоя над первым экраном.
+     Ограничиваем только верх этого изображения, не нижнюю границу FAQ. */
+  .page-home .home-bg__layer--about { clip-path: inset(753px 0 0); }
   :is(.page-home, .page-houses, .page-promotions) .footer { position: relative; isolation: isolate; overflow: clip; }
   /* Секция территории от старой заглушки узора обрезала всё по своему
      краю (overflow: hidden) — слой территории обрывался прямыми линиями
