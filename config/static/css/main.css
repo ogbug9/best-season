@@ -4206,6 +4206,21 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 @supports not ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
   .hero .searchbar__field { background: rgba(73, 73, 73, 0.55); }
 }
+/* На десктопном снимке стекло матовое и заполнено по всей площади.
+   Фон сайта светлее кадра SVG, поэтому центр 20%, а у контура 30%:
+   радиальная рамка остаётся тонкой, без внешнего ореола. */
+@media (min-width: 700px) {
+  @supports ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
+    .page-home .hero .searchbar__field {
+      background:
+        radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.2) 65%, rgba(255, 255, 255, 0.3) 100%) padding-box,
+        radial-gradient(ellipse at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%) border-box;
+      box-shadow: none;
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+    }
+  }
+}
 .hero .searchbar__field:nth-child(3) { justify-content: flex-start; }
 .hero .searchbar__cta {
   width: 254px;
