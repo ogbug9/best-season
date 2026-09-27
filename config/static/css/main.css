@@ -4182,15 +4182,14 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   font-weight: 400;
   font-size: 1rem;
 }
-/* Матовое стекло — только у плашек «Дата въезда / Дата выезда / Гости»
-   первого экрана главной. Размытие подложки даёт читаемость белого
-   текста на любом кадре. */
+/* Матовое стекло плашек первого экрана: радиальная белая заливка
+   от 0% в центре до 30% по краям. */
 .hero .searchbar__field {
   height: 46px;
   min-height: 0;
   justify-content: center;
   padding: 14px 60px 14px 32px;
-  background: rgba(255, 255, 255, 0.3);
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%);
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   color: var(--c-cream);
@@ -4422,6 +4421,7 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 }
 .page-house .calendar__arrow--prev { left: 0; }
 .page-house .calendar__arrow--next { right: 0; }
+.page-house .calendar__arrow.mobile-calendar-next { display: none; }
 /* Стрелка нарисована рамкой: ради двух треугольников не стоит грузить
    файл, а в спрайте иконок навигации нет — она чисто декоративная. */
 .page-house .calendar__arrow::before {
