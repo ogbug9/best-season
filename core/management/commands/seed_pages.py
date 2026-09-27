@@ -14,6 +14,9 @@ run.py при старте контейнера.
 чем страница с честной пометкой «текст заказчика».
 """
 
+from urllib.parse import urlsplit
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from wagtail.models import Page
@@ -292,6 +295,7 @@ class Command(BaseCommand):
             return
 
         with transaction.atomic():
+            self.fix_site_hostname(site)
             self.fix_home(home)
             for node in TREE:
                 self.create_node(home, node)
@@ -308,6 +312,17 @@ class Command(BaseCommand):
             f"Страницы: создано {self.created}, уже было {self.skipped}"
             + (" (пробный запуск, ничего не записано)" if self.dry else "")
         )
+
+    def fix_site_hostname(self, site):
+        """Replace the scaffold host so Wagtail sitemap URLs use the public site."""
+        if settings.DEBUG or site.hostname not in {"localhost", "127.0.0.1"}:
+            return
+        public_url = urlsplit(settings.WAGTAILADMIN_BASE_URL)
+        if public_url.scheme != "https" or not public_url.hostname:
+            return
+        site.hostname = public_url.hostname
+        site.port = 443
+        site.save(update_fields=["hostname", "port"])
 
     def fix_home(self, home):
         """Wagtail создаёт главную с названием «Home» — оно и печатается

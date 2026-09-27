@@ -199,6 +199,10 @@ def layout_richtext(value, key):
         plain = unescape(content)
         desktop = layout_lines(plain, key + '_desktop')
         mobile = layout_lines(plain, key + '_mobile')
+        # В мобильном фрейме каталога показан только первый абзац
+        # стандартного вступления; авторский текст оставляем целиком.
+        if key == 'intro' and mobile != plain:
+            mobile = '\n'.join(mobile.splitlines()[:5])
         if desktop == plain and mobile == plain:
             return match[0]
         return match[1] + str(format_html(

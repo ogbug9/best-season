@@ -2858,6 +2858,8 @@ body[data-modal-open] {
   }
 }
 .about__media { position: relative; }
+.about__media .about__mobile-image,
+.quote__media .quote__mobile-image { display: none; }
 .about__media picture, .about__media img, .about__media .ph {
   /* aspect-ratio обязательно сбрасываем: вместе с min-height браузер
      вычисляет из пропорции собственную ширину, и колонка сетки

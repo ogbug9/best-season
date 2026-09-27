@@ -115,7 +115,8 @@
       <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.png' %}" width="2120" height="2152" alt="" loading="lazy">
     </div>
     {% if page.about_image %}
-      {% picture page.about_image preset="gallery" alt=page.about_title %}
+      <img class="about__mobile-image" src="{% static 'img/home-about-mobile.webp' %}" width="586" height="1300" alt="" loading="lazy" decoding="async">
+      {% picture page.about_image preset="mosaic" alt=page.about_title %}
     {% else %}
       <span class="ph" aria-hidden="true"></span>
     {% endif %}
@@ -156,7 +157,8 @@
   </div>
   <div class="quote__media">
     {% if page.quote_image %}
-      {% picture page.quote_image preset="card" alt=page.quote_author %}
+      <img class="quote__mobile-image" src="{% static 'img/home-quote-mobile.webp' %}" width="525" height="700" alt="" loading="lazy" decoding="async">
+      {% picture page.quote_image preset="mosaic" alt=page.quote_author %}
     {% else %}
       <span class="ph" aria-hidden="true"></span>
     {% endif %}

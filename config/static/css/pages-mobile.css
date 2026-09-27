@@ -47,10 +47,10 @@ body.page-promotions main > .offers-section:first-child { padding: 112px 0 32px;
 .page-promotions .promo__title br,
 .page-promotions .promo__text br { display: initial; }
 .page-promotions .promo__book { height: 46.06px; min-height: 0; padding: 13.03px 20px; margin: 0; border-radius: 93.0851px; font-size: 16px; line-height: 20px; font-weight: 400; }
-.page-promotions .offers-section + .section { display: none; }
 
 body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
 .page-house .house-title h1 { font: 500 36px/38px var(--font-heading); text-align: left; }
+.page-house--domik-4 .house-title h1 { font-size: 30px; line-height: 32px; white-space: nowrap; }
 .page-house .booking-panel { padding: 0 0 60px; }
 .page-house .booking-panel > .container { display: flex; flex-direction: column; gap: 20px; }
 .page-house .booking-panel__fields,
@@ -111,7 +111,7 @@ body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
 .page-house .house-about .prose { font-size: 14px; line-height: 17px; }
 .page-house .amenity-tags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .page-house .amenity-tag { min-height: 37px; padding: 10px 16px; font-size: 14px; line-height: 17px; border-radius: 10.6164px; }
-.page-house .equipment-section { padding: 0 0 80px; }
+.page-house .equipment-section { padding: 0 0 60px; }
 .page-house .equipment { padding: 24px 24px 20px; gap: 20px; border-radius: 10px; }
 .page-house .equipment__columns { flex-direction: column; gap: 24px; }
 .page-house .equipment__column { width: 100%; gap: 24px; }
@@ -124,15 +124,18 @@ body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
 .page-house .equipment__toggle { align-self: center; margin: 0; width: 173px; min-height: 40px; height: 40px; padding: 10px 32px; font-size: 16px; line-height: 20px; }
 .page-house .reviews { display: flex; overflow-x: auto; gap: 10px; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .page-house .reviews::-webkit-scrollbar { display: none; }
-.page-house .reviews__item { flex: 0 0 100%; width: 100%; min-width: 0; scroll-snap-align: start; gap: 24px; }
+.page-house .reviews__item { flex: 0 0 100%; width: 100%; min-width: 0; scroll-snap-align: start; gap: 20px; }
 .page-house .reviews__media { height: 194px; }
 .page-house .reviews__text p { font-size: 14px; line-height: 17px; }
 .page-house .reviews__author { font-size: 16px; line-height: 20px; font-weight: 500; }
 .page-house .house-reviews-section { padding-bottom: 32px; }
 .page-house .house-reviews-section .section__title { margin-bottom: 24px; }
+.page-house .house-reviews-section .mobile-carousel-dots { margin-top: 5px; }
+.page-house .footer { margin-top: 4px; }
 
 @media (max-width: 374px) {
   .page-house .house-title h1 { font-size: 30px; }
+  .page-house--domik-4 .house-title h1 { font-size: clamp(24px, 7.5vw, 28px); line-height: 1.08; }
   .page-house .calendar { padding-inline: 16px; }
   .page-house .calendar__day { width: 30px; height: 30px; }
   .page-house .guests { padding-inline: 16px; }
