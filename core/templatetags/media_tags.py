@@ -30,7 +30,8 @@ PRESETS = {
 
 
 @register.simple_tag
-def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=None):
+def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=None,
+            mobile_original=False):
     """Отдаёт <picture> с WebP-источником и JPEG-фолбэком.
 
     loading="eager" ставить только для картинки первого экрана — она
@@ -82,8 +83,13 @@ def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=
     class_attr = f' class="{escape(css_class)}"' if css_class else ""
     # width/height обязательны: без них браузер не резервирует место
     # и уезжает CLS, а он предмет приёмки (п. 1.2, ≤0,1)
+    mobile_source = (
+        f'<source media="(max-width: 699px)" srcset="{escape(image.file.url)}">'
+        if mobile_original else ""
+    )
     html = (
         "<picture>"
+        f'{mobile_source}'
         f'<source type="image/webp" srcset="{", ".join(webp_srcset)}" sizes="{sizes}">'
         f'<img src="{fallback.url}" srcset="{", ".join(jpeg_srcset)}" sizes="{sizes}"'
         f' width="{fallback.width}" height="{fallback.height}"'

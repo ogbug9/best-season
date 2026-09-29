@@ -51,9 +51,9 @@
       <div class="guests" data-guests>
         <h2 class="guests__title">Количество гостей</h2>
 
-        {% include "houses/_guest_counter.html" with key="adults" label="Взрослые" value=quote.adults min=1 max=page.max_adults age=settings.core.SiteSettings.child_free_max_age %}
+        {% include "houses/_guest_counter.html" with key="adults" label="Взрослые" value=quote.adults min=1 max=page.max_adults note=page.extra_guest_fee_note details=page.extra_guest_fee_details %}
         {% include "houses/_guest_counter.html" with key="children" label="Дети" value=quote.children min=0 max=page.max_children age=settings.core.SiteSettings.child_free_max_age %}
-        {% include "houses/_guest_counter.html" with key="pets" label="Питомцы" value=quote.pets min=0 max=page.max_pets note=page.pet_fee_note %}
+        {% include "houses/_guest_counter.html" with key="pets" label="Питомцы" value=quote.pets min=0 max=page.max_pets note=page.pet_fee_note details=page.pet_fee_details %}
 
       </div>
 

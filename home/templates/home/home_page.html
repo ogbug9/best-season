@@ -42,9 +42,9 @@
     {% for slide in page.slides.all %}
       <div class="hero__slide" style="--i: {{ forloop.counter0 }}">
         {% if forloop.first %}
-          {% picture slide.image preset="hero" alt=slide.alt loading="eager" %}
+          {% picture slide.image preset="hero" alt=slide.alt loading="eager" mobile_original=True %}
         {% else %}
-          {% picture slide.image preset="hero" alt=slide.alt %}
+          {% picture slide.image preset="hero" alt=slide.alt mobile_original=True %}
         {% endif %}
       </div>
     {% endfor %}
@@ -227,7 +227,7 @@
           {% endcomment %}
           <li class="mosaic__item mosaic__item--empty"></li>
         {% endif %}
-        <li class="mosaic__item territory-card" tabindex="0">
+        <li class="mosaic__item territory-card{% if item.title == 'Большая беседка' %} territory-card--pavilion{% endif %}" tabindex="0">
           {% if item.image %}
             {% picture item.image preset="mosaic" alt=item.title %}
           {% else %}

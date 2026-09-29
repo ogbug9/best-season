@@ -13,5 +13,7 @@
               aria-label="Добавить: {{ label|lower }}">+</button>
     </span>
   </div>
-  {% if key == "adults" %}<p class="guests__note">Старше {{ age }} лет</p>{% elif key == "children" %}<p class="guests__note">Бесплатно: {{ age }} лет и младше</p>{% elif note %}<p class="guests__note">{{ note }}</p>{% endif %}
+  {% if key == "children" %}<p class="guests__note">Бесплатно: {{ age }} лет и младше</p>{% elif note %}
+    <p class="guests__note">{{ note }}{% if details %} <span class="guests__hint"><button type="button" class="guests__hint-toggle" aria-label="Условия доплаты: {{ label|lower }}" aria-describedby="guests-hint-{{ key }}">i</button><span class="guests__hint-text" id="guests-hint-{{ key }}" role="tooltip">{{ details }}</span></span>{% endif %}</p>
+  {% endif %}
 </div>

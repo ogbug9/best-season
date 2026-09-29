@@ -4,6 +4,7 @@ Runs once after seed_content at deployment. This command assigns reference
 photos and publishes the house reviews transcribed from the supplied design.
 """
 
+from hashlib import sha256
 from pathlib import Path
 
 from django.conf import settings
@@ -22,7 +23,8 @@ from services.models import Service
 
 
 PHOTO_DIR = Path(settings.BASE_DIR) / "config" / "static" / "img" / "design-reference"
-ORIGINAL_PHOTOS = {10: "nearby-konyukhov-original.jpg"}
+HIGH_RES_COVERS = {number: f"house-cover-{number - 21}.webp" for number in (22, 23, 24, 25)}
+ORIGINAL_PHOTOS = {10: "nearby-konyukhov-original.jpg", **HIGH_RES_COVERS}
 
 
 def photo_source(number):
@@ -127,6 +129,28 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        # Обновляем только четыре неизменённых импорта из SVG. Если файл уже
+        # заменён редактором, его содержимое отличается и мы его не трогаем.
+        for number, filename in HIGH_RES_COVERS.items():
+            image = get_image_model().objects.filter(
+                title=f"BS Desktop reference #{number:02d}"
+            ).first()
+            if image is None:
+                continue
+            old_source = PHOTO_DIR / f"ref-{number:02d}.webp"
+            try:
+                with image.file.open("rb") as current:
+                    current_hash = sha256(current.read()).digest()
+            except OSError:
+                continue
+            if current_hash != sha256(old_source.read_bytes()).digest():
+                continue
+            with (PHOTO_DIR / filename).open("rb") as source:
+                image.file.save(filename, File(source), save=False)
+            image.save()
+            image.renditions.all().delete()
+            self.stdout.write(f"Обновлена обложка домика: {number - 21}")
+
         # Весь импорт ниже проходит одной транзакцией. Последний номер
         # появляется в БД только после успешного завершения команды.
         if options["if_not_applied"] and get_image_model().objects.filter(

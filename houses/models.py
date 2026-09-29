@@ -362,17 +362,41 @@ class HousePage(Page):
 
     @property
     def pet_fee_note(self):
-        """Подпись у счётчика питомцев: «Доплата за питомца 1000 ₽».
+        """Краткая подпись у счётчика питомцев с минимальной ставкой.
 
         Ставку берём оттуда же, откуда её берёт расчёт — из настроек
         сайта: подпись и сумма не должны расходиться.
         """
         from houses.booking import rates
 
-        amount = self.pet_fee or rates().pet_small_fee
+        amount = rates().pet_small_fee
         if not amount:
             return ""
-        return f"Доплата за питомца {amount:,} ₽".replace(",", " ")
+        return f"Доплата за питомца от {amount:,} ₽".replace(",", " ")
+
+    @property
+    def pet_fee_details(self):
+        """Полные ставки для подсказки рядом с краткой подписью."""
+        from houses.booking import rates
+
+        price = rates()
+        small = price.pet_small_fee
+        return (
+            f"За проживание с питомцем: {small:,} ₽ за ночь при росте в холке "
+            f"до 45 см; {price.pet_large_fee:,} ₽ за ночь при росте выше 45 см."
+        ).replace(",", " ")
+
+    @property
+    def extra_guest_fee_note(self):
+        from houses.booking import rates
+
+        return f"Доплата за человека {rates().extra_guest_fee:,} ₽".replace(",", " ")
+
+    @property
+    def extra_guest_fee_details(self):
+        from houses.booking import rates
+
+        return f"За каждого платного гостя сверх {rates().guests_included} включённых в цену, за ночь."
 
     def nightly_price(self, day):
         """Цена ночи, начинающейся в этот день.

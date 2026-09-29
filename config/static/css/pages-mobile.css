@@ -84,7 +84,7 @@ body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
 .page-house .booking-summary { order: 4; font-size: 20px; line-height: 24px; gap: 24.71px; }
 .page-house .booking-total { order: 5; margin-top: -6px; font-size: 24px; line-height: 29px; }
 .page-house .booking-error { order: 6; }
-.page-house .booking-submit { order: 7; min-height: 70.18px; height: 70.18px; padding: 20.59px 20px; margin-top: 4px; font-size: 24px; line-height: 29px; }
+.page-house .booking-submit { order: 7; min-height: 70.18px; height: 70.18px; padding: 20.59px 20px; margin-top: 4px; font-size: 24px; line-height: 29px; font-weight: 500; }
 .page-house .house-mosaic-section { padding: 0 0 32px; }
 .page-house .house-mosaic { display: flex; width: 100%; height: 210px; gap: 10px; margin: 0; padding: 0; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .page-house .house-mosaic::-webkit-scrollbar { display: none; }

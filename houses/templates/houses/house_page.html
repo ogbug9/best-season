@@ -136,7 +136,7 @@
         <h2 class="section__title">Удобства</h2>
         <ul class="amenity-tags">
           {% for amenity in page.featured_amenities %}
-            <li class="amenity-tag"><span class="home-desktop-copy">{{ amenity.name|featured_label }}</span><span class="home-mobile-copy">{{ amenity.name|featured_label|layout_lines:"amenity_mobile"|linebreaksbr }}</span></li>
+            <li class="amenity-tag{% if amenity.name == 'Умная колонка Алиса' %} amenity-tag--alice{% endif %}"><span class="home-desktop-copy">{{ amenity.name|featured_label }}</span><span class="home-mobile-copy">{{ amenity.name|featured_label|layout_lines:"amenity_mobile"|linebreaksbr }}</span></li>
           {% endfor %}
         </ul>
       </div>
@@ -216,7 +216,7 @@
 <dialog class="lightbox" data-lightbox aria-label="Просмотр фото">
   <button type="button" class="lightbox__close" data-lightbox-close aria-label="Закрыть">×</button>
   <button type="button" class="lightbox__nav lightbox__nav--prev" data-lightbox-prev aria-label="Предыдущее фото">‹</button>
-  <img class="lightbox__image" data-lightbox-image src="" alt="">
+  <img class="lightbox__image" data-lightbox-image alt="">
   <button type="button" class="lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="Следующее фото">›</button>
   <p class="lightbox__caption" data-lightbox-caption></p>
 </dialog>

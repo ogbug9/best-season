@@ -40,7 +40,7 @@
 
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero { min-height: 570px; height: 570px; padding: 176px 0 0; align-items: start; box-shadow: 0 4px 4px #49494940; }
 .page-home .hero { min-height: 100svh; height: 100svh; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .hero::before { background: rgba(0, 0, 0, .2); }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .hero::before { background: rgba(0, 0, 0, .5); }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero__media::after { background: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero__inner { transform: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .hero__title { margin: 0; font-size: 36px; line-height: 38px; font-weight: 700; }
@@ -58,17 +58,17 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .searchbar__icon { width: 16px; height: 16px; flex-basis: 16px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .sticky-cta { display: none; }
 
-:is(.page-home, .page-houses, .page-promotions, .page-house) .about { position: relative; display: block; margin: 0; min-height: 846px; isolation: isolate; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .about { position: relative; display: block; margin: 0; min-height: 886px; isolation: isolate; }
 /* Мобильное фото и затемнение остаются позади текста; декор продолжает
    фон ниже «О нас» в общем контексте главной. */
 .page-home .about { isolation: auto; }
-.page-home .about__media .home-background .home-background__image--1 { top: 846px; width: 1440px; left: -525px; }
+.page-home .about__media .home-background .home-background__image--1 { top: 886px; width: 1440px; left: -525px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .about__media { position: absolute; inset: 0; z-index: -2; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .about__media :is(picture, img, .ph) { display: block; width: 100%; height: 100%; min-height: 0; border-radius: 0; }
 .page-home .about__media > picture:not(.about__mobile-image) { display: none; }
 .page-home .about__media .about__mobile-image { display: block; object-fit: cover; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .about::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, #0009, #0002 45%, #000b); }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .about__panel { padding: 40px 20px; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .about__panel { padding: 80px 20px 40px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .about__text { max-width: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .about .section__title { margin-bottom: 10px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .about__text .rich-text { display: flex; flex-direction: column; gap: 282px; }
@@ -101,7 +101,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .cards--nearby > .place { flex: 0 0 100%; scroll-snap-align: start; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) #houses { padding-top: 53px; padding-bottom: 47px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .house { aspect-ratio: 350 / 287.39; border-radius: 12.3167px; padding: 18px 18.5px 20px; gap: 20px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .house__title { margin: 0; font-size: 16px; line-height: 20px; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .house__title { margin: 0; font-size: 16px; line-height: 20px; font-weight: 400; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .house__meta { margin: 10px 0 0; font-size: 12px; line-height: 15px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .house__overlay { display: block; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .house__more { position: absolute; right: 0; top: 0; width: 89px; min-height: 24px; height: 24px; border-width: .574165px; border-radius: 12.3167px; padding: 6px 14px; font-size: 10px; line-height: 12px; }
@@ -122,7 +122,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .mosaic__head .section__lead { margin: 0; font-size: 13px; line-height: 16px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .mosaic__item { min-height: 0; aspect-ratio: 170 / 179; border-radius: 6px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .mosaic__item--empty { display: none; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card .mosaic__caption { position: absolute; inset: 0; min-height: 0; justify-content: flex-end; padding: 12px 16px; gap: 0; background: none; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card .mosaic__caption { position: absolute; inset: 0; min-height: 0; justify-content: flex-end; padding: 12px 16px; gap: 0; background: linear-gradient(to bottom, transparent 55%, rgba(0, 0, 0, .48) 100%); }
 /* Затемнение и размытие только по нажатию: в статике плитка — чистый кадр. */
 :is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card:not(.is-open)::after { opacity: 0; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .territory-card.is-open::after { opacity: 1; }
@@ -178,7 +178,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic__text > p:last-child { order: 4; margin: 24px auto 0; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .photo-mosaic__text .btn { width: 177px; min-height: 48px; height: 48px; padding: 14px 40px; font-size: 16px; line-height: 20px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .faq { gap: 10px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house) .faq__item .faq__question { min-height: 37px; padding: 10px; gap: 20px; font-size: 14px; line-height: 17px; font-weight: 500; border-radius: 10px; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .faq__item .faq__question { min-height: 37px; padding: 10px; gap: 20px; font-size: 14px; line-height: 17px; font-weight: 400; border-radius: 10px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .faq__item .faq__question::after { width: 8px; height: 8px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .faq__item .faq__answer { padding: 16px 10px; font-size: 14px; line-height: 20px; }
 
@@ -215,6 +215,51 @@
    его собственные 32. */
 .page-promotions main > .section:last-child { padding-top: 80px; padding-bottom: 0; }
 .page-promotions .footer { margin-top: 80px; }
+
+/* Топографические линии извлечены из четырёх фреймов Mobile (1).svg.
+   Десктопные фоновые слои здесь не масштабируем: у мобильных страниц
+   собственное расположение линий. Сдвиг главной 538px учитывает
+   увеличенный первый экран (570 → 844) и блок «О нас» (+40px). */
+.page-home .home-after-hero {
+  background-image: url('../img/mobile-backgrounds/home-contours.svg');
+  background-repeat: no-repeat;
+  background-position: center -530px;
+  background-size: 390px 6509px;
+}
+.page-home .about__media > .home-background { display: none; }
+.page-houses #main {
+  background: url('../img/mobile-backgrounds/houses-contours.svg') center top / 390px 2781px no-repeat;
+}
+.page-promotions #main {
+  background: url('../img/mobile-backgrounds/promotions-contours.svg') center top / 390px 4381px no-repeat;
+}
+.page-house #main {
+  background: url('../img/mobile-backgrounds/house-contours.svg') center top / 390px 3974px no-repeat;
+}
+.page-home .footer {
+  background-image: url('../img/mobile-backgrounds/home-contours.svg');
+  background-position: center -5644px;
+  background-size: 390px 6509px;
+  background-repeat: no-repeat;
+}
+.page-houses .footer {
+  background-image: url('../img/mobile-backgrounds/houses-contours.svg');
+  background-position: center -1916px;
+  background-size: 390px 2781px;
+  background-repeat: no-repeat;
+}
+.page-promotions .footer {
+  background-image: url('../img/mobile-backgrounds/promotions-contours.svg');
+  background-position: center -3516px;
+  background-size: 390px 4381px;
+  background-repeat: no-repeat;
+}
+.page-house .footer {
+  background-image: url('../img/mobile-backgrounds/house-contours.svg');
+  background-position: center -3109px;
+  background-size: 390px 3974px;
+  background-repeat: no-repeat;
+}
 
 @media (max-width: 374px) {
   :is(.page-home, .page-houses, .page-promotions, .page-house) .header__bar { gap: 10px; }

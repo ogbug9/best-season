@@ -621,11 +621,21 @@ class Command(BaseCommand):
 
         from core.faq_sets import (
             CATALOG_FAQ, PROMOTION_FAQ, PREVIOUS_PROMOTION_ANSWERS,
+            PREVIOUS_PROMOTION_QUESTIONS,
         )
 
         for offset, items in ((100, CATALOG_FAQ), (200, PROMOTION_FAQ)):
             for order, (question, answer) in enumerate(items, start=1):
                 existing = FaqItem.objects.filter(question=question).first()
+                if not existing and question in PREVIOUS_PROMOTION_QUESTIONS:
+                    existing = FaqItem.objects.filter(
+                        question=PREVIOUS_PROMOTION_QUESTIONS[question]
+                    ).first()
+                    if existing:
+                        if not self.dry:
+                            existing.question = question
+                            existing.save(update_fields=["question"])
+                        self.mark(f"вопрос акции, текст с мобильного макета: {question}")
                 if existing:
                     previous = PREVIOUS_PROMOTION_ANSWERS.get(question)
                     if previous and _plain(existing.answer) == _plain(previous):
