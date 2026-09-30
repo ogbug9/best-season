@@ -5087,6 +5087,15 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   height: 100%;
   transition: filter .2s ease;
 }
+/* Кадры в актуальном Desktop Main (7).png: фото не меняем, только
+   выравниваем фокус внутри квадратных плиток. На мобильном свой макет. */
+@media (min-width: 900px) {
+  .page-home .territory-card--sports > picture img { object-position: center bottom; }
+  .page-home .territory-card--sauna > picture img { object-position: center 72%; }
+  .page-home .territory-card--river > picture img { object-position: center 93%; }
+  .page-home .territory-card--pavilion > picture img { object-position: 40% center; }
+  .page-home .territory-card--workshops > picture img { object-position: center 91%; }
+}
 /* В макете наведённой «Большой беседки» зимний кадр из архива владельца. */
 @media (min-width: 900px) and (hover: hover) {
   .territory-card--pavilion::before {

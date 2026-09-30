@@ -227,7 +227,7 @@
           {% endcomment %}
           <li class="mosaic__item mosaic__item--empty"></li>
         {% endif %}
-        <li class="mosaic__item territory-card{% if item.title == 'Большая беседка' %} territory-card--pavilion{% endif %}" tabindex="0">
+        <li class="mosaic__item territory-card{% if item.title == 'Большая беседка' %} territory-card--pavilion{% elif item.title == 'Спортивные игры' %} territory-card--sports{% elif item.title == 'Финская сауна' %} territory-card--sauna{% elif item.title == 'Река "Скнижка"' %} territory-card--river{% elif item.title == 'Мастер-классы' %} territory-card--workshops{% endif %}" tabindex="0">
           {% if item.image %}
             {% picture item.image preset="mosaic" alt=item.title %}
           {% else %}
