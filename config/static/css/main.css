@@ -2711,7 +2711,7 @@ body[data-modal-open] {
     height: var(--h);
     max-width: none;
   }
-  .page-home .home-bg__layer--about     { --x: -43px; --y: -753px; --w: 2124px; --h: 1827px; }
+  .page-home .home-bg__layer--about     { --x: -43px; --y: -721px; --w: 2124px; --h: 1827px; }
   .page-home .home-bg__layer--slogan    { --x: -654px; --y: -294.3px; --w: 1186px; --h: 1332px; }
   .page-home .home-bg__layer--houses    { --x: 908px; --y: -73.13px; --w: 1186px; --h: 1333px; }
   .page-home .home-bg__layer--territory { --x: -583px; --y: -277.13px; --w: 1714px; --h: 2584px; }

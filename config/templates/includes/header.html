@@ -28,21 +28,19 @@
       <nav class="nav nav--desktop" aria-label="Основное меню">
         <ul class="nav__list">
           {% for item in current_site.root_page.get_children.live.in_menu %}
-            {% if item.slug != "o-nas" %}
-              {% with children=item.get_children.live.in_menu %}
-                <li class="nav__item{% if children %} nav__item--has-children{% endif %}">
-                  <a class="nav__link" href="{% pageurl item %}"
-                     {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
-                  {% if children %}
-                    <ul class="nav__dropdown">
-                      {% for child in children %}
-                        <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
-                      {% endfor %}
-                    </ul>
-                  {% endif %}
-                </li>
-              {% endwith %}
-            {% endif %}
+            {% with children=item.get_children.live.in_menu %}
+              <li class="nav__item{% if children %} nav__item--has-children{% endif %}">
+                <a class="nav__link" href="{% pageurl item %}"
+                   {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
+                {% if children %}
+                  <ul class="nav__dropdown">
+                    {% for child in children %}
+                      <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endwith %}
           {% endfor %}
         </ul>
       </nav>
@@ -80,21 +78,19 @@
         <nav class="nav nav--mobile" aria-label="Меню">
           <ul class="nav__list">
             {% for item in current_site.root_page.get_children.live.in_menu %}
-              {% if item.slug != "o-nas" %}
-                <li>
-                  <a class="nav__link" href="{% pageurl item %}"
-                     {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
-                  {% with children=item.get_children.live.in_menu %}
-                    {% if children %}
-                      <ul class="nav__sublist">
-                        {% for child in children %}
-                          <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
-                        {% endfor %}
-                      </ul>
-                    {% endif %}
-                  {% endwith %}
-                </li>
-              {% endif %}
+              <li>
+                <a class="nav__link" href="{% pageurl item %}"
+                   {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
+                {% with children=item.get_children.live.in_menu %}
+                  {% if children %}
+                    <ul class="nav__sublist">
+                      {% for child in children %}
+                        <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endwith %}
+              </li>
             {% endfor %}
           </ul>
         </nav>

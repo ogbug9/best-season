@@ -139,7 +139,7 @@ class ContactsPageTests(TestCase):
 
 
 class ContentPageTests(TestCase):
-    def test_deferred_about_page_is_hidden_without_hiding_children(self):
+    def test_about_page_and_children_are_public_and_linked(self):
         home = Page.objects.get(depth=2)
         about = ContentPage(title="О нас", slug="o-nas", show_in_menus=True)
         home.add_child(instance=about)
@@ -148,15 +148,15 @@ class ContentPageTests(TestCase):
         about.add_child(instance=child)
         child.save_revision().publish()
 
-        self.assertEqual(self.client.get(about.url).status_code, 404)
+        self.assertEqual(self.client.get(about.url).status_code, 200)
         child_response = self.client.get(child.url)
         self.assertEqual(child_response.status_code, 200)
-        self.assertNotIn(f'href="{about.url}"', child_response.content.decode())
+        self.assertIn(f'href="{about.url}"', child_response.content.decode())
         home_page = home.specific
         home_page.about_page = about
         home_page.save(update_fields=["about_page"])
-        self.assertNotIn(f'href="{about.url}"', self.client.get("/").content.decode())
-        self.assertNotIn(b"/o-nas/</loc>", self.client.get("/sitemap.xml").content)
+        self.assertIn(f'href="{about.url}"', self.client.get("/").content.decode())
+        self.assertIn(b"/o-nas/</loc>", self.client.get("/sitemap.xml").content)
 
     def test_legal_page_can_hide_booking_cta(self):
         """На правовых страницах кнопка бронирования неуместна —

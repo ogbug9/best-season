@@ -218,12 +218,12 @@
 
 /* Топографические линии извлечены из четырёх фреймов Mobile (1).svg.
    Десктопные фоновые слои здесь не масштабируем: у мобильных страниц
-   собственное расположение линий. Сдвиг главной 538px учитывает
-   увеличенный первый экран (570 → 844) и блок «О нас» (+40px). */
+   собственное расположение линий. Фон главной сдвинут на 40px вместе
+   с увеличенным блоком «О нас», чтобы не отстать от секций ниже. */
 .page-home .home-after-hero {
   background-image: url('../img/mobile-backgrounds/home-contours.svg');
   background-repeat: no-repeat;
-  background-position: center -530px;
+  background-position: center -490px;
   background-size: 390px 6509px;
 }
 .page-home .about__media > .home-background { display: none; }

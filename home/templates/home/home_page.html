@@ -127,7 +127,7 @@
       {{ page.about_text|richtext|layout_richtext:"about" }}
       <p class="split__actions">
         <button type="button" class="btn btn--primary" data-booking-open data-entry-point="2">Забронировать даты</button>
-        {% if page.about_page and page.about_page.slug != "o-nas" %}
+        {% if page.about_page %}
           <a class="btn btn--outline" href="{% pageurl page.about_page %}">Подробнее</a>
         {% endif %}
       </p>
