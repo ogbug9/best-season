@@ -1,4 +1,5 @@
 from django.db import models
+from django.http import Http404
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
@@ -510,6 +511,16 @@ class ContentPage(Page):
     show_booking_cta = models.BooleanField(
         "Показывать кнопку бронирования внизу", default=True,
     )
+
+    def serve(self, request, *args, **kwargs):
+        if self.slug == "o-nas":
+            raise Http404
+        return super().serve(request, *args, **kwargs)
+
+    def get_sitemap_urls(self, request=None):
+        if self.slug == "o-nas":
+            return []
+        return super().get_sitemap_urls(request=request)
 
     content_panels = Page.content_panels + [
         FieldPanel("intro"),

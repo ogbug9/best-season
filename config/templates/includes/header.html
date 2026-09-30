@@ -28,19 +28,21 @@
       <nav class="nav nav--desktop" aria-label="Основное меню">
         <ul class="nav__list">
           {% for item in current_site.root_page.get_children.live.in_menu %}
-            {% with children=item.get_children.live.in_menu %}
-              <li class="nav__item{% if children %} nav__item--has-children{% endif %}">
-                <a class="nav__link" href="{% pageurl item %}"
-                   {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
-                {% if children %}
-                  <ul class="nav__dropdown">
-                    {% for child in children %}
-                      <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
-                    {% endfor %}
-                  </ul>
-                {% endif %}
-              </li>
-            {% endwith %}
+            {% if item.slug != "o-nas" %}
+              {% with children=item.get_children.live.in_menu %}
+                <li class="nav__item{% if children %} nav__item--has-children{% endif %}">
+                  <a class="nav__link" href="{% pageurl item %}"
+                     {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
+                  {% if children %}
+                    <ul class="nav__dropdown">
+                      {% for child in children %}
+                        <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </li>
+              {% endwith %}
+            {% endif %}
           {% endfor %}
         </ul>
       </nav>
@@ -58,9 +60,9 @@
           и встаёт где придётся. Своя стоит под лапой по центру и
           появляется вместе с ней.
         {% endcomment %}
-        <span class="header__paw-wrap" tabindex="0" aria-label="Можно с животными. Существует доплата">
+        <span class="header__paw-wrap" tabindex="0" aria-label="Можно с животными. Есть доплата">
           <span class="header__paw" role="img" aria-label="Можно с животными"></span>
-          <span class="header__paw-note" aria-hidden="true">Можно с животными<br>Существует доплата</span>
+          <span class="header__paw-note" aria-hidden="true">Можно с животными<br>Есть доплата</span>
         </span>
         {% if s.phone %}
           <a class="header__phone" href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a>
@@ -78,19 +80,21 @@
         <nav class="nav nav--mobile" aria-label="Меню">
           <ul class="nav__list">
             {% for item in current_site.root_page.get_children.live.in_menu %}
-              <li>
-                <a class="nav__link" href="{% pageurl item %}"
-                   {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
-                {% with children=item.get_children.live.in_menu %}
-                  {% if children %}
-                    <ul class="nav__sublist">
-                      {% for child in children %}
-                        <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
-                      {% endfor %}
-                    </ul>
-                  {% endif %}
-                {% endwith %}
-              </li>
+              {% if item.slug != "o-nas" %}
+                <li>
+                  <a class="nav__link" href="{% pageurl item %}"
+                     {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
+                  {% with children=item.get_children.live.in_menu %}
+                    {% if children %}
+                      <ul class="nav__sublist">
+                        {% for child in children %}
+                          <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                  {% endwith %}
+                </li>
+              {% endif %}
             {% endfor %}
           </ul>
         </nav>
