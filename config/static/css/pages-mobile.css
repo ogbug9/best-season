@@ -81,8 +81,11 @@ body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
 .page-house .guests__step { width: 30px; height: 30px; font-size: 24px; }
 .page-house .guests__value { font-size: 20px; line-height: 24px; }
 .page-house .guests__note { margin-top: 10px; font-size: 18px; line-height: 22px; }
-.page-house .booking-summary { order: 4; font-size: 20px; line-height: 24px; gap: 24.71px; }
+.page-house .booking-summary { order: 4; justify-content: center; flex-wrap: wrap; font-size: 20px; line-height: 24px; gap: 24.71px; }
+.page-house .booking-summary__item { white-space: nowrap; }
+.page-house .booking-panel .booking-cta__note { order: 8; width: 100%; text-align: center; }
 .page-house .booking-total { order: 5; margin-top: -6px; font-size: 24px; line-height: 29px; }
+.page-house .booking-hint__text { width: min(280px, 75vw); }
 .page-house .booking-error { order: 6; }
 .page-house .booking-submit { order: 7; min-height: 70.18px; height: 70.18px; padding: 20.59px 20px; margin-top: 4px; font-size: 24px; line-height: 29px; font-weight: 500; }
 .page-house .house-mosaic-section { padding: 0 0 32px; }
@@ -122,6 +125,11 @@ body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
 .page-house .equipment__switch:not(:checked) ~ .equipment__columns { max-height: 178px; }
 .page-house .equipment__switch:checked ~ .equipment__columns { min-height: 0; }
 .page-house .equipment__toggle { align-self: center; margin: 0; width: 173px; min-height: 40px; height: 40px; padding: 10px 32px; font-size: 16px; line-height: 20px; }
+.page-house .equipment--accordion > :is(.equipment__switch, .equipment__toggle) { display: none; }
+.page-house .equipment--accordion .equipment__switch ~ .equipment__columns { max-height: none; min-height: 0; overflow: visible; mask-image: none; }
+.page-house .equipment--accordion .equipment__switch ~ .equipment__columns .equipment__group ~ .equipment__group { visibility: visible; }
+.page-house .equipment--accordion .equipment__list[hidden] { display: none; }
+.page-house .equipment--accordion .footer__toggle { min-height: 44px; }
 .page-house .reviews { display: flex; overflow-x: auto; gap: 10px; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .page-house .reviews::-webkit-scrollbar { display: none; }
 .page-house .reviews__item { flex: 0 0 100%; width: 100%; min-width: 0; scroll-snap-align: start; gap: 20px; }
@@ -135,10 +143,12 @@ body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
 
 @media (max-width: 374px) {
   .page-house .house-title h1 { font-size: 30px; }
-  .page-house--domik-4 .house-title h1 { font-size: clamp(24px, 7.5vw, 28px); line-height: 1.08; }
   .page-house .calendar { padding-inline: 16px; }
   .page-house .calendar__day { width: 30px; height: 30px; }
   .page-house .guests { padding-inline: 16px; }
   .page-house .guests__label { font-size: 18px; }
   .page-house .amenity-tag { padding-inline: 10px; font-size: 12px; }
+}
+@media (max-width: 389px) {
+  .page-house--domik-4 .house-title h1 { font-size: clamp(24px, 7.5vw, 28px); line-height: 1.08; }
 }

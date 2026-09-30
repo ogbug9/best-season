@@ -1,14 +1,78 @@
 /* Мобильные карусели и разделы подвала; контент доступен и без JS. */
 (function () {
   'use strict';
-  if (!document.body.matches('.page-home, .page-houses, .page-promotions, .page-house')) return;
   const mobile = window.matchMedia('(max-width: 699px)');
   const cleanups = [];
+  const breaks = Array.from(document.querySelectorAll('.home-mobile-copy br, .mobile-catalog-services__intro br, .equipment__list br'));
+  const spaces = breaks.map(() => document.createTextNode(' '));
+  function syncBreaks() {
+    const narrow = document.documentElement.clientWidth < 390;
+    breaks.forEach((br, index) => {
+      if (narrow && br.isConnected) br.replaceWith(spaces[index]);
+      else if (!narrow && spaces[index].isConnected) spaces[index].replaceWith(br);
+    });
+  }
+  window.addEventListener('resize', syncBreaks);
+  syncBreaks();
+
+  // Один доступный паттерн для подвала и комплектации домиков.
+  function disclosure(title, links, id) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'footer__toggle';
+    button.textContent = title.textContent;
+    const oldId = links.id;
+    const oldHidden = links.hidden;
+    links.id = id;
+    button.setAttribute('aria-controls', id);
+    button.setAttribute('aria-expanded', 'false');
+    links.hidden = true;
+    button.addEventListener('click', () => {
+      links.hidden = !links.hidden;
+      button.setAttribute('aria-expanded', String(!links.hidden));
+    });
+    const original = Array.from(title.childNodes);
+    title.replaceChildren(button);
+    cleanups.push(() => { links.hidden = oldHidden; links.id = oldId; title.replaceChildren(...original); });
+  }
+
+  const header = document.querySelector('.header');
+  const menu = header?.querySelector('.nav-toggle');
+  let previousY = window.scrollY;
+  let scrollFrame = 0;
+  function updateHeader() {
+    scrollFrame = 0;
+    const y = Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
+    const pinned = !mobile.matches || menu?.open || header?.querySelector(':focus-visible') ||
+      document.body.hasAttribute('data-modal-open') || document.querySelector('dialog[open]');
+    if (pinned || y <= header?.offsetHeight) {
+      header?.classList.remove('header--hidden');
+      previousY = y;
+    } else if (Math.abs(y - previousY) >= 8) {
+      header?.classList.toggle('header--hidden', y > previousY);
+      previousY = y;
+    }
+  }
+  window.addEventListener('scroll', () => {
+    if (!scrollFrame) scrollFrame = requestAnimationFrame(updateHeader);
+  }, { passive: true });
+  header?.addEventListener('focusin', updateHeader);
+  menu?.addEventListener('toggle', updateHeader);
+  menu?.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && menu.open) {
+      menu.open = false;
+      menu.querySelector('summary')?.focus();
+      event.preventDefault();
+    }
+  });
+  mobile.addEventListener('change', updateHeader);
 
   function carousel(track, label) {
     const slides = Array.from(track.children).filter(slide => getComputedStyle(slide).display !== 'none');
     if (slides.length < 2) return;
     const originalHeight = track.style.height;
+    const heads = slides.map(slide => slide.querySelector('.place__head')).filter(Boolean);
+    const originalHeadHeights = heads.map(head => head.style.minHeight);
     const loop = track.classList.contains('photo-mosaic__tiles') ? makeLoop(track, slides) : null;
     const dots = document.createElement('div');
     dots.className = 'mobile-carousel-dots';
@@ -50,6 +114,9 @@
     function fixHeight() {
       if (!track.matches('.cards--nearby, .reviews')) return;
       track.style.height = '';
+      heads.forEach((head, index) => { head.style.minHeight = originalHeadHeights[index]; });
+      const headHeight = heads.reduce((max, head) => Math.max(max, head.getBoundingClientRect().height), 0);
+      heads.forEach(head => { head.style.minHeight = `${headHeight}px`; });
       const tallest = slides.reduce((max, slide) => Math.max(max, slide.getBoundingClientRect().height), 0);
       if (tallest) track.style.height = `${tallest}px`;
     }
@@ -67,6 +134,7 @@
       cancelAnimationFrame(frame);
       resize.disconnect();
       track.style.height = originalHeight;
+      heads.forEach((head, index) => { head.style.minHeight = originalHeadHeights[index]; });
       dots.remove();
       if (loop) loop.stop();
     });
@@ -141,28 +209,23 @@
   function sync() {
     cleanups.splice(0).forEach(cleanup => cleanup());
     if (!mobile.matches) return;
-    document.querySelectorAll('.cards--houses, .cards--nearby, .photo-mosaic__tiles, .house-mosaic:not(.house-mosaic--empty), .reviews').forEach(track => {
+    const tracks = document.body.matches('.page-home, .page-houses, .page-promotions, .page-house')
+      ? document.querySelectorAll('.cards--houses, .cards--nearby, .photo-mosaic__tiles, .house-mosaic:not(.house-mosaic--empty), .reviews') : [];
+    tracks.forEach(track => {
       carousel(track, track.classList.contains('cards--houses') ? 'Домики' : track.classList.contains('cards--nearby') ? 'Интересное рядом' : track.classList.contains('reviews') ? 'Отзывы' : 'Фотогалерея');
     });
     document.querySelectorAll('.footer__column-title').forEach((title, index) => {
       const links = title.nextElementSibling;
       if (!links) return;
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'footer__toggle';
-      button.textContent = title.textContent;
-      const oldId = links.id;
-      links.id = `mobile-footer-links-${index}`;
-      button.setAttribute('aria-controls', links.id);
-      button.setAttribute('aria-expanded', 'false');
-      links.hidden = true;
-      button.addEventListener('click', () => {
-        links.hidden = !links.hidden;
-        button.setAttribute('aria-expanded', String(!links.hidden));
+      disclosure(title, links, `mobile-footer-links-${index}`);
+    });
+    document.querySelectorAll('.equipment').forEach((equipment, index) => {
+      equipment.classList.add('equipment--accordion');
+      equipment.querySelectorAll('.equipment__title').forEach((title, group) => {
+        const list = title.nextElementSibling;
+        if (list) disclosure(title, list, `mobile-equipment-${index}-${group}`);
       });
-      const original = Array.from(title.childNodes);
-      title.replaceChildren(button);
-      cleanups.push(() => { links.hidden = false; links.id = oldId; title.replaceChildren(...original); });
+      cleanups.push(() => equipment.classList.remove('equipment--accordion'));
     });
   }
   mobile.addEventListener('change', sync);
