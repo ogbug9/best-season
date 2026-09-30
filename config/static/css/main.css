@@ -3341,6 +3341,15 @@ body[data-modal-open] {
 }
 .house__book:hover { background: #726E4B; color: var(--c-cream); }
 
+/* П. 5.3.2 ТЗ: точное название категории для ручного выбора в Контуре. */
+.house > .booking-cta__note {
+  grid-row: 3;
+  margin: 0;
+  color: var(--c-cream);
+  font-size: 14px;
+  line-height: 18px;
+}
+
 /* ---------- Карточка «Интересное рядом» ---------- */
 .cards--nearby {
   display: grid;

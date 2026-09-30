@@ -128,7 +128,8 @@ class HousePageStructureTests(WagtailPageTestCase):
         """Таблица п. 5.1: кнопка брони несёт номер точки входа,
         иначе в Метрику уходит пустой параметр вместо цели."""
         html = self.client.get(self.house.url).content.decode()
-        self.assertIn('data-entry-point="3"', html)
+        self.assertRegex(html, r'class="btn btn--primary booking-submit"\s+[^>]*data-entry-point="4"')
+        self.assertIn('В форме бронирования выберите «Домик №1».', html)
 
     def test_other_houses_are_exactly_three(self):
         self.assertEqual(len(self.house.other_houses), 3)

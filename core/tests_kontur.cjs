@@ -9,7 +9,8 @@ const source = fs.readFileSync(path.join(__dirname, '../config/static/js/kontur.
 
 function fixture(options = {}) {
   const events = {}, timers = new Map(), frames = [], scripts = [], added = [];
-  let timerId = 0, initCount = 0, hooks, reloads = 0, renderObserver;
+  let timerId = 0, initCount = 0, hooks, reloads = 0, renderObserver, initConfig;
+  const addConfigs = [];
   function node(id = '') {
     return { id, hidden: false, textContent: '', style: {}, attrs: {},
       setAttribute(k, v) { this.attrs[k] = v; },
@@ -28,7 +29,7 @@ function fixture(options = {}) {
   modal.addEventListener = (k, fn) => { modal['on' + k] = fn; };
   const nodes = {};
   if (options.fields) nodes['[data-fallback-form] form'] = {elements: options.fields};
-  for (const name of ['host', 'fallback', 'loading', 'note', 'retry', 'help', 'catalog']) {
+  for (const name of ['host', 'fallback', 'loading', 'note', 'retry', 'help', 'catalog', 'selection']) {
     nodes['[data-booking-' + name + ']'] = node(name);
   }
   const host = nodes['[data-booking-host]']; host.id = 'BookingFormWidget'; host.hidden = true;
@@ -54,18 +55,23 @@ function fixture(options = {}) {
     getElementById: () => ({ textContent: JSON.stringify(config) }),
     createElement: () => node(),
     addEventListener: (k, fn) => { events[k] = fn; },
-    dispatchEvent: () => !options.cancelPrepare,
+    dispatchEvent: event => {
+      if (options.prepare) options.prepare(event);
+      return !options.cancelPrepare;
+    },
   };
   const window = { scrollY: 123, scrollTo() {}, location: { reload() { reloads++; } },
     getComputedStyle: el => ({ backgroundColor: el.bg }) };
   const sdk = {
     init(config) {
+      initConfig = config;
       initCount++; hooks = config.hooks;
       if (options.throwInit) throw new Error('init');
       if (options.failInit) { hooks.onError(new Error('init')); return; }
       if (!options.asyncInit) hooks.onInit();
     },
     add(config) {
+      addConfigs.push(config);
       if (config.type === 'bookingForm') {
         assert.equal(config.inline, true, 'inline belongs to the widget, as in the supplied embed');
         assert.equal(config.appearance.inline, undefined);
@@ -96,14 +102,16 @@ function fixture(options = {}) {
       disconnect() { this.disconnected = true; }
     },
   });
-  function click(selector, houseId) {
+  function click(selector, houseId, attributes = {}) {
     const target = node(); target.closest = s => s === selector ? target : null;
     if (houseId !== undefined) target.attrs['data-house-id'] = houseId;
+    Object.assign(target.attrs, attributes);
     events.click({ target, preventDefault() {} });
   }
   function frame() { while (frames.length) frames.shift()(); }
   function load() { window.HotelWidget = sdk; scripts.at(-1).onload(); frame(); }
   return { window, modal, nodes, host, fallback, scripts, added, click, frame, load,
+    addConfigs, get initConfig() { return initConfig; },
     render() { host.rendered = true; if (renderObserver && !renderObserver.disconnected) renderObserver.callback(); },
     open() { click('[data-booking-open]'); frame(); },
     close() { click('[data-booking-close]'); },
@@ -191,6 +199,45 @@ test('card house transfers and generic entry clears previous card context', () =
   assert.equal(fields.house.value, '28'); assert.equal(fields.date_to.value, '');
   f.close(); f.open();
   assert.equal(fields.house.value, '');
+});
+
+test('selection reminder uses prepared request values and never passes them to the SDK', () => {
+  const fields = Object.fromEntries(['house','date_from','date_to','guests','children','pets'].map(k=>[k,{value:''}]));
+  const f = fixture({ fields, prepare() {
+    Object.assign(fields.date_from, {value:'2026-10-04'});
+    Object.assign(fields.date_to, {value:'2026-10-06'});
+    fields.guests.value = '3'; fields.children.value = '1'; fields.pets.value = '1';
+  }});
+  f.click('[data-booking-open]', '28', {'data-house-title':'Первый домик', 'data-pms-name':'Дом №1'});
+  f.frame(); f.load();
+  const reminder = f.nodes['[data-booking-selection]'];
+  assert.equal(reminder.hidden, false);
+  assert.match(reminder.textContent, /Первый домик.*Дом №1.*04\.10\.2026.*06\.10\.2026.*Гостей: 3.*Из них детей: 1.*Питомцев: 1/);
+  assert.equal(fields.house.value, '28');
+  for (const config of [f.initConfig, ...f.addConfigs]) {
+    for (const key of ['house', 'roomId', 'categoryId', 'date_from', 'date_to', 'guests', 'children', 'pets']) {
+      assert.equal(config[key], undefined, 'unsupported prefill must not be sent to HotelWidget');
+    }
+  }
+  f.close();
+});
+
+test('generic entry removes the previous house reminder', () => {
+  const fields = Object.fromEntries(['house','date_from','date_to','guests','children','pets'].map(k=>[k,{value:''}]));
+  const f = fixture({fields});
+  f.click('[data-booking-open]', '28', {'data-house-title':'Первый домик'});
+  assert.equal(f.nodes['[data-booking-selection]'].hidden, false);
+  f.close(); f.open();
+  assert.equal(f.nodes['[data-booking-selection]'].hidden, true);
+  assert.equal(f.nodes['[data-booking-selection]'].textContent, '');
+});
+
+test('cancelled preparation preserves the previous request context', () => {
+  const fields = Object.fromEntries(['house','date_from','date_to','guests','children','pets'].map(k=>[k,{value:'saved'}]));
+  const f = fixture({fields, cancelPrepare:true});
+  f.click('[data-booking-open]', '28');
+  assert.equal(f.modal.open, false);
+  for (const field of Object.values(fields)) assert.equal(field.value, 'saved');
 });
 
 // Свёрнутая вкладка: гость нажал «Забронировать» и переключился в другое

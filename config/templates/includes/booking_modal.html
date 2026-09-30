@@ -28,8 +28,10 @@
     {% comment %} Подводящий текст обязателен по п. 5.4.3 и п. 5.4.4 {% endcomment %}
     <p class="booking-modal__lead" data-booking-note>
       {{ s.booking_lead_text|default:"Выберите даты и количество гостей — система покажет свободные домики и стоимость." }}
-      Выбранные на сайте даты, дом и гости автоматически в виджет не переносятся. Укажите их повторно; в резервную заявку они подставляются.
+      Если вы уже выбрали дом, даты и гостей на сайте, укажите их ещё раз в форме бронирования ниже.
     </p>
+
+    <p class="booking-modal__lead" data-booking-selection hidden></p>
 
     <p class="booking-modal__loading" data-booking-loading hidden role="status">
       Загружаем систему бронирования…
@@ -71,11 +73,11 @@
       {% endcomment %}
       <p class="booking-fallback__note" data-fallback-note-idle role="status">
         Оставьте заявку — подберём свободный домик на ваши даты,
-        назовём цену и ответим лично.
+        назовём цену и ответим лично. Отправка заявки не подтверждает бронирование.
       </p>
       <p class="booking-fallback__note" data-fallback-note-error role="status" hidden>
         Онлайн-бронирование временно недоступно. Оставьте заявку — подберём
-        свободный домик на ваши даты и ответим лично.
+        свободный домик на ваши даты и ответим лично. Отправка заявки не подтверждает бронирование.
       </p>
 
       <button type="button" class="btn btn--outline booking-system__retry" data-booking-retry hidden>

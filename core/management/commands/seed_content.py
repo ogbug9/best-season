@@ -246,6 +246,15 @@ HOUSES = [
     ("Четвёртый домик", "камин", 6000, 4, 54),
 ]
 
+# Точные названия категорий из Контур.Отеля, переданы владельцем 30.09.2026.
+# Это подписи для ручного выбора, а не технические ID и не предвыбор виджета.
+HOUSE_PMS_NAMES = {
+    "Первый домик": "Домик №1 с сауной и видом на лес",
+    "Второй домик": "Домик №2 с камином и видом на лес",
+    "Третий домик": "Дом-лофт №3 с камином и видом на реку",
+    "Четвёртый домик": "Дом-лофт №4 с камином и видом на лес",
+}
+
 # Прежние подписи домиков — их можно перезаписывать, это наши догадки
 STALE_HOUSE_DESC = {
     "Стильный лофт с панорамным окном и камином",
@@ -710,6 +719,10 @@ class Command(BaseCommand):
         from houses.models import HouseSleepingPlace
 
         changed = False
+        if not house.pms_name and house.title in HOUSE_PMS_NAMES:
+            house.pms_name = HOUSE_PMS_NAMES[house.title]
+            changed = True
+            self.mark(f"дом «{house.title}»: подтверждённое название категории Контура")
         for field, value in HOUSE_DETAILS.get(house.title, {}).items():
             if not getattr(house, field, None):
                 setattr(house, field, value)

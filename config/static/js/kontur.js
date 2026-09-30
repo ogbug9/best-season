@@ -34,6 +34,7 @@
   var retryButton = modal.querySelector("[data-booking-retry]");
   var help = modal.querySelector("[data-booking-help]");
   var catalog = modal.querySelector("[data-booking-catalog]");
+  var selection = modal.querySelector("[data-booking-selection]");
 
   // Сколько ждём инициализации, прежде чем показать резервный блок — п. 5.6.1.
   var TIMEOUT_MS = 5000;
@@ -333,6 +334,37 @@
   }
 
   /* ---------- Открытие и закрытие окна (п. 5.2) ---------- */
+  function showSelection(button, panel, form, houseId) {
+    if (!selection) return;
+    var source = button.hasAttribute("data-house-title") ? button : panel;
+    var parts = [];
+    if (houseId && source) {
+      var title = source.getAttribute("data-house-title");
+      var category = source.getAttribute("data-pms-name");
+      if (title) parts.push("Дом: " + title);
+      if (category && category !== title) parts.push("Категория: " + category);
+    }
+    function value(name) {
+      return form && form.elements[name] ? String(form.elements[name].value || "") : "";
+    }
+    function dateLabel(name) {
+      var date = value(name);
+      return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date.split("-").reverse().join(".") : "";
+    }
+    var start = dateLabel("date_from"), end = dateLabel("date_to");
+    if (start) parts.push("Заезд: " + start);
+    if (end) parts.push("Выезд: " + end);
+    var guests = Number(value("guests")), children = Number(value("children"));
+    if (guests > 0) parts.push("Гостей: " + guests);
+    if (children > 0) parts.push("Из них детей: " + children);
+    var pets = Number(value("pets"));
+    if (pets > 0) parts.push("Питомцев: " + pets);
+    // Это памятка гостю и контекст заявки, а не параметры HotelWidget.
+    // Названия из CMS вставляем как текст, чтобы они не стали HTML.
+    selection.textContent = parts.length ? "Ваш выбор — " + parts.join(" · ") + "." : "";
+    selection.hidden = !parts.length;
+  }
+
   function openModal(button) {
     if (modal.open) return;
     if (button.disabled) return;
@@ -341,14 +373,22 @@
     var houseId = button.hasAttribute("data-house-id")
       ? button.getAttribute("data-house-id")
       : panel && panel.dataset ? panel.dataset.houseId : "";
+    var previous = {};
     if (form && houseId !== state.contextHouse) {
+      ["house", "date_from", "date_to", "guests", "children", "pets"].forEach(function (name) {
+        if (form.elements[name]) previous[name] = form.elements[name].value;
+      });
       ["date_from", "date_to", "guests", "children", "pets"].forEach(function (name) {
         if (form.elements[name]) form.elements[name].value = "";
       });
-      form.elements.house.value = houseId || "";
+      if (form.elements.house) form.elements.house.value = houseId || "";
     }
     var prepare = new CustomEvent("booking:prepare", {cancelable: true, detail: {button: button}});
-    if (!document.dispatchEvent(prepare)) return;
+    if (!document.dispatchEvent(prepare)) {
+      Object.keys(previous).forEach(function (name) { form.elements[name].value = previous[name]; });
+      return;
+    }
+    showSelection(button, panel, form, houseId);
     state.contextHouse = houseId;
     state.entryPoint = button.getAttribute("data-entry-point") || "";
     state.opener = button;

@@ -11,12 +11,12 @@
 
 <div class="booking-cta">
   <button type="button" class="btn btn--primary" data-booking-open
-          {% if house_id %}data-house-id="{{ house_id }}"{% endif %}
+          {% if house_id %}data-house-id="{{ house_id }}" data-house-title="{{ page.title }}" data-pms-name="{{ page.pms_name }}"{% endif %}
           {% if entry_point %}data-entry-point="{{ entry_point }}"{% endif %}>
     Забронировать
   </button>
 
   {% if page.pms_name %}
-    <p class="booking-cta__note">Категория в системе бронирования: «{{ page.pms_name }}»</p>
+    <p class="booking-cta__note">В форме бронирования выберите «{{ page.pms_name }}».</p>
   {% endif %}
 </div>
