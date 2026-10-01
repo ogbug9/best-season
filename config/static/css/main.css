@@ -3956,6 +3956,11 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   color: var(--c-dark);
 }
 
+/* Светлый текст на существующем тёмно-оливковом токене имеет контраст 4.5. */
+.site .header--scrolled .header__bar { background: var(--c-olive-dark); }
+.site .header--scrolled .header__bar :is(.nav__link, .header__phone, .header__logo, .header__name, .header__paw, .nav-toggle__button) { color: var(--c-cream); }
+.site .header--scrolled .nav--mobile .nav__link { color: var(--c-dark); }
+
 /* Раскрытое меню имеет собственный кремовый фон на любой странице. */
 .header__bar .nav--mobile .nav__link {
   color: var(--c-dark);

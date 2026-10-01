@@ -8,6 +8,23 @@
    Виджет Контура подключается отдельно в Фазе 7.
 */
 
+/* ---------- Цвет закреплённой шапки ---------- */
+(function () {
+  "use strict";
+  var header = document.querySelector('.header');
+  if (!header) return;
+  var frame = 0;
+  function update() {
+    frame = 0;
+    header.classList.toggle('header--scrolled', window.scrollY > header.offsetHeight);
+  }
+  window.addEventListener('scroll', function () {
+    if (!frame) frame = window.requestAnimationFrame(update);
+  }, { passive: true });
+  window.addEventListener('pageshow', update);
+  update();
+})();
+
 /* ---------- Переход с первого экрана главной ---------- */
 (function () {
   "use strict";

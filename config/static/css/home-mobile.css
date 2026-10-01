@@ -44,8 +44,8 @@
 }
 .site .nav-toggle { flex: 0 0 44px; }
 .site .nav-toggle__button { width: 44px; height: 44px; border-radius: 0; justify-content: flex-end; }
-.site .nav-toggle__button span { font-size: 0; width: 16px; height: 12px; border-block: 2px solid #494949; position: relative; }
-.site .nav-toggle__button span::after { content: ''; position: absolute; top: 3px; left: 0; width: 16px; border-top: 2px solid #494949; }
+.site .nav-toggle__button span { font-size: 0; width: 16px; height: 12px; border-block: 2px solid currentColor; position: relative; }
+.site .nav-toggle__button span::after { content: ''; position: absolute; top: 3px; left: 0; width: 16px; border-top: 2px solid currentColor; }
 
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .hero { min-height: 570px; height: 570px; padding: 176px 0 0; align-items: start; box-shadow: 0 4px 4px #49494940; }
 /* Центр группы остаётся в середине экрана под шапкой на любой высоте. */
