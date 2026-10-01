@@ -41,3 +41,55 @@
 Снимки этапа 2: [главная 1440](../tmp/photo-quality-20261001/stage-2-home-card-1440.png), [главная 390](../tmp/photo-quality-20261001/stage-2-home-card-390.png), [каталог 1440](../tmp/photo-quality-20261001/stage-2-houses-card-1440.png), [каталог 390](../tmp/photo-quality-20261001/stage-2-houses-card-390.png), [галерея 390](../tmp/photo-quality-20261001/stage-2-gallery-390.png), [акция 1440](../tmp/photo-quality-20261001/stage-2-promo-1440.png), [акция 390](../tmp/photo-quality-20261001/stage-2-promo-390.png), [герой 390@3x](../tmp/photo-quality-20261001/stage-2-hero-390.png). Снимки «до» — в таблице этапа 1. [Измерения этапа 2](../tmp/photo-quality-20261001/stage-2-measurements.json), [лог тестов](../tmp/photo-quality-20261001/stage-2-tests.log).
 
 От владельца для этапа 3 ничего не требуется; следующий шаг — скрипт контроля и отчёт без push.
+
+Коммит этапа 2: `c7b92f4` — `Photo stage 2: prepare portrait hero and correct srcset preload`.
+
+## Этап 3 — контроль фотографий и остановка
+
+1. Добавлен `design/check_images.py` с кодом из запроса: 12 маршрутов, 1440×900/DPR2 и 390×844/DPR3, реальные размеры файлов, порог растяжения ×1.15, проверка превышения окна.
+2. Полный набор Django: **109/109**. Синтаксис Python и `git diff --check` успешны. Прямой запуск `python design/check_images.py` ограничен отсутствием Python-модуля `playwright` (`ModuleNotFoundError`); зависимости не устанавливались. Замер выполнен установленным Playwright Node и системным Edge: JavaScript `MEASURE`, маршруты, режимы и порог читаются непосредственно из Python-файла, агрегация повторяет его алгоритм. Внешние запросы блокировались, локальные страницы отдавали HTTP 200, ошибок JS и локальных ресурсов нет.
+3. Результат **24** состояний: **обрезано сверху 0**, **растянуто 32**. Код выхода проверки **1** ожидаем из-за оставшихся слабых исходников. В показателе `up2` плотность намеренно нормирована к **2×** в обоих режимах, как в присланном скрипте; реальное DPR3-растяжение героя — ×2.21, а в выводе `up2` — ×1.47.
+4. Снимки после этапа 3: [главная 1440](../tmp/photo-quality-20261001/stage-3-home-card-1440.png), [главная 390](../tmp/photo-quality-20261001/stage-3-home-card-390.png), [каталог 1440](../tmp/photo-quality-20261001/stage-3-houses-card-1440.png), [каталог 390](../tmp/photo-quality-20261001/stage-3-houses-card-390.png), [галерея 390](../tmp/photo-quality-20261001/stage-3-gallery-390.png), [акция 1440](../tmp/photo-quality-20261001/stage-3-promo-1440.png), [акция 390](../tmp/photo-quality-20261001/stage-3-promo-390.png), [герой 390@3x](../tmp/photo-quality-20261001/stage-3-hero-390.png). «До» — в таблице этапа 1. [Все замеры 12 страниц](../tmp/photo-quality-20261001/stage-3-measurements.json), [контрольные снимки/замеры](../tmp/photo-quality-20261001/stage-3-screens-measurements.json), [лог тестов](../tmp/photo-quality-20261001/stage-3-tests.log).
+5. Остановлено после этапа 3. **Push/deploy не выполняются.** Владелец публикует и проверяет телефон/ноутбук/PageSpeed. Для этапов 4–5 нужны путь к папке оригиналов целиком и мобильный PNG «О нас»; для этапа 6 — решение о слайдах 2–3 героя и затемнении мобильной «О нас». Цветовой профиль, оригиналы, затемнения и редакторские фото в этой сессии не менялись; файл решений 07 остаётся владельцу.
+
+Полный вывод контроля (эквивалентный запуск через Playwright Node):
+
+```text
+×3.05    945x2048 →  1440x900  десктоп 1440@2x   /                          /media/original_images/ref-28.webp
+×2.5    1152x2048 →  1440x900  десктоп 1440@2x   /                          /media/original_images/ref-30.webp
+×2.01     360x220 →   334x221  мобильный 390@3x  /akcii/                    /media/images/30a436e0f995.width-360.format-webp.webpquality-82.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-1/    /media/original_images/review-60.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-1/    /media/original_images/review-61.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-1/    /media/original_images/review-62.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-2/    /media/original_images/review-69.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-2/    /media/original_images/review-70.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-2/    /media/original_images/review-71.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-3/    /media/original_images/review-77.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-3/    /media/original_images/review-78.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-3/    /media/original_images/review-79.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-4/    /media/original_images/review-85.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-4/    /media/original_images/review-86.webp
+×2        397x220 →   397x220  десктоп 1440@2x   /razmeshchenie/domik-4/    /media/original_images/review-87.webp
+×2        360x220 →   334x220  мобильный 390@3x  /akcii/                    /media/images/9cfd07d5bb93.width-360.format-webp.webpquality-82.webp
+×1.91     639x960 →   610x500  десктоп 1440@2x   /                          /media/original_images/ref-81.webp
+×1.78     685x960 →   610x500  десктоп 1440@2x   /                          /media/original_images/ref-64.webp
+×1.78    686x1220 →   610x500  десктоп 1440@2x   /territoriya/uslugi/       /media/original_images/ref-06.webp
+×1.77     586x880 →   518x647  десктоп 1440@2x   /                          /media/original_images/ref-31.webp
+×1.73     525x700 →   455x455  десктоп 1440@2x   /                          /media/original_images/ref-29.webp
+×1.69     720x960 →   610x500  десктоп 1440@2x   /                          /media/original_images/ref-63.webp
+×1.69     720x960 →   610x500  десктоп 1440@2x   /                          /media/original_images/ref-72.webp
+×1.57   2048x1148 →  1440x900  десктоп 1440@2x   /                          /media/original_images/ref-32.webp
+×1.47    530x1148 →   390x844  мобильный 390@3x  /                          /media/images/ref-3.2e16d0ba.fill-640x1387.format-webp.webpquality-82.webp
+×1.44    848x1055 →   610x500  десктоп 1440@2x   /razmeshchenie/            /media/original_images/ref-37.webp
+×1.36    586x1300 →   390x886  мобильный 390@3x  /                          /static/img/home-about-mobile.webp
+×1.33    1130x754 →   610x500  десктоп 1440@2x   /                          /media/original_images/ref-51.webp
+×1.33     525x700 →   350x350  мобильный 390@3x  /                          /static/img/home-quote-mobile.webp
+×1.18   1036x1500 →   610x500  десктоп 1440@2x   /territoriya/uslugi/       /media/original_images/ref-20.webp
+×1.17    1280x852 →   610x500  десктоп 1440@2x   /                          /media/original_images/ref-73.webp
+×1.17    1280x852 →   610x500  десктоп 1440@2x   /                          /media/original_images/ref-80.webp
+
+Растянуто при плотности 2×: 32 (порог ×1.15)
+Обрезано сверху: 0
+```
+
+Коммит этапа 3: `Photo stage 3: add photo quality checks and local verification report`; хеш — в финальном сообщении и `git log -1`.
