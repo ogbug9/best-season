@@ -38,6 +38,7 @@
   var slideStartedAt = 0;
   var slideReleaseTimer = null;
   var touchStart = null;
+  var wheelIntent = window.BSScrollIntent();
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   function targetFor(direction) {
@@ -54,13 +55,14 @@
   function scheduleRelease() {
     window.clearTimeout(slideReleaseTimer);
     var now = window.performance.now();
-    var delay = Math.max(slideStartedAt + 650, now + 250) - now;
+    var delay = Math.max(slideStartedAt + 700, now + 250) - now;
     slideReleaseTimer = window.setTimeout(function () { sliding = false; }, delay);
   }
 
   function slideTo(y) {
     sliding = true;
     slideStartedAt = window.performance.now();
+    wheelIntent.block(slideStartedAt);
     window.scrollTo({ top: Math.round(y), behavior: reducedMotion.matches ? "instant" : "smooth" });
     scheduleRelease();
   }
@@ -74,9 +76,10 @@
     if (event.ctrlKey || event.metaKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || isBlocked(event)) return;
     if (sliding) { event.preventDefault(); scheduleRelease(); return; }
     var target = targetFor(Math.sign(event.deltaY));
-    if (target === null) return;
+    if (target === null) { wheelIntent.reset(); return; }
     event.preventDefault();
-    slideTo(target);
+    var delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1);
+    if (wheelIntent.push(delta, window.performance.now())) slideTo(target);
   }, { passive: false });
 
   window.addEventListener("touchstart", function (event) {
@@ -89,7 +92,7 @@
     if (!touchStart || event.touches.length !== 1) return;
     var dx = touchStart.x - event.touches[0].clientX;
     var dy = touchStart.y - event.touches[0].clientY;
-    if (Math.abs(dy) >= 32 && Math.abs(dy) > Math.abs(dx) &&
+    if (Math.abs(dy) >= 80 && Math.abs(dy) > Math.abs(dx) &&
         (sliding || targetFor(Math.sign(dy)) !== null) && event.cancelable) {
       event.preventDefault();
     }
@@ -100,7 +103,7 @@
     var dx = touchStart.x - event.changedTouches[0].clientX;
     var dy = touchStart.y - event.changedTouches[0].clientY;
     touchStart = null;
-    if (sliding || Math.abs(dy) < 32 || Math.abs(dy) <= Math.abs(dx)) return;
+    if (sliding || Math.abs(dy) < 80 || Math.abs(dy) <= Math.abs(dx)) return;
     var target = targetFor(Math.sign(dy));
     if (target !== null) slideTo(target);
   }, { passive: true });

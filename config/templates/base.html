@@ -106,7 +106,8 @@
     {% include "includes/metrika.html" %}
     {{ analytics_config|json_script:"analytics-config" }}
     <script src="{% static 'js/analytics.js' %}?v=20261001-booking-k1" defer></script>
-    <script src="{% static 'js/site.js' %}?v=20261002-header" defer></script>
+    <script src="{% static 'js/scroll-intent.js' %}?v=20261002-swipe" defer></script>
+    <script src="{% static 'js/site.js' %}?v=20261002-swipe" defer></script>
     {% comment %} Блок бронирования есть только на странице дома — на
        остальных скрипт выходит сразу, ничего не найдя. {% endcomment %}
     <script src="{% static 'js/calendar.js' %}?v=20260925-calendar" defer></script>
