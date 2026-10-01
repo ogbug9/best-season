@@ -35,7 +35,15 @@ def house_icon(name):
     if name not in {"sofa_bed", "bunk_bed", "bed", "layout", "area", "capacity",
                     "guest", "moon", "calendar", "camera"}:
         return icon(name)
+    if name in {"sofa_bed", "bunk_bed", "bed"}:
+        return mark_safe(f'<span class="icon house-icon house-icon--{name}" aria-hidden="true"></span>')
     return mark_safe(
         f'<img class="icon house-icon house-icon--{name}" '
         f'src="{static(f"img/house-icons/{name}.png")}" alt="" aria-hidden="true">'
     )
+
+
+@register.simple_tag
+def sleeping_icon(place):
+    name = place.name.casefold()
+    return house_icon('sofa_bed' if 'диван' in name else 'bed' if 'двуспальная' in name else place.icon)

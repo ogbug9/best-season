@@ -27,7 +27,7 @@ def mobile_intro(value):
 
 @register.filter
 def mobile_quote(value):
-    return mobile_text(value).replace('Так появился “Лучший сезон”', 'Так появился “Best Season”')
+    return mobile_text(value)
 
 
 @register.filter
@@ -59,7 +59,7 @@ DESCRIPTIONS = [
 
 @register.filter
 def nearby_title(value):
-    return TITLES.get(value, value)
+    return TITLES.get(value, value).replace('\n', ' \n').replace('Поленово”', 'Поленово\u2060”')
 
 
 @register.filter
@@ -68,7 +68,16 @@ def nearby_description(value):
         return ' '.join(text.replace('ё', 'е').replace('—', '-').split())
     for text in DESCRIPTIONS:
         if normalized(value) == normalized(text):
-            return text
+            return text.replace('\n', ' \n')
+    return value
+
+
+@register.filter
+def mobile_nearby_description(value):
+    normalized = lambda text: ' '.join(str(text).split())
+    for reference in DESCRIPTIONS:
+        if normalized(value) == normalized(reference):
+            return reference.replace('\n', ' \n')
     return value
 
 

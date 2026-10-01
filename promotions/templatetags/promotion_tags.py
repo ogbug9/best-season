@@ -27,7 +27,12 @@ DESCRIPTIONS = [
 
 @register.filter
 def promotion_title(value):
-    return TITLES.get(value.replace('«', '"').replace('»', '"'), value)
+    return _break_spaces(TITLES.get(value.replace('«', '"').replace('»', '"'), value))
+
+
+def _break_spaces(text):
+    """Скрытый на планшете <br> не должен склеивать соседние слова."""
+    return re.sub(r'[ \t]*\n', ' \n', str(text))
 
 
 def _key(text):
@@ -48,14 +53,14 @@ DESCRIPTIONS_BY_KEY = {_key(text): text for text in DESCRIPTIONS}
 
 @register.filter
 def promotion_description(value):
-    return DESCRIPTIONS_BY_KEY.get(_key(value), value)
+    return _break_spaces(DESCRIPTIONS_BY_KEY.get(_key(value), value))
 
 
 @register.filter
 def mobile_promotion_description(value):
-    text = promotion_description(value)
+    text = DESCRIPTIONS_BY_KEY.get(_key(value), value)
     mobile_lines = {
         DESCRIPTIONS[1]: 'При бронировании 3-х дней: пятницы,\nсубботы и воскресения,\nна пятницу действует скидка 50%',
         DESCRIPTIONS[4]: 'При бронировании напрямую комплимент\nот хозяев: набор фермерских продуктов\nили дополнительный час в бане',
     }
-    return mobile_lines.get(text, text)
+    return _break_spaces(mobile_lines.get(text, text))

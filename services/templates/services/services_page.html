@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags media_tags %}
+{% load wagtailcore_tags media_tags layout_tags %}
+{% block body_class %}page-services{% endblock %}
 
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
-    <h1>{{ page.title }}</h1>
+    <h1>{{ page.title|heading_breaks }}</h1>
     {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
@@ -16,29 +17,12 @@
 {% if services %}
 <section class="section">
   <div class="container">
-    <ul class="cards">
+    <ul class="cards cards--services">
       {% for service in services %}
-        <li class="card">
-          {% picture service.display_image preset="card" alt=service.name %}
-          <div class="card__body">
-            <h2 class="card__title">{{ service.name }}</h2>
-            {% if service.short_description %}<p>{{ service.short_description }}</p>{% endif %}
-            {% if service.description %}<div class="prose">{{ service.description|richtext }}</div>{% endif %}
-            {% if service.price %}
-              <p class="card__price">{{ service.price }} ₽ {{ service.get_price_unit_display }}</p>
-              {% if service.price_note %}<p class="card__meta">{{ service.price_note }}</p>{% endif %}
-            {% endif %}
-            {% if service.is_hourly %}
-              {% comment %}
-                Почасовые объекты продаются в Контуре только через виджет —
-                отдельной формы для них у нас нет (см. 03-kontur-widget.md).
-              {% endcomment %}
-              <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="7">Забронировать</button></p>
-            {% endif %}
-          </div>
-        </li>
+        {% include "services/_service_card.html" with details_url=page.url level="2" %}
       {% endfor %}
     </ul>
+    {% for service in services %}{% if service.description or service.price_note %}<div class="prose service-details" id="service-details-{{ service.slug }}"><h2>{{ service.name }}</h2>{{ service.description|richtext }}{% if service.price_note %}<p>{{ service.price_note }}</p>{% endif %}</div>{% endif %}{% endfor %}
   </div>
 </section>
 {% endif %}

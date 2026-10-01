@@ -658,13 +658,6 @@ body {
   .sticky-cta { transition: none; }
 }
 
-/* ---------- Подпись у кнопки бронирования ---------- */
-.booking-cta__note {
-  margin-top: var(--s-2);
-  font-size: 0.9375rem;
-  opacity: 0.85;
-}
-
 /* =========================================================================
    Страницы домов (Фаза 5)
    ========================================================================= */
@@ -1539,7 +1532,7 @@ body {
 
 .btn--primary:hover { background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6); color: var(--c-dark); }
 .btn--primary:active,
-.btn--primary.is-pressed { background: var(--c-dark); }
+.btn--primary.is-pressed { background: var(--c-dark); color: #F7F0E6; }
 
 .btn--outline {
   /* Инспектор (Frame 2087326585): заливки нет, только рамка 1px #9B5026,
@@ -1553,7 +1546,7 @@ body {
   padding: 14px 40px;
   gap: 10px;
 }
-.btn--outline:hover { background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6); }
+.btn--outline:hover { background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6); border-color: transparent; }
 .btn--outline:active,
 .btn--outline.is-pressed { background: #D5CFC7; border-color: var(--c-dark); }
 
@@ -1746,7 +1739,7 @@ body:not(.page-home) main > :first-child {
      шапка выглядит так же — блюр только украшает. */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 6px 24px rgba(73, 73, 73, 0.18);
+  box-shadow: none;
 }
 @media (min-width: 900px) {
   /* Размеры из инспектора действуют только там, где пилюля целиком
@@ -1928,7 +1921,9 @@ body:not(.page-home) main > :first-child {
   .nav--desktop .nav__item:nth-child(5) > .nav__dropdown { padding-bottom: 11px; }
   .nav--desktop .nav__sublink {
     min-height: 30px;
-    padding-inline: 8px;
+    padding-inline: 11px 12px;
+    border-radius: 8px;
+    font-size: 13px;
     background: #C6C0B8;
   }
   .nav--desktop .nav__item:nth-child(5) .nav__sublink { min-height: 26px; }
@@ -3342,15 +3337,6 @@ body[data-modal-open] {
 }
 .house__book:hover { background: #726E4B; color: var(--c-cream); }
 
-/* П. 5.3.2 ТЗ: точное название категории для ручного выбора в Контуре. */
-.house > .booking-cta__note {
-  grid-row: 3;
-  margin: 0;
-  color: var(--c-cream);
-  font-size: 14px;
-  line-height: 18px;
-}
-
 /* ---------- Карточка «Интересное рядом» ---------- */
 .cards--nearby {
   display: grid;
@@ -3434,6 +3420,12 @@ body[data-modal-open] {
   color: var(--c-deep);
 }
 .place__more:hover { background: var(--c-white); color: var(--c-deep); }
+.place__details summary { list-style: none; cursor: pointer; }
+.place__details summary::-webkit-details-marker { display: none; }
+.place__details .place__details-copy { margin: 20px 0 0; }
+.place__collapse-label, .place__details[open] .place__expand-label { display: none; }
+.place__details[open] .place__collapse-label { display: inline; }
+.place__body:has(.place__details[open]) > .place__description { display: none; }
 
 /* Контурная кнопка-пилюля терракотой — «Больше интересных мест рядом».
    Инспектор (Frame 2087326585): 443×52, радиус 100, рамка 1px #9B5026,
@@ -4398,7 +4390,7 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 }
 .page-house .booking-field__slot--static { cursor: default; }
 .page-house .booking-field__slot .icon { width: 20px; height: 20px; color: var(--text); }
-.page-house .booking-field__dash { color: var(--c-muted); }
+.page-house .booking-field__dash { color: #494949; }
 /* Выбранное поле подсвечивается: гость видит, какую дату поставит клик */
 .page-house .booking-field__slot.is-active { color: var(--accent); font-weight: 500; }
 
@@ -4620,12 +4612,16 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 }
 .page-house .guests__hint-text {
   position: absolute; left: 0; bottom: calc(100% + 8px); z-index: 10;
+  white-space: normal;
   box-sizing: border-box; width: min(280px, 75vw); padding: 10px 12px; border-radius: 8px;
   background: var(--c-white); box-shadow: 0 6px 24px rgb(0 0 0 / .14);
   color: var(--text); font: 400 14px/1.4 var(--font-body);
   opacity: 0; visibility: hidden;
 }
 .page-house .guests__hint:is(:hover, :focus-within) .guests__hint-text { opacity: 1; visibility: visible; }
+@media (min-width: 700px) and (max-width: 899px) {
+  .page-house .guests__hint-text { left: auto; right: 0; }
+}
 .page-house .guests__hint-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .page-house .booking-summary {
@@ -5106,7 +5102,6 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
     z-index: 0;
     border-radius: inherit;
     background: url("../img/design-reference/territory-pavilion-hover.jpg") center / cover no-repeat;
-    filter: brightness(.5);
     opacity: 0;
     transition: opacity .2s ease;
     pointer-events: none;
@@ -5162,21 +5157,18 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   inset: 0;
   z-index: 0;
   border-radius: inherit;
-  background: #0000001A;
+  background: #00000040;
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   opacity: 0;
   transition: opacity .2s ease;
   pointer-events: none;
 }
-/* Без backdrop-filter подложка в 10% чёрного просто исчезает, и подпись
-   на светлом кадре пропадает — там фон плотнее и без размытия. */
+/* Без backdrop-filter сохраняется та же прозрачность затемнения. */
 @supports not ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
-  .territory-card::after { background: rgba(0, 0, 0, .45); }
+  .territory-card::after { background: #00000040; }
 }
 .territory-card:is(:hover, :focus-within, .is-open)::after { opacity: 1; }
-.territory-card:is(:hover, :focus-within, .is-open) > picture,
-.territory-card:is(:hover, :focus-within, .is-open) > .ph { filter: brightness(.5); }
 /* На промежуточных ширинах сохраняем центрирование содержимого. */
 .territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption {
   justify-content: center;
@@ -5219,6 +5211,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .territory-card.is-open .territory-card__details { display: block; }
 }
 @media (max-width: 699px) {
+  .site { --gutter: 20px; }
   .territory-card { aspect-ratio: auto; min-height: 295px; }
   .territory-card > picture, .territory-card > .ph { position: absolute; inset: 0; }
   .territory-card .mosaic__caption { min-height: 295px; padding-inline: 16px; }
@@ -5262,7 +5255,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-house .footer { padding-top: 100px; }
   .page-houses .footer { padding-bottom: 15px; }
   :is(.page-promotions, .page-house) .footer { padding-bottom: 14px; }
-  :is(.page-houses, .page-promotions, .page-house) .footer__brand .socials { margin-top: -21px; }
+  :is(.page-home, .page-houses, .page-promotions, .page-house) .footer__brand .socials { margin-top: -21px; }
   :is(.page-houses, .page-promotions, .page-house) .footer__legal { margin-top: 58px; }
   .page-house--domik-1 .house-about-section,
   .page-house--domik-4 .house-about-section { padding-bottom: 39.77px; }
@@ -5273,4 +5266,52 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 .faq__answer p + p { margin-top: 29px; }
 @media (max-width: 700px) {
   .faq__item .faq__answer { padding: 20px 16px; font-size: 18px; line-height: 24px; }
+}
+
+/* Правки по аудиту 30.09; координаты декора остаются локальны секциям. */
+.desktop-background { display: contents; }
+.site .btn--primary:is(:active, .is-pressed),
+.site .btn--primary:hover:is(:active, .is-pressed) { background: #494949; color: #F7F0E6; }
+.page-head .container { width: min(100% - 2 * var(--gutter), 1240px); max-width: 1240px; }
+.page-head h1 { color: #847F57; }
+.guests__note-end { white-space: nowrap; }
+.house-icon:is(.house-icon--sofa_bed, .house-icon--bunk_bed, .house-icon--bed) {
+  display: inline-block; background: #9B5026;
+  mask: var(--bed-icon) center / contain no-repeat;
+}
+.house-icon--sofa_bed { --bed-icon: url('../img/house-icons/sofa_bed.png'); }
+.house-icon--bunk_bed { --bed-icon: url('../img/house-icons/bunk_bed.png'); }
+.house-icon--bed { --bed-icon: url('../img/house-icons/bed.png'); }
+.territory-card .mosaic__caption :is(h2, h3) { font-family: var(--font-body); font-weight: 600; }
+.page-reviews .reviews { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 0; margin: 0; list-style: none; }
+.page-reviews .reviews__item { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.page-reviews .reviews__media { height: 220px; border-radius: 20px; overflow: hidden; }
+.page-reviews .reviews__media :is(picture, img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+.page-reviews .reviews__text { margin: 0; }
+.page-reviews .reviews__text p { margin: 0; font-size: 20px; line-height: 24px; }
+.page-reviews .reviews__author { margin: auto 0 0; text-align: right; font-size: 20px; line-height: 24px; }
+.service-details { margin-top: 32px; scroll-margin-top: 120px; }
+@media (max-width: 899px) { .page-reviews .reviews { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 699px) { .page-services .cards--services { grid-template-columns: minmax(0, 1fr); } }
+@media (min-width: 900px) {
+  .page-head { text-align: center; }
+  .page-house .reviews__text { margin-right: -3px; }
+  .page-house .equipment__title { font-size: 22px; line-height: 27px; }
+  .page-house .equipment__list li { font-size: 22px; line-height: 27px; }
+  .page-home .about__text .section__title { transform: translateY(-5px); }
+  .page-home .slogan__frame { transform: translateY(-27px); }
+  .page-home .mosaic__head { transform: translateY(-11px); }
+  .page-home .home-nearby > .container > .section__title { transform: translateY(-5px); }
+  .page-home .home-faq-background-anchor > .section { padding-top: 75px; }
+  .page-houses .houses-faq .section__title,
+  .page-promotions main > .section:last-child .section__title { margin-bottom: 57px; }
+}
+@media (max-width: 699px) {
+  .page-head h1 { font-size: 36px; line-height: 38px; }
+  .page-head .section__lead { font-size: 14px; line-height: 17px; }
+  .page-head { text-align: left; }
+  .cookie-banner { bottom: min(167px, 20dvh); }
+  .cookie-close { border-radius: 6px; }
+  .cookie-accept { box-shadow: 0 3px 5px #49494940; }
+  .form:has(input[name="form_type"][value="transfer"]) .form__actions .btn { width: 100%; }
 }

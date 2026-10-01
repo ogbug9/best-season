@@ -11,25 +11,20 @@
 
 
 
-{% block og_image %}
-  {% with first=page.slides.first %}
-    {% if first %}
-      <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ first.image.file.url }}">
-    {% endif %}
-  {% endwith %}
-{% endblock %}
 
 {% block extra_css %}
   {% comment %}
     Предзагрузка первого кадра героя. Это элемент LCP, а он предмет
     приёмки (п. 1.2 ТЗ, ≤2,5 с). Без preload браузер находит картинку
     только после разбора CSS, и замер уходит к границе нормы.
-    В production picture использует тот же исходный файл: сервер не строит
-    варианты Wagtail во время ответа на первый запрос.
+    Мобильный вариант готовится до запуска сервера; на десктопе
+    сохраняется предзагрузка исходного фото.
   {% endcomment %}
   {% with first=page.slides.first %}
     {% if first %}
-      <link rel="preload" as="image" href="{{ first.image.file.url }}" fetchpriority="high">
+      {% mobile_image first.image as mobile_first %}
+      <link rel="preload" as="image" href="{{ first.image.file.url }}" media="(min-width: 700px)" fetchpriority="high">
+      <link rel="preload" as="image" href="{% if mobile_first %}{{ mobile_first.url }}{% else %}{{ first.image.file.url }}{% endif %}" media="(max-width: 699px)" fetchpriority="high">
     {% endif %}
   {% endwith %}
 {% endblock %}
@@ -42,9 +37,9 @@
     {% for slide in page.slides.all %}
       <div class="hero__slide" style="--i: {{ forloop.counter0 }}">
         {% if forloop.first %}
-          {% picture slide.image preset="hero" alt=slide.alt loading="eager" mobile_original=True %}
+          {% picture slide.image preset="hero" alt=slide.alt loading="eager" mobile_preset="hero_mobile" %}
         {% else %}
-          {% picture slide.image preset="hero" alt=slide.alt mobile_original=True %}
+          {% picture slide.image preset="hero" alt=slide.alt mobile_preset="hero_mobile" %}
         {% endif %}
       </div>
     {% endfor %}
@@ -100,7 +95,7 @@
 
 <div class="home-after-hero">
 {# Фон главной: слои из Desktop Main.svg, каждый привязан к своей секции — см. main.css «Фон главной». #}
-<div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--about" src="{% static 'img/home-backgrounds/fon-about.svg' %}" width="2124" height="1827" alt="" loading="lazy" decoding="async"></div>
+<div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-about.svg' %}"><img class="home-bg__layer home-bg__layer--about" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2124" height="1827" alt="" loading="lazy" decoding="async"></picture></div>
 
 {% comment %} 2. О ферме — фото слева, текст справа {% endcomment %}
 {% if page.about_text or page.about_title %}
@@ -112,7 +107,7 @@
 <section class="about">
   <div class="about__media">
     <div class="home-background" aria-hidden="true">
-      <img class="home-background__image home-background__image--1" src="{% static 'img/home-backgrounds/bg-1.png' %}" width="2120" height="2152" alt="" loading="lazy">
+      <picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/bg-1.png' %}"><img class="home-background__image home-background__image--1" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2120" height="2152" alt="" loading="lazy"></picture>
     </div>
     {% if page.about_image %}
       <img class="about__mobile-image" src="{% static 'img/home-about-mobile.webp' %}" width="586" height="1300" alt="" loading="lazy" decoding="async">
@@ -169,7 +164,7 @@
 {% comment %} 4. Слоган {% endcomment %}
 {% if page.slogan %}
 <section class="slogan">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--slogan" src="{% static 'img/home-backgrounds/fon-slogan.svg' %}" width="1186" height="1332" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-slogan.svg' %}"><img class="home-bg__layer home-bg__layer--slogan" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1186" height="1332" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
     <div class="slogan__frame">
       <p>{{ page.slogan|slogan_lines|linebreaksbr }}</p>
@@ -186,7 +181,7 @@
 {% comment %} 5. Наши домики — сетка карточек {% endcomment %}
 {% if houses %}
 <section class="section" id="houses">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--houses" src="{% static 'img/home-backgrounds/fon-houses.svg' %}" width="1186" height="1333" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-houses.svg' %}"><img class="home-bg__layer home-bg__layer--houses" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1186" height="1333" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
     <h2 class="section__title section__title--center">Наши домики</h2>
     <ul class="cards cards--houses">
@@ -203,7 +198,7 @@
 {% comment %} 6. Наша территория — мозаика плиток {% endcomment %}
 {% if territory %}
 <section class="section section--pattern">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--territory" src="{% static 'img/home-backgrounds/fon-territory.svg' %}" width="1714" height="2584" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-territory.svg' %}"><img class="home-bg__layer home-bg__layer--territory" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1714" height="2584" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
     <ul class="mosaic">
       {% comment %}
@@ -269,34 +264,7 @@
           Чередование считается по индексу, а не задаётся руками, иначе
           при добавлении четвёртого места ряд сломался бы.
         {% endcomment %}
-        <li class="place{% if forloop.counter0|divisibleby:2 %} place--dark{% else %} place--olive{% endif %}">
-          <div class="place__head">
-            <p class="place__number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</p>
-            <h3 class="place__title"><span class="home-desktop-copy">{{ place.title|nearby_title|linebreaksbr }}</span><span class="home-mobile-copy">{{ place.title|nearby_title|mobile_text }}</span></h3>
-          </div>
-          <div class="place__media">
-            {% if place.image %}
-              {% picture place.image preset="mosaic" alt=place.title %}
-            {% else %}
-              <span class="ph" aria-hidden="true"></span>
-            {% endif %}
-          </div>
-          <div class="place__body">
-            {% if place.description %}<p class="place__description"><span class="home-desktop-copy">{{ place.description|nearby_description|linebreaksbr }}</span><span class="home-mobile-copy">{{ place.description|nearby_description|linebreaksbr }}</span></p>{% endif %}
-            {% comment %}
-              Кнопка «Подробнее» есть у каждой карточки в макете. Если у
-              места не задана внешняя ссылка, ведём на страницу
-              «Интересное рядом» — карточка без кнопки ломала бы ряд.
-            {% endcomment %}
-            <p class="place__actions">
-              {% if place.link_url %}
-                <a class="btn place__more" href="{{ place.link_url }}" rel="noopener" target="_blank">Подробнее</a>
-              {% elif page.nearby_more_page %}
-                <a class="btn place__more" href="{% pageurl page.nearby_more_page %}">Подробнее</a>
-              {% endif %}
-            </p>
-          </div>
-        </li>
+        {% include "core/_nearby_card.html" %}
       {% endfor %}
     </ul>
     {% if page.nearby_more_page %}
@@ -315,11 +283,11 @@
 {# Единственная секция главной во всю ширину фрейма — так в макете. #}
 {# Поэтому .container здесь намеренно нет, текст стоит внутри мозаики. #}
 <section class="section section--gallery">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--gallery" src="{% static 'img/home-backgrounds/fon-gallery.svg' %}" width="1165" height="1152" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-gallery.svg' %}"><img class="home-bg__layer home-bg__layer--gallery" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1165" height="1152" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="photo-mosaic">
     <ul class="photo-mosaic__tiles">
       {% for item in page.gallery_images.all %}
-        <li class="photo-mosaic__item">
+        <li class="photo-mosaic__item"{% if 'Овца' in item.alt or 'Бараш' in item.alt %} data-mobile-gallery-first{% endif %}>
           {% picture item.image preset="mosaic" alt=item.alt %}
         </li>
       {% empty %}
@@ -361,8 +329,8 @@
 {% endcomment %}
 {% if faq %}
 <div class="home-faq-background-anchor">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--faq-left" src="{% static 'img/home-backgrounds/fon-faq-left.svg' %}" width="1554" height="1618" alt="" loading="lazy" decoding="async"></div>
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--faq-right" src="{% static 'img/home-backgrounds/fon-faq-right.svg' %}" width="1279" height="1274" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-faq-left.svg' %}"><img class="home-bg__layer home-bg__layer--faq-left" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1554" height="1618" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-faq-right.svg' %}"><img class="home-bg__layer home-bg__layer--faq-right" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1279" height="1274" alt="" loading="lazy" decoding="async"></picture></div>
 {% include "includes/faq_section.html" %}
 {% endif %}
 

@@ -69,7 +69,4 @@
   <button type="button" class="btn house__book" data-booking-open data-house-id="{{ house.pk }}" data-house-title="{{ house.title }}" data-pms-name="{{ house.pms_name }}" data-entry-point="{{ entry|default:'3' }}">
     Забронировать
   </button>
-  {% if house.pms_name %}
-    <p class="booking-cta__note">В форме бронирования выберите «{{ house.pms_name }}».</p>
-  {% endif %}
 </li>

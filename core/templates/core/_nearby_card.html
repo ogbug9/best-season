@@ -1,0 +1,42 @@
+{% load wagtailcore_tags media_tags nearby_tags %}
+        <li class="place{% if forloop.counter0|divisibleby:2 %} place--dark{% else %} place--olive{% endif %}">
+          <div class="place__head">
+            <p class="place__number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</p>
+            <{% if level == "2" %}h2{% else %}h3{% endif %} class="place__title"><span class="home-desktop-copy">{{ place.title|nearby_title|linebreaksbr }}</span><span class="home-mobile-copy">{{ place.title|nearby_title|mobile_text }}</span></{% if level == "2" %}h2{% else %}h3{% endif %}>
+          </div>
+          <div class="place__media">
+            {% if place.image %}
+              {% picture place.image preset="mosaic" alt=place.title %}
+            {% else %}
+              <span class="ph" aria-hidden="true"></span>
+            {% endif %}
+          </div>
+          <div class="place__body">
+            {% if place.description %}
+              <p class="place__description">
+                {% if level == "2" and not place.link_url %}
+                  {{ place.description|truncatewords:20|linebreaksbr }}
+                {% else %}
+                  <span class="home-desktop-copy">{{ place.description|nearby_description|linebreaksbr }}</span><span class="home-mobile-copy" data-fit-nearby-copy data-line-width="310">{{ place.description|mobile_nearby_description|linebreaksbr }}</span>
+                {% endif %}
+              </p>
+            {% endif %}
+            {% comment %}
+              Кнопка «Подробнее» есть у каждой карточки в макете. Если у
+              места не задана внешняя ссылка, ведём на страницу
+              «Интересное рядом» — карточка без кнопки ломала бы ряд.
+            {% endcomment %}
+            <div class="place__actions">
+              {% if place.link_url %}
+                <a class="btn place__more" href="{{ place.link_url }}" rel="noopener" target="_blank">Подробнее</a>
+              {% elif page.nearby_more_page %}
+                <a class="btn place__more" href="{% pageurl page.nearby_more_page %}">Подробнее</a>
+              {% elif level == "2" and place.description %}
+                <details class="place__details">
+                  <summary class="btn place__more"><span class="place__expand-label">Подробнее</span><span class="place__collapse-label">Свернуть</span></summary>
+                  <p class="place__details-copy">{{ place.description|linebreaksbr }}</p>
+                </details>
+              {% endif %}
+            </div>
+          </div>
+        </li>

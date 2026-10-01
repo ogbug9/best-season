@@ -4,14 +4,14 @@
 {% block content %}
 <section class="section offers-section">
   {# Фон «Акций»: координаты слоёв — в main.css, блок «Фон „Акций“» #}
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--offers-about" src="{% static 'img/home-backgrounds/fon-about.svg' %}" width="2124" height="1827" alt="" loading="lazy" decoding="async"><img class="home-bg__layer home-bg__layer--offers-left" src="{% static 'img/home-backgrounds/fon-offers-left.svg' %}" width="1177" height="1774" alt="" loading="lazy" decoding="async"><img class="home-bg__layer home-bg__layer--offers-right" src="{% static 'img/home-backgrounds/fon-offers-right.svg' %}" width="1036" height="1031" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-about.svg' %}"><img class="home-bg__layer home-bg__layer--offers-about" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2124" height="1827" alt="" loading="lazy" decoding="async"></picture><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-offers-left.svg' %}"><img class="home-bg__layer home-bg__layer--offers-left" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1177" height="1774" alt="" loading="lazy" decoding="async"></picture><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-offers-right.svg' %}"><img class="home-bg__layer home-bg__layer--offers-right" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1036" height="1031" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container container--wide">
     <h1 class="offers-title">{{ page.title }}</h1>
     {% if promotions %}
     <ul class="promos">
       {% for promo in promotions %}
-      <li class="promo{% if forloop.counter0|divisibleby:2 %} promo--olive{% else %} promo--dark{% endif %}">
-        <div class="promo__media">{% if promo.image %}{% picture promo.image preset="promo" alt=promo.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+      <li class="promo promo--{{ promo.slug }}{% if forloop.counter0|divisibleby:2 %} promo--olive{% else %} promo--dark{% endif %}">
+        <div class="promo__media">{% if promo.image %}{% picture promo.image preset="promo" mobile_preset="promo_mobile" mobile_image=promo.mobile_image alt=promo.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
         <div class="promo__copy">
           <h2 class="promo__title">{{ promo.title|promotion_title|linebreaksbr }}</h2>
           {% if promo.short_description %}<p class="promo__text"><span class="home-desktop-copy">{{ promo.short_description|promotion_description|linebreaksbr }}</span><span class="home-mobile-copy">{{ promo.short_description|mobile_promotion_description|linebreaksbr }}</span></p>{% endif %}

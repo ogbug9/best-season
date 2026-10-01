@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags layout_tags %}
 
+{% block body_class %}page-reviews{% endblock %}
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
-    <h1>{{ page.title }}</h1>
+    <h1>{{ page.title|heading_breaks }}</h1>
     {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
@@ -16,16 +17,9 @@
 {% if reviews %}
 <section class="section">
   <div class="container">
-    <ul class="cards">
+    <ul class="reviews">
       {% for review in reviews %}
-        <li class="card card--quote">
-          <blockquote><p>{{ review.text }}</p></blockquote>
-          <p class="card__meta">
-            {{ review.author_name }}
-            {% if review.house %} · {{ review.house.title }}{% endif %}
-            {% if review.visit_date %} · {{ review.visit_date|date:"F Y" }}{% endif %}
-          </p>
-        </li>
+        {% include "reviews/_review_card.html" %}
       {% endfor %}
     </ul>
   </div>

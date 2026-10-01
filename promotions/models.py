@@ -27,6 +27,10 @@ class Promotion(models.Model):
         related_name="+",
     )
     # TextField, а не CharField: в админке однострочный input срезает
+    mobile_image = models.ForeignKey(
+        'wagtailimages.Image', verbose_name='Фото для мобильного макета',
+        null=True, blank=True, on_delete=models.SET_NULL, related_name='+',
+    )
     # переносы, а описание акции в макете стоит в три строки.
     short_description = models.TextField("Краткое описание", max_length=255, blank=True)
     description = RichTextField("Условия акции", blank=True, features=BODY_FEATURES)
@@ -43,6 +47,7 @@ class Promotion(models.Model):
                 FieldPanel("title"),
                 FieldPanel("slug"),
                 FieldPanel("image"),
+                FieldPanel("mobile_image"),
                 FieldPanel("short_description"),
                 FieldPanel("description"),
             ],

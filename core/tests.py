@@ -6,9 +6,15 @@
 """
 
 import glob
+import io
 import re
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
+from django.core.management import call_command
+from django.core.files.images import ImageFile
 from wagtail.models import Page, Site
 
 from core.models import (
@@ -19,6 +25,43 @@ from core.models import (
     FaqPage,
     SiteSettings,
 )
+
+
+class MobileMediaTests(TestCase):
+    def test_production_uses_prepared_mobile_image_without_generating(self):
+        from PIL import Image as PILImage
+        from wagtail.images import get_image_model
+        from core.templatetags.media_tags import picture
+        buffer = io.BytesIO()
+        PILImage.new('RGB', (1200, 800), 'olive').save(buffer, format='JPEG')
+        buffer.seek(0)
+        image = get_image_model().objects.create(title='Hero test', file=ImageFile(buffer, name='hero-test.jpg'))
+        mobile = image.get_rendition('width-828|format-webp|webpquality-75')
+        with override_settings(GENERATE_IMAGE_RENDITIONS_ON_REQUEST=False), patch.object(image, 'get_rendition', side_effect=AssertionError('Generated during request')):
+            html = picture(image, preset='hero', mobile_preset='hero_mobile')
+        self.assertIn('media="(max-width: 699px)"', html)
+        self.assertIn(mobile.url, html)
+        self.assertIn(image.file.url, html)
+
+
+class ArchivePhotoImportTests(TestCase):
+    def test_startup_import_preserves_later_editor_removal(self):
+        from PIL import Image as PILImage
+        from houses.models import HouseIndexPage, HousePage
+        root = Site.objects.get(is_default_site=True).root_page
+        index = root.add_child(instance=HouseIndexPage(title='Размещение', slug='houses'))
+        house = index.add_child(instance=HousePage(title='Дом 1', slug='domik-1'))
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / 'config/static/img/content-gallery/house-1'
+            source.mkdir(parents=True)
+            PILImage.new('RGB', (32, 32), 'olive').save(source / 'one.webp')
+            PILImage.new('RGB', (32, 32), 'brown').save(source / 'two.webp')
+            with override_settings(BASE_DIR=Path(folder)):
+                call_command('import_archive_photos', if_not_applied=True, stdout=io.StringIO())
+                self.assertEqual(house.gallery_images.count(), 2)
+                house.gallery_images.first().delete()
+                call_command('import_archive_photos', if_not_applied=True, stdout=io.StringIO())
+                self.assertEqual(house.gallery_images.count(), 1)
 
 
 class TemplateHygieneTests(TestCase):

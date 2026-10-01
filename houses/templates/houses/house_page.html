@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags media_tags icon_tags houses_tags layout_tags %}
+{% load static wagtailcore_tags media_tags icon_tags houses_tags layout_tags l10n %}
 
 {% comment %}
   Страница дома. Порядок блоков — по макету «Первый домик»: заголовок,
@@ -10,11 +10,6 @@
 
 {% block body_class %}page-house page-house--{{ page.slug }}{% endblock %}
 
-{% block og_image %}
-  {% if page.hero_image %}
-    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ page.hero_image.file.url }}">
-  {% endif %}
-{% endblock %}
 
 {% block structured_data %}
 <script type="application/ld+json">
@@ -23,8 +18,8 @@
   "@type": "Accommodation",
   "name": "{{ page.title|escapejs }}",
   "url": "{{ request.scheme }}://{{ request.get_host }}{{ page.url }}",
-  "occupancy": { "@type": "QuantitativeValue", "maxValue": {{ page.capacity }} }
-  {% if page.area %}, "floorSize": { "@type": "QuantitativeValue", "value": {{ page.area }}, "unitCode": "MTK" }{% endif %}
+  "occupancy": { "@type": "QuantitativeValue", "maxValue": {{ page.capacity|unlocalize }} }
+  {% if page.area %}, "floorSize": { "@type": "QuantitativeValue", "value": {{ page.area|unlocalize }}, "unitCode": "MTK" }{% endif %}
   {% if page.amenities.all %}, "amenityFeature": [
     {% for amenity in page.amenities.all %}{ "@type": "LocationFeatureSpecification", "name": "{{ amenity.name|escapejs }}", "value": true }{% if not forloop.last %},{% endif %}{% endfor %}
   ]{% endif %}
@@ -37,7 +32,7 @@
 {# ---------- 1. Заголовок ---------- #}
 <section class="house-title">
   {# Фон страницы домика: координаты — в main.css, блок «Фон страницы домика» #}
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--house-top" src="{% static 'img/home-backgrounds/fon-house-top.svg' %}" width="1111" height="872" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-top.svg' %}"><img class="home-bg__layer home-bg__layer--house-top" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1111" height="872" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
     <h1>{{ page.title }}</h1>
   </div>
@@ -53,7 +48,7 @@
 {% with mosaic=page.mosaic_images %}
 {% if mosaic %}
 <section class="house-mosaic-section">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--house-gallery" src="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}" width="1172" height="1199" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}"><img class="home-bg__layer home-bg__layer--house-gallery" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1172" height="1199" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
     <h2 class="visually-hidden">Фотографии домика</h2>
     <ul class="house-mosaic gallery" data-gallery>
@@ -73,7 +68,7 @@
     {% comment %} Остальные кадры нужны просмотрщику, но на странице их не
        видно: показывать 15 плиток макет не просит. {% endcomment %}
     <ul class="house-mosaic__rest" hidden>
-      {% for item in page.gallery_images.all %}
+      {% for item in page.remaining_gallery_images %}
         <li class="gallery__item gallery__item--rest">
           <a class="gallery__link" href="{{ item.image.file.url }}" data-gallery-item
              data-full="{{ item.image.file.url }}" data-caption="{{ item.caption|default:page.title }}">
@@ -87,7 +82,7 @@
 </section>
 {% else %}
 <section class="house-mosaic-section" aria-hidden="true">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--house-gallery" src="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}" width="1172" height="1199" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}"><img class="home-bg__layer home-bg__layer--house-gallery" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1172" height="1199" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container"><div class="house-mosaic house-mosaic--empty"><span class="ph"></span></div><button type="button" class="btn btn--outline mobile-gallery-more" disabled>Смотреть все фотографии</button></div>
 </section>
 {% endif %}
@@ -95,7 +90,7 @@
 
 {# ---------- 4. Карточки-факты ---------- #}
 <section class="house-facts-section">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--house-left" src="{% static 'img/home-backgrounds/fon-house-left.svg' %}" width="1186" height="1394" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-left.svg' %}"><img class="home-bg__layer home-bg__layer--house-left" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1186" height="1394" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
     <div class="house-facts">
       <div class="fact-card">
@@ -111,7 +106,7 @@
         <h2 class="fact-card__title">Спальные места</h2>
         <p class="fact-card__chips">
           {% for place in page.sleeping_places.all %}
-            <span class="chip">{% house_icon place.icon %}{{ place.name }}</span>
+            <span class="chip">{% sleeping_icon place %}{{ place.name }}</span>
           {% endfor %}
         </p>
       </div>
@@ -127,7 +122,7 @@
     {% if page.description %}
       <div class="house-about__text">
         <h2 class="section__title">О домике</h2>
-        <div class="prose">{{ page.description|richtext|layout_richtext:"house" }}</div>
+        <div class="prose">{{ page.description|richtext|house_about_copy:page.slug }}</div>
       </div>
     {% endif %}
 
@@ -188,17 +183,7 @@
        под ним текст, автор справа. Фото необязательно. {% endcomment %}
     <ul class="reviews">
       {% for review in page.house_reviews %}
-        <li class="reviews__item">
-          {% if review.image %}
-            <div class="reviews__media">
-              {% picture review.image preset="review" alt=review.author_name %}
-            </div>
-          {% else %}
-            <div class="reviews__media" aria-hidden="true"></div>
-          {% endif %}
-          <blockquote class="reviews__text"><p>{{ review.text|review_quote }}</p></blockquote>
-          <p class="reviews__author">{{ review.author_name }}</p>
-        </li>
+        {% include "reviews/_review_card.html" %}
       {% endfor %}
     </ul>
   </div>

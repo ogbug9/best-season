@@ -9,17 +9,11 @@
 
 {% block body_class %}page-houses{% endblock %}
 
-{% block og_image %}
-  {% if page.hero_image %}
-    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ page.hero_image.file.url }}">
-  {% endif %}
-{% endblock %}
-
 {% block content %}
 
 <section class="section section--pattern houses-catalog">
   {# Фон «Размещения» — те же рисунки, что на главной; координаты в main.css #}
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--catalog" src="{% static 'img/home-backgrounds/fon-about.svg' %}" width="2124" height="1827" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-about.svg' %}"><img class="home-bg__layer home-bg__layer--catalog" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2124" height="1827" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container houses-catalog__inner">
     <div class="houses-catalog__head">
       {% comment %}
@@ -77,7 +71,7 @@
 {% include "houses/_mobile_services.html" %}
 {% if hourly_services or tile_services %}
 <section class="section houses-services">
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--services" src="{% static 'img/home-backgrounds/fon-slogan.svg' %}" width="1186" height="1332" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-slogan.svg' %}"><img class="home-bg__layer home-bg__layer--services" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1186" height="1332" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container houses-services__inner">
     <div class="houses-catalog__head houses-catalog__head--services">
       <h2 class="section__title section__title--center">Что добавить</h2>
@@ -93,22 +87,7 @@
     {% if hourly_services %}
       <ul class="cards cards--services">
         {% for service in hourly_services %}
-          <li class="house service-card" id="service-{{ service.slug }}">
-            <div class="house__media">
-              {% if service.display_image %}{% picture service.display_image preset="house_card" alt=service.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
-              {% if service.price %}
-                {% include "includes/price_flag.html" with amount=service.price_display unit=service.get_price_unit_display %}
-              {% endif %}
-            </div>
-            <div class="house__overlay">
-              <div class="house__info">
-                <h3 class="house__title">{{ service.name }}</h3>
-                {% if service.short_description %}<p class="house__meta">{{ service.short_description }}</p>{% endif %}
-              </div>
-              <a class="btn house__more" href="{% pageurl page %}">Подробнее</a>
-            </div>
-            <button type="button" class="btn house__book" data-booking-open data-entry-point="5">Забронировать</button>
-          </li>
+          {% include "services/_service_card.html" with details_url="/territoriya/uslugi/" %}
         {% endfor %}
       </ul>
     {% endif %}

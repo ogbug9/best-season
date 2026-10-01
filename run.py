@@ -55,6 +55,8 @@ run("manage.py", "seed_content")
 # Фото, галереи, три кадра первого экрана и отзывы из Desktop.svg. Команда
 # применяет набор один раз; дальнейшие редакторские правки не перезаписывает.
 run("manage.py", "apply_desktop_reference", "--if-not-applied")
+run("manage.py", "import_archive_photos", "--if-not-applied")
+run("manage.py", "prepare_mobile_images")
 run("manage.py", "collectstatic", "--noinput")
 
 print("[start] запускаю gunicorn", flush=True)

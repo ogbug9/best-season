@@ -1,0 +1,21 @@
+{% load wagtailcore_tags media_tags %}
+<li class="house service-card" id="service-{{ service.slug }}">
+  <div class="house__media">
+    {% with slides=service.card_slides %}
+      {% if slides %}
+        <div class="house__slides" data-house-slider>
+          {% for image in slides %}<div class="house__slide{% if forloop.first %} is-active{% endif %}"{% if not forloop.first %} aria-hidden="true"{% endif %}>{% picture image preset="house_card" alt=service.name %}</div>{% endfor %}
+        </div>
+        {% if slides|length > 1 %}<div class="house__dots" role="tablist" aria-label="Фотографии {{ service.name }}">
+          {% for image in slides %}<button class="house__dot{% if forloop.first %} is-active{% endif %}" type="button" role="tab" data-house-dot="{{ forloop.counter0 }}" aria-label="Фото {{ forloop.counter }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"></button>{% endfor %}
+        </div>{% endif %}
+      {% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+    {% endwith %}
+    {% if service.price %}{% include "includes/price_flag.html" with amount=service.price_display unit=service.get_price_unit_display %}{% endif %}
+  </div>
+  <div class="house__overlay">
+    <div class="house__info"><{% if level == "2" %}h2{% else %}h3{% endif %} class="house__title">{{ service.name }}</{% if level == "2" %}h2{% else %}h3{% endif %}>{% if service.short_description %}<p class="house__meta">{{ service.short_description }}</p>{% endif %}</div>
+    <a class="btn house__more" href="{{ details_url }}#{% if service.description or service.price_note %}service-details-{% else %}service-{% endif %}{{ service.slug }}">Подробнее</a>
+  </div>
+  {% if service.is_hourly %}<button type="button" class="btn house__book" data-booking-open data-entry-point="5">Забронировать</button>{% endif %}
+</li>

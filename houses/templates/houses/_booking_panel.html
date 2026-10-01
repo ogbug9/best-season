@@ -90,9 +90,6 @@
                 data-booking-open data-house-id="{{ page.pk }}" data-entry-point="4">
           Забронировать
         </button>
-        {% if page.pms_name %}
-          <p class="booking-cta__note">В форме бронирования выберите «{{ page.pms_name }}».</p>
-        {% endif %}
 
         {% comment %}
           Выбранное уезжает в резервную форму: если виджет не поднялся,

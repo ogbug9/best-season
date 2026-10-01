@@ -13,6 +13,16 @@ register = template.Library()
 
 
 @register.filter
+def guest_note_parts(value):
+    """Сумма и значок условий остаются на одной строке."""
+    text = str(value)
+    if 'от ' in text and text.endswith('₽'):
+        label, amount = text.rsplit('от ', 1)
+        return (label + 'от ', amount.replace(' ', '\u00a0'))
+    return ('', text)
+
+
+@register.filter
 def nights(value):
     return booking.nights_label(value or 0)
 

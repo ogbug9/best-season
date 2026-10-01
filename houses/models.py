@@ -321,6 +321,11 @@ class HousePage(Page):
         return self._grouped(self.amenities.select_related("group"))
 
     @property
+    def remaining_gallery_images(self):
+        shown = {image.pk for image in self.mosaic_images}
+        return [item for item in self.gallery_images.all() if item.image_id not in shown]
+
+    @property
     def featured_amenities(self):
         """Плитки-теги блока «Удобства»."""
         return self.amenities.filter(is_featured=True).order_by(

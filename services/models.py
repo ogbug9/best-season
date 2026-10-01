@@ -36,6 +36,9 @@ class Service(models.Model):
         related_name="+",
     )
     short_description = models.CharField("Краткое описание", max_length=255, blank=True)
+    gallery_images = models.ManyToManyField(
+        'wagtailimages.Image', blank=True, related_name='+', verbose_name='Дополнительные фото',
+    )
     description = RichTextField("Описание", blank=True, features=BODY_FEATURES)
 
     price = models.PositiveIntegerField("Цена, ₽", null=True, blank=True)
@@ -62,6 +65,16 @@ class Service(models.Model):
             return ""
         return f"{self.price:,}".replace(",", "\u00a0")
 
+    @property
+    def card_slides(self):
+        images = [self.display_image] if self.display_image else []
+        ids = {image.pk for image in images}
+        for image in self.gallery_images.all():
+            if image.pk not in ids:
+                images.append(image)
+                ids.add(image.pk)
+        return images
+
     price_note = models.CharField(
         "Примечание к цене", max_length=120, blank=True,
         help_text="Например: «минимум 2 часа». Точный расчёт — в виджете Контура.",
@@ -81,6 +94,7 @@ class Service(models.Model):
                 FieldPanel("name"),
                 FieldPanel("slug"),
                 FieldPanel("image"),
+                FieldPanel("gallery_images"),
                 FieldPanel("short_description"),
                 FieldPanel("description"),
             ],

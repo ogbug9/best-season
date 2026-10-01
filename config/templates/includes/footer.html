@@ -12,7 +12,7 @@
 
 <footer class="footer">
   {# Нижний слой фона главной, «Размещения» и «Акций» (fon-footer) и страницы домика (fon-house-footer) (у каждой страницы свой top в main.css). На остальных страницах скрыт стилями, а loading="lazy" не даёт его скачать. #}
-  <div class="home-bg" aria-hidden="true"><img class="home-bg__layer home-bg__layer--footer" src="{% static 'img/home-backgrounds/fon-footer.svg' %}" width="2069" height="1853" alt="" loading="lazy" decoding="async"><img class="home-bg__layer home-bg__layer--house-footer" src="{% static 'img/home-backgrounds/fon-house-footer.svg' %}" width="2088" height="1919" alt="" loading="lazy" decoding="async"></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-footer.svg' %}"><img class="home-bg__layer home-bg__layer--footer" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2069" height="1853" alt="" loading="lazy" decoding="async"></picture><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-footer.svg' %}"><img class="home-bg__layer home-bg__layer--house-footer" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2088" height="1919" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
     <div class="footer__top">
 
@@ -90,7 +90,7 @@
       </div>
 
       <div class="footer__center">
-        <p>© {{ current_site.site_name|default:"Лучший сезон" }} {% now "Y" %}. Все права защищены.</p>
+        <p>© Лучший Сезон {% now "Y" %}. Все права защищены.</p>
         <p class="footer__meta-note">* Meta запрещена на территории РФ</p>
         {% comment %}
           Указание автора обязательно по лицензии CC BY 4.0, под которой

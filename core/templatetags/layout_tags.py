@@ -136,7 +136,7 @@ LINES = {
         'Со временем нас в семье становилось всё\n'
         'больше, как и тех, с кем хотелось разделить\n'
         'эту атмосферу и состояние.',
-        'Так появился “Best Season” — место, куда\n'
+        'Так появился “Лучший сезон” — место, куда\n'
         'можно приехать с тем же чувством, что тебе\n'
         'здесь всегда рады и ждут, где светло, спокойно\n'
         'и по-настоящему хорошо.',
@@ -170,6 +170,9 @@ LINES = {
         'нашей фермы, разговора за чашкой чая.',
     ],
     'faq_mobile': [
+        'Какая нужна предоплата?\nЕсть ли залог?',
+        'Во сколько заезд и выезд?\nМожно ли заехать раньше\nили уехать позже?',
+        'Можно ли слушать музыку\nи отмечать праздник?',
         'Какие условия бронирования\nи отмены?',
         'Можно ли кормить животных\nглэмпинга?',
         'Можно ли арендовать домик на месяц\nили больше?',
@@ -216,10 +219,113 @@ def layout_richtext(value, key):
         return match[1] + str(format_html(
             '<span class="home-desktop-copy">{}</span>'
             '<span class="home-mobile-copy">{}</span>',
-            mark_safe(str(escape(desktop)).replace('\n', '<br>')),
-            mark_safe(str(escape(mobile)).replace('\n', '<br>')),
+            mark_safe(str(escape(desktop)).replace('\n', ' <br>')),
+            mark_safe(str(escape(mobile)).replace('\n', ' <br>')),
         )) + '</p>'
     # Draftail пишет абзацы с атрибутом (<p data-block-key="...">), и
     # регексп по голому <p> не находил ни одного текста, правленного
     # в админке. Открывающий тег возвращаем как есть, spans кладём внутрь.
     return mark_safe(re.sub(r'(<p\b[^>]*>)(.*?)</p>', paragraph, str(conditional_escape(value)), flags=re.S))
+
+
+HOUSE_MOBILE_COPY = {
+    'domik-2': (
+        'Дом-лофт №2 с настоящим камином\n'
+        'и панорамными окнами в спальне с видом\n'
+        'на лес - фаворит наших гостей. Вечер здесь\n'
+        'начинается с треска дров, вкусного чая и долго\n'
+        'не заканчивается. На 2–4 гостей.\n\n'
+        'Уютная гостиная, оснащённая кухня, отдельная\n'
+        'мангальная зона и ротанговая мебель\n'
+        'на террасе.'
+    ),
+    'domik-3': (
+        'Самый фотогеничный дом на поляне:\n'
+        'идеальная каминная зона, расположенной\n'
+        'прямо у панорамного окна с видом на лес\n'
+        'и реку – кадр получается сам. Спальня выходит\n'
+        'на поляну и ферму. На 2–4 гостей.\n\n'
+        'Уютная кухня, тихая гостиная, подвесное\n'
+        'кресло и ротанговая мебель на террасе.'
+    ),
+    'domik-4': (
+        'Самый уединённый дом и самый близкий\n'
+        'к Ферме: камин, панорамные окна и лес почти\n'
+        'у самой террасы.  Здесь проходят самые\n'
+        'интересные дискуссии с колонкой Алисой\n'
+        'и звучат самые утончённые музыкальные\n'
+        'подборки. Уютная гостиная, оснащённая кухня,\n'
+        'отдельная мангальная зона, подвесные кресла\n'
+        'и ротанговая мебель на террасе.'
+    ),
+}
+HOUSE_REFERENCE_COPY = {
+    'domik-2': 'Дом-лофт с настоящим камином и панорамными окнами в спальне с видом на лес - фаворит наших гостей. Вечер здесь начинается с треска дров, вкусного чая и долго не заканчивается. На 2–4 гостей. Уютная гостиная, оснащённая кухня, отдельная мангальная зона и ротанговая мебель на террасе.',
+    'domik-3': 'Самый фотогеничный дом на поляне: идеальная каминная зона, расположенной прямо у панорамного окна с видом на лес и реку — кадр получается сам. Спальня выходит на поляну и ферму. На 2–4 гостей. Уютная кухня, тихая гостиная, подвесное кресло и ротанговая мебель на террасе.',
+    'domik-4': 'Самый уединённый дом и самый близкий к ферме: камин, панорамные окна и лес почти у самой террасы. Здесь проходят самые интересные дискуссии с колонкой Алисой и звучат самые утончённые музыкальные подборки. Уютная гостиная, оснащённая кухня, отдельная мангальная зона, подвесные кресла и ротанговая мебель на террасе.',
+}
+
+
+@register.filter(is_safe=True)
+def house_about_copy(value, slug):
+    """Мобильная копия макета применяется только к исходному тексту CMS."""
+    from django.utils.html import strip_tags
+    source = str(value)
+    if '<' in re.sub(r'</?p\b[^>]*>|<br\s*/?>', '', source):
+        return layout_richtext(value, 'house')
+    plain = ' '.join(unescape(strip_tags(source.replace('</p>', ' '))).split())
+    if plain != HOUSE_REFERENCE_COPY.get(slug):
+        return layout_richtext(value, 'house')
+    mobile = '</p><p>'.join(
+        str(escape(paragraph)).replace('\n', ' <br>')
+        for paragraph in HOUSE_MOBILE_COPY[slug].split('\n\n')
+    )
+    return format_html(
+        '<div class="home-desktop-copy">{}</div>'
+        '<div class="home-mobile-copy house-about__mobile-copy" data-preserve-breaks><p>{}</p></div>',
+        layout_richtext(value, 'house'), mark_safe(mobile),
+    )
+
+
+@register.filter
+def heading_breaks(value):
+    """Мягкие переносы длинных слов: видны только при нехватке ширины."""
+    parts = {
+        'конфиденциальности': 'конфи\u00adден\u00adциаль\u00adности',
+        'бронирования': 'бро\u00adни\u00adро\u00adва\u00adния',
+        'персональных': 'пер\u00adсо\u00adналь\u00adных',
+        'Мероприятия': 'Меро\u00adпри\u00adя\u00adтия',
+        'Развлечения': 'Раз\u00adвле\u00adче\u00adния',
+    }
+    return re.sub(r'\w+', lambda match: parts.get(match[0], match[0]), str(value))
+
+
+@register.simple_tag
+def page_description(page, site):
+    """Описание из существующего наполнения; короткие метки дополняем текстом."""
+    from django.utils.html import strip_tags
+    def plain(value):
+        return ' '.join(unescape(strip_tags(str(value or '').replace('</p>', ' '))).split())
+    seo = plain(getattr(page, 'search_description', ''))
+    if len(seo) >= 50:
+        return seo
+    for field in ('hero_subtitle', 'intro', 'description', 'body'):
+        text = plain(getattr(page, field, ''))
+        if text and not any(marker in text.casefold() for marker in ('ожидается от заказчика', 'уточняется', 'берутся из настроек')):
+            return ' '.join(text.split()[:28])
+    root = site.root_page.specific if site else None
+    text = plain(getattr(root, 'hero_subtitle', ''))
+    return f'{page.title} — {site.site_name if site else "Лучший Сезон"}. {text}'.strip()
+
+
+@register.simple_tag
+def social_image(page, site):
+    """Фото страницы либо существующее фото первого экрана главной."""
+    if getattr(page, 'hero_image', None):
+        return page.hero_image
+    root = site.root_page.specific if site else None
+    if hasattr(root, 'slides'):
+        slide = root.slides.select_related('image').first()
+        if slide:
+            return slide.image
+    return None

@@ -5,14 +5,67 @@
   const cleanups = [];
   const breaks = Array.from(document.querySelectorAll('.home-mobile-copy br, .mobile-catalog-services__intro br, .equipment__list br'));
   const spaces = breaks.map(() => document.createTextNode(' '));
+  const fixedParagraphs = Array.from(document.querySelectorAll('[data-preserve-breaks] p, [data-fit-nearby-copy]')).map(paragraph => {
+    const lines = [''];
+    paragraph.childNodes.forEach(node => {
+      if (node.nodeName === 'BR') lines.push('');
+      else lines[lines.length - 1] += node.textContent;
+    });
+    return { paragraph, lines };
+  });
+  const measure = document.createElement('canvas').getContext('2d');
   function syncBreaks() {
     const narrow = document.documentElement.clientWidth < 390;
     breaks.forEach((br, index) => {
-      if (narrow && br.isConnected) br.replaceWith(spaces[index]);
+      const preserve = br.closest('[data-preserve-breaks]') || spaces[index].parentElement?.closest('[data-preserve-breaks]');
+      if (narrow && !preserve && br.isConnected) br.replaceWith(spaces[index]);
       else if (!narrow && spaces[index].isConnected) spaces[index].replaceWith(br);
+    });
+    fixedParagraphs.forEach(({ paragraph, lines }) => {
+      const width = Math.min(paragraph.clientWidth - 4, Number(paragraph.dataset.lineWidth) || Infinity);
+      if (!mobile.matches || width <= 0 || !measure) return;
+      const style = getComputedStyle(paragraph);
+      measure.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+      const tracking = parseFloat(style.letterSpacing) || 0;
+      const length = text => measure.measureText(text).width + tracking * Math.max(0, text.length - 1);
+      let fitted = lines;
+      if (lines.some(line => length(line.trimEnd()) > width)) {
+        // Переносим весь абзац: остаток строки не становится отдельным словом.
+        // Исходные пробелы внутри строк, включая двойные, сохраняются.
+        const words = lines.map(line => line.trimEnd()).join(' ').trim().match(/\S+\s*/g) || [];
+        const referenceEnds = new Set();
+        let count = 0;
+        lines.forEach(line => { count += (line.match(/\S+/g) || []).length; referenceEnds.add(count); });
+        const best = Array(words.length + 1).fill(null);
+        best[0] = { cost: 0, start: -1 };
+        for (let start = 0; start < words.length; start++) {
+          if (!best[start]) continue;
+          let text = '';
+          for (let end = start + 1; end <= words.length; end++) {
+            text += words[end - 1];
+            const size = length(text.trimEnd());
+            if (size > width) break;
+            if (end - start === 1 && words.length > 1) continue;
+            const cost = best[start].cost + width * width * words.length
+              + (width - size) ** 2 + (referenceEnds.has(end) ? 0 : width * width / 4);
+            if (!best[end] || cost < best[end].cost) best[end] = { cost, start };
+          }
+        }
+        if (best[words.length]) {
+          fitted = [];
+          for (let end = words.length; end > 0;) {
+            const start = best[end].start;
+            fitted.unshift(words.slice(start, end).join('').trimEnd());
+            end = start;
+          }
+        }
+      }
+      paragraph.replaceChildren(...fitted.flatMap((line, index) => index
+        ? [document.createElement('br'), document.createTextNode(line)] : [document.createTextNode(line)]));
     });
   }
   window.addEventListener('resize', syncBreaks);
+  document.fonts?.ready.then(syncBreaks);
   syncBreaks();
 
   // Один доступный паттерн для подвала и комплектации домиков.
@@ -207,9 +260,30 @@
   }
 
   function sync() {
-    cleanups.splice(0).forEach(cleanup => cleanup());
+    cleanups.splice(0).reverse().forEach(cleanup => cleanup());
     if (!mobile.matches) return;
-    const tracks = document.body.matches('.page-home, .page-houses, .page-promotions, .page-house')
+    const photoTrack = document.querySelector('.photo-mosaic__tiles');
+    const firstPhoto = photoTrack?.querySelector('[data-mobile-gallery-first]');
+    if (firstPhoto) {
+      const originalPhotos = Array.from(photoTrack.children);
+      photoTrack.prepend(firstPhoto);
+      cleanups.push(() => photoTrack.replaceChildren(...originalPhotos));
+    }
+    document.querySelectorAll('.amenity-tags').forEach(tags => {
+      const items = Array.from(tags.children);
+      const columns = [0, 1].map(() => {
+        const column = document.createElement('li');
+        column.className = 'amenity-tags__column';
+        const list = document.createElement('ul');
+        list.className = 'amenity-tags__column-items';
+        column.append(list);
+        return column;
+      });
+      items.forEach((item, index) => columns[index % 2].firstElementChild.append(item));
+      tags.replaceChildren(...columns);
+      cleanups.push(() => tags.replaceChildren(...items));
+    });
+    const tracks = document.body.matches('.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews')
       ? document.querySelectorAll('.cards--houses, .cards--nearby, .photo-mosaic__tiles, .house-mosaic:not(.house-mosaic--empty), .reviews') : [];
     tracks.forEach(track => {
       carousel(track, track.classList.contains('cards--houses') ? 'Домики' : track.classList.contains('cards--nearby') ? 'Интересное рядом' : track.classList.contains('reviews') ? 'Отзывы' : 'Фотогалерея');

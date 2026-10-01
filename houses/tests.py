@@ -7,7 +7,9 @@
 """
 
 import io
+import json
 import re
+from decimal import Decimal
 from pathlib import Path
 
 from django.core.files.images import ImageFile
@@ -91,6 +93,17 @@ class HousePageStructureTests(WagtailPageTestCase):
         self.assertPageIsRenderable(self.index)
         self.assertPageIsRenderable(self.house)
 
+    def test_localized_accommodation_data_is_valid_json(self):
+        for house in HousePage.objects.child_of(self.index):
+            house.area = Decimal('54.0')
+            house.save_revision().publish()
+            html = self.client.get(house.url).content.decode()
+            data = [json.loads(block) for block in re.findall(
+                r'<script type="application/ld\+json">(.*?)</script>', html, re.S,
+            )]
+            accommodation = next(item for item in data if item['@type'] == 'Accommodation')
+            self.assertEqual(accommodation['floorSize']['value'], 54.0)
+
     def test_block_order_matches_layout(self):
         """Макет задаёт жёсткий порядок блоков страницы дома."""
         html = self.client.get(self.house.url).content.decode()
@@ -129,7 +142,8 @@ class HousePageStructureTests(WagtailPageTestCase):
         иначе в Метрику уходит пустой параметр вместо цели."""
         html = self.client.get(self.house.url).content.decode()
         self.assertRegex(html, r'class="btn btn--primary booking-submit"\s+[^>]*data-entry-point="4"')
-        self.assertIn('В форме бронирования выберите «Домик №1».', html)
+        self.assertNotIn('В форме бронирования выберите', html)
+        self.assertIn('data-booking-selection', html)
 
     def test_other_houses_are_exactly_three(self):
         self.assertEqual(len(self.house.other_houses), 3)

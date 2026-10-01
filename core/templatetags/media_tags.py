@@ -19,11 +19,13 @@ DEFAULT_WIDTHS = (360, 480, 768, 1024, 1440, 1920)
 PRESETS = {
     # имя: (соотношение сторон ш/в, ширины, значение sizes)
     "hero":    (16 / 9, (480, 768, 1024, 1440, 1920), "100vw"),
+    "hero_mobile": (None, (828,), "100vw"),
     "card":    (3 / 2, (360, 480, 768), "(min-width: 900px) 380px, (min-width: 600px) 50vw, 100vw"),
     "house_card": (61 / 50, (360, 610, 768, 1220), "(min-width: 900px) 610px, (min-width: 600px) 50vw, 100vw"),
     "mosaic":  (None, (360, 500, 768, 1024), "(min-width: 900px) 500px, 100vw"),
     "review":  (397 / 220, (397, 794), "(min-width: 900px) 397px, 100vw"),
     "promo":   (360 / 220, (360, 480, 768), "(min-width: 900px) 360px, (min-width: 600px) 50vw, 100vw"),
+    "promo_mobile": (None, (360, 480, 768), "100vw"),
     "gallery": (4 / 3, (480, 768, 1024, 1440), "(min-width: 900px) 800px, 100vw"),
     "square":  (1, (240, 360, 480), "(min-width: 600px) 240px, 40vw"),
 }
@@ -31,7 +33,7 @@ PRESETS = {
 
 @register.simple_tag
 def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=None,
-            mobile_original=False):
+            mobile_original=False, mobile_preset=None, mobile_image=None):
     """Отдаёт <picture> с WebP-источником и JPEG-фолбэком.
 
     loading="eager" ставить только для картинки первого экрана — она
@@ -42,6 +44,7 @@ def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=
 
     ratio, widths, default_sizes = PRESETS.get(preset, PRESETS["card"])
     sizes = sizes or default_sizes
+    mobile_source = _mobile_sources(mobile_image or image, mobile_preset) if mobile_preset else ""
 
     # On the small production container, building all WebP/JPEG srcset variants
     # during the first page request can exceed Gunicorn's 120-second timeout.
@@ -50,7 +53,7 @@ def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=
         alt_text = escape(alt if alt is not None else getattr(image, "title", ""))
         class_attr = f' class="{escape(css_class)}"' if css_class else ""
         return mark_safe(
-            "<picture>"
+            f"<picture>{mobile_source}"
             f'<img src="{escape(image.file.url)}"'
             f' width="{image.width}" height="{image.height}"'
             f' alt="{alt_text}" loading="{escape(loading)}" decoding="async"{class_attr}>'
@@ -83,7 +86,7 @@ def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=
     class_attr = f' class="{escape(css_class)}"' if css_class else ""
     # width/height обязательны: без них браузер не резервирует место
     # и уезжает CLS, а он предмет приёмки (п. 1.2, ≤0,1)
-    mobile_source = (
+    mobile_source = mobile_source or (
         f'<source media="(max-width: 699px)" srcset="{escape(image.file.url)}">'
         if mobile_original else ""
     )
@@ -97,3 +100,48 @@ def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=
         "</picture>"
     )
     return mark_safe(html)
+
+
+def mobile_specs(preset):
+    ratio, widths, _ = PRESETS[preset]
+    for width in widths:
+        spec = f"fill-{width}x{max(1, round(width / ratio))}" if ratio else f"width-{width}"
+        for extension in ('webp', 'jpeg'):
+            yield width, extension, f'{spec}|format-{extension}|{extension}quality-75'
+
+
+@register.simple_tag
+def mobile_image(image, preset='hero_mobile'):
+    if not image:
+        return None
+    _, _, spec = next(mobile_specs(preset))
+    if not getattr(settings, 'GENERATE_IMAGE_RENDITIONS_ON_REQUEST', True):
+        return image.renditions.filter(filter_spec=spec).first()
+    try:
+        return image.get_rendition(spec)
+    except Exception:
+        return None
+
+
+def _mobile_sources(image, preset):
+    """В продакшене читаем готовые варианты, не создавая их в HTTP-запросе."""
+    generate = getattr(settings, 'GENERATE_IMAGE_RENDITIONS_ON_REQUEST', True)
+    specs = list(mobile_specs(preset))
+    cached = {} if generate else {
+        item.filter_spec: item for item in image.renditions.filter(
+            filter_spec__in=[spec for _, _, spec in specs]
+        )
+    }
+    sources = {'webp': [], 'jpeg': []}
+    for width, extension, spec in specs:
+        try:
+            rendition = image.get_rendition(spec) if generate else cached.get(spec)
+        except Exception:
+            continue
+        if rendition:
+            sources[extension].append(f'{escape(rendition.url)} {width}w')
+    return ''.join(
+        f'<source media="(max-width: 699px)" type="image/{extension}"'
+        f' srcset="{", ".join(srcset)}" sizes="100vw">'
+        for extension, srcset in sources.items() if srcset
+    )
