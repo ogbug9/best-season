@@ -51,10 +51,7 @@
   --accent-hover:   #7F401E;
   --header-shadow:  0 4px 16px rgba(35, 35, 35, .12);
 
-  /* Типографика. Шрифты из макетов, подключены локально — см. fonts.css.
-     Третий шрифт макета (Berold) не подключён: его лицензия запрещает
-     коммерческое использование, до решения заказчика роль акцентного
-     заголовка играет Etude Noire. */
+  /* Типографика. Локальные Montserrat, Etude Noire и Inter — см. fonts.css. */
   --font-heading: "Etude Noire", ui-serif, Georgia, serif;
   --font-body:    "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   /* Нижняя строка подвала набрана в макете Inter (@font-face в fonts.css) */
