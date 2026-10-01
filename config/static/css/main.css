@@ -4227,14 +4227,14 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 @supports not ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
   .hero .searchbar__field { background: rgba(73, 73, 73, 0.55); }
 }
-/* Десктоп: ровная матовая заливка; радиальный градиент только в рамке. */
+/* Десктоп: ровная матовая заливка; градиент и мягкий блик только по краю. */
 @media (min-width: 700px) {
   @supports ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
     .page-home .hero .searchbar__field {
       position: relative;
       background: rgba(255, 255, 255, 0.2);
       background-clip: padding-box;
-      box-shadow: none;
+      box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.25);
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
     }
@@ -4244,7 +4244,7 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
       inset: -1px;
       padding: 1px;
       border-radius: inherit;
-      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%);
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.65) 100%);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
