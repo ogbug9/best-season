@@ -2804,34 +2804,17 @@ body[data-modal-open] {
 
 /* Декор обрезается по всей странице, а не на стыке main и footer.
    Секции сохраняют свои контексты наложения и исходные координаты. */
-.desktop-faq-background { display: none; }
 @media (min-width: 900px) {
-  :is(.page-home, .page-houses, .page-promotions, .page-house, .page-faq) .page-content {
+  :is(.page-home, .page-houses, .page-promotions, .page-house) .page-content {
     position: relative;
     isolation: isolate;
     overflow: clip;
   }
-  body:is(.page-home, .page-houses, .page-promotions, .page-house, .page-faq) #main,
+  body:is(.page-home, .page-houses, .page-promotions, .page-house) #main,
   .page-home .home-after-hero,
-  :is(.page-home, .page-houses, .page-promotions, .page-house, .page-faq) .footer {
+  :is(.page-home, .page-houses, .page-promotions, .page-house) .footer {
     overflow: visible;
   }
-  .faq { position: relative; }
-  .desktop-faq-background { display: block; position: absolute; inset: 0; z-index: -1; pointer-events: none; user-select: none; }
-  .desktop-faq-background__layer {
-    position: absolute;
-    left: calc(50% - 720px + var(--x));
-    top: var(--y);
-    width: var(--w);
-    height: var(--h);
-    max-width: none;
-  }
-  /* Ответы на вопросы.svg: первая плашка y=275.129; слои привязаны к ней. */
-  .desktop-faq-background__layer--left { --x: -234px; --y: -681.129px; --w: 796px; --h: 1418px; }
-  .desktop-faq-background__layer--right { --x: 554px; --y: -871.129px; --w: 1572px; --h: 1570px; }
-  /* У страниц с собственным подвалом нижний рисунок уже есть. */
-  .desktop-faq-background__layer--bottom { display: none; --x: -18px; --y: 450.871px; --w: 1697px; --h: 1697px; }
-  .page-faq .desktop-faq-background__layer--bottom { display: block; }
 }
 
 /* Кнопка полосы поиска зависит от фона. На первом экране она лежит
@@ -4244,18 +4227,29 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 @supports not ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
   .hero .searchbar__field { background: rgba(73, 73, 73, 0.55); }
 }
-/* На десктопном снимке стекло матовое и заполнено по всей площади.
-   Фон сайта светлее кадра SVG, поэтому центр 20%, а у контура 30%:
-   радиальная рамка остаётся тонкой, без внешнего ореола. */
+/* Десктоп: ровная матовая заливка; радиальный градиент только в рамке. */
 @media (min-width: 700px) {
   @supports ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
     .page-home .hero .searchbar__field {
-      background:
-        radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.2) 65%, rgba(255, 255, 255, 0.3) 100%) padding-box,
-        radial-gradient(ellipse at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%) border-box;
+      position: relative;
+      background: rgba(255, 255, 255, 0.2);
+      background-clip: padding-box;
       box-shadow: none;
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
+    }
+    .page-home .hero .searchbar__field::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      padding: 1px;
+      border-radius: inherit;
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
     }
   }
 }

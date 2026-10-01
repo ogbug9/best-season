@@ -329,6 +329,8 @@
 {% endcomment %}
 {% if faq %}
 <div class="home-faq-background-anchor">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-faq-left.svg' %}"><img class="home-bg__layer home-bg__layer--faq-left" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1554" height="1618" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-faq-right.svg' %}"><img class="home-bg__layer home-bg__layer--faq-right" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1279" height="1274" alt="" loading="lazy" decoding="async"></picture></div>
 {% include "includes/faq_section.html" %}
 {% endif %}
 
