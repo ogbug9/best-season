@@ -98,8 +98,8 @@
 .page-home .quote__media > picture:not(.quote__mobile-image) { display: none; }
 .page-home .quote__media .quote__mobile-image { display: block; object-fit: cover; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan { padding: 0; margin: 24px 0 32px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan__frame { width: 100%; margin: 0; min-height: 43px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan p { width: calc(100% - 24px); max-width: 326px; margin: 0; font: italic 300 clamp(13px, 4.1vw, 16px)/1.1 var(--font-body); }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan__frame { width: 100%; max-width: 350px; margin: 0 auto; min-height: 43px; }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan p { width: calc(100% - 24px); max-width: 326px; margin: 0; font: italic 300 clamp(14px, 4.6vw, 18px)/1.2 var(--font-body); }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan__heart { display: block; left: auto; right: 4.5px; top: 20.87px; width: 22.2px; height: 22.2px; }
 
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .cards--houses,
@@ -145,12 +145,13 @@
 .site .territory-card:is(:hover, :focus-within):not(.is-open) > picture,
 .site .territory-card:is(:hover, :focus-within):not(.is-open) > .ph { filter: none; }
 .site .territory-card.is-open .territory-card__details { display: block; }
-/* Состояние компонента 295×295 уменьшено до мобильной плитки.
-   safe center оставляет начало текста доступным при нехватке высоты. */
-.site .territory-card.is-open .mosaic__caption { overflow-y: auto; justify-content: safe center; padding: 12px 10px; gap: 8px; background: none; }
+/* Кнопка у нижнего края, как на десктопе; длинное описание прокручивается
+   внутри оставшегося места, сохраняя заголовок и кнопку видимыми. */
+.site .territory-card.is-open .mosaic__caption { overflow: hidden; justify-content: flex-end; padding: 12px 10px; gap: 8px; background: none; }
 .site .territory-card.is-open .mosaic__caption > * { flex-shrink: 0; }
-.site .territory-card .territory-card__details p { width: 100%; font-size: 11px; line-height: 13px; }
-.site .territory-card__link { position: relative; min-height: 24px; height: 24px; margin-top: 14px; padding: 5px 16px; font-size: 10px; line-height: 14px; }
+.site .territory-card.is-open .territory-card__details { display: flex; flex: 0 1 auto; flex-direction: column; align-items: center; min-height: 0; }
+.site .territory-card .territory-card__details p { flex: 0 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; width: 100%; font-size: 11px; line-height: 13px; }
+.site .territory-card__link { position: relative; flex: none; min-height: 24px; height: 24px; margin-top: 14px; padding: 5px 16px; font-size: 10px; line-height: 14px; }
 .site .territory-card__link::before { content: ''; position: absolute; inset: -15px 0 -5px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .mosaic__item--more { grid-column: 1 / -1; aspect-ratio: auto; margin-top: 14px; height: 44px; border-radius: 100px; background: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .mosaic__more { height: 44px; min-height: 0; padding: 12px 20px; border: 0; border-radius: 100px; background: #9b5026; color: #fff; font-size: 16px; line-height: 20px; }
@@ -272,7 +273,7 @@
 .page-home .quote::before { --mobile-bg: url('../img/mobile-backgrounds/home-quote.svg'); --mobile-bg-x: 0px; --mobile-bg-y: -141.00px; --mobile-bg-w: 867px; --mobile-bg-h: 971px; }
 .page-home .home-after-hero > .section--pattern::before { --mobile-bg: url('../img/mobile-backgrounds/home-territory.svg'); --mobile-bg-x: -160px; --mobile-bg-y: -199.07px; --mobile-bg-w: 445px; --mobile-bg-h: 726px; }
 .page-home .home-nearby::before { --mobile-bg: url('../img/mobile-backgrounds/home-nearby.svg'); --mobile-bg-x: -197px; --mobile-bg-y: -236.74px; --mobile-bg-w: 967px; --mobile-bg-h: 957px; }
-.page-home .home-faq-background-anchor::before { --mobile-bg: url('../img/mobile-backgrounds/home-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -328.32px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
+.page-home .home-faq-background-anchor::before { --mobile-bg: url('../img/mobile-backgrounds/home-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -310.32px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
 .page-home .footer { --mobile-bg: url('../img/mobile-backgrounds/home-footer.webp'); --mobile-bg-opacity: .84; --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
 .page-houses .houses-catalog::after { --mobile-bg: url('../img/mobile-backgrounds/houses-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
 .page-houses .houses-catalog::before { --mobile-bg: url('../img/mobile-backgrounds/houses-catalog.svg'); --mobile-bg-x: 42px; --mobile-bg-y: 214.00px; --mobile-bg-w: 774px; --mobile-bg-h: 867px; }
