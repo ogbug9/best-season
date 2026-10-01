@@ -24,7 +24,7 @@
 .site .container--header { width: 100%; }
 .site .header__bar {
   height: 72.25px; min-height: 0; padding: 20px; gap: 0;
-  border-radius: 0 0 20px 20px; box-shadow: none;
+  border-radius: 0 0 20px 20px; box-shadow: var(--header-shadow);
 }
 .site .header__logo { gap: 7.5px; align-items: center; }
 .site .header__mark { flex-basis: 32.25px; }

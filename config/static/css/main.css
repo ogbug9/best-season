@@ -49,6 +49,7 @@
   --text-on-dark:   var(--c-cream);
   --accent:         var(--c-terra);
   --accent-hover:   #7F401E;
+  --header-shadow:  0 4px 16px rgba(35, 35, 35, .12);
 
   /* Типографика. Шрифты из макетов, подключены локально — см. fonts.css.
      Третий шрифт макета (Berold) не подключён: его лицензия запрещает
@@ -1739,7 +1740,7 @@ body:not(.page-home) main > :first-child {
      шапка выглядит так же — блюр только украшает. */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: none;
+  box-shadow: var(--header-shadow);
 }
 @media (min-width: 900px) {
   /* Размеры из инспектора действуют только там, где пилюля целиком
