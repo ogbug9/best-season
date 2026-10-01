@@ -278,6 +278,14 @@ class SiteSettings(BaseSiteSetting):
         help_text="Только цифры. Пока пусто — цели бронирования не отправляются.",
     )
 
+    form_reply_time = models.CharField(
+        "Срок ответа на заявку", max_length=160, blank=True,
+        help_text="например: в течение 30 минут с 9:00 до 21:00",
+    )
+    booking_show_hourly = models.BooleanField(
+        "Показывать баню и беседки в окне бронирования", default=True,
+    )
+
     @property
     def kontur_is_configured(self):
         return bool(self.kontur_hotel_id.strip())
@@ -289,6 +297,7 @@ class SiteSettings(BaseSiteSetting):
                 FieldPanel("phone_display"),
                 FieldPanel("email"),
                 FieldPanel("work_hours"),
+                FieldPanel("form_reply_time"),
             ],
             heading="Контакты",
         ),
@@ -332,6 +341,7 @@ class SiteSettings(BaseSiteSetting):
             [
                 FieldPanel("kontur_hotel_id"),
                 FieldPanel("booking_lead_text"),
+                FieldPanel("booking_show_hourly"),
                 FieldPanel("guests_adults_note"),
                 FieldPanel("guests_children_note"),
                 FieldPanel("guests_included"),

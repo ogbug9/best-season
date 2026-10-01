@@ -1,0 +1,3 @@
+{% if settings.core.SiteSettings.yandex_metrika_id %}
+{{ settings.core.SiteSettings.yandex_metrika_id|json_script:"metrika-id" }}
+{% endif %}

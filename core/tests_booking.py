@@ -166,7 +166,49 @@ class AnalyticsTests(TestCase):
 
     def test_fallback_submit_is_a_separate_goal(self):
         """П. 5.6.3: отправка резервной формы — отдельная цель."""
-        self.assertIn("booking_fallback_submitted", JS)
+        analytics = (Path(__file__).resolve().parent.parent / "config/static/js/analytics.js").read_text(encoding="utf-8")
+        self.assertIn("booking_fallback_submitted", analytics)
+        self.assertNotIn('addEventListener("submit"', JS)
+
+    def test_metrika_config_only_with_counter(self):
+        settings_obj = SiteSettings.for_site(Site.objects.first())
+        home = Site.objects.first().root_page.url
+        settings_obj.yandex_metrika_id = ""
+        settings_obj.save()
+        self.assertNotContains(self.client.get(home), 'id="metrika-id"')
+        settings_obj.yandex_metrika_id = "12345678"
+        settings_obj.save()
+        body = self.client.get(home).content.decode()
+        config = re.search(r'<script id="metrika-id"[^>]*>(.*?)</script>', body, re.S)
+        self.assertEqual(json.loads(config.group(1)), "12345678")
+        self.assertNotIn('src="https://mc.yandex.ru', body)
+
+    def test_success_type_is_allowlisted(self):
+        from forms.models import FormType
+        home = Site.objects.first().root_page.url
+        for kind in FormType.values:
+            self.assertContains(self.client.get(home, {"form": "ok", "ft": kind}), f'data-form-success="{kind}"')
+        for query in ({"form": "ok", "ft": "unknown"}, {"form": "error", "ft": "fallback"}, {"ft": "fallback"}):
+            self.assertNotContains(self.client.get(home, query), "data-form-success")
+
+    def test_reply_time_and_empty_default(self):
+        settings_obj = SiteSettings.for_site(Site.objects.first())
+        home = Site.objects.first().root_page.url
+        self.assertContains(self.client.get(home, {"form": "ok", "ft": "fallback"}), "Свяжемся с вами в ближайшее время.")
+        settings_obj.form_reply_time = "в течение рабочего дня"
+        settings_obj.save()
+        body = self.client.get(home, {"form": "ok", "ft": "fallback"}).content.decode()
+        self.assertEqual(body.count("Ответим в течение рабочего дня."), 2)
+        self.assertNotIn("Свяжемся с вами в ближайшее время.", body)
+
+    def test_hourly_section_can_be_hidden(self):
+        settings_obj = SiteSettings.for_site(Site.objects.first())
+        settings_obj.booking_show_hourly = False
+        settings_obj.save()
+        body = self.client.get(Site.objects.first().root_page.url).content.decode()
+        self.assertNotIn("BookingHourlyWidget", body)
+        self.assertNotIn("Баня и беседки", body)
+        self.assertIn("BookingRoomsWidget", body)
 
 
 class RegressionTests(TestCase):

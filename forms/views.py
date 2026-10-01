@@ -89,8 +89,11 @@ def submit(request, form_type):
         back_to = "/"
     def outcome_url(status):
         parts = urlsplit(back_to)
-        query = [(k, v) for k, v in parse_qsl(parts.query) if k != "form"]
-        return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query + [("form", status)]), parts.fragment))
+        query = [(k, v) for k, v in parse_qsl(parts.query) if k != "form" and (status != "ok" or k != "ft")]
+        query.append(("form", status))
+        if status == "ok":
+            query.append(("ft", form_type))
+        return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query), parts.fragment))
 
     def fallback_response(form, status, message=""):
         return render(request, "forms/request_result.html", {

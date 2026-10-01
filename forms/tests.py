@@ -83,6 +83,8 @@ class BookingRegressionTests(FormTestCase):
         response = self.client.post(reverse("forms:submit", args=["fallback"]),
                                     payload(phone="ошибка", guests=0, pets=1))
         self.assertEqual(response.status_code, 400)
+        self.assertNotIn("Location", response)
+        self.assertNotContains(response, "data-form-success", status_code=400)
         self.assertContains(response, 'value="ошибка"', status_code=400)
         self.assertEqual(response.context["form"]["pets"].value(), "1")
         self.assertIn("phone", response.context["form"].errors)
@@ -94,7 +96,7 @@ class BookingRegressionTests(FormTestCase):
     def test_external_redirect_rejected_and_success_visible(self, notify):
         response = self.client.post(reverse("forms:submit", args=["fallback"]),
                                     payload(source_url="https://example.org/"))
-        self.assertEqual(response["Location"], "/?form=ok")
+        self.assertEqual(response["Location"], "/?form=ok&ft=fallback")
         page = self.client.get(response["Location"])
         body = page.content.decode()
         self.assertIn("Заявка отправлена", body.split('<main id="main">')[1].split("</main>")[0])
@@ -103,7 +105,13 @@ class BookingRegressionTests(FormTestCase):
     def test_redirect_keeps_query_and_fragment(self, notify):
         response = self.client.post(reverse("forms:submit", args=["fallback"]),
                                     payload(source_url="/?x=1#main"))
-        self.assertEqual(response["Location"], "/?x=1&form=ok#main")
+        self.assertEqual(response["Location"], "/?x=1&form=ok&ft=fallback#main")
+
+    @patch("forms.views.notify")
+    def test_success_replaces_stale_form_type(self, notify):
+        response = self.client.post(reverse("forms:submit", args=["fallback"]),
+                                    payload(source_url="/?form=error&ft=transfer&x=1#main"))
+        self.assertEqual(response["Location"], "/?x=1&form=ok&ft=fallback#main")
 
 
 class ConsentTests(FormTestCase):

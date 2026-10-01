@@ -11,6 +11,44 @@ from wagtail.models import Site
 
 from houses.booking import calendar_months, guests_label, nights_label, quote
 from houses.models import HouseIndexPage, HousePage
+from html.parser import HTMLParser
+
+
+class HouseCtaTests(TestCase):
+    def test_four_houses_have_one_final_cta_with_context(self):
+        site = Site.objects.get(is_default_site=True)
+        site.hostname = "testserver"
+        site.save()
+        index = HouseIndexPage(title="Размещение", slug="razmeshchenie")
+        site.root_page.add_child(instance=index)
+
+        class Buttons(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.matches = []
+
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                if tag == "button" and attrs.get("data-entry-point") == "5":
+                    self.matches.append(attrs)
+
+        for number in range(1, 5):
+            house = HousePage(title=f"Дом {number}", slug=f"domik-{number}", pms_name=f"Дом №{number}")
+            index.add_child(instance=house)
+            house.save_revision().publish()
+            with self.subTest(house=house.slug):
+                response = self.client.get(house.url)
+                self.assertEqual(response.status_code, 200)
+                parser = Buttons()
+                parser.feed(response.content.decode())
+                self.assertEqual(len(parser.matches), 1)
+                attrs = parser.matches[0]
+                self.assertIn("data-booking-open", attrs)
+                self.assertEqual(attrs["data-house-id"], str(house.pk))
+                self.assertEqual(attrs["data-house-title"], house.title)
+                self.assertEqual(attrs["data-pms-name"], house.pms_name)
+                self.assertContains(response, f"Забронировать {house.title}")
+                self.assertContains(response, f'data-house-slug="{house.slug}"')
 
 
 class QuoteTests(TestCase):

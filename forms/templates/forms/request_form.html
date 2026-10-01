@@ -26,7 +26,7 @@
 
   {% if request.GET.form == "ok" %}
     <p class="form__note form__note--ok" role="status">
-      Заявка отправлена. Свяжемся с вами в ближайшее время.
+      Заявка отправлена. {% if s.form_reply_time %}Ответим {{ s.form_reply_time }}.{% else %}Свяжемся с вами в ближайшее время.{% endif %}
     </p>
   {% elif request.GET.form == "error" %}
     <p class="form__note form__note--error" role="alert">

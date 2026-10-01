@@ -59,7 +59,7 @@
     {% block structured_data %}{% endblock %}
 </head>
 
-<body class="site {% block body_class %}{% endblock %}">
+<body class="site {% block body_class %}{% endblock %}" {% block body_attributes %}{% endblock %}{% if form_success_type %} data-form-success="{{ form_success_type }}"{% endif %}>
     {% block page_background %}{% endblock %}
     {% wagtailuserbar %}
 
@@ -69,7 +69,7 @@
 
     <div class="page-content">
     <main id="main">
-        {% if request.GET.form == "ok" %}<p class="container form__note form__note--ok" role="status">Заявка отправлена. Свяжемся с вами в ближайшее время.</p>{% endif %}
+        {% if request.GET.form == "ok" %}<p class="container form__note form__note--ok" role="status">Заявка отправлена. {% if settings.core.SiteSettings.form_reply_time %}Ответим {{ settings.core.SiteSettings.form_reply_time }}.{% else %}Свяжемся с вами в ближайшее время.{% endif %}</p>{% endif %}
         {% block content %}{% endblock %}
     </main>
 
@@ -103,12 +103,15 @@
       </div>
     </aside>
 
-    <script src="{% static 'js/site.js' %}?v=20261001-mobile-states" defer></script>
+    {% include "includes/metrika.html" %}
+    {{ analytics_config|json_script:"analytics-config" }}
+    <script src="{% static 'js/analytics.js' %}?v=20261001-booking-k1" defer></script>
+    <script src="{% static 'js/site.js' %}?v=20261001-booking-k1" defer></script>
     {% comment %} Блок бронирования есть только на странице дома — на
        остальных скрипт выходит сразу, ничего не найдя. {% endcomment %}
     <script src="{% static 'js/calendar.js' %}?v=20260925-calendar" defer></script>
     <script src="{% static 'js/booking-layers.js' %}?v=20260925-calendar2" defer></script>
-    <script src="{% static 'js/kontur.js' %}?v=20260930-selection" defer></script>
+    <script src="{% static 'js/kontur.js' %}?v=20261001-booking-k1" defer></script>
     <script src="{% static 'js/home-mobile.js' %}?v=20261001-desktop-layers" defer></script>
     {% block extra_js %}{% endblock %}
 </body>

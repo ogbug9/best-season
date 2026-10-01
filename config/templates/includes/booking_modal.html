@@ -48,10 +48,12 @@
         <h3 id="booking-rooms-title">Домики</h3>
         <div class="kontur-host" id="BookingRoomsWidget" data-kontur-type="roomsList"></div>
       </section>
+      {% if s.booking_show_hourly %}
       <section class="booking-system__section" aria-labelledby="booking-hourly-title">
         <h3 id="booking-hourly-title">Баня и беседки</h3>
         <div class="kontur-host" id="BookingHourlyWidget" data-kontur-type="hourlyObjectsList"></div>
       </section>
+      {% endif %}
       <section class="booking-system__section" aria-labelledby="booking-calendar-title">
         <h3 id="booking-calendar-title">Календарь доступности</h3>
         <div class="kontur-host" id="BookingCalendarWidget" data-kontur-type="availabilityCalendar"></div>

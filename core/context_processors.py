@@ -13,6 +13,7 @@ from django.middleware.csrf import get_token
 from django.urls import reverse
 
 from forms.forms import FallbackBookingForm
+from forms.models import FormType
 
 logger = logging.getLogger(__name__)
 
@@ -110,15 +111,22 @@ def footer(request):
 def booking(request):
     # Ошибочный POST получает отдельную страницу с заполненной формой.
     # У модальной формы свои ID: на странице может быть ещё одна заявка.
-    context = {"fallback_booking_form": FallbackBookingForm(auto_id="booking_%s")}
+    form_type = request.GET.get("ft", "")
+    context = {
+        "fallback_booking_form": FallbackBookingForm(auto_id="booking_%s"),
+        "form_success_type": form_type if request.GET.get("form") == "ok" and form_type in FormType.values else "",
+    }
 
     hotel_id, metrika_id = "", ""
+    telegram_url, whatsapp_url = "", ""
     try:
         from core.models import SiteSettings
 
         site_settings = SiteSettings.for_request(request)
         hotel_id = site_settings.kontur_hotel_id.strip()
         metrika_id = site_settings.yandex_metrika_id.strip()
+        telegram_url = site_settings.telegram_url
+        whatsapp_url = site_settings.whatsapp_url
     except Exception:
         # Настроек может не быть на самой ранней стадии установки сайта.
         # Это не повод отдавать гостю 500: без hotelId просто откроется
@@ -135,4 +143,5 @@ def booking(request):
         "colorAccent": "#9B5026",
         "colorLight": "#F7F0E6",
     }
+    context["analytics_config"] = {"telegramUrl": telegram_url, "whatsappUrl": whatsapp_url}
     return context

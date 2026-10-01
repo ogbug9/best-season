@@ -58,20 +58,9 @@
     renderObserver: null,
   };
 
-  /* ---------- Аналитика точек входа (п. 5.5) ----------
-     Метрика может быть не подключена — тогда просто молчим. Слой данных
-     заполняем всегда: он пригодится, если счётчик поставят позже. */
+  /* ---------- Общая аналитика сайта (п. 5.5) ---------- */
   function track(goal, params) {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: goal, params: params || {} });
-
-    var counter = config.metrikaId;
-    if (!counter || typeof window.ym !== "function") return;
-    try {
-      window.ym(Number(counter), "reachGoal", goal, params || {});
-    } catch (e) {
-      /* аналитика не должна ломать бронирование */
-    }
+    if (typeof window.bsTrack === "function") window.bsTrack(goal, params);
   }
 
   /* ---------- Сообщение о сбое владельцу (п. 5.6.4) ----------
@@ -534,11 +523,4 @@
     if (event.target === modal && typeof modal.close === "function") modal.close();
   });
 
-  /* ---------- Цель на отправку резервной формы (п. 5.6.3) ---------- */
-  var fallbackForm = modal.querySelector("[data-fallback-form] form, form[data-fallback-form]");
-  if (fallbackForm) {
-    fallbackForm.addEventListener("submit", function () {
-      track("booking_fallback_submitted", { entry_point: state.entryPoint });
-    });
-  }
 })();

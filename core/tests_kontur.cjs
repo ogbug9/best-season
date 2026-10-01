@@ -8,7 +8,7 @@ const path = require('node:path');
 const source = fs.readFileSync(path.join(__dirname, '../config/static/js/kontur.js'), 'utf8');
 
 function fixture(options = {}) {
-  const events = {}, timers = new Map(), frames = [], scripts = [], added = [];
+  const events = {}, timers = new Map(), frames = [], scripts = [], added = [], goals = [];
   let timerId = 0, initCount = 0, hooks, reloads = 0, renderObserver, initConfig;
   const addConfigs = [];
   function node(id = '') {
@@ -28,6 +28,8 @@ function fixture(options = {}) {
   modal.close = () => { modal.open = false; modal.onclose(); };
   modal.addEventListener = (k, fn) => { modal['on' + k] = fn; };
   const nodes = {};
+  const fallbackForm = node('fallback-form');
+  nodes['[data-fallback-form] form, form[data-fallback-form]'] = fallbackForm;
   if (options.fields) nodes['[data-fallback-form] form'] = {elements: options.fields};
   for (const name of ['host', 'fallback', 'loading', 'note', 'retry', 'help', 'catalog', 'selection']) {
     nodes['[data-booking-' + name + ']'] = node(name);
@@ -38,7 +40,7 @@ function fixture(options = {}) {
   const fallback = nodes['[data-booking-fallback]']; fallback.hidden = true;
   nodes['[data-fallback-note-idle]'] = node();
   nodes['[data-fallback-note-error]'] = node();
-  const containers = ['roomsList', 'hourlyObjectsList', 'availabilityCalendar'].map(type => {
+  const containers = ['roomsList', 'hourlyObjectsList', 'availabilityCalendar'].filter(type => options.hourly !== false || type !== 'hourlyObjectsList').map(type => {
     const el = node(type); el.attrs['data-kontur-type'] = type; return el;
   });
   modal.querySelector = key => nodes[key] || null;
@@ -60,7 +62,7 @@ function fixture(options = {}) {
       return !options.cancelPrepare;
     },
   };
-  const window = { scrollY: 123, scrollTo() {}, location: { reload() { reloads++; } },
+  const window = { bsTrack(goal, params) { goals.push({goal, params}); }, scrollY: 123, scrollTo() {}, location: { reload() { reloads++; } },
     getComputedStyle: el => ({ backgroundColor: el.bg }) };
   const sdk = {
     init(config) {
@@ -111,7 +113,7 @@ function fixture(options = {}) {
   function frame() { while (frames.length) frames.shift()(); }
   function load() { window.HotelWidget = sdk; scripts.at(-1).onload(); frame(); }
   return { window, modal, nodes, host, fallback, scripts, added, click, frame, load,
-    addConfigs, get initConfig() { return initConfig; },
+    addConfigs, goals, events, fallbackForm, get initConfig() { return initConfig; },
     render() { host.rendered = true; if (renderObserver && !renderObserver.disconnected) renderObserver.callback(); },
     open() { click('[data-booking-open]'); frame(); },
     close() { click('[data-booking-close]'); },
@@ -199,6 +201,29 @@ test('card house transfers and generic entry clears previous card context', () =
   assert.equal(fields.house.value, '28'); assert.equal(fields.date_to.value, '');
   f.close(); f.open();
   assert.equal(fields.house.value, '');
+});
+
+test('hidden hourly section is not registered with SDK', () => {
+  const f = fixture({hourly:false}); f.open(); f.load();
+  assert.deepEqual(f.added, ['bookingForm', 'roomsList', 'availabilityCalendar']);
+});
+
+test('submitting fallback DOM does not count as accepted request', () => {
+  const f = fixture({missing:true}); f.open();
+  if (f.fallbackForm.submit) f.fallbackForm.submit();
+  if (f.events.submit) f.events.submit({target:f.fallbackForm});
+  assert.equal(f.goals.some(e => e.goal === 'booking_fallback_submitted' || e.goal === 'form_submitted'), false);
+});
+
+test('booking hooks forward only totals and ids to shared analytics', () => {
+  const f = fixture(); f.open(); f.load();
+  const booking = {price:12300,id:'b-1',customer:{name:'Private'},fio:'Private',phone:'Private',email:'Private'};
+  f.hooks.onBooking([booking]); f.hooks.onHourlyBooking([booking]);
+  for(const name of ['booking_completed','hourly_booking_completed']) {
+    const goal = f.goals.find(e => e.goal === name);
+    assert.deepEqual(JSON.parse(JSON.stringify(goal.params)), {price:12300,currency:'RUB',bookings:'b-1',entry_point:''});
+    assert.equal(JSON.stringify(goal).includes('Private'),false);
+  }
 });
 
 test('selection reminder uses prepared request values and never passes them to the SDK', () => {

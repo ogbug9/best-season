@@ -9,6 +9,7 @@
 {% endcomment %}
 
 {% block body_class %}page-house page-house--{{ page.slug }}{% endblock %}
+{% block body_attributes %}data-house-slug="{{ page.slug }}"{% endblock %}
 
 
 {% block structured_data %}
@@ -190,10 +191,11 @@
 </section>
 {% endif %}
 
-{% comment %} ---------- 8. Точка входа в бронирование ----------
-   Тёмной полосы «Выбрали домик?» в макете нет — убрана 25.09. Пункт 4.1.8
-   ТЗ закрывает блок бронирования в начале страницы (кнопка с точкой входа 3)
-   и липкая кнопка (точка входа 6). {% endcomment %}
+<section class="section" data-house-booking-cta aria-label="Бронирование {{ page.title }}">
+  <div class="container center">
+    {% include "includes/booking_cta.html" with house_id=page.pk house_title=page.title entry_point="5" %}
+  </div>
+</section>
 
 {% comment %} Просмотрщик галереи. Разметка пустая: скрипт подставляет в неё
    кадр, а <dialog> сам держит фокус и закрывается по Esc. {% endcomment %}

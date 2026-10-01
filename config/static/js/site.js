@@ -112,11 +112,25 @@
   var cta = document.querySelector("[data-sticky-cta]");
   if (!cta) return;
 
+  var heroGone = false;
+  var inlineVisible = false;
+  function updateSticky(gone) {
+    heroGone = gone;
+    cta.setAttribute("data-visible", heroGone && !inlineVisible ? "true" : "false");
+  }
+  var inlineCta = document.querySelector("[data-house-booking-cta]");
+  if (inlineCta && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      inlineVisible = entries[0].isIntersecting;
+      updateSticky(heroGone);
+    }).observe(inlineCta);
+  }
+
   var hero =
     document.querySelector(".hero, .house-hero, .page-hero") ||
     document.querySelector("main");
   if (!hero || !("IntersectionObserver" in window)) {
-    cta.setAttribute("data-visible", "true");
+    updateSticky(true);
     return;
   }
 
@@ -135,14 +149,14 @@
     return heroBottom > maxScroll + window.innerHeight * 0.1;
   }
   if (heroCannotLeaveView()) {
-    cta.setAttribute("data-visible", "true");
+    updateSticky(true);
     return;
   }
 
   new IntersectionObserver(
     function (entries) {
       // Кнопка появляется, когда первый экран ушёл из вида
-      cta.setAttribute("data-visible", entries[0].isIntersecting ? "false" : "true");
+      updateSticky(!entries[0].isIntersecting);
     },
     { rootMargin: "-10% 0px 0px 0px" }
   ).observe(hero);
