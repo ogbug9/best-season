@@ -97,10 +97,10 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .quote__media :is(picture, img, .ph) { display: block; width: 100%; aspect-ratio: 1; border-radius: 20px; }
 .page-home .quote__media > picture:not(.quote__mobile-image) { display: none; }
 .page-home .quote__media .quote__mobile-image { display: block; object-fit: cover; }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan { padding: 0; margin: 24px 0 32px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan__frame { width: 100%; max-width: 350px; margin: 0 auto; min-height: 43px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan p { width: calc(100% - 24px); max-width: 326px; margin: 0; font: italic 300 clamp(14px, 4.6vw, 18px)/1.2 var(--font-body); }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan__heart { display: block; left: auto; right: 4.5px; top: 20.87px; width: 22.2px; height: 22.2px; }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan { padding: 0; margin: 40px 0 0; }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan__frame { width: 100%; max-width: 350px; margin: 0 auto; min-height: 0; }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan p { width: calc(100% - 24px); max-width: 326px; margin: 0; font: italic 300 18px/1.1 var(--font-body); letter-spacing: 0; text-align: center; }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .slogan__heart { display: block; left: auto; right: 4.5px; top: auto; bottom: 0; width: 22.2px; height: 22.2px; }
 
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .cards--houses,
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .cards--nearby { display: flex; gap: 10px; margin: 0; padding: 0; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
@@ -110,6 +110,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .cards--houses > .house,
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .cards--nearby > .place { flex: 0 0 100%; scroll-snap-align: start; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) #houses { padding-top: 53px; padding-bottom: 47px; }
+.page-home .slogan + #houses { padding-top: 60px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .house { aspect-ratio: 350 / 287.39; border-radius: 12.3167px; padding: 18px 18.5px 20px; gap: 20px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .house__title { margin: 0; font-size: 16px; line-height: 20px; font-weight: 400; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .house__meta { margin: 10px 0 0; font-size: 12px; line-height: 15px; }
