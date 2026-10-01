@@ -70,7 +70,7 @@
   syncBreaks();
 
   // Один доступный паттерн для подвала и комплектации домиков.
-  function disclosure(title, links, id) {
+  function disclosure(title, links, id, temporary = true) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'footer__toggle';
@@ -87,8 +87,17 @@
     });
     const original = Array.from(title.childNodes);
     title.replaceChildren(button);
-    cleanups.push(() => { links.hidden = oldHidden; links.id = oldId; title.replaceChildren(...original); });
+    if (temporary) cleanups.push(() => { links.hidden = oldHidden; links.id = oldId; title.replaceChildren(...original); });
   }
+
+  // Комплектация раскрывается по группам на любой ширине, как на мобильной.
+  document.querySelectorAll('.equipment').forEach((equipment, index) => {
+    equipment.classList.add('equipment--accordion');
+    equipment.querySelectorAll('.equipment__title').forEach((title, group) => {
+      const list = title.nextElementSibling;
+      if (list) disclosure(title, list, `equipment-${index}-${group}`, false);
+    });
+  });
 
   const header = document.querySelector('.header');
   const menu = header?.querySelector('.nav-toggle');
@@ -300,14 +309,6 @@
       const links = title.nextElementSibling;
       if (!links) return;
       disclosure(title, links, `mobile-footer-links-${index}`);
-    });
-    document.querySelectorAll('.equipment').forEach((equipment, index) => {
-      equipment.classList.add('equipment--accordion');
-      equipment.querySelectorAll('.equipment__title').forEach((title, group) => {
-        const list = title.nextElementSibling;
-        if (list) disclosure(title, list, `mobile-equipment-${index}-${group}`);
-      });
-      cleanups.push(() => equipment.classList.remove('equipment--accordion'));
     });
   }
   mobile.addEventListener('change', sync);

@@ -2685,7 +2685,7 @@ body[data-modal-open] {
   .page-home .home-after-hero { position: relative; overflow-x: clip; overflow-y: visible; }
   /* Раньше общий clip также скрывал часть фонового слоя над первым экраном.
      Ограничиваем только верх этого изображения, не нижнюю границу FAQ. */
-  .page-home .home-bg__layer--about { clip-path: inset(753px 0 0); }
+  .page-home .home-bg__layer--about { clip-path: inset(721px 0 0); }
   :is(.page-home, .page-houses, .page-promotions) .footer { position: relative; isolation: isolate; overflow: clip; }
   /* Секция территории от старой заглушки узора обрезала всё по своему
      краю (overflow: hidden) — слой территории обрывался прямыми линиями
@@ -2801,6 +2801,38 @@ body[data-modal-open] {
   .page-house .home-bg__layer--house-footer  { --x: 211px;  --y: 307.29px; --w: 2088px; --h: 1919px; }
 }
 .page-home .about__panel { background: transparent; }
+
+/* Декор обрезается по всей странице, а не на стыке main и footer.
+   Секции сохраняют свои контексты наложения и исходные координаты. */
+.desktop-faq-background { display: none; }
+@media (min-width: 900px) {
+  :is(.page-home, .page-houses, .page-promotions, .page-house, .page-faq) .page-content {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+  }
+  body:is(.page-home, .page-houses, .page-promotions, .page-house, .page-faq) #main,
+  .page-home .home-after-hero,
+  :is(.page-home, .page-houses, .page-promotions, .page-house, .page-faq) .footer {
+    overflow: visible;
+  }
+  .faq { position: relative; }
+  .desktop-faq-background { display: block; position: absolute; inset: 0; z-index: -1; pointer-events: none; user-select: none; }
+  .desktop-faq-background__layer {
+    position: absolute;
+    left: calc(50% - 720px + var(--x));
+    top: var(--y);
+    width: var(--w);
+    height: var(--h);
+    max-width: none;
+  }
+  /* Ответы на вопросы.svg: первая плашка y=275.129; слои привязаны к ней. */
+  .desktop-faq-background__layer--left { --x: -234px; --y: -681.129px; --w: 796px; --h: 1418px; }
+  .desktop-faq-background__layer--right { --x: 554px; --y: -871.129px; --w: 1572px; --h: 1570px; }
+  /* У страниц с собственным подвалом нижний рисунок уже есть. */
+  .desktop-faq-background__layer--bottom { display: none; --x: -18px; --y: 450.871px; --w: 1697px; --h: 1697px; }
+  .page-faq .desktop-faq-background__layer--bottom { display: block; }
+}
 
 /* Кнопка полосы поиска зависит от фона. На первом экране она лежит
    поверх фотографии и в макете кремовая. В каталоге «Наши домики» фон
@@ -5314,4 +5346,19 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .cookie-close { border-radius: 6px; }
   .cookie-accept { box-shadow: 0 3px 5px #49494940; }
   .form:has(input[name="form_type"][value="transfer"]) .form__actions .btn { width: 100%; }
+}
+
+/* Комплектация по группам — после правил прежнего колонного вида. */
+@media (min-width: 700px) {
+  .page-house .equipment--accordion > :is(.equipment__switch, .equipment__toggle) { display: none; }
+  .page-house .equipment--accordion .equipment__switch ~ .equipment__columns { flex-direction: column; gap: 4px; min-height: 0; max-height: none; overflow: visible; mask-image: none; }
+  .page-house .equipment--accordion .equipment__column { display: contents; }
+  .page-house .equipment--accordion .equipment__group { width: 100%; gap: 0; }
+  .page-house .equipment--accordion .equipment__switch ~ .equipment__columns .equipment__group ~ .equipment__group { visibility: visible; }
+  .page-house .equipment--accordion .equipment__list[hidden] { display: none; }
+  .page-house .equipment--accordion .equipment__list:not([hidden]) { padding: 8px 0 16px; }
+  .page-house .equipment--accordion .footer__toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 56px; border: 0; padding: 10px 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+  .page-house .equipment--accordion .footer__toggle::after { content: ''; flex: none; width: 10px; height: 10px; background: url('../img/mobile-footer-plus.png') center / contain no-repeat; }
+  .page-house .equipment--accordion .footer__toggle[aria-expanded="true"]::after { height: 2px; background: #847f57; }
+  .page-house .equipment--accordion .footer__toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 }
