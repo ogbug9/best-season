@@ -19,7 +19,9 @@ DEFAULT_WIDTHS = (360, 480, 768, 1024, 1440, 1920)
 PRESETS = {
     # имя: (соотношение сторон ш/в, ширины, значение sizes)
     "hero":    (16 / 9, (480, 768, 1024, 1440, 1920), "100vw"),
-    "hero_mobile": (None, (828,), "100vw"),
+    # Портретный кроп под экран телефона: ширина горизонтального файла
+    # не должна уменьшать высоту первого экрана до 464 px.
+    "hero_mobile": (9 / 19.5, (640, 828, 1170), "100vw"),
     "card":    (3 / 2, (360, 480, 768), "(min-width: 900px) 380px, (min-width: 600px) 50vw, 100vw"),
     "house_card": (61 / 50, (360, 610, 768, 1220), "(min-width: 900px) 610px, (min-width: 600px) 50vw, 100vw"),
     "mosaic":  (None, (360, 500, 768, 1024), "(min-width: 900px) 500px, 100vw"),
@@ -79,8 +81,12 @@ def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=
         except Exception:
             # Битый или нечитаемый файл не должен ронять всю страницу
             continue
-        webp_srcset.append(f"{webp.url} {width}w")
-        jpeg_srcset.append(f"{jpeg.url} {width}w")
+        # Wagtail не увеличивает исходник: дескриптор описывает файл,
+        # а одинаковые реальные ширины не повторяются в srcset.
+        if any(item.endswith(f" {webp.width}w") for item in webp_srcset):
+            continue
+        webp_srcset.append(f"{webp.url} {webp.width}w")
+        jpeg_srcset.append(f"{jpeg.url} {jpeg.width}w")
         fallback = jpeg
 
     if fallback is None:
@@ -115,7 +121,7 @@ def mobile_specs(preset):
     for width in widths:
         spec = f"fill-{width}x{max(1, round(width / ratio))}" if ratio else f"width-{width}"
         for extension in ('webp', 'jpeg'):
-            yield width, extension, f'{spec}|format-{extension}|{extension}quality-75'
+            yield width, extension, f'{spec}|format-{extension}|{extension}quality-82'
 
 
 @register.simple_tag
@@ -131,8 +137,8 @@ def mobile_image(image, preset='hero_mobile'):
         return None
 
 
-def _mobile_sources(image, preset):
-    """В продакшене читаем готовые варианты, не создавая их в HTTP-запросе."""
+def _mobile_srcsets(image, preset):
+    """Мобильные srcset по форматам, без создания вариантов в production."""
     generate = getattr(settings, 'GENERATE_IMAGE_RENDITIONS_ON_REQUEST', True)
     specs = list(mobile_specs(preset))
     cached = {} if generate else {
@@ -146,10 +152,22 @@ def _mobile_sources(image, preset):
             rendition = image.get_rendition(spec) if generate else cached.get(spec)
         except Exception:
             continue
-        if rendition:
-            sources[extension].append(f'{escape(rendition.url)} {width}w')
+        if rendition and not any(item.endswith(f' {rendition.width}w') for item in sources[extension]):
+            sources[extension].append(f'{escape(rendition.url)} {rendition.width}w')
+    return sources
+
+
+def _mobile_sources(image, preset):
     return ''.join(
         f'<source media="(max-width: 699px)" type="image/{extension}"'
         f' srcset="{", ".join(srcset)}" sizes="100vw">'
-        for extension, srcset in sources.items() if srcset
+        for extension, srcset in _mobile_srcsets(image, preset).items() if srcset
     )
+
+
+@register.simple_tag
+def mobile_srcset(image, preset='hero_mobile', extension='webp'):
+    """Те же файлы для preload, что и для мобильного <source>."""
+    if not image:
+        return ''
+    return ', '.join(_mobile_srcsets(image, preset)[extension])

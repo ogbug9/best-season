@@ -22,9 +22,13 @@
   {% endcomment %}
   {% with first=page.slides.first %}
     {% if first %}
-      {% mobile_image first.image as mobile_first %}
       <link rel="preload" as="image" href="{{ first.image.file.url }}" media="(min-width: 700px)" fetchpriority="high">
-      <link rel="preload" as="image" href="{% if mobile_first %}{{ mobile_first.url }}{% else %}{{ first.image.file.url }}{% endif %}" media="(max-width: 699px)" fetchpriority="high">
+      {% mobile_srcset first.image as mobile_first_srcset %}
+      {% if mobile_first_srcset %}
+        <link rel="preload" as="image" imagesrcset="{{ mobile_first_srcset }}" imagesizes="100vw" type="image/webp" media="(max-width: 699px)" fetchpriority="high">
+      {% else %}
+        <link rel="preload" as="image" href="{{ first.image.file.url }}" media="(max-width: 699px)" fetchpriority="high">
+      {% endif %}
     {% endif %}
   {% endwith %}
 {% endblock %}

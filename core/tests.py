@@ -28,20 +28,53 @@ from core.models import (
 
 
 class MobileMediaTests(TestCase):
+    def setUp(self):
+        # SQLite повторяет pk после отката: удаляем чужой rendition из кеша.
+        from django.core.cache import caches
+        for cache in caches.all():
+            cache.clear()
+
     def test_production_uses_prepared_mobile_image_without_generating(self):
         from PIL import Image as PILImage
         from wagtail.images import get_image_model
-        from core.templatetags.media_tags import picture
+        from core.templatetags.media_tags import mobile_specs, mobile_srcset, picture
         buffer = io.BytesIO()
         PILImage.new('RGB', (1200, 800), 'olive').save(buffer, format='JPEG')
         buffer.seek(0)
         image = get_image_model().objects.create(title='Hero test', file=ImageFile(buffer, name='hero-test.jpg'))
-        mobile = image.get_rendition('width-828|format-webp|webpquality-75')
+        mobile = image.get_rendition(next(mobile_specs('hero_mobile'))[2])
         with override_settings(GENERATE_IMAGE_RENDITIONS_ON_REQUEST=False), patch.object(image, 'get_rendition', side_effect=AssertionError('Generated during request')):
             html = picture(image, preset='hero', mobile_preset='hero_mobile')
+            preload = mobile_srcset(image)
         self.assertIn('media="(max-width: 699px)"', html)
         self.assertIn(mobile.url, html)
         self.assertIn(image.file.url, html)
+        self.assertIn(f'srcset="{preload}"', html)
+
+    def test_mobile_hero_is_portrait_and_srcset_uses_real_width(self):
+        from PIL import Image as PILImage
+        from wagtail.images import get_image_model
+        from core.templatetags.media_tags import _mobile_sources, mobile_specs, picture
+        buffer = io.BytesIO()
+        PILImage.new('RGB', (1600, 900), 'olive').save(buffer, format='JPEG')
+        buffer.seek(0)
+        image = get_image_model().objects.create(title='Wide', file=ImageFile(buffer, name='wide.jpg'))
+        rendition = image.get_rendition(next(mobile_specs('hero_mobile'))[2])
+        self.assertGreater(rendition.height, rendition.width)
+        html = _mobile_sources(image, 'hero_mobile')
+        self.assertIn(f'{rendition.width}w', html)
+        self.assertNotIn('1170w', html)
+        for srcset in re.findall(r'srcset="([^"]+)"', html):
+            widths = re.findall(r' (\d+)w', srcset)
+            self.assertEqual(len(widths), len(set(widths)))
+        # Проверяем тот же случай в обычной ветке picture: маленький
+        # исходник не должен объявляться вариантом шириной 1920 px.
+        with override_settings(GENERATE_IMAGE_RENDITIONS_ON_REQUEST=True):
+            desktop = picture(image, preset='hero')
+        self.assertNotIn('1920w', desktop)
+        for srcset in re.findall(r'srcset="([^"]+)"', desktop):
+            widths = re.findall(r' (\d+)w', srcset)
+            self.assertEqual(len(widths), len(set(widths)))
 
 
 class FocalPointTests(TestCase):
