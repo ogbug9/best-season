@@ -275,14 +275,12 @@ body {
   background: var(--c-terra);
   color: var(--c-cream);
 }
-.btn--primary:hover { background: var(--accent-hover); color: var(--c-cream); }
 
 .btn--outline {
   background: transparent;
   border-color: var(--c-border);
   color: var(--c-dark);
 }
-.btn--outline:hover { background: var(--c-dark-soft); color: var(--c-dark); }
 
 /* ---------- Шапка ---------- */
 .header {
@@ -573,10 +571,6 @@ body {
   border-color: var(--c-cream);
   color: var(--c-cream);
   background: rgba(247, 240, 230, 0.08);
-}
-.btn--on-media:hover {
-  background: var(--c-cream);
-  color: var(--c-deep);
 }
 
 /* ---------- Карточки ---------- */
@@ -1531,9 +1525,6 @@ body {
 /* ---------- Кнопки: 6 состояний по COMPONENTS ---------- */
 .btn--pill { border-radius: var(--radius-pill); }
 
-.btn--primary:hover { background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6); color: var(--c-dark); }
-.btn--primary:active,
-.btn--primary.is-pressed { background: var(--c-dark); color: #F7F0E6; }
 
 .btn--outline {
   /* Инспектор (Frame 2087326585): заливки нет, только рамка 1px #9B5026,
@@ -1547,9 +1538,6 @@ body {
   padding: 14px 40px;
   gap: 10px;
 }
-.btn--outline:hover { background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6); border-color: transparent; }
-.btn--outline:active,
-.btn--outline.is-pressed { background: #D5CFC7; border-color: var(--c-dark); }
 
 /* Третий тип из макета — текстовая кнопка без рамки */
 .btn--ghost {
@@ -1557,9 +1545,6 @@ body {
   border-color: transparent;
   color: var(--c-dark);
 }
-.btn--ghost:hover { background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6); color: var(--c-dark); }
-.btn--ghost:active,
-.btn--ghost.is-pressed { background: #D5CFC7; }
 
 /* Фокус: в макете он синий во всех трёх типах кнопок */
 .site :where(.btn):focus-visible {
@@ -2291,13 +2276,11 @@ body:not(.page-home) main > :first-child {
 /* Кнопка на фоне первого экрана: новое правило .btn--outline задало белый фон,
    и кремовый текст на нём давал 1.13. Возвращаем полупрозрачную тёмную
    подложку — на фото она читается, на белом не появляется. */
-.btn--on-media,
-.btn--on-media:hover {
+.btn--on-media {
   background: rgba(58, 60, 21, 0.55);
   border-color: var(--c-cream);
   color: var(--c-cream);
 }
-.btn--on-media:hover { background: var(--c-cream); color: var(--c-deep); }
 
 
 /* =========================================================================
@@ -2826,7 +2809,6 @@ body[data-modal-open] {
   background: var(--c-cream);
   color: var(--c-deep);
 }
-.hero .searchbar__cta.btn--primary:hover { background: var(--c-white); color: var(--c-deep); }
 
 /* ---------- Блок «О нас» ----------
    Фото уходит в левый край экрана, текст лежит на кремовой панели
@@ -3323,7 +3305,6 @@ body[data-modal-open] {
   inset: -2px 0;
   min-height: var(--tap-min);
 }
-.house__more:hover { background: var(--c-white); color: var(--c-deep); }
 
 /* Кнопка бронирования во всю ширину карточки.
    Кремовый на оливковом даёт 3.6 — при 18px это провал (нужно 4.5).
@@ -3351,7 +3332,6 @@ body[data-modal-open] {
   font-weight: 500;
   line-height: 1;
 }
-.house__book:hover { background: #726E4B; color: var(--c-cream); }
 
 /* ---------- Карточка «Интересное рядом» ---------- */
 .cards--nearby {
@@ -3435,7 +3415,6 @@ body[data-modal-open] {
   background: var(--c-cream);
   color: var(--c-deep);
 }
-.place__more:hover { background: var(--c-white); color: var(--c-deep); }
 .place__details summary { list-style: none; cursor: pointer; }
 .place__details summary::-webkit-details-marker { display: none; }
 .place__details .place__details-copy { margin: 20px 0 0; }
@@ -3494,7 +3473,6 @@ body[data-modal-open] {
   .place__title { font-size: 32px; line-height: 36px; }
 }
 .nearby-more { transition: background-color 0.2s ease, color 0.2s ease; }
-.nearby-more:hover { background: var(--c-terra); color: var(--c-cream); }
 
 /* ---------- Аккордеон вопросов ---------- */
 .faq { display: grid; gap: 20px; }  /* зазор плашек, замер инспектора */
@@ -3897,7 +3875,6 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 .promo__title { margin: 0; font-family: var(--font-heading); font-weight: 400; color: #F7F0E6; font-size: 24px; line-height: 25px; min-height: 50px; }
 .promo__copy .promo__text { margin: 14px 0 0; color: #F7F0E6; font-size: 18px; line-height: 22px; }
 .promo__book { flex: none; margin-top: auto; width: 100%; height: 50px; min-height: 50px; padding: 14px 40px; font-size: 18px; font-weight: 500; line-height: 22px; border: 0; background: #F7F0E6; color: #494949; border-radius: 100px; }
-.promo__book:hover { background: var(--c-white); color: #494949; }
 .page-promotions .offers-section + .section { padding-top: 60px; }
 @media (max-width: 1279px) {
   .promo__title br, .promo__text br { display: none; }
@@ -4103,7 +4080,7 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 
 /* ---------- Наведение на карточку домика ----------
    Одинаково на главной и на «Размещении»: фотография чуть приближается,
-   кнопка темнеет. Движение выключается для тех, кто просил уменьшить
+   состояния кнопок зависят от самих кнопок. Движение выключается для тех, кто просил уменьшить
    анимацию (п. 10.13 ТЗ). */
 .house__media img {
   transition: transform 0.35s ease;
@@ -4113,7 +4090,6 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   transform: scale(1.03);
 }
 .house__book { transition: background-color 0.2s ease; }
-.house:hover .house__book { background: var(--c-olive-dark, #746F4C); }
 .house__more { transition: background-color 0.2s ease, color 0.2s ease; }
 @media (prefers-reduced-motion: reduce) {
   .house:hover .house__media img,
@@ -5302,8 +5278,6 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 
 /* Правки по аудиту 30.09; координаты декора остаются локальны секциям. */
 .desktop-background { display: contents; }
-.site .btn--primary:is(:active, .is-pressed),
-.site .btn--primary:hover:is(:active, .is-pressed) { background: #494949; color: #F7F0E6; }
 .page-head .container { width: min(100% - 2 * var(--gutter), 1240px); max-width: 1240px; }
 .page-head h1 { color: #847F57; }
 .guests__note-end { white-space: nowrap; }
@@ -5375,3 +5349,24 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 /* Фокус из админки работает и при выдаче оригинала на production.
    Более специфичные правила территории и мозаики сохраняют приоритет. */
 .site picture > img:not(:where(.kontur-host *)) { object-position: var(--focus, 50% 50%); }
+
+/* Общие состояния кнопок из «Компоненты (2).png», после размерных правил.
+   Карточки сохраняют свои исходные варианты заливки поверх фотографии. */
+.site .btn:not(:disabled, [aria-disabled="true"], .is-loading, [data-state="loading"]):hover {
+  background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6);
+  color: #494949;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+.site .btn:is(.btn--primary, .house__book, .promo__book):focus-visible {
+  background: #8CA8FB; color: #FFFFFF;
+}
+.site .btn:is(.btn--outline, .house__more, .place__more, .btn--on-media):is(:active, .is-pressed) {
+  background: #D5CFC7; color: #494949; border-color: #494949;
+}
+.site .btn.btn--ghost:is(:active, .is-pressed) { background: #D5CFC7; color: #494949; }
+.site .btn:is(.btn--primary, .house__book, .promo__book):is(:active, .is-pressed) {
+  background: #494949; color: #F7F0E6; border-color: transparent;
+}
+.site .btn.footer__cta:is(:active, .is-pressed) { background: #FFFFFF; color: #494949; border-color: #494949; }
+.site .btn:is(:disabled, [aria-disabled="true"]) { background: #E0D9C9; color: #494949; border-color: transparent; pointer-events: none; }
