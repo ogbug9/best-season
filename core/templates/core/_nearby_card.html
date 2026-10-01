@@ -17,7 +17,7 @@
                 {% if level == "2" and not place.link_url %}
                   {{ place.description|truncatewords:20|linebreaksbr }}
                 {% else %}
-                  <span class="home-desktop-copy">{{ place.description|nearby_description|linebreaksbr }}</span><span class="home-mobile-copy" data-fit-nearby-copy data-line-width="310">{{ place.description|mobile_nearby_description|linebreaksbr }}</span>
+                  <span class="home-desktop-copy">{{ place.description|nearby_description|linebreaksbr }}</span><span class="home-mobile-copy" data-fit-nearby-copy>{{ place.description|mobile_nearby_description|linebreaksbr }}</span>
                 {% endif %}
               </p>
             {% endif %}

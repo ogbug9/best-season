@@ -134,6 +134,9 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .mosaic__item { min-height: 0; aspect-ratio: 170 / 179; border-radius: 6px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .mosaic__item--empty { display: none; }
 .site .territory-card .mosaic__caption { position: absolute; inset: 0; min-height: 0; justify-content: flex-end; padding: 12px 16px; gap: 0; background: linear-gradient(to bottom, transparent 55%, rgba(0, 0, 0, .48) 100%); }
+/* Касание оставляет :hover/:focus-within: отступы закрытого состояния
+   должны перекрывать десктопное правило и после повторного нажатия. */
+.site .territory-card:not(.is-open) .mosaic__caption { justify-content: flex-end; padding: 12px 16px; }
 /* Затемнение и размытие только по нажатию: в статике плитка — чистый кадр. */
 .site .territory-card:not(.is-open)::after { opacity: 0; }
 .site .territory-card.is-open::after { opacity: 1; }
@@ -161,8 +164,8 @@
 .page-home .home-nearby .home-mobile-copy { display: block; }
 .place__description [data-fit-nearby-copy] { display: block; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .cards--nearby { align-items: stretch; }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place { min-height: 448.37px; padding: 24px 16px; gap: 6px; border-radius: 18px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__head { min-height: 80px; gap: 5px; }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place { min-height: 493.375px; padding: 24px 16px; gap: 6px; border-radius: 18px; }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__head { min-height: 82px; gap: 14px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__number { font-size: 24px; line-height: 25px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place .place__title { width: 100%; font-size: 24px; line-height: 25px; white-space: normal; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__title br { display: none; }
@@ -170,7 +173,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__media + .place__body { margin-top: 18px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__media > :is(picture, .ph) { position: absolute; inset: 0; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__media :is(picture, img, .ph) { height: 100%; aspect-ratio: auto; border-radius: 8.75px; }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__body { gap: 20px; }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__body { gap: 17px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__body .place__description { min-height: 79.38px; font-size: 16px; line-height: 20px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__actions { margin: auto 0 0; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__more { min-height: 44px; height: 44px; padding: 12px 35px; font-size: 16px; line-height: 20px; }
@@ -270,25 +273,26 @@
 .page-home .home-after-hero > .section--pattern::before { --mobile-bg: url('../img/mobile-backgrounds/home-territory.svg'); --mobile-bg-x: -160px; --mobile-bg-y: -199.07px; --mobile-bg-w: 445px; --mobile-bg-h: 726px; }
 .page-home .home-nearby::before { --mobile-bg: url('../img/mobile-backgrounds/home-nearby.svg'); --mobile-bg-x: -197px; --mobile-bg-y: -236.74px; --mobile-bg-w: 967px; --mobile-bg-h: 957px; }
 .page-home .home-faq-background-anchor::before { --mobile-bg: url('../img/mobile-backgrounds/home-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -328.32px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
-.page-home .footer { --mobile-bg: url('../img/mobile-backgrounds/home-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 0px; --mobile-bg-w: 1438px; --mobile-bg-h: 1286px; }
+.page-home .footer { --mobile-bg: url('../img/mobile-backgrounds/home-footer.webp'); --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
 .page-houses .houses-catalog::after { --mobile-bg: url('../img/mobile-backgrounds/houses-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
 .page-houses .houses-catalog::before { --mobile-bg: url('../img/mobile-backgrounds/houses-catalog.svg'); --mobile-bg-x: 42px; --mobile-bg-y: 214.00px; --mobile-bg-w: 774px; --mobile-bg-h: 867px; }
 .page-houses .houses-faq::before { --mobile-bg: url('../img/mobile-backgrounds/houses-faq.svg'); --mobile-bg-x: -205px; --mobile-bg-y: -228.36px; --mobile-bg-w: 601px; --mobile-bg-h: 908px; }
-.page-houses .footer { --mobile-bg: url('../img/mobile-backgrounds/houses-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 0px; --mobile-bg-w: 1438px; --mobile-bg-h: 1286px; }
+.page-houses .footer { --mobile-bg: url('../img/mobile-backgrounds/houses-footer.webp'); --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
 .page-promotions .offers-section::before { --mobile-bg: url('../img/mobile-backgrounds/promotions-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
 .page-promotions main > .section:last-child::before { --mobile-bg: url('../img/mobile-backgrounds/promotions-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -785.75px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
-.page-promotions .footer { --mobile-bg: url('../img/mobile-backgrounds/promotions-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 0px; --mobile-bg-w: 1438px; --mobile-bg-h: 1286px; }
+.page-promotions .footer { --mobile-bg: url('../img/mobile-backgrounds/promotions-footer.webp'); --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
 .page-house .house-title::after { --mobile-bg: url('../img/mobile-backgrounds/house-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
 .page-house .house-title::before { --mobile-bg: url('../img/mobile-backgrounds/house-booking.svg'); --mobile-bg-x: 0px; --mobile-bg-y: 203.00px; --mobile-bg-w: 867px; --mobile-bg-h: 971px; }
 /* PNG: начало рисунка 1761, блока «О домике» около 1860 — сдвиг -99. */
 .page-house .house-about-section::before { --mobile-bg: url('../img/mobile-backgrounds/house-reviews.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -99px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
-.page-house .footer { --mobile-bg: url('../img/mobile-backgrounds/house-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 0px; --mobile-bg-w: 1438px; --mobile-bg-h: 1287px; }
-/* Нижний рисунок следует за реквизитами, включая раскрытый список меню. */
+.page-house .footer { --mobile-bg: url('../img/mobile-backgrounds/house-footer.webp'); --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
+/* Точный рисунок из отдельных mobile SVG: растр 2× сглаживает тонкие
+   заливки без изменения путей. Позиция следует за реквизитами. */
 :is(.page-home, .page-houses, .page-promotions, .page-house) .footer__legal { position: relative; }
 .site:is(.page-home, .page-houses, .page-promotions, .page-house) .footer::before { content: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .footer__legal::before {
   content: ''; position: absolute; z-index: -1; pointer-events: none;
-  left: calc(50% - 195px + var(--mobile-bg-x)); top: -82px;
+  left: calc(50% - 195px + var(--mobile-bg-x)); top: -400px;
   width: var(--mobile-bg-w); height: var(--mobile-bg-h);
   background: var(--mobile-bg) center / 100% 100% no-repeat;
 }

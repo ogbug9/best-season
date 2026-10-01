@@ -350,7 +350,8 @@
 
   var cards = document.querySelectorAll(".territory-card");
   if (!cards.length) return;
-  if (!window.matchMedia || !window.matchMedia("(hover: none)").matches) return;
+  if (!window.matchMedia) return;
+  var touchLayout = window.matchMedia("(hover: none), (max-width: 699px)");
 
   function close(except) {
     cards.forEach(function (card) {
@@ -365,6 +366,7 @@
     card.setAttribute("aria-expanded", "false");
 
     card.addEventListener("click", function (event) {
+      if (!touchLayout.matches) return;
       // Ссылка внутри карточки работает сама: раскрытие ей не мешает
       if (event.target.closest("a, button")) return;
       var open = !card.classList.contains("is-open");
@@ -385,4 +387,5 @@
   document.addEventListener("click", function (event) {
     if (!event.target.closest(".territory-card")) close(null);
   });
+  touchLayout.addEventListener("change", function () { close(null); });
 })();

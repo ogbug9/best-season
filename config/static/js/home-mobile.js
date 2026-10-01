@@ -22,7 +22,8 @@
       else if (!narrow && spaces[index].isConnected) spaces[index].replaceWith(br);
     });
     fixedParagraphs.forEach(({ paragraph, lines }) => {
-      const width = Math.min(paragraph.clientWidth - 4, Number(paragraph.dataset.lineWidth) || Infinity);
+      const reserve = paragraph.hasAttribute('data-fit-nearby-copy') ? 1 : 4;
+      const width = Math.min(paragraph.clientWidth - reserve, Number(paragraph.dataset.lineWidth) || Infinity);
       if (!mobile.matches || width <= 0 || !measure) return;
       const style = getComputedStyle(paragraph);
       measure.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
