@@ -162,17 +162,19 @@
       });
       buttons.forEach((button, index) => button.setAttribute('aria-current', String(index === active)));
     }
-    // Высоту ряда закрепляем по самой высокой карточке и один раз.
-    // Раньше она пересчитывалась под текущий слайд на каждом кадре
-    // прокрутки, и при горизонтальном свайпе карточка ездила вверх-вниз.
+    // Для мест высоту всех слайдов выравнивает flex: она остаётся общей
+    // при свайпе и автоматически уменьшается после переноса текста.
+    // Фиксированный размер сохраняем только у ряда отзывов.
     function fixHeight() {
       if (!track.matches('.cards--nearby, .reviews')) return;
       track.style.height = '';
       heads.forEach((head, index) => { head.style.minHeight = originalHeadHeights[index]; });
       const headHeight = heads.reduce((max, head) => Math.max(max, head.getBoundingClientRect().height), 0);
       heads.forEach(head => { head.style.minHeight = `${headHeight}px`; });
-      const tallest = slides.reduce((max, slide) => Math.max(max, slide.getBoundingClientRect().height), 0);
-      if (tallest) track.style.height = `${tallest}px`;
+      if (track.classList.contains('reviews')) {
+        const tallest = slides.reduce((max, slide) => Math.max(max, slide.getBoundingClientRect().height), 0);
+        if (tallest) track.style.height = `${tallest}px`;
+      }
     }
     function onScroll() { if (!frame) frame = requestAnimationFrame(update); }
     track.addEventListener('scroll', onScroll, { passive: true });
@@ -181,9 +183,14 @@
     }
     fixHeight();
     update();
-    const resize = new ResizeObserver(() => { fixHeight(); onScroll(); });
+    let active = true;
+    function refresh() { if (active) { fixHeight(); onScroll(); } }
+    const resize = new ResizeObserver(refresh);
     slides.forEach(slide => resize.observe(slide));
+    heads.forEach(head => resize.observe(head.querySelector('.place__title')));
+    if (heads.length) document.fonts?.ready.then(refresh);
     cleanups.push(() => {
+      active = false;
       track.removeEventListener('scroll', onScroll);
       cancelAnimationFrame(frame);
       resize.disconnect();
