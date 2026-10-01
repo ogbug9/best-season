@@ -5101,21 +5101,6 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-home .territory-card--pavilion > picture img { object-position: 40% center; }
   .page-home .territory-card--workshops > picture img { object-position: center 91%; }
 }
-/* В макете наведённой «Большой беседки» зимний кадр из архива владельца. */
-@media (min-width: 900px) and (hover: hover) {
-  .territory-card--pavilion::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    border-radius: inherit;
-    background: url("../img/design-reference/territory-pavilion-hover.jpg") center / cover no-repeat;
-    opacity: 0;
-    transition: opacity .2s ease;
-    pointer-events: none;
-  }
-  .territory-card--pavilion:is(:hover, :focus-within)::before { opacity: 1; }
-}
 /* Подпись занимает всю плитку: отступы из макета (295×295,
    padding 217/38/20/39) сами прижимают заголовок к низу. */
 .territory-card .mosaic__caption {
