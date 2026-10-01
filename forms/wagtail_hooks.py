@@ -24,9 +24,9 @@ class FormSubmissionViewSet(SnippetViewSet):
     menu_order = 200
     add_to_admin_menu = True
 
-    list_display = ["created_at", "form_type", "name", "phone", "status"]
+    list_display = ["created_at", "form_type", "topic", "name", "phone", "status"]
     list_filter = ["form_type", "status", "created_at"]
-    search_fields = ["name", "phone", "email", "message"]
+    search_fields = ["name", "phone", "email", "topic", "message"]
     ordering = ["-created_at"]
 
     panels = [
@@ -45,6 +45,7 @@ class FormSubmissionViewSet(SnippetViewSet):
                 FieldPanel("phone", read_only=True),
                 FieldPanel("email", read_only=True),
                 FieldPanel("message", read_only=True),
+                FieldPanel("topic", read_only=True),
             ],
             heading="Контакт",
         ),

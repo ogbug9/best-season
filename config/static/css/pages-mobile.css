@@ -45,6 +45,8 @@ body.page-promotions main > .offers-section:first-child { padding: 112px 0 32px;
 .page-promotions .promo--vygodnaya-banya { --promo-photo-h: 221; --promo-photo-gap: 20px; --promo-h: 439px; }
 .page-promotions .promo--gostepriimstvo { --promo-photo-h: 221; --promo-h: 415px; }
 .page-promotions .promo--pravilnaya-udalenka { --promo-photo-h: 221; --promo-h: 405px; }
+.page-promotions .promo--podarochnyy-sertifikat { --promo-photo-h: 221; --promo-photo-gap: 16px; gap: 0; }
+.page-promotions .promotion-request-modal .container { width: 100%; }
 .page-promotions .promo__media { padding: 0; margin-bottom: var(--promo-photo-gap); }
 .page-promotions .promo__media :is(picture, .ph) { display: block; width: 100%; aspect-ratio: 334 / var(--promo-photo-h); border-radius: 14px; }
 .page-promotions .promo__media img { width: 100%; height: 100%; object-fit: cover; }

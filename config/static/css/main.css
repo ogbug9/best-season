@@ -5355,3 +5355,8 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 }
 .site .btn.footer__cta:is(:active, .is-pressed) { background: #FFFFFF; color: #494949; border-color: #494949; }
 .site .btn:is(:disabled, [aria-disabled="true"]) { background: #E0D9C9; color: #494949; border-color: transparent; pointer-events: none; }
+.site .promotion-request-modal { box-sizing: border-box; width: 640px; max-width: calc(100% - 32px); padding: 32px 20px 20px; }
+.promotion-request-modal .section { padding: 16px 0; }
+.promotion-request-modal .container { width: 100%; }
+.promotion-request-modal .booking-modal__close { position: absolute; top: 12px; right: 12px; }
+.promotion-request-modal [data-promotion-request-title] { margin: 0 32px 16px 0; font: 500 28px/1.2 var(--font-heading); }

@@ -18,7 +18,11 @@
           {% if promo.description %}<div class="promo__text prose">{{ promo.description|richtext }}</div>{% endif %}
           {% if promo.date_to %}<p class="promo__text">Действует до {{ promo.date_to|date:"d.m.Y" }}</p>{% endif %}
         </div>
-        <button type="button" class="btn promo__book" data-booking-open data-entry-point="7">Забронировать</button>
+        {% if promo.cta_type == 'request' %}
+        <a class="btn promo__book" href="?promotion={{ promo.slug }}#promotion-request" data-promotion-request-open data-form-type="{{ promo.request_form_type }}" data-topic="Акция: {{ promo.title }}">{{ promo.button_label }}</a>
+        {% else %}
+        <button type="button" class="btn promo__book" data-booking-open data-entry-point="7">{{ promo.button_label }}</button>
+        {% endif %}
       </li>
       {% endfor %}
     </ul>
@@ -26,4 +30,14 @@
   </div>
 </section>
 {% include "includes/faq_section.html" %}
+<section class="section" id="promotion-request" data-promotion-request-panel>
+  <div class="container">
+    <h2 id="promotion-request-title" data-promotion-request-title>{{ promotion_request_topic|default:'Оставить заявку' }}</h2>
+    <div data-promotion-form="feedback">{% include "forms/request_form.html" with form=promotion_feedback_form form_type="feedback" submit_label="Отправить заявку" %}</div>
+    <div data-promotion-form="certificate">{% include "forms/request_form.html" with form=promotion_certificate_form form_type="certificate" submit_label="Заказать сертификат" %}</div>
+  </div>
+</section>
+<dialog class="booking-modal promotion-request-modal" data-promotion-request-modal aria-labelledby="promotion-request-title">
+  <button type="button" class="booking-modal__close" data-promotion-request-close aria-label="Закрыть">×</button>
+</dialog>
 {% endblock %}

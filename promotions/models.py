@@ -16,6 +16,10 @@ class Promotion(models.Model):
     предложения и период показа на сайте.
     """
 
+    class CTAType(models.TextChoices):
+        BOOKING = 'booking', 'Забронировать'
+        REQUEST = 'request', 'Оставить заявку'
+
     title = models.CharField("Заголовок", max_length=160)
     slug = models.SlugField("Идентификатор", unique=True, max_length=160)
     image = models.ForeignKey(
@@ -34,11 +38,14 @@ class Promotion(models.Model):
     # переносы, а описание акции в макете стоит в три строки.
     short_description = models.TextField("Краткое описание", max_length=255, blank=True)
     description = RichTextField("Условия акции", blank=True, features=BODY_FEATURES)
+    cta_type = models.CharField('Действие кнопки', max_length=16, choices=CTAType.choices, default=CTAType.BOOKING)
+    cta_label = models.CharField('Подпись кнопки', max_length=80, blank=True)
+    is_visible = models.BooleanField('Показывать на сайте', default=True)
 
     date_from = models.DateField("Показывать с", null=True, blank=True)
     date_to = models.DateField("Показывать до", null=True, blank=True)
 
-    is_published = models.BooleanField("Показывать на сайте", default=True)
+    is_published = models.BooleanField("Опубликована", default=True)
     sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
 
     panels = [
@@ -50,6 +57,9 @@ class Promotion(models.Model):
                 FieldPanel("mobile_image"),
                 FieldPanel("short_description"),
                 FieldPanel("description"),
+                FieldPanel("cta_type"),
+                FieldPanel("cta_label"),
+                FieldPanel("is_visible"),
             ],
             heading="Акция",
         ),
@@ -75,7 +85,7 @@ class Promotion(models.Model):
     @property
     def is_active(self):
         """Акция показывается, если опубликована и период не истёк."""
-        if not self.is_published:
+        if not self.is_published or not self.is_visible:
             return False
         today = timezone.localdate()
         if self.date_from and today < self.date_from:
@@ -83,6 +93,14 @@ class Promotion(models.Model):
         if self.date_to and today > self.date_to:
             return False
         return True
+
+    @property
+    def button_label(self):
+        return self.cta_label or self.get_cta_type_display()
+
+    @property
+    def request_form_type(self):
+        return 'certificate' if self.slug == 'podarochnyy-sertifikat' else 'feedback'
 
 
 class PromotionsPage(Page):
@@ -103,6 +121,12 @@ class PromotionsPage(Page):
 
         context = super().get_context(request)
         context["promotions"] = [p for p in Promotion.objects.all() if p.is_active]
+        from forms.forms import FeedbackForm, CertificateForm
+        selected = next((p for p in context['promotions'] if p.slug == request.GET.get('promotion')), None)
+        topic = f'Акция: {selected.title}' if selected else ''
+        context['promotion_request_topic'] = topic
+        context['promotion_feedback_form'] = FeedbackForm(auto_id='promo_feedback_%s', initial={'topic': topic})
+        context['promotion_certificate_form'] = CertificateForm(auto_id='promo_certificate_%s', initial={'topic': topic})
         from core.faq_sets import PROMOTION_FAQ, page_faq
 
         context["faq"] = page_faq(PROMOTION_FAQ)

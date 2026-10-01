@@ -215,6 +215,8 @@ PROMOTIONS = [
      "4 дня по цене 3 в будние дни"),
     ("Тариф \"С октября по апрель\"", "oktyabr-aprel",
      "От 3-х суток скидка 10%\nОт 5 суток - 20%\nОт 7 суток - 25%"),
+    ('Подарочный сертификат', 'podarochnyy-sertifikat',
+     'демо: Текст и условия подарочного сертификата ожидаются от владельца.'),
 ]
 
 
@@ -688,7 +690,10 @@ class Command(BaseCommand):
             if not self.dry:
                 Promotion.objects.create(
                     title=title, slug=slug, short_description=text,
-                    sort_order=order * 10, is_published=True,
+                    sort_order=30 if slug == 'oktyabr-aprel' else order * 10, is_published=True,
+                    is_visible=slug != 'may-sentyabr',
+                    cta_type='request' if slug in {'den-rozhdeniya','vygodnaya-banya','gostepriimstvo','pravilnaya-udalenka','podarochnyy-sertifikat'} else 'booking',
+                    cta_label='Заказать сертификат' if slug == 'podarochnyy-sertifikat' else '',
                 )
             self.mark(f"акция: {title}")
 

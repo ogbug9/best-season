@@ -37,6 +37,7 @@ class FormSubmission(models.Model):
     phone = models.CharField("Телефон", max_length=32, blank=True)
     email = models.EmailField("Email", blank=True)
     message = models.TextField("Сообщение", blank=True)
+    topic = models.CharField('Тема заявки', max_length=255, blank=True)
 
     date_from = models.DateField("Дата заезда", null=True, blank=True)
     date_to = models.DateField("Дата выезда", null=True, blank=True)

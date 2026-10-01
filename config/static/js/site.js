@@ -182,6 +182,39 @@
   ).observe(hero);
 })();
 
+/* ---------- Заявки на акции: существующие FeedbackForm/CertificateForm ---------- */
+(function () {
+  'use strict';
+  var modal = document.querySelector('[data-promotion-request-modal]');
+  var panel = document.querySelector('[data-promotion-request-panel]');
+  if (!modal || !panel || typeof modal.showModal !== 'function') return;
+  var opener = null;
+  modal.appendChild(panel);
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-promotion-request-open]');
+    if (!button) return;
+    var type = button.getAttribute('data-form-type');
+    var selected = panel.querySelector('[data-promotion-form="' + type + '"]');
+    if (!selected) return;
+    event.preventDefault();
+    opener = button;
+    var topic = button.getAttribute('data-topic') || '';
+    panel.querySelector('[data-promotion-request-title]').textContent = topic;
+    panel.querySelectorAll('[data-promotion-form]').forEach(function (form) {
+      form.hidden = form !== selected;
+    });
+    selected.querySelector('[name="topic"]').value = topic;
+    document.body.setAttribute('data-modal-open', '');
+    if (!modal.open) modal.showModal();
+  });
+  modal.querySelector('[data-promotion-request-close]').addEventListener('click', function () { modal.close(); });
+  modal.addEventListener('click', function (event) { if (event.target === modal) modal.close(); });
+  modal.addEventListener('close', function () {
+    if (!document.querySelector('dialog[open]')) document.body.removeAttribute('data-modal-open');
+    if (opener) opener.focus();
+  });
+})();
+
 /* ---------- Уведомление о cookie ---------- */
 (function () {
   "use strict";

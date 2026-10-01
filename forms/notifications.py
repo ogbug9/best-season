@@ -32,6 +32,8 @@ def _lines(submission):
     ]
     if submission.phone:
         rows.append(f"Телефон: {submission.phone}")
+    if submission.topic:
+        rows.append(f'Тема: {submission.topic}')
     if submission.email:
         rows.append(f"Почта: {submission.email}")
     if submission.house:

@@ -46,12 +46,13 @@ class BaseRequestForm(forms.ModelForm):
 
     class Meta:
         model = FormSubmission
-        fields = ["name", "phone", "email", "message", "consent_given"]
+        fields = ["name", "phone", "email", "message", "topic", "consent_given"]
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "name", "required": True}),
             "phone": forms.TextInput(attrs={"autocomplete": "tel", "inputmode": "tel"}),
             "email": forms.EmailInput(attrs={"autocomplete": "email"}),
             "message": forms.Textarea(attrs={"rows": 4}),
+            "topic": forms.HiddenInput(),
         }
         labels = {
             "name": "Как вас зовут",

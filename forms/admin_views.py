@@ -25,6 +25,7 @@ COLUMNS = [
     ("date_to", "Выезд"),
     ("guests", "Гостей"),
     ("message", "Сообщение"),
+    ('topic', 'Тема заявки'),
     ("source_url", "Страница"),
     ("utm_source", "utm_source"),
     ("utm_medium", "utm_medium"),
