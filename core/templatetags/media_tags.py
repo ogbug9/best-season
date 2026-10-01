@@ -31,6 +31,14 @@ PRESETS = {
 }
 
 
+def _focus_attr(image):
+    """Передать фокус Wagtail в CSS, сохранив приоритет правил отдельных плиток."""
+    x, y = getattr(image, "focal_point_x", None), getattr(image, "focal_point_y", None)
+    if x is None or y is None or not image.width or not image.height:
+        return ""
+    return f' style="--focus: {round(x / image.width * 100)}% {round(y / image.height * 100)}%"'
+
+
 @register.simple_tag
 def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=None,
             mobile_original=False, mobile_preset=None, mobile_image=None):
@@ -56,7 +64,7 @@ def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=
             f"<picture>{mobile_source}"
             f'<img src="{escape(image.file.url)}"'
             f' width="{image.width}" height="{image.height}"'
-            f' alt="{alt_text}" loading="{escape(loading)}" decoding="async"{class_attr}>'
+            f' alt="{alt_text}" loading="{escape(loading)}" decoding="async"{class_attr}{_focus_attr(image)}>'
             "</picture>"
         )
 
@@ -96,7 +104,7 @@ def picture(image, preset="card", alt=None, loading="lazy", css_class="", sizes=
         f'<source type="image/webp" srcset="{", ".join(webp_srcset)}" sizes="{sizes}">'
         f'<img src="{fallback.url}" srcset="{", ".join(jpeg_srcset)}" sizes="{sizes}"'
         f' width="{fallback.width}" height="{fallback.height}"'
-        f' alt="{alt_text}" loading="{loading}" decoding="async"{class_attr}>'
+        f' alt="{alt_text}" loading="{loading}" decoding="async"{class_attr}{_focus_attr(image)}>'
         "</picture>"
     )
     return mark_safe(html)

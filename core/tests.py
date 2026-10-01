@@ -44,6 +44,24 @@ class MobileMediaTests(TestCase):
         self.assertIn(image.file.url, html)
 
 
+class FocalPointTests(TestCase):
+    def test_focal_point_reaches_object_position(self):
+        from PIL import Image as PILImage
+        from wagtail.images import get_image_model
+        from core.templatetags.media_tags import picture
+        buffer = io.BytesIO()
+        PILImage.new('RGB', (800, 1000), 'olive').save(buffer, format='JPEG')
+        buffer.seek(0)
+        image = get_image_model().objects.create(
+            title='Focus', file=ImageFile(buffer, name='focus.jpg'),
+            focal_point_x=400, focal_point_y=940,
+            focal_point_width=10, focal_point_height=10,
+        )
+        with override_settings(GENERATE_IMAGE_RENDITIONS_ON_REQUEST=False):
+            html = picture(image, preset='promo')
+        self.assertIn('--focus: 50% 94%', html)
+
+
 class ArchivePhotoImportTests(TestCase):
     def test_startup_import_preserves_later_editor_removal(self):
         from PIL import Image as PILImage

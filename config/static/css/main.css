@@ -5356,3 +5356,16 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-house .equipment--accordion .footer__toggle[aria-expanded="true"]::after { height: 2px; background: #847f57; }
   .page-house .equipment--accordion .footer__toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 }
+
+/* ---------- Кадр фотографий ----------
+   Размер фото задаёт окно, а не пропорции исходника. Без ограничения
+   grid-строки карточка резала вытянутый слайд сверху. */
+.house__slides { grid-template: minmax(0, 1fr) / minmax(0, 1fr); }
+.house__slide { min-height: 0; overflow: hidden; }
+.house__slide picture { display: block; height: 100%; }
+.mosaic--photos .mosaic__item { position: relative; }
+.mosaic--photos .mosaic__item > picture { position: absolute; inset: 0; }
+.mosaic--photos .mosaic__item > picture img { width: 100%; height: 100%; object-fit: cover; }
+/* Фокус из админки работает и при выдаче оригинала на production.
+   Более специфичные правила территории и мозаики сохраняют приоритет. */
+.site picture > img:not(:where(.kontur-host *)) { object-position: var(--focus, 50% 50%); }
