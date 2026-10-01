@@ -48,7 +48,8 @@
 .site .nav-toggle__button span::after { content: ''; position: absolute; top: 3px; left: 0; width: 16px; border-top: 2px solid #494949; }
 
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .hero { min-height: 570px; height: 570px; padding: 176px 0 0; align-items: start; box-shadow: 0 4px 4px #49494940; }
-.page-home .hero { min-height: 100svh; height: 100svh; }
+/* Центр группы остаётся в середине экрана под шапкой на любой высоте. */
+.page-home .hero { min-height: 568px; height: 100svh; padding: 72px 0 0; align-items: center; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .hero::before { background: rgba(0, 0, 0, .5); }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .hero__media::after { background: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .hero__inner { transform: none; }
@@ -141,9 +142,13 @@
 .site .territory-card:is(:hover, :focus-within):not(.is-open) > picture,
 .site .territory-card:is(:hover, :focus-within):not(.is-open) > .ph { filter: none; }
 .site .territory-card.is-open .territory-card__details { display: block; }
-.site .territory-card.is-open .mosaic__caption { overflow-y: auto; justify-content: center; padding: 12px 16px; background: none; }
-.site .territory-card .territory-card__details p { font-size: 12px; line-height: 15px; }
-.site .territory-card__link { margin-top: 10px; padding: 6px 12px; font-size: 12px; }
+/* Состояние компонента 295×295 уменьшено до мобильной плитки.
+   safe center оставляет начало текста доступным при нехватке высоты. */
+.site .territory-card.is-open .mosaic__caption { overflow-y: auto; justify-content: safe center; padding: 12px 10px; gap: 8px; background: none; }
+.site .territory-card.is-open .mosaic__caption > * { flex-shrink: 0; }
+.site .territory-card .territory-card__details p { width: 100%; font-size: 11px; line-height: 13px; }
+.site .territory-card__link { position: relative; min-height: 24px; height: 24px; margin-top: 14px; padding: 5px 16px; font-size: 10px; line-height: 14px; }
+.site .territory-card__link::before { content: ''; position: absolute; inset: -15px 0 -5px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .mosaic__item--more { grid-column: 1 / -1; aspect-ratio: auto; margin-top: 14px; height: 44px; border-radius: 100px; background: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .mosaic__more { height: 44px; min-height: 0; padding: 12px 20px; border: 0; border-radius: 100px; background: #9b5026; color: #fff; font-size: 16px; line-height: 20px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .mosaic__more-label { width: auto; }
@@ -162,6 +167,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place .place__title { width: 100%; font-size: 24px; line-height: 25px; white-space: normal; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__title br { display: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__media { position: relative; aspect-ratio: 318 / 192.5; }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__media + .place__body { margin-top: 18px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__media > :is(picture, .ph) { position: absolute; inset: 0; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__media :is(picture, img, .ph) { height: 100%; aspect-ratio: auto; border-radius: 8.75px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .place__body { gap: 20px; }
@@ -247,14 +253,13 @@
 :is(.page-home .quote, .page-home .home-nearby, .page-home .home-faq-background-anchor,
     .page-houses .houses-catalog, .page-houses .houses-faq,
     .page-promotions .offers-section, .page-promotions main > .section:last-child,
-    .page-house .house-title, .page-house .house-reviews-section,
+    .page-house .house-title, .page-house .house-about-section,
     .page-home .footer, .page-houses .footer, .page-promotions .footer, .page-house .footer) { position: relative; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .footer { background-image: none; overflow: clip; }
 :is(.page-home .quote, .page-home .home-after-hero > .section--pattern, .page-home .home-nearby, .page-home .home-faq-background-anchor,
     .page-houses .houses-catalog, .page-houses .houses-faq,
     .page-promotions .offers-section, .page-promotions main > .section:last-child,
-    .page-house .house-title, .page-house .house-reviews-section,
-    .page-home .footer, .page-houses .footer, .page-promotions .footer, .page-house .footer)::before,
+    .page-house .house-title, .page-house .house-about-section)::before,
 .page-houses .houses-catalog::after, .page-house .house-title::after {
   content: ''; position: absolute; z-index: -1; pointer-events: none;
   left: calc(50% - 195px + var(--mobile-bg-x)); top: var(--mobile-bg-y);
@@ -265,20 +270,35 @@
 .page-home .home-after-hero > .section--pattern::before { --mobile-bg: url('../img/mobile-backgrounds/home-territory.svg'); --mobile-bg-x: -160px; --mobile-bg-y: -199.07px; --mobile-bg-w: 445px; --mobile-bg-h: 726px; }
 .page-home .home-nearby::before { --mobile-bg: url('../img/mobile-backgrounds/home-nearby.svg'); --mobile-bg-x: -197px; --mobile-bg-y: -236.74px; --mobile-bg-w: 967px; --mobile-bg-h: 957px; }
 .page-home .home-faq-background-anchor::before { --mobile-bg: url('../img/mobile-backgrounds/home-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -328.32px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
-.page-home .footer::before { --mobile-bg: url('../img/mobile-backgrounds/home-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 509.00px; --mobile-bg-w: 1438px; --mobile-bg-h: 1286px; }
+.page-home .footer { --mobile-bg: url('../img/mobile-backgrounds/home-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 0px; --mobile-bg-w: 1438px; --mobile-bg-h: 1286px; }
 .page-houses .houses-catalog::after { --mobile-bg: url('../img/mobile-backgrounds/houses-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
 .page-houses .houses-catalog::before { --mobile-bg: url('../img/mobile-backgrounds/houses-catalog.svg'); --mobile-bg-x: 42px; --mobile-bg-y: 214.00px; --mobile-bg-w: 774px; --mobile-bg-h: 867px; }
 .page-houses .houses-faq::before { --mobile-bg: url('../img/mobile-backgrounds/houses-faq.svg'); --mobile-bg-x: -205px; --mobile-bg-y: -228.36px; --mobile-bg-w: 601px; --mobile-bg-h: 908px; }
-.page-houses .footer::before { --mobile-bg: url('../img/mobile-backgrounds/houses-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 649.00px; --mobile-bg-w: 1438px; --mobile-bg-h: 1286px; }
+.page-houses .footer { --mobile-bg: url('../img/mobile-backgrounds/houses-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 0px; --mobile-bg-w: 1438px; --mobile-bg-h: 1286px; }
 .page-promotions .offers-section::before { --mobile-bg: url('../img/mobile-backgrounds/promotions-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
 .page-promotions main > .section:last-child::before { --mobile-bg: url('../img/mobile-backgrounds/promotions-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -785.75px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
-.page-promotions .footer::before { --mobile-bg: url('../img/mobile-backgrounds/promotions-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 646.00px; --mobile-bg-w: 1438px; --mobile-bg-h: 1286px; }
+.page-promotions .footer { --mobile-bg: url('../img/mobile-backgrounds/promotions-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 0px; --mobile-bg-w: 1438px; --mobile-bg-h: 1286px; }
 .page-house .house-title::after { --mobile-bg: url('../img/mobile-backgrounds/house-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
 .page-house .house-title::before { --mobile-bg: url('../img/mobile-backgrounds/house-booking.svg'); --mobile-bg-x: 0px; --mobile-bg-y: 203.00px; --mobile-bg-w: 867px; --mobile-bg-h: 971px; }
-.page-house .house-reviews-section::before { --mobile-bg: url('../img/mobile-backgrounds/house-reviews.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -921.00px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
-.page-house .footer::before { --mobile-bg: url('../img/mobile-backgrounds/house-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 492.00px; --mobile-bg-w: 1438px; --mobile-bg-h: 1287px; }
+/* PNG: начало рисунка 1761, блока «О домике» около 1860 — сдвиг -99. */
+.page-house .house-about-section::before { --mobile-bg: url('../img/mobile-backgrounds/house-reviews.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -99px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
+.page-house .footer { --mobile-bg: url('../img/mobile-backgrounds/house-footer.svg'); --mobile-bg-x: -431px; --mobile-bg-y: 0px; --mobile-bg-w: 1438px; --mobile-bg-h: 1287px; }
+/* Нижний рисунок следует за реквизитами, включая раскрытый список меню. */
+:is(.page-home, .page-houses, .page-promotions, .page-house) .footer__legal { position: relative; }
+.site:is(.page-home, .page-houses, .page-promotions, .page-house) .footer::before { content: none; }
+:is(.page-home, .page-houses, .page-promotions, .page-house) .footer__legal::before {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  left: calc(50% - 195px + var(--mobile-bg-x)); top: -82px;
+  width: var(--mobile-bg-w); height: var(--mobile-bg-h);
+  background: var(--mobile-bg) center / 100% 100% no-repeat;
+}
 
 @media (max-width: 374px) {
+  .site .territory-card { min-height: 150px; }
+  .site .territory-card.is-open .mosaic__caption { gap: 4px; padding: 9px 6px; }
+  .site .territory-card .mosaic__caption :is(h2, h3) { font-size: 12px; line-height: 15px; }
+  .site .territory-card .territory-card__details p { font-size: 9px; line-height: 11px; }
+  .site .territory-card__link { margin-top: 8px; }
   .page-home .photo-mosaic .section__title { font-size: 32px; line-height: 34px; }
   .site .header__bar { gap: 0; padding-inline: 12px; }
   .site .header__name { width: 62px; font-size: 13px; }

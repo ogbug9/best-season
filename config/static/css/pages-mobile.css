@@ -149,6 +149,11 @@ body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
 .page-house .equipment--accordion .equipment__switch ~ .equipment__columns .equipment__group ~ .equipment__group { visibility: visible; }
 .page-house .equipment--accordion .equipment__list[hidden] { display: none; }
 .page-house .equipment--accordion .footer__toggle { min-height: 44px; }
+.page-house .equipment--accordion { padding: 16px 24px; }
+.page-house .equipment--accordion .equipment__columns,
+.page-house .equipment--accordion .equipment__column { gap: 4px; }
+.page-house .equipment--accordion .equipment__group { gap: 0; }
+.page-house .equipment--accordion .equipment__list:not([hidden]) { padding: 8px 0 16px; }
 :is(.page-house, .page-reviews) .reviews { display: flex; overflow-x: auto; gap: 10px; scroll-snap-type: x mandatory; scrollbar-width: none; }
 :is(.page-house, .page-reviews) .reviews::-webkit-scrollbar { display: none; }
 :is(.page-house, .page-reviews) .reviews__item { flex: 0 0 100%; width: 100%; min-width: 0; scroll-snap-align: start; gap: 20px; }
