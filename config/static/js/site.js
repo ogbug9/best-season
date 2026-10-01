@@ -227,8 +227,9 @@
   }
 
   var dialog = document.querySelector("[data-lightbox]");
+  var galleryScope = gallery.closest('.house-mosaic-section') || gallery;
   var items = Array.prototype.slice.call(
-    gallery.querySelectorAll("[data-gallery-item]")
+    galleryScope.querySelectorAll("[data-gallery-item]")
   );
   // Без поддержки <dialog> просмотрщика не будет: ссылки откроют фото сами
   if (!dialog || !items.length || typeof dialog.showModal !== "function") return;

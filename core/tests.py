@@ -96,6 +96,49 @@ class FocalPointTests(TestCase):
 
 
 class ArchivePhotoImportTests(TestCase):
+    def test_same_name_new_content_replaces_file_dimensions_and_renditions(self):
+        from PIL import Image as PILImage
+        from wagtail.images import get_image_model
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / 'config/static/img/content-gallery/gallery'
+            source.mkdir(parents=True)
+            path = source / 'same.webp'
+            PILImage.new('RGB', (32, 32), 'olive').save(path)
+            with override_settings(BASE_DIR=Path(folder), MEDIA_ROOT=Path(folder)/'media'):
+                call_command('import_archive_photos', if_not_applied=True, stdout=io.StringIO())
+                image = get_image_model().objects.get(title='BS archive gallery/same')
+                original_id = image.pk
+                image.get_rendition('width-16')
+                PILImage.new('RGB', (64, 48), 'brown').save(path)
+                call_command('import_archive_photos', if_not_applied=True, stdout=io.StringIO())
+                image.refresh_from_db()
+                self.assertEqual(image.pk, original_id)
+                self.assertEqual((image.width, image.height), (64,48))
+                self.assertEqual(image.renditions.count(), 0)
+                self.assertEqual(Path(image.file.path).read_bytes(), path.read_bytes())
+
+    def test_editor_file_replacement_is_preserved_when_source_changes(self):
+        from PIL import Image as PILImage
+        from wagtail.images import get_image_model
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / 'config/static/img/content-gallery/gallery'
+            source.mkdir(parents=True)
+            path = source / 'same.webp'
+            PILImage.new('RGB', (32,32), 'olive').save(path)
+            with override_settings(BASE_DIR=Path(folder), MEDIA_ROOT=Path(folder)/'media'):
+                call_command('import_archive_photos', if_not_applied=True, stdout=io.StringIO())
+                image = get_image_model().objects.get(title='BS archive gallery/same')
+                edited = Path(folder)/'editor.webp'
+                PILImage.new('RGB', (40,40), 'white').save(edited)
+                with edited.open('rb') as file:
+                    image.file.save('editor.webp', ImageFile(file))
+                editor_name=image.file.name
+                PILImage.new('RGB', (64,48), 'brown').save(path)
+                call_command('import_archive_photos', if_not_applied=True, stdout=io.StringIO())
+                image.refresh_from_db()
+                self.assertEqual(image.file.name, editor_name)
+                self.assertEqual(Path(image.file.path).read_bytes(), edited.read_bytes())
+
     def test_startup_import_preserves_later_editor_removal(self):
         from PIL import Image as PILImage
         from houses.models import HouseIndexPage, HousePage

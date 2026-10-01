@@ -507,6 +507,13 @@ def _consent_page():
 # =========================================================================
 
 
+class ArchivePhotoImport(models.Model):
+    """Последняя импортированная версия; позволяет сохранять замену редактора."""
+    source_key = models.CharField(max_length=500, unique=True)
+    sha256 = models.CharField(max_length=64)
+    image = models.ForeignKey('wagtailimages.Image', null=True, on_delete=models.SET_NULL, related_name='+')
+
+
 class ContentPage(Page):
     """Простая текстовая страница: «О нас», правовые, «Цены и условия»,
     «Партнёрам». Всё, что не требует особой структуры."""
