@@ -57,7 +57,9 @@ run("manage.py", "seed_content")
 run("manage.py", "apply_desktop_reference", "--if-not-applied")
 run("manage.py", "import_archive_photos", "--if-not-applied")
 run("manage.py", "prepare_mobile_images")
-run("manage.py", "collectstatic", "--noinput")
+# Исходники архива используются командой импорта, но не отдаются как static.
+# Не дублируем 1.36 GiB фотографий в STATIC_ROOT на каждом старте контейнера.
+run("manage.py", "collectstatic", "--noinput", "--ignore=*originals*")
 
 print("[start] запускаю gunicorn", flush=True)
 os.execvp(
