@@ -2,7 +2,7 @@
 .header { top: 0; transition: transform .2s ease; }
 .header.header--hidden { transform: translateY(-100%); }
 .header:has(:focus-visible), .header:has(.nav-toggle[open]) { transform: none; }
-.site .nav-toggle[open] .nav--mobile { max-height: calc(100dvh - 88px); overflow-y: auto; overscroll-behavior: contain; }
+.site .nav-toggle[open] .nav--mobile { max-height: calc(100dvh - 72px); overflow-y: auto; overscroll-behavior: contain; }
 @media (prefers-reduced-motion: reduce) { .header { transition: none; } }
 .footer__toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .site .lightbox { box-sizing: border-box; max-width: 100%; }

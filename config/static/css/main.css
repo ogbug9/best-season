@@ -49,7 +49,7 @@
   --text-on-dark:   var(--c-cream);
   --accent:         var(--c-terra);
   --accent-hover:   #7F401E;
-  --header-shadow:  0 4px 16px rgba(35, 35, 35, .12);
+  --header-shadow:  0 4px 20px rgba(0, 0, 0, .15);
 
   /* Типографика. Локальные Montserrat, Etude Noire и Inter — см. fonts.css. */
   --font-heading: "Etude Noire", ui-serif, Georgia, serif;
@@ -4029,15 +4029,13 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 .house__media img {
   transition: transform 0.35s ease;
 }
-.house:hover .house__media img,
-.house:focus-within .house__media img {
+.house:hover .house__media img {
   transform: scale(1.03);
 }
 .house__book { transition: background-color 0.2s ease; }
 .house__more { transition: background-color 0.2s ease, color 0.2s ease; }
 @media (prefers-reduced-motion: reduce) {
-  .house:hover .house__media img,
-  .house:focus-within .house__media img { transform: none; }
+  .house:hover .house__media img { transform: none; }
 }
 
 /* ---------- Подписи кнопок ----------
@@ -5284,3 +5282,78 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 .promotion-request-modal .container { width: 100%; }
 .promotion-request-modal .booking-modal__close { position: absolute; top: 12px; right: 12px; }
 .promotion-request-modal [data-promotion-request-title] { margin: 0 32px 16px 0; font: 500 28px/1.2 var(--font-heading); }
+
+/* Уточнения макетов меню и просмотра фото, 03.10.2026. */
+.page-houses .houses-search .searchbar__field { background: #D5CEBC; }
+.house__slides { touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.house__slides img { -webkit-user-drag: none; }
+.house__media { z-index: 0; }
+.house__overlay, .house__book { position: relative; z-index: 2; }
+.house__overlay { pointer-events: none; }
+.house__overlay :is(a, button) { pointer-events: auto; }
+.site .lightbox {
+  box-sizing: border-box; width: min(1240px, calc(100vw - 80px)); max-width: none;
+  height: min(921px, calc(100dvh - 80px)); max-height: none;
+  padding: 122px 40px 40px; border-radius: 40px;
+  background: #F7F0E6; color: #494949; overflow: hidden;
+}
+.site .lightbox[open] { display: flex; flex-direction: column; gap: 40px; }
+.site .lightbox::backdrop { background: rgba(43, 49, 67, .7); }
+.site .lightbox__image {
+  display: block; flex: 1 1 0; min-height: 0; width: 100%; max-height: none;
+  border-radius: 23px; background: #D9D9D9; object-fit: contain;
+}
+.site .lightbox__caption { flex: none; margin: 0; min-height: 24px; font-size: 20px; line-height: 24px; }
+.site .lightbox__close { top: 32px; right: 32px; width: 50px; height: 50px; border: 0; border-radius: 15px; background: #E0D9C9; color: #847F57; font-size: 32px; }
+.site .lightbox__nav { top: calc(50% + 19px); width: 40px; height: 40px; min-width: 40px; min-height: 40px; border: 1px solid #847F57; background: #E0D9C9; color: #847F57; }
+.site .lightbox__nav--prev { left: 20px; }
+.site .lightbox__nav--next { right: 20px; background: #847F57; color: #F7F0E6; }
+.site .lightbox :is(button):hover { background: #9B5026; color: #F7F0E6; border-color: #9B5026; }
+@media (max-width: 1279px) {
+  body.menu-open { overflow: hidden; }
+  .site .header:has(.nav-toggle[open]) { top: 0; transform: none; }
+  .site .header:has(.nav-toggle[open]) .header__bar { background: #847F57; }
+  .site .header:has(.nav-toggle[open]) :is(.header__logo, .header__name, .header__phone, .nav-toggle__button) { color: #F7F0E6; }
+  .site .nav-toggle[open] .nav--mobile {
+    position: fixed; top: 72px; inset-inline: 0; width: 100%;
+    height: calc(100dvh - 72px); max-height: none; overflow-y: auto;
+    overscroll-behavior: contain; padding: 24px 30px 40px;
+    border-radius: 0 0 20px 20px; background: #F7F0E6;
+    animation: menu-slide .25s ease both;
+  }
+  .site .nav--mobile .nav__list { display: grid; gap: 0; padding: 0; margin: 0; }
+  .nav-section > summary { display: flex; align-items: center; justify-content: space-between; min-height: 44px; padding-block: 10px; font: 400 18px/24px var(--font-body); color: #494949; cursor: pointer; list-style: none; }
+  .nav-section > summary::-webkit-details-marker { display: none; }
+  .nav-section__sign::before { content: '+'; color: #847F57; font-size: 22px; }
+  .nav-section[open] .nav-section__sign::before { content: '−'; }
+  .site .nav--mobile .nav__sublist { display: grid; gap: 10px; padding: 10px 0; margin: 0; }
+  .site .nav--mobile .nav__sublink { min-height: 40px; padding: 8px 20px; font: 400 16px/24px var(--font-body); background: #E0D9C9; border-radius: 100px; }
+  .nav-mobile__bottom { display: flex; flex-direction: column; align-items: center; gap: 40px; padding-top: 36px; }
+  .site .nav-mobile__bottom > .btn { width: min(280px, 100%); min-height: 40px; padding: 9px 20px; background: #9B5026; color: #F7F0E6; font-size: 16px; }
+  .nav-mobile__pets { padding: 14px 20px; margin: 0; border: 1px solid #9B5026; border-radius: 20px; font: 400 16px/20px var(--font-body); color: #494949; }
+  .nav-mobile__contacts { display: grid; gap: 16px; text-align: center; color: #494949; font-size: 16px; }
+  .nav-mobile__contacts p { margin: 0; }
+  .nav-mobile__contacts a { text-decoration: none; }
+  .nav-mobile__contacts .nav-mobile__phone { color: #9B5026; font-size: 24px; line-height: 30px; }
+  .nav-mobile__bottom .socials { justify-content: center; gap: 5px; margin: -14px 0 0; }
+  .site .nav-toggle[open] .nav-toggle__button span { border: 0; height: 16px; }
+  .site .nav-toggle[open] .nav-toggle__button span::before,
+  .site .nav-toggle[open] .nav-toggle__button span::after { content: ''; position: absolute; top: 7px; left: 0; width: 16px; border-top: 2px solid currentColor; transform: rotate(45deg); }
+  .site .nav-toggle[open] .nav-toggle__button span::after { transform: rotate(-45deg); }
+}
+@keyframes menu-slide { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@media (min-width: 700px) and (max-width: 1279px) { .site .nav-toggle[open] .nav--mobile { top: 110px; height: calc(100dvh - 110px); } }
+@media (max-width: 699px) {
+  .site .lightbox { width: calc(100vw - 24px); height: calc(100dvh - 32px); padding: 76px 16px 24px; border-radius: 24px; }
+  .site .lightbox[open] { gap: 24px; }
+  .site .lightbox__close { top: 16px; right: 16px; width: 44px; height: 44px; }
+  .site .lightbox__caption { font-size: 16px; line-height: 22px; }
+  .site .lightbox__image { border-radius: 16px; }
+  .site .lightbox__nav--prev { left: 4px; }
+  .site .lightbox__nav--next { right: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { .site .nav-toggle[open] .nav--mobile { animation: none; } }
+
+.nav-section > summary > a { color: inherit; text-decoration: none; }
+
+html:has(.lightbox[open]) { overflow: hidden; }

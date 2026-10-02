@@ -1,4 +1,4 @@
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags static %}
 {% wagtail_site as current_site %}
 {% with s=settings.core.SiteSettings %}
 
@@ -72,27 +72,43 @@
         </button>
       </div>
 
-      {% comment %} Мобильное меню — раскрытие на <details>, без скриптов {% endcomment %}
       <details class="nav-toggle">
         <summary class="nav-toggle__button" aria-label="Меню"><span aria-hidden="true">☰</span></summary>
-        <nav class="nav nav--mobile" aria-label="Меню">
+        <nav class="nav nav--mobile" aria-label="Мобильное меню">
           <ul class="nav__list">
-            {% for item in current_site.root_page.get_children.live.in_menu %}
+            {% for item in current_site.root_page.get_children.live %}
+              {% if item.show_in_menus or item.slug == 'akcii' %}
               <li>
-                <a class="nav__link" href="{% pageurl item %}"
-                   {% if item.id == page.id %}aria-current="page"{% endif %}>{{ item.title }}</a>
-                {% with children=item.get_children.live.in_menu %}
-                  {% if children %}
-                    <ul class="nav__sublist">
-                      {% for child in children %}
-                        <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
-                      {% endfor %}
-                    </ul>
-                  {% endif %}
-                {% endwith %}
+                <details class="nav-section">
+                  <summary><a href="{% pageurl item %}">{{ item.title }}</a><span class="nav-section__sign" aria-hidden="true"></span></summary>
+                  <ul class="nav__sublist">
+                    {% for child in item.get_children.live.in_menu %}
+                      <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
+                    {% empty %}
+                      <li><a class="nav__sublink" href="{% pageurl item %}">Перейти в раздел</a></li>
+                    {% endfor %}
+                  </ul>
+                </details>
               </li>
+              {% endif %}
             {% endfor %}
           </ul>
+          <div class="nav-mobile__bottom">
+            <button type="button" class="btn btn--primary" data-booking-open data-entry-point="1">Забронировать даты</button>
+            <p class="nav-mobile__pets">Можно с животными<br>Существует доплата</p>
+            <div class="nav-mobile__contacts">
+              <a class="nav-mobile__phone" href="tel:{{ s.phone|default:'+79912550837' }}">{{ s.phone_display|default:s.phone|default:'+7 (991) 255-08-37' }}</a>
+              <a href="mailto:{{ s.email|default:'bestseasonst@gmail.com' }}">{{ s.email|default:'bestseasonst@gmail.com' }}</a>
+              <p>{{ s.work_hours|default:'10:00 - 22:00' }}</p>
+            </div>
+            <ul class="socials">
+              {% if s.telegram_url %}<li><a class="socials__item" href="{{ s.telegram_url }}" target="_blank" rel="noopener"><img src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="Telegram"></a></li>{% endif %}
+              {% if s.vk_url %}<li><a class="socials__item" href="{{ s.vk_url }}" target="_blank" rel="noopener"><img src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="ВКонтакте"></a></li>{% endif %}
+              {% if s.tiktok_url %}<li><a class="socials__item" href="{{ s.tiktok_url }}" target="_blank" rel="noopener"><img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="TikTok"></a></li>{% endif %}
+              {% if s.whatsapp_url %}<li><a class="socials__item" href="{{ s.whatsapp_url }}" target="_blank" rel="noopener"><img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="WhatsApp"></a></li>{% endif %}
+              {% if s.instagram_url %}<li><a class="socials__item" href="{{ s.instagram_url }}" target="_blank" rel="noopener"><img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="Instagram"></a></li>{% endif %}
+            </ul>
+          </div>
         </nav>
       </details>
     </div>

@@ -102,3 +102,12 @@
   .site [data-request-form] .btn { font-size: 16px; line-height: 20px; min-height: 44px; padding: 11px 16px; }
   .site [data-request-form] .btn:is(.is-loading, .is-success) { padding-inline: 0; }
 }
+
+/* Состояния из нового макета: кремовый/оливковый → #E5D0C0 → #9B5026. */
+.site :is(.hero .btn.searchbar__cta, .btn.house__book, .btn.place__more):hover {
+  background-color: #E5D0C0; color: #494949; border-color: transparent;
+}
+.site :is(.hero .btn.searchbar__cta, .btn.house__book, .btn.place__more):is(:active, .is-pressed),
+.site .hero .searchbar:active .searchbar__cta {
+  background-color: #9B5026; color: #F7F0E6; border-color: transparent;
+}

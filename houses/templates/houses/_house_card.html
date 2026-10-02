@@ -9,14 +9,14 @@
     {% comment %} Слайды: обложка плюс первые кадры галереи, под фото три точки {% endcomment %}
     {% with slides=house.card_slides %}
       {% if slides %}
-        <div class="house__slides" data-house-slider>
+        <a class="house__slides" data-house-slider href="{% pageurl house %}" aria-label="Подробнее: {{ house.title }}">
           {% for image in slides %}
             <div class="house__slide{% if forloop.first %} is-active{% endif %}"
                  {% if not forloop.first %}aria-hidden="true"{% endif %}>
               {% picture image preset="house_card" alt=house.title %}
             </div>
           {% endfor %}
-        </div>
+        </a>
         {% if slides|length > 1 %}
           <div class="house__dots" role="tablist" aria-label="Фотографии домика">
             {% for image in slides %}

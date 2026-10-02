@@ -305,9 +305,11 @@
     if (event.key === "ArrowRight") show(current + 1);
   });
 
-  // Клик мимо картинки закрывает просмотрщик
+  // Только фон за рамкой закрывает окно; клики по кремовым полям его не закрывают.
   dialog.addEventListener("click", function (event) {
-    if (event.target === dialog) dialog.close();
+    if (event.target !== dialog) return;
+    var box = dialog.getBoundingClientRect();
+    if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
   });
 
   // Возврат фокуса на кадр, с которого открыли — иначе с клавиатуры
@@ -351,59 +353,75 @@
   });
 })();
 
-/* Карусель фотографий в карточке домика.
-   Без библиотеки: три кадра, точки, свайп и стрелки с клавиатуры.
-   Без JS показывается первый слайд — карточка остаётся рабочей. */
+/* Фото карточек: ссылка, точки, drag/swipe и автолистание раз в 3 с. */
 (function () {
+  "use strict";
   document.querySelectorAll("[data-house-slider]").forEach(function (slider) {
     var slides = Array.prototype.slice.call(slider.children);
     if (slides.length < 2) return;
-
     var card = slider.closest(".house");
-    var dots = card ? Array.prototype.slice.call(card.querySelectorAll("[data-house-dot]")) : [];
-    var current = 0;
-
+    var dots = Array.prototype.slice.call(card.querySelectorAll("[data-house-dot]"));
+    var current = 0, start = null, suppressClick = false, timer = 0;
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     function show(index) {
       current = (index + slides.length) % slides.length;
       slides.forEach(function (slide, i) {
-        var active = i === current;
-        slide.classList.toggle("is-active", active);
-        if (active) slide.removeAttribute("aria-hidden");
-        else slide.setAttribute("aria-hidden", "true");
+        slide.classList.toggle("is-active", i === current);
+        slide.setAttribute("aria-hidden", String(i !== current));
       });
       dots.forEach(function (dot, i) {
         dot.classList.toggle("is-active", i === current);
-        dot.setAttribute("aria-selected", i === current ? "true" : "false");
+        dot.setAttribute("aria-selected", String(i === current));
+        dot.tabIndex = i === current ? 0 : -1;
       });
     }
-
+    function restart() {
+      window.clearTimeout(timer);
+      if (reduced.matches || document.hidden) return;
+      timer = window.setTimeout(function tick() {
+        // Не менять снимок во время чтения/перетаскивания или клавиатурного выбора.
+        if (!start && !card.matches(':hover') && !card.querySelector(':focus-visible') && card.getBoundingClientRect().bottom > 0 && card.getBoundingClientRect().top < window.innerHeight) show(current + 1);
+        timer = window.setTimeout(tick, 3000);
+      }, 3000);
+    }
     dots.forEach(function (dot, i) {
       dot.addEventListener("click", function (event) {
-        event.preventDefault();
-        show(i);
+        event.preventDefault(); show(i); restart();
+        // Pointer-переключение не оставляет фокус/увеличение на старой точке.
+        if (event.detail > 0) dot.blur();
       });
       dot.addEventListener("keydown", function (event) {
-        if (event.key === "ArrowRight") { event.preventDefault(); show(current + 1); dots[current].focus(); }
-        if (event.key === "ArrowLeft") { event.preventDefault(); show(current - 1); dots[current].focus(); }
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault(); show(current + (event.key === "ArrowRight" ? 1 : -1)); dots[current].focus(); restart();
       });
     });
-
-    // Свайп на телефоне. Горизонтальный жест переключает кадр,
-    // вертикальный не трогаем — иначе ломается прокрутка страницы.
-    var startX = null, startY = null;
-    slider.addEventListener("touchstart", function (event) {
-      // На мобильной главной свайп листает домики; фотографии — по точкам.
-      if (document.body.matches(".page-home, .page-houses") && window.matchMedia("(max-width: 699px)").matches) return;
-      startX = event.touches[0].clientX;
-      startY = event.touches[0].clientY;
-    }, { passive: true });
-    slider.addEventListener("touchend", function (event) {
-      if (startX === null) return;
-      var dx = event.changedTouches[0].clientX - startX;
-      var dy = event.changedTouches[0].clientY - startY;
+    slider.addEventListener('dragstart', function (event) { event.preventDefault(); });
+    slider.addEventListener('pointerdown', function (event) {
+      if (!event.isPrimary || event.button !== 0) return;
+      suppressClick = false;
+      start = { x: event.clientX, y: event.clientY, id: event.pointerId };
+    });
+    slider.addEventListener('pointermove', function (event) {
+      if (!start || event.pointerId !== start.id) return;
+      var dx = event.clientX - start.x, dy = event.clientY - start.y;
+      if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
+        suppressClick = true;
+        slider.setPointerCapture(event.pointerId);
+      }
+    });
+    slider.addEventListener('pointerup', function (event) {
+      if (!start || event.pointerId !== start.id) return;
+      var dx = event.clientX - start.x, dy = event.clientY - start.y;
       if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
-      startX = startY = null;
-    }, { passive: true });
+      start = null; restart();
+    });
+    slider.addEventListener('pointercancel', function () { start = null; });
+    slider.addEventListener('click', function (event) {
+      if (suppressClick) { event.preventDefault(); suppressClick = false; }
+    });
+    document.addEventListener('visibilitychange', restart);
+    reduced.addEventListener('change', restart);
+    show(0); restart();
   });
 })();
 
@@ -457,4 +475,35 @@
     if (!event.target.closest(".territory-card")) close(null);
   });
   touchLayout.addEventListener("change", function () { close(null); });
+})();
+
+/* Выезжающее меню: закрытие перед бронированием, Escape и цикл фокуса. */
+(function () {
+  var menu = document.querySelector('.nav-toggle');
+  if (!menu) return;
+  var toggle = menu.querySelector(':scope > summary');
+  var inert = new Map();
+  function sync() {
+    var open = menu.open && window.matchMedia('(max-width: 1279px)').matches;
+    document.body.classList.toggle('menu-open', open);
+    document.querySelectorAll('main, .footer, [data-sticky-cta]').forEach(function (el) {
+      if (open) { if (!inert.has(el)) inert.set(el, el.inert); el.inert = true; }
+      else if (inert.has(el)) { el.inert = inert.get(el); inert.delete(el); }
+    });
+    toggle.setAttribute('aria-label', open ? 'Закрыть меню' : 'Меню');
+  }
+  menu.addEventListener('toggle', sync);
+  menu.addEventListener('click', function (event) {
+    if (event.target.closest('a, [data-booking-open]')) { menu.open = false; sync(); }
+  });
+  menu.addEventListener('keydown', function (event) {
+    if (!menu.open) return;
+    if (event.key === 'Escape') { menu.open = false; sync(); toggle.focus(); event.preventDefault(); }
+    if (event.key !== 'Tab') return;
+    var targets = Array.prototype.filter.call(menu.querySelectorAll('summary, a, button'), function (el) { return el.getClientRects().length; });
+    var first = targets[0], last = targets[targets.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+  window.matchMedia('(max-width: 1279px)').addEventListener('change', function () { menu.open = false; sync(); });
 })();
