@@ -52,7 +52,7 @@ function fixture(options = {}) {
     visibilityState: options.hidden ? 'hidden' : 'visible',
     body: node(), head: { appendChild(s) { scripts.push(s); } },
     querySelector: () => modal,
-    // Разметка кнопок Контура (data-bs-kind): в заглушке кнопок нет.
+    // Кнопки Контура не перекрашиваются кодом сайта.
     querySelectorAll: () => options.buttons || [],
     getElementById: () => ({ textContent: JSON.stringify(config) }),
     createElement: () => node(),
@@ -295,13 +295,14 @@ test('booking form rendered after onInit becomes ready before timeout', () => {
   f.render(); f.timeout();
   assert.equal(f.fallback.hidden, true); assert.equal(f.host.hidden, false);
 });
-test('Kontur buttons get data-bs-kind by their themed background; disabled ones wait', () => {
+test('provider default theme is used and buttons are not recolored by the site', () => {
   const pay = { bg: 'rgb(155, 80, 38)', dataset: {} };
   const more = { bg: 'rgb(255, 255, 255)', dataset: {} };
   const book = { bg: 'rgb(230, 223, 209)', dataset: {}, disabled: true };
   const f = fixture({ buttons: [pay, more, book] });
   f.open(); f.load(); f.timeout();
-  assert.equal(pay.dataset.bsKind, 'primary');
-  assert.equal(more.dataset.bsKind, 'neutral');
-  assert.equal(book.dataset.bsKind, undefined, 'выключенная кнопка помечается после включения');
+  assert.equal(f.initConfig.theme, undefined, 'HotelWidget получает стандартную тему провайдера');
+  for (const button of [pay, more, book]) {
+    assert.equal(button.dataset.bsKind, undefined, 'скрипт сайта не добавляет маркеры пользовательской темы');
+  }
 });

@@ -119,40 +119,6 @@
     reportFailure(reason);
   }
 
-  // Кнопки Контура: основная (терракотовая после замены токенов в
-  // kontur-booking.css) — пилюля, остальные — бежевая плашка по макету.
-  // Классы кнопок захешированы, поэтому различаем по исходному фону и
-  // ставим data-bs-kind. Выключенную кнопку не помечаем: у неё серый фон,
-  // и «Забронировать» навсегда осталась бы второстепенной.
-  var kindObserver = null;
-  var kindFrame = 0;
-  var KIND_SELECTOR = '.booking-system .kontur-host [data-tid="Button__rootElement"], body > .react-ui [data-tid="Button__rootElement"]';
-
-  function tagButtonKinds() {
-    kindFrame = 0;
-    document.querySelectorAll(KIND_SELECTOR).forEach(function (button) {
-      if (button.dataset.bsKind || button.disabled) return;
-      var bg = window.getComputedStyle(button).backgroundColor;
-      button.dataset.bsKind = bg === "rgb(155, 80, 38)" ? "primary" : "neutral";
-    });
-  }
-
-  function scheduleButtonKinds() {
-    // setTimeout, а не кадр анимации: в скрытой вкладке кадры не приходят.
-    if (!kindFrame) kindFrame = setTimeout(tagButtonKinds, 30);
-  }
-
-  function watchButtonKinds(on) {
-    if (kindObserver) kindObserver.disconnect();
-    kindObserver = null;
-    clearTimeout(kindFrame);
-    kindFrame = 0;
-    if (!on || typeof MutationObserver === "undefined") return;
-    kindObserver = new MutationObserver(scheduleButtonKinds);
-    kindObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled"] });
-    scheduleButtonKinds();
-  }
-
   function showWidget() {
     if (state.failed || state.ready || !state.registered || !state.initSignalled) return;
     // onInit confirms SDK initialization, not that a usable booking form was
@@ -212,27 +178,6 @@
     });
   }
 
-  /* ---------- Тема виджета (п. 5.4.1) ----------
-     Настраиваем то, что Контур разрешает настраивать. Шрифт в моделях темы
-     не предусмотрен вовсе — типографика виджета останется системной, это
-     зафиксированное ограничение. */
-  function widgetTheme() {
-    return {
-      common: {
-        btnBackgroundColor: config.colorAccent || "#9B5026",
-        btnTextColor: config.colorLight || "#F7F0E6",
-        btnBorderRadius: 100,
-        inputBorderRadius: 10,
-        modalBorderRadius: 20,
-        // По умолчанию у Контура 425px, а п. 5.2 ТЗ требует полный экран
-        // до 768px. Поднимаем порог до требования ТЗ — проверить вживую,
-        // когда придёт hotelId: параметр влияет на лайтбоксы виджета,
-        // наше собственное окно и так раскрывается на весь экран.
-        modalAdaptiveThreshold: 768,
-      },
-    };
-  }
-
   function initWidget() {
     if (state.failed || state.ready || state.initializing || state.initialized) return;
     // The script can finish downloading after the guest has closed the dialog.
@@ -264,7 +209,6 @@
         version: "2",
         baseUrl: "https://bookonline24.ru",
         hooks: bookingHooks(state.attempt),
-        theme: widgetTheme(),
       });
       if (state.failed) return;
       window.HotelWidget.add({
@@ -388,8 +332,6 @@
     // вернулся на то же место. Без этого фон уезжает наверх на мобильных.
     document.body.style.top = "-" + window.scrollY + "px";
     document.body.setAttribute("data-modal-open", "true");
-    watchButtonKinds(true);
-
     if (typeof modal.showModal === "function") {
       modal.showModal();
     } else {
@@ -468,7 +410,6 @@
     clearTimeout(state.timer);
     var offset = Math.abs(parseInt(document.body.style.top || "0", 10)) || 0;
     document.body.removeAttribute("data-modal-open");
-    watchButtonKinds(false);
     document.body.style.top = "";
     window.scrollTo(0, offset);
     // preventScroll обязателен: браузер подкручивает страницу к элементу,
