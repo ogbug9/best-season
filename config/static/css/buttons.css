@@ -1,34 +1,23 @@
-/* Состояния кнопок.svg: три типа, шесть состояний.
-   Размерные варианты карточек/мобильных экранов задаются их раскладкой. */
+/* Обычный вид задают макеты разделов в main.css/home-mobile.css/pages-mobile.css.
+   Состояния взаимодействия — из «Состояния кнопок.svg». */
 .site .btn:not(:where(.kontur-host *, .react-ui *)) {
   font-family: var(--font-body);
   font-weight: 400;
-  border-style: solid;
-  border-width: 1px;
   text-decoration: none;
-  --button-radius: 100px;
-  border-radius: var(--button-radius);
   --button-surface: transparent;
 }
 .site .btn:not(:where(.sticky-cta, .house__more, .kontur-host *, .react-ui *)) { position: relative; }
-.site .header__aside .btn { padding-block: 9px; }
-.site .cookie-accept.btn { min-height: 36px; padding: 0; font-size: 11px; line-height: 14px; background-image: none; }
+.site .header__aside .btn:focus-visible { padding-block: 9px; }
+.site .cookie-accept.btn { min-height: 36px; padding: 0; font-size: 11px; line-height: 14px; }
 .site .footer__booking-link.btn { display: inline-flex; height: 24px; min-height: 0; padding: 0; font-size: 18px; line-height: 22px; }
 .site [data-request-form][data-confirmed-success] .btn { min-width: min(100%, 260px); }
 .site .btn:is(.is-loading, .is-success, [data-state="loading"], [data-state="success"]):not(:where(.kontur-host *, .react-ui *)) {
   padding-inline: 0; white-space: nowrap;
 }
-.site .btn.btn--primary:not(:where(.kontur-host *, .react-ui *)) {
-  background-color: #9B5026; color: #F7F0E6; border-color: transparent;
-}
-.site .btn.btn--outline:not(:where(.kontur-host *, .react-ui *)) {
-  background-color: transparent; color: #494949; border-color: #9B5026;
-}
-.site .btn.btn--ghost:not(:where(.kontur-host *, .react-ui *)) {
-  background-color: transparent; color: #494949; border-color: transparent;
-}
-/* Кремовая подложка сохраняет цвета образца и читаемость поверх фото. */
-.site .house__more.btn--outline, .site .about__text .btn--outline {
+.site .place__more { border-color: transparent; }
+.site .btn:not(:where(.kontur-host *, .react-ui *)):is(:hover, :focus-visible, :active, .is-pressed, .is-loading, .is-success, [data-state="loading"], [data-state="success"], :disabled, [aria-disabled="true"]) { background-image: none; }
+/* Подложка для тёмного текста появляется только при взаимодействии. */
+.site :is(.house__more, .about__text .btn--outline):is(:hover, :focus-visible, :active, .is-pressed, .is-loading, .is-success, [data-state="loading"], [data-state="success"]) {
   background-image: linear-gradient(var(--button-surface), var(--button-surface)), linear-gradient(#F7F0E6, #F7F0E6);
 }
 .site .btn:not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):hover,
@@ -112,5 +101,4 @@
   .site .cookie-accept.btn { min-height: 27px; font-size: 9px; line-height: 11px; }
   .site [data-request-form] .btn { font-size: 16px; line-height: 20px; min-height: 44px; padding: 11px 16px; }
   .site [data-request-form] .btn:is(.is-loading, .is-success) { padding-inline: 0; }
-  .site .house__more { padding-block: 5px; }
 }
