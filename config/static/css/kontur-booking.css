@@ -409,7 +409,7 @@ body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] .T3qk
 [data-bs-kontur] [data-bs-kind="primary"]:not(:disabled) { background: #9b5026 !important; color: #f7f0e6 !important; }
 [data-bs-kontur] [data-bs-kind="primary"]:not(:disabled):hover { background: #843f1b !important; }
 [data-bs-kontur] :is([data-bs-kind="neutral"], [data-bs-kind="control"]):not(:disabled) { background: #e6dfd1 !important; color: #494949 !important; }
-[data-bs-kontur] [data-tid="Button__rootElement"][data-bs-kind="control"] { border-radius: 10px !important; padding-inline: 14px !important; text-align: left; }
+[data-bs-kontur] [data-tid="Button__rootElement"][data-bs-kind="control"] { min-width: 104px; border-radius: 10px !important; padding-inline: 14px !important; text-align: left; }
 [data-bs-kontur] [data-tid="Button__rootElement"][data-bs-kind="link"] { background: transparent !important; color: #9b5026 !important; padding: 8px 0 !important; border-radius: 0 !important; }
 [data-bs-kontur] [data-tid="Button__rootElement"][data-bs-kind="icon"] { min-height: 40px !important; min-width: 40px; padding: 8px !important; }
 [data-bs-kontur] [data-tid="Button__rootElement"][data-bs-kind]:disabled { background: #e6dfd1 !important; color: #8c8780 !important; cursor: not-allowed; }
