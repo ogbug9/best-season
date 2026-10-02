@@ -320,8 +320,8 @@ body:has(.booking-system[open]) > .react-ui {
 .booking-system #BookingFormWidget .VwZTwv { padding: 0 !important; border: 0 !important; background: transparent !important; }
 .booking-system #BookingFormWidget :is([data-tid="DateRangePicker__start"], [data-tid="DateRangePicker__end"]) {
   height: 48px !important;
-  padding: 0 16px !important;
-  font-size: 18px !important;
+  padding: 0 8px !important;
+  font-size: 16px !important;
 }
 .booking-system #BookingFormWidget [data-tid="Button__rootElement"] { height: 48px !important; font-size: 18px !important; }
 
@@ -398,6 +398,9 @@ body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] .T3qk
 .booking-system .WidgetCardPriceButtonContainer { min-width: 220px; flex-shrink: 0; }
 .booking-system .WidgetCardPriceButtonContainer > [data-tid="Button__root"] { display: block; width: 100% !important; }
 .booking-system .WidgetCardPriceButtonContainer [data-bs-kind="primary"] { width: 100%; }
+[data-bs-kontur] [data-tid="Button__root"] { height: auto !important; }
+[data-bs-kontur] :is([data-tid="DateRangePicker__start"], [data-tid="DateRangePicker__end"]) { min-height: 48px !important; }
+.booking-system :is(#BookingRoomsWidget, #BookingHourlyWidget) [data-bs-kind="primary"] { padding-inline: 14px !important; }
 
 [data-bs-kontur] [data-tid="Button__rootElement"][data-bs-kind] {
   box-sizing: border-box !important; min-height: 48px !important; height: auto !important;
