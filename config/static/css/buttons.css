@@ -1,0 +1,116 @@
+/* Состояния кнопок.svg: три типа, шесть состояний.
+   Размерные варианты карточек/мобильных экранов задаются их раскладкой. */
+.site .btn:not(:where(.kontur-host *, .react-ui *)) {
+  font-family: var(--font-body);
+  font-weight: 400;
+  border-style: solid;
+  border-width: 1px;
+  text-decoration: none;
+  --button-radius: 100px;
+  border-radius: var(--button-radius);
+  --button-surface: transparent;
+}
+.site .btn:not(:where(.sticky-cta, .house__more, .kontur-host *, .react-ui *)) { position: relative; }
+.site .header__aside .btn { padding-block: 9px; }
+.site .cookie-accept.btn { min-height: 36px; padding: 0; font-size: 11px; line-height: 14px; background-image: none; }
+.site .footer__booking-link.btn { display: inline-flex; height: 24px; min-height: 0; padding: 0; font-size: 18px; line-height: 22px; }
+.site [data-request-form][data-confirmed-success] .btn { min-width: min(100%, 260px); }
+.site .btn:is(.is-loading, .is-success, [data-state="loading"], [data-state="success"]):not(:where(.kontur-host *, .react-ui *)) {
+  padding-inline: 0; white-space: nowrap;
+}
+.site .btn.btn--primary:not(:where(.kontur-host *, .react-ui *)) {
+  background-color: #9B5026; color: #F7F0E6; border-color: transparent;
+}
+.site .btn.btn--outline:not(:where(.kontur-host *, .react-ui *)) {
+  background-color: transparent; color: #494949; border-color: #9B5026;
+}
+.site .btn.btn--ghost:not(:where(.kontur-host *, .react-ui *)) {
+  background-color: transparent; color: #494949; border-color: transparent;
+}
+/* Кремовая подложка сохраняет цвета образца и читаемость поверх фото. */
+.site .house__more.btn--outline, .site .about__text .btn--outline {
+  background-image: linear-gradient(var(--button-surface), var(--button-surface)), linear-gradient(#F7F0E6, #F7F0E6);
+}
+.site .btn:not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):hover,
+.site :where(.searchbar:hover) .btn:not(:where([aria-disabled="true"], .is-loading, .is-success)) {
+  background-color: rgba(155, 80, 38, .2); color: #494949; border-color: transparent;
+  --button-surface: rgba(155, 80, 38, .2);
+}
+/* В SVG градиент относится к обводке, заливка — терракотовая 20%. */
+.site .btn:is(.btn--primary, .btn--outline):not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):hover::before,
+.site :where(.searchbar:hover) .btn.btn--primary:not(:where([aria-disabled="true"], .is-loading, .is-success))::before {
+  content: "";
+  position: absolute; inset: -1px; padding: 1px; border-radius: inherit;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,.5), #FFFFFF);
+  -webkit-mask: linear-gradient(#FFFFFF 0 0) content-box, linear-gradient(#FFFFFF 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.site .btn:not(:where(.kontur-host *, .react-ui *)):focus-visible,
+.site .equipment__switch:focus-visible ~ .equipment__toggle.btn {
+  outline: none; background-color: rgba(140,168,251,.3); color: #494949; border: 1px solid #8CA8FB;
+  --button-surface: rgba(140,168,251,.3);
+}
+.site .btn.btn--primary:not(:where(.kontur-host *, .react-ui *)):focus-visible,
+.site :where(.searchbar:focus-visible) .btn.btn--primary {
+  background-color: #8CA8FB; color: #F7F0E6; border-color: transparent;
+}
+.site .btn:not(:where(.kontur-host *, .react-ui *)):focus-visible::before,
+.site :where(.searchbar:focus-visible) .btn::before,
+.site .equipment__switch:focus-visible ~ .equipment__toggle.btn::before { content: none; }
+.site .btn:not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):is(:active, .is-pressed) {
+  background-color: rgba(73,73,73,.2); color: #494949; border-color: #494949;
+  --button-surface: rgba(73,73,73,.2);
+}
+.site .btn.btn--primary:not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):is(:active, .is-pressed),
+.site :where(.searchbar:active) .btn.btn--primary:not(:where([aria-disabled="true"], .is-loading, .is-success)) {
+  background-color: #494949; color: #F7F0E6; border-color: transparent;
+}
+.site .btn.btn--ghost:not(:where(.kontur-host *, .react-ui *)):is(:active, .is-pressed) { border-color: transparent; }
+.site .btn:not(:where(.kontur-host *, .react-ui *)):is(:active, .is-pressed)::before,
+.site :where(.searchbar:active) .btn::before { content: none; }
+.site .btn:not(:where(.kontur-host *, .react-ui *)):is(:disabled, [aria-disabled="true"]) {
+  background-color: #E0D9C9; color: #494949; border-color: transparent; pointer-events: none;
+}
+.site .btn:not(:where(.kontur-host *, .react-ui *)):is(.is-loading, [data-state="loading"]) {
+  background-color: rgba(132,127,87,.2); color: #494949; border-color: transparent; pointer-events: none;
+  --button-surface: transparent;
+}
+.site .btn:is(.btn--outline, .btn--ghost):not(:where(.kontur-host *, .react-ui *)):is(.is-loading, [data-state="loading"]) {
+  background-color: transparent; border-color: rgba(132,127,87,.3);
+}
+.site .btn.btn--ghost:not(:where(.kontur-host *, .react-ui *)):is(.is-loading, [data-state="loading"]) { border-color: transparent; }
+.site .btn:not(:where(.kontur-host *, .react-ui *)):is(.is-loading, [data-state="loading"])::after {
+  content: ""; position: static; inset: auto; flex: none;
+  box-sizing: border-box; width: 1em; height: 1em; min-height: 0;
+  border: 2px solid #847F57; border-right-color: transparent; border-radius: 50%;
+  animation: btn-spin .8s linear infinite;
+}
+.site .btn:not(:where(.kontur-host *, .react-ui *)):is(.is-success, [data-state="success"]) {
+  background-color: #847F57; color: #F7F0E6; border-color: transparent; pointer-events: none;
+  --button-surface: transparent;
+}
+.site .btn:is(.btn--outline, .btn--ghost):not(:where(.kontur-host *, .react-ui *)):is(.is-success, [data-state="success"]) {
+  background-color: transparent; color: #494949; border-color: #847F57;
+}
+.site .btn.btn--ghost:not(:where(.kontur-host *, .react-ui *)):is(.is-success, [data-state="success"]) { border-color: transparent; }
+.site .btn:not(:where(.kontur-host *, .react-ui *)):is(.is-success, [data-state="success"])::after {
+  content: ""; position: static; inset: auto; display: inline-block; flex: none;
+  box-sizing: border-box; width: 1.2em; height: 1.2em; min-height: 0;
+  border: 0; border-radius: 0; background-color: currentColor;
+  --success-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11.5' fill='none' stroke='black'/%3E%3Cpath d='m7.5 12 3 3 6-6' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  -webkit-mask: var(--success-icon) center / contain no-repeat;
+  mask: var(--success-icon) center / contain no-repeat;
+  animation: none;
+}
+.site .btn:not(:where(.kontur-host *, .react-ui *)):is(.is-loading, .is-success, [data-state="loading"], [data-state="success"], :disabled, [aria-disabled="true"])::before { content: none; }
+@media (prefers-reduced-motion: reduce) {
+  .site .btn:is(.is-loading, [data-state="loading"])::after { animation: none; }
+}
+@media (max-width: 699px) {
+  .site .cookie-accept.btn { min-height: 27px; font-size: 9px; line-height: 11px; }
+  .site [data-request-form] .btn { font-size: 16px; line-height: 20px; min-height: 44px; padding: 11px 16px; }
+  .site [data-request-form] .btn:is(.is-loading, .is-success) { padding-inline: 0; }
+  .site .house__more { padding-block: 5px; }
+}

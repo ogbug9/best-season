@@ -63,10 +63,10 @@
         {{ house.capacity }} спальных места{% if house.short_description %} + {{ house.short_description }}{% endif %}
       </p>
     </div>
-    <a class="btn house__more" href="{% pageurl house %}">Подробнее</a>
+    <a class="btn btn--outline house__more" href="{% pageurl house %}">Подробнее</a>
   </div>
 
-  <button type="button" class="btn house__book" data-booking-open data-house-id="{{ house.pk }}" data-house-title="{{ house.title }}" data-pms-name="{{ house.pms_name }}" data-entry-point="{{ entry|default:'3' }}">
+  <button type="button" class="btn btn--primary house__book" data-booking-open data-house-id="{{ house.pk }}" data-house-title="{{ house.title }}" data-pms-name="{{ house.pms_name }}" data-entry-point="{{ entry|default:'3' }}">
     Забронировать
   </button>
 </li>

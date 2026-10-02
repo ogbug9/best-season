@@ -48,7 +48,8 @@
     var boundary = next.getBoundingClientRect().top + window.scrollY;
     var y = window.scrollY;
     if (direction > 0 && y < boundary - 2) return boundary;
-    if (direction < 0 && y > 1 && y <= boundary + Math.min(120, window.innerHeight * 0.15)) return 0;
+    // Перед возвратом к герою оставляем 120 px обычной прокрутки вверх.
+    if (direction < 0 && y > 1 && y <= boundary - 120) return 0;
     return null;
   }
 

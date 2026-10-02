@@ -15,7 +15,7 @@
       {% if column.links %}
         <ul>
           {% for link in column.links %}
-            <li>{% if link.booking %}<button type="button" class="footer__booking-link" data-booking-open data-entry-point="1">{{ link.title }}</button>{% else %}<a href="{{ link.url }}">{{ link.title }}</a>{% endif %}</li>
+            <li>{% if link.booking %}<button type="button" class="btn btn--ghost footer__booking-link" data-booking-open data-entry-point="1">{{ link.title }}</button>{% else %}<a href="{{ link.url }}">{{ link.title }}</a>{% endif %}</li>
           {% endfor %}
         </ul>
       {% endif %}

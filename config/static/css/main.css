@@ -256,14 +256,14 @@ body {
   align-items: center;
   justify-content: center;
   gap: var(--s-2);
-  min-height: var(--tap-min);
-  /* padding 14px 40px и кегль 20px — из инспектора Figma,
-     узел Frame 2087326612 (Primary/Default). См. design/spec.json */
-  padding: 14px 40px;
+  min-height: 52px;
+  /* Состояния кнопок.svg: строка 24px + поля 13px + рамка 1px. */
+  padding: 13px 39px;
   font-size: 1.25rem;
   border: 1px solid transparent;
   border-radius: var(--radius-pill);
-  font-weight: 600;
+  font-weight: 400;
+  line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
@@ -1532,7 +1532,7 @@ body {
   border: 1px solid var(--c-terra);
   border-radius: 100px;
   min-height: 52px;
-  padding: 14px 40px;
+  padding: 13px 39px;
   gap: 10px;
 }
 
@@ -1542,16 +1542,6 @@ body {
   border-color: transparent;
   color: var(--c-dark);
 }
-
-/* Фокус: в макете он синий во всех трёх типах кнопок */
-.site :where(.btn):focus-visible {
-  outline: 3px solid var(--c-focus);
-  outline-offset: 2px;
-  border-radius: 100px;
-  background: #D7DAEC;
-  color: var(--c-dark);
-}
-.site .btn--primary:focus-visible { background: #8CA8FB; }
 
 /* Cookie notice из отдельного фрейма Оверлеи.svg. */
 .cookie-banner[hidden] { display: none; }
@@ -1628,50 +1618,7 @@ body {
   .cookie-close { width: 27px; height: 27px; font-size: 15px; }
 }
 
-.btn[data-state="loading"],
-.btn.is-loading {
-  background: var(--c-muted);
-  color: var(--c-dark);
-  border-color: transparent;
-  pointer-events: none;
-}
-.btn.is-loading::after {
-  content: "";
-  width: 1em; height: 1em;
-  border: 2px solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: btn-spin 0.8s linear infinite;
-}
-.btn--primary.is-loading { background: #E0D9C9; }
-.btn--outline.is-loading,
-.btn--ghost.is-loading { background: var(--c-cream); color: var(--c-dark); }
-.btn--outline.is-loading { border-color: var(--c-terra); }
 @keyframes btn-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) {
-  .btn.is-loading::after { animation-duration: 3s; }
-}
-
-.btn.is-success {
-  background: var(--c-olive);
-  color: var(--c-cream);
-  border-color: transparent;
-}
-.btn.is-success::after { content: "✓"; font-weight: 600; }
-.btn.is-success::after {
-  display: inline-grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1;
-}
-.btn--outline.is-success,
-.btn--ghost.is-success { background: var(--c-cream); color: var(--c-olive); }
-.btn--outline.is-success { border-color: var(--c-olive); }
 
 /* ---------- Шапка-пилюля поверх первого экрана ---------- */
 /* Шапка закреплена сверху и на десктопе, и на мобильном: при прокрутке
@@ -5332,26 +5279,6 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
    Более специфичные правила территории и мозаики сохраняют приоритет. */
 .site picture > img:not(:where(.kontur-host *)) { object-position: var(--focus, 50% 50%); }
 
-/* Общие состояния кнопок из «Компоненты (2).png», после размерных правил.
-   Карточки сохраняют свои исходные варианты заливки поверх фотографии. */
-.site .btn:not(:disabled, [aria-disabled="true"], .is-loading, [data-state="loading"]):hover {
-  background: radial-gradient(ellipse at center, #E5D0C0, #F7F0E6);
-  color: #494949;
-  border: 1px solid transparent;
-  text-decoration: none;
-}
-.site .btn:is(.btn--primary, .house__book, .promo__book):focus-visible {
-  background: #8CA8FB; color: #FFFFFF;
-}
-.site .btn:is(.btn--outline, .house__more, .place__more, .btn--on-media):is(:active, .is-pressed) {
-  background: #D5CFC7; color: #494949; border-color: #494949;
-}
-.site .btn.btn--ghost:is(:active, .is-pressed) { background: #D5CFC7; color: #494949; }
-.site .btn:is(.btn--primary, .house__book, .promo__book):is(:active, .is-pressed) {
-  background: #494949; color: #F7F0E6; border-color: transparent;
-}
-.site .btn.footer__cta:is(:active, .is-pressed) { background: #FFFFFF; color: #494949; border-color: #494949; }
-.site .btn:is(:disabled, [aria-disabled="true"]) { background: #E0D9C9; color: #494949; border-color: transparent; pointer-events: none; }
 .site .promotion-request-modal { box-sizing: border-box; width: 640px; max-width: calc(100% - 32px); padding: 32px 20px 20px; }
 .promotion-request-modal .section { padding: 16px 0; }
 .promotion-request-modal .container { width: 100%; }

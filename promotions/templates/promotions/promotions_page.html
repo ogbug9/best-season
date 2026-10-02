@@ -19,9 +19,9 @@
           {% if promo.date_to %}<p class="promo__text">Действует до {{ promo.date_to|date:"d.m.Y" }}</p>{% endif %}
         </div>
         {% if promo.cta_type == 'request' %}
-        <a class="btn promo__book" href="?promotion={{ promo.slug }}#promotion-request" data-promotion-request-open data-form-type="{{ promo.request_form_type }}" data-topic="Акция: {{ promo.title }}">{{ promo.button_label }}</a>
+        <a class="btn btn--primary promo__book" href="?promotion={{ promo.slug }}#promotion-request" data-promotion-request-open data-form-type="{{ promo.request_form_type }}" data-topic="Акция: {{ promo.title }}">{{ promo.button_label }}</a>
         {% else %}
-        <button type="button" class="btn promo__book" data-booking-open data-entry-point="7">{{ promo.button_label }}</button>
+        <button type="button" class="btn btn--primary promo__book" data-booking-open data-entry-point="7">{{ promo.button_label }}</button>
         {% endif %}
       </li>
       {% endfor %}

@@ -10,7 +10,7 @@
   это важно для доступности и для резервного сценария п. 5.6.
 {% endcomment %}
 
-<form class="form" method="post" action="{% url 'forms:submit' form_type %}" novalidate>
+<form class="form" method="post" action="{% url 'forms:submit' form_type %}" data-request-form{% if form_success_type and form_success_type == form_type %} data-confirmed-success{% endif %} novalidate>
   {% csrf_token %}
 
   {% if title %}<h2 class="form__title">{{ title }}</h2>{% endif %}
