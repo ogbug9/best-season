@@ -15,7 +15,7 @@ from html.parser import HTMLParser
 
 
 class HouseCtaTests(TestCase):
-    def test_four_houses_have_one_final_cta_with_context(self):
+    def test_four_houses_have_no_cta_section_below_reviews(self):
         site = Site.objects.get(is_default_site=True)
         site.hostname = "testserver"
         site.save()
@@ -41,13 +41,9 @@ class HouseCtaTests(TestCase):
                 self.assertEqual(response.status_code, 200)
                 parser = Buttons()
                 parser.feed(response.content.decode())
-                self.assertEqual(len(parser.matches), 1)
-                attrs = parser.matches[0]
-                self.assertIn("data-booking-open", attrs)
-                self.assertEqual(attrs["data-house-id"], str(house.pk))
-                self.assertEqual(attrs["data-house-title"], house.title)
-                self.assertEqual(attrs["data-pms-name"], house.pms_name)
-                self.assertContains(response, f"Забронировать {house.title}")
+                self.assertEqual(parser.matches, [])
+                self.assertNotContains(response, 'data-house-booking-cta')
+                self.assertNotContains(response, f"Забронировать {house.title}")
                 self.assertContains(response, f'data-house-slug="{house.slug}"')
 
 

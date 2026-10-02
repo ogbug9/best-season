@@ -316,3 +316,11 @@
   :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .nearby-more { font-size: 14px; }
   :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .house__more { width: 75px; padding-inline: 7px; }
 }
+
+/* Мобильный поиск: непрозрачные поля вместо стеклянной подложки. */
+.site .hero .searchbar__field {
+  background: #D5CEBC; color: #494949; border-color: transparent;
+  box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+.site .hero .searchbar:hover .searchbar__field { background: #E5D0C0; }
+.site .hero .searchbar:active .searchbar__field { background: #9B5026; color: #F7F0E6; }

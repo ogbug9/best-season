@@ -191,11 +191,7 @@
 </section>
 {% endif %}
 
-<section class="section" data-house-booking-cta aria-label="Бронирование {{ page.title }}">
-  <div class="container center">
-    {% include "includes/booking_cta.html" with house_id=page.pk house_title=page.title entry_point="5" %}
-  </div>
-</section>
+
 
 {% comment %} Просмотрщик галереи. Разметка пустая: скрипт подставляет в неё
    кадр, а <dialog> сам держит фокус и закрывается по Esc. {% endcomment %}
