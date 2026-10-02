@@ -76,10 +76,11 @@
         <summary class="nav-toggle__button" aria-label="Меню"><span aria-hidden="true">☰</span></summary>
         <nav class="nav nav--mobile" aria-label="Мобильное меню">
           <ul class="nav__list">
+            <li><a class="nav-mobile__home" href="{% pageurl current_site.root_page %}">Главная</a></li>
             {% for item in current_site.root_page.get_children.live %}
               {% if item.show_in_menus or item.slug == 'akcii' %}
               <li>
-                <details class="nav-section">
+                <details class="nav-section" name="mobile-menu-section">
                   <summary><a href="{% pageurl item %}">{{ item.title }}</a><span class="nav-section__sign" aria-hidden="true"></span></summary>
                   <ul class="nav__sublist">
                     {% for child in item.get_children.live.in_menu %}

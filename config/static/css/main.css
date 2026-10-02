@@ -5324,6 +5324,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .site .nav--mobile .nav__list { display: grid; gap: 0; padding: 0; margin: 0; }
   .nav-section > summary { display: flex; align-items: center; justify-content: space-between; min-height: 44px; padding-block: 10px; font: 400 18px/24px var(--font-body); color: #494949; cursor: pointer; list-style: none; }
   .nav-section > summary::-webkit-details-marker { display: none; }
+  .nav-mobile__home { display: flex; align-items: center; min-height: 44px; padding-block: 10px; font: 400 18px/24px var(--font-body); color: #494949; text-decoration: none; }
   .nav-section__sign::before { content: '+'; color: #847F57; font-size: 22px; }
   .nav-section[open] .nav-section__sign::before { content: '−'; }
   .site .nav--mobile .nav__sublist { display: grid; gap: 10px; padding: 10px 0; margin: 0; }

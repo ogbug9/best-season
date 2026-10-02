@@ -482,6 +482,14 @@
   var menu = document.querySelector('.nav-toggle');
   if (!menu) return;
   var toggle = menu.querySelector(':scope > summary');
+  menu.querySelectorAll('.nav-section').forEach(function (section) {
+    section.addEventListener('toggle', function () {
+      if (!section.open) return;
+      menu.querySelectorAll('.nav-section').forEach(function (other) {
+        if (other !== section) other.open = false;
+      });
+    });
+  });
   var inert = new Map();
   function sync() {
     var open = menu.open && window.matchMedia('(max-width: 1279px)').matches;
