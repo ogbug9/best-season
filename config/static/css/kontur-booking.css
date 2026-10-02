@@ -449,7 +449,8 @@ body:has(.booking-system[open]) > .react-ui [data-tid="modal-close"] { width: 40
 /* One stable layer for every SDK portal, including the photo lightbox. */
 .booking-system.booking-system--layered { position: fixed; top: 32px; left: 50%; transform: translateX(-50%); margin: 0; z-index: 1000; }
 .booking-system-backdrop { position: fixed; inset: 0; z-index: 999; background: rgb(17 24 43 / 65%); }
-body:has(.booking-system[open]) > .react-ui { position: relative; z-index: 1001 !important; }
+body:has(.booking-system[open]) > .react-ui { position: fixed; inset: 0; z-index: 1001 !important; pointer-events: none; }
+body:has(.booking-system[open]) > .react-ui > * { pointer-events: auto; }
 body:has(.booking-system[open]) > .yarl__portal { position: fixed; inset: 0; z-index: 1002 !important; }
 
 /* The SDK's fixed field widths were calculated for its original font. */

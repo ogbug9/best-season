@@ -133,7 +133,7 @@
       if (active.some(function (root) { return root.matches('.yarl__portal') || !root.querySelector('[data-tid="DateRangePicker__root"]') || root.querySelector('[role="listbox"], [role="menu"], [role="dialog"]'); })) return;
       event.preventDefault();
       if (!dismissRangePickers()) modal.close();
-    });
+    }, true);
     return {
       open: function () {
         if (observer) return;
