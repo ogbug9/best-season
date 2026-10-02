@@ -17,7 +17,7 @@ const html = `<!doctype html><html lang="ru"><meta charset="utf-8">
 <dialog class="booking-modal booking-system" data-booking-modal aria-label="Бронирование">
 <div class="booking-modal__inner test-panel"><button data-booking-close>Закрыть внешнее</button>
 <h2 class="booking-modal__title">Бронирование</h2>
-<div data-booking-host id="BookingFormWidget" hidden></div>
+<div data-booking-host id="BookingFormWidget" class="kontur-host" hidden></div>
 <div data-booking-catalog hidden><div data-kontur-type="roomsList" id="rooms"></div></div>
 <p data-booking-loading hidden>Загрузка</p><div data-booking-fallback hidden>Резервная форма</div>
 <p data-booking-note></p></div></dialog>
@@ -65,7 +65,7 @@ function openPortal(owner, popup=false, unannotated=false){
   // Leaving vendor mode now waits out a short grace window (see
   // "Переключение полей" above) in case Kontur is about to swap in a new
   // popup rather than actually being done — real close needs to wait past it.
-  if(!stillOpen){record('outer modality restored',outer.matches(':modal'));record('focus restored',outer.contains(document.activeElement));record('still initialized once',initCount===1);}
+  if(!stillOpen){record('outer keeps its stable accessible layer',outer.open&&!outer.matches(':modal')&&outer.getAttribute('aria-modal')==='true');record('focus restored',outer.contains(document.activeElement));record('still initialized once',initCount===1);}
  },350);};
  const escape=e=>{if(e.key==='Escape' && portal===Array.from(document.querySelectorAll('.react-ui')).pop()){e.preventDefault();e.stopImmediatePropagation();close();}};
  document.addEventListener('keydown',escape);
@@ -82,6 +82,27 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
  const host=document.getElementById(c.appearance.container);
  host.innerHTML='<button>Проверить наличие</button><button>Посмотреть номер</button><button>Даты</button><button>Результат наличия (без метки)</button><button data-tid="DateRangePicker__start">Поле даты</button><button>Переключение полей</button><button data-tid="DateRangePicker__end">Поле выезда</button><button>Возврат фокуса после выбора дат</button>';
  host.querySelectorAll('button').forEach((b,i)=>{if(i<5)b.onclick=()=>openPortal(host,i===2,i===3);});
+ host.insertAdjacentHTML('beforeend','<button data-test-photo>Фото дома</button><button data-test-select>Список домиков</button>');
+ host.querySelector('[data-test-photo]').onclick=function(){
+  const photo=document.createElement('div');photo.className='yarl__root yarl__portal';photo.setAttribute('role','dialog');
+  photo.innerHTML='<div class="test-overlay"><div class="test-dialog"><p data-photo-index>Фото 1</p><button>Следующее фото</button><button>Закрыть фото</button></div></div>';
+  document.body.append(photo);
+  photo.querySelectorAll('button')[0].onclick=()=>{photo.querySelector('[data-photo-index]').textContent='Фото 2';record('photo navigation works',true);};
+  photo.querySelectorAll('button')[1].onclick=()=>photo.remove();
+  frame(()=>{const button=photo.querySelector('button'),r=button.getBoundingClientRect();record('YARL receives pointer above booking shell',button.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)));record('background shell inert during photos',document.querySelector('dialog').inert);});
+ };
+ host.querySelector('[data-test-select]').onclick=function(){
+  const menu=document.createElement('div');menu.className='react-ui';menu.innerHTML='<div class="test-popup" role="listbox"><button>Выбрать второй домик</button></div>';
+  document.body.append(menu);menu.querySelector('button').onclick=()=>{menu.remove();record('Select selection works',true);};
+  frame(()=>{const button=menu.querySelector('button'),r=button.getBoundingClientRect();record('Select receives pointer and shell stays open',document.querySelector('dialog').open&&button.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)));});
+ };
+ host.insertAdjacentHTML('beforeend','<div><span data-test-description-text>Короткое описание. </span><a data-tid="ShowMoreLink" tabindex="0">Подробнее</a></div>');
+ host.querySelector('[data-tid="ShowMoreLink"]').onclick=function(){
+  const expanded=this.textContent==='Подробнее';
+  host.querySelector('[data-test-description-text]').textContent=expanded?'Полное описание дома. '.repeat(30):'Короткое описание. ';
+  this.textContent=expanded?'Коротко':'Подробнее';
+  record('description uses the SDK handler',true);
+ };
  // Live bug: the SDK closes its calendar when a date is picked; our exit
  // path returned focus to the date field, the SDK reopened the calendar on
  // that focus, and the picker kept coming back. Focus must go on to the
@@ -195,8 +216,8 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
       // Now genuinely finish: remove B and don't recreate anything — this
       // time the grace window should elapse and modality should restore.
       b.remove();
-      setTimeout(()=>record('outer modality restored once nothing reappears after the grace window',
-        outer.matches(':modal')), 500);
+      setTimeout(()=>record('outer stays accessible after date containers are replaced',
+        outer.open && !outer.matches(':modal') && outer.getAttribute('aria-modal')==='true'), 500);
      }, 200);
     }, 150);
    }, 20);
@@ -204,8 +225,8 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
  };
 }}};
 </script>
-<script src="/config/static/js/booking-layers.js"></script><script src="/config/static/js/kontur.js"></script></body></html>`;
-const allowed = new Set(['/config/static/css/main.css', '/config/static/css/kontur-booking.css', '/config/static/js/booking-layers.js', '/config/static/js/kontur.js']);
+<script src="/config/static/js/booking-layers.js"></script><script src="/config/static/js/kontur.js"></script><script src="/config/static/js/kontur-style.js"></script></body></html>`;
+const allowed = new Set(['/config/static/css/main.css', '/config/static/css/kontur-booking.css', '/config/static/js/booking-layers.js', '/config/static/js/kontur.js', '/config/static/js/kontur-style.js']);
 http.createServer((req, res) => {
   const url = req.url.split('?')[0];
   if (url === '/') { res.setHeader('Content-Type', 'text/html; charset=utf-8'); return res.end(html); }

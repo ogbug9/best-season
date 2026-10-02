@@ -332,7 +332,12 @@
     // вернулся на то же место. Без этого фон уезжает наверх на мобильных.
     document.body.style.top = "-" + window.scrollY + "px";
     document.body.setAttribute("data-modal-open", "true");
-    if (typeof modal.showModal === "function") {
+    if (layers && typeof modal.show === "function") {
+      // SDK menus and photo galleries are body portals. Keep one ordinary
+      // dialog layer throughout the flow; changing native modality on focus
+      // closes Select menus before their first click can reach them.
+      modal.show();
+    } else if (typeof modal.showModal === "function") {
       modal.showModal();
     } else {
       modal.setAttribute("open", "");

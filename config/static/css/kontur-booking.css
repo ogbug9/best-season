@@ -445,3 +445,65 @@ body:has(.booking-system[open]) > .react-ui [data-tid="modal-close"] { width: 40
   body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] { font-size: 28px !important; line-height: 34px !important; }
   body:has(.booking-system[open]) > .react-ui .BookingLightbox [data-tid="modal-content"] > div:first-child { border-radius: 16px !important; }
 }
+
+/* One stable layer for every SDK portal, including the photo lightbox. */
+.booking-system.booking-system--layered { position: fixed; top: 32px; left: 50%; transform: translateX(-50%); margin: 0; z-index: 1000; }
+.booking-system-backdrop { position: fixed; inset: 0; z-index: 999; background: rgb(17 24 43 / 65%); }
+body:has(.booking-system[open]) > .react-ui { position: relative; z-index: 1001 !important; }
+body:has(.booking-system[open]) > .yarl__portal { position: fixed; inset: 0; z-index: 1002 !important; }
+
+/* The SDK's fixed field widths were calculated for its original font. */
+:is(.booking-system .kontur-host, body:has(.booking-system[open]) > .react-ui) .ZpDuj5 {
+  display: grid !important; grid-template-columns: minmax(336px,1.2fr) minmax(200px,1fr) minmax(248px,1fr);
+  gap: 16px !important; align-items: center !important;
+}
+[data-bs-kontur] .ZpDuj5 > * { width: auto !important; min-width: 0 !important; margin: 0 !important; }
+[data-bs-kontur] .bj44ek { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: center; gap: 8px; width: 100% !important; }
+[data-bs-kontur] .bj44ek:has(> .GZltsj) { grid-template-columns: minmax(0,1fr) 8px minmax(0,1fr); }
+[data-bs-kontur] .bj44ek > * { width: auto !important; min-width: 0; }
+:is(.booking-system .kontur-host, body:has(.booking-system[open]) > .react-ui) :is([data-tid="DateRangePicker__start"], [data-tid="DateRangePicker__end"]) {
+  box-sizing: border-box !important; height: 52px !important; min-height: 52px !important; padding: 0 8px !important; font-size: 16px !important;
+}
+.booking-system #BookingFormWidget [data-tid="Button__rootElement"],
+[data-bs-kontur] [data-tid="Button__rootElement"][data-bs-kind] { min-height: 52px !important; font-weight: 400 !important; padding-block: 13px !important; }
+.booking-system .WidgetCardPriceButtonContainer { min-width: 248px; }
+@media (min-width: 768px) { .booking-system .BwFaze { grid-template-columns: minmax(0,1fr) 248px; } }
+:is(.booking-system .kontur-host, body:has(.booking-system[open]) > .react-ui) [data-bs-kind="primary"]:not(:disabled) { background: #9b5026 !important; color: #f7f0e6 !important; }
+:is(.booking-system .kontur-host, body:has(.booking-system[open]) > .react-ui) [data-bs-kind="primary"]:not(:disabled):hover { background: rgb(155 80 38 / 20%) !important; color: #9b5026 !important; }
+:is(.booking-system .kontur-host, body:has(.booking-system[open]) > .react-ui) [data-bs-kind="primary"]:not(:disabled):active { background: #494949 !important; color: #f7f0e6 !important; }
+:is(.booking-system .kontur-host, body:has(.booking-system[open]) > .react-ui) [data-bs-kind="primary"]:focus-visible { outline: 1px solid #847f57 !important; outline-offset: 3px; }
+.booking-system .booking-system__help { display: grid; gap: 16px; margin-top: 28px; padding-top: 8px; }
+.booking-system .booking-system__help p { margin: 0; }
+.booking-system .booking-system__help button { justify-self: start; }
+.booking-system #BookingCalendarWidget .VUyg6j { width: 100%; display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
+.booking-system #BookingCalendarWidget .UKwZzA { width: 360px !important; flex-shrink: 0; max-width: 100%; }
+.booking-system #BookingCalendarWidget ._9PeHjV { flex: 1 1 280px; min-width: 0; }
+
+/* Separate the description toggle from the paragraph, with a short reading area. */
+[data-bs-kontur] [data-bs-description] { min-height: 0 !important; margin-block: 8px !important; }
+[data-bs-kontur] [data-bs-description][data-bs-expanded="true"] { box-sizing: border-box; max-height: 216px; padding: 12px; background: rgb(230 223 209 / 35%); border-radius: 12px; }
+[data-bs-kontur] [data-tid="ShowMoreLink"] { display: none !important; }
+[data-bs-kontur] [data-bs-description-toggle] { display: block; align-self: flex-start; margin: 0 0 8px; padding: 4px 0; border: 0; border-bottom: 1px solid currentColor; background: transparent; color: #9b5026; font: 400 16px/24px 'Montserrat', sans-serif; cursor: pointer; }
+[data-bs-kontur] [data-tid="RoomCategoryParameters"] .rCyhgl { height: auto !important; min-height: 52px; align-items: center; flex-wrap: wrap; gap: 12px; }
+[data-bs-kontur] [data-tid="RoomCategoryParameters"] [data-tid="Button__root"] { margin: 0 !important; }
+body:has(.booking-system[open]) > .react-ui :is([data-tid="ModalHeader__root"], [data-tid="ModalFooter__root"], [data-tid="Sticky__root"] > *) { background-color: #f7f0e6 !important; }
+body:has(.booking-system[open]) > .react-ui [data-tid="Sticky__root"] > div > div,
+body:has(.booking-system[open]) > .react-ui [data-tid="Sticky__root"] > div > div > div { background-color: #f7f0e6 !important; }
+body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] a { font-family: 'Montserrat', sans-serif !important; font-size: 16px; line-height: 24px; }
+@media (max-width: 1000px) and (min-width: 768px) {
+  :is(.booking-system .kontur-host, body:has(.booking-system[open]) > .react-ui) .ZpDuj5 { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  [data-bs-kontur] .ZpDuj5 > .MQe7xH { grid-column: 1 / -1; }
+}
+@media (max-width: 767px) {
+  .booking-system.booking-system--layered { top: 0; left: 0; transform: none; }
+  :is(.booking-system .kontur-host, body:has(.booking-system[open]) > .react-ui) .ZpDuj5 { grid-template-columns: minmax(0,1fr); gap: 12px !important; }
+  .booking-system .WidgetCardPriceButtonContainer { min-width: 0; }
+  .booking-system #BookingCalendarWidget .UKwZzA { width: 100% !important; }
+  [data-bs-kontur] [data-bs-description][data-bs-expanded="true"] { max-height: 192px; }
+  body:has(.booking-system[open]) > .react-ui [data-tid="modal-container"] > div { width: calc(100% - 24px) !important; max-width: calc(100% - 24px) !important; margin: 12px auto !important; }
+  body:has(.booking-system[open]) > .react-ui [data-tid="modal-content"] > div:first-child { box-sizing: border-box; width: 100% !important; max-width: 100% !important; }
+}
+@media (max-width: 360px) {
+  body:has(.booking-system[open]) > .react-ui .bj44ek { grid-template-columns: minmax(0,1fr); }
+  body:has(.booking-system[open]) > .react-ui .bj44ek > .GZltsj { display: none; }
+}

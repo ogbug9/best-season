@@ -4,6 +4,7 @@
   var modal = document.querySelector("[data-booking-modal]");
   if (!modal || typeof MutationObserver === "undefined") return;
   var timer = null;
+  var descriptionId = 0;
   var contentObserver = new MutationObserver(schedule);
 
   function decorate() {
@@ -25,7 +26,28 @@
       root.querySelectorAll('[data-tid="ShowMoreLink"]').forEach(function (link) {
         var description = link.parentElement;
         description.setAttribute("data-bs-description", "");
-        description.setAttribute("data-bs-expanded", String(link.textContent.trim() === "Коротко"));
+        var expanded = link.textContent.trim() === "Коротко";
+        description.setAttribute("data-bs-expanded", String(expanded));
+        var toggle = description.nextElementSibling;
+        if (!toggle || !toggle.hasAttribute("data-bs-description-toggle")) {
+          toggle = document.createElement("button");
+          toggle.type = "button";
+          toggle.setAttribute("data-bs-description-toggle", "");
+          if (!description.id) description.id = "bs-kontur-description-" + (++descriptionId);
+          toggle.setAttribute("aria-controls", description.id);
+          toggle.addEventListener("click", function () {
+            var nativeLink = this.previousElementSibling.querySelector('[data-tid="ShowMoreLink"]');
+            if (nativeLink) nativeLink.click();
+          });
+          description.insertAdjacentElement("afterend", toggle);
+        }
+        var caption = expanded ? "Свернуть описание" : "Подробнее";
+        if (toggle.textContent !== caption) toggle.textContent = caption;
+        toggle.setAttribute("aria-expanded", String(expanded));
+      });
+      root.querySelectorAll('[data-bs-description-toggle]').forEach(function (toggle) {
+        var description = toggle.previousElementSibling;
+        if (!description || !description.hasAttribute("data-bs-description") || !description.querySelector('[data-tid="ShowMoreLink"]')) toggle.remove();
       });
     });
   }
