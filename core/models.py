@@ -535,6 +535,19 @@ class ContentPage(Page):
         FieldPanel("show_booking_cta"),
     ]
 
+    def get_template(self, request, *args, **kwargs):
+        if self.slug == "o-nas":
+            return "core/about_page.html"
+        return super().get_template(request, *args, **kwargs)
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        if self.slug == "o-nas":
+            from .about_content import PILLARS, VALUES, PETS, DIARY
+            context.update(about_pillars=PILLARS, about_values=VALUES, about_pets=PETS, about_diary=DIARY)
+            context["about_contacts"] = Page.objects.live().descendant_of(self).filter(slug="kontakty").first()
+        return context
+
     class Meta:
         verbose_name = "Текстовая страница"
         verbose_name_plural = "Текстовые страницы"
