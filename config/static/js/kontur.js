@@ -412,6 +412,7 @@
 
   function closeModal() {
     if (layers && !layers.close()) return;
+    if (fallback && !state.failed) fallback.hidden = true;
     clearTimeout(state.timer);
     var offset = Math.abs(parseInt(document.body.style.top || "0", 10)) || 0;
     document.body.removeAttribute("data-modal-open");

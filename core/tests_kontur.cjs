@@ -203,6 +203,15 @@ test('card house transfers and generic entry clears previous card context', () =
   assert.equal(fields.house.value, '');
 });
 
+test('manual request closes with the booking shell and stays hidden on reopening', () => {
+  const f = fixture(); f.open(); f.load();
+  f.click('[data-booking-request]');
+  assert.equal(f.fallback.hidden, false);
+  f.close(); f.open();
+  assert.equal(f.fallback.hidden, true);
+  assert.equal(f.initCount, 1);
+});
+
 test('hidden hourly section is not registered with SDK', () => {
   const f = fixture({hourly:false}); f.open(); f.load();
   assert.deepEqual(f.added, ['bookingForm', 'roomsList', 'availabilityCalendar']);

@@ -393,6 +393,7 @@ body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] .T3qk
 .booking-system .booking-system__section > h3 { color: #9b5026; font: 500 28px/1.2 'Etude Noire', sans-serif; margin-bottom: 20px; }
 .booking-system .booking-modal__close { top: 24px; right: 24px; width: 44px; height: 44px; font-size: 30px; }
 .booking-system #BookingCalendarWidget { padding: 20px; border-radius: 20px; background: #fff; }
+.booking-system #BookingCalendarWidget { background: #eee7da; border: 1px solid rgb(132 127 87 / 25%); }
 .booking-system :is(#BookingRoomsWidget, #BookingHourlyWidget) .ZSaP3T { padding: 20px; }
 .booking-system .FJbBVA { min-width: 0; white-space: normal !important; overflow-wrap: anywhere; }
 .booking-system .WidgetCardPriceButtonContainer { min-width: 220px; flex-shrink: 0; }
@@ -484,6 +485,7 @@ body:has(.booking-system[open]) > .yarl__portal { position: fixed; inset: 0; z-i
 
 /* Separate the description toggle from the paragraph, with a short reading area. */
 [data-bs-kontur] [data-bs-description] { min-height: 0 !important; margin-block: 8px !important; }
+[data-bs-kontur] div:has(> [data-tid="ShowMoreLink"]) { max-height: 216px; overflow: auto; }
 [data-bs-kontur] [data-bs-description][data-bs-expanded="true"] { box-sizing: border-box; max-height: 216px; padding: 12px; background: rgb(230 223 209 / 35%); border-radius: 12px; }
 [data-bs-kontur] [data-tid="ShowMoreLink"] { display: none !important; }
 [data-bs-kontur] [data-bs-description-toggle] { display: block; align-self: flex-start; margin: 0 0 8px; padding: 4px 0; border: 0; border-bottom: 1px solid currentColor; background: transparent; color: #9b5026; font: 400 16px/24px 'Montserrat', sans-serif; cursor: pointer; }
@@ -493,6 +495,12 @@ body:has(.booking-system[open]) > .react-ui :is([data-tid="ModalHeader__root"], 
 body:has(.booking-system[open]) > .react-ui [data-tid="Sticky__root"] > div > div,
 body:has(.booking-system[open]) > .react-ui [data-tid="Sticky__root"] > div > div > div { background-color: #f7f0e6 !important; }
 body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] a { font-family: 'Montserrat', sans-serif !important; font-size: 16px; line-height: 24px; }
+/* Room details have their own scroll frame, with space above and below. */
+body:has(.booking-system[open]) > .react-ui [data-tid="modal-container"]:has(.TANWrE) { box-sizing: border-box; padding: 32px 16px !important; }
+body:has(.booking-system[open]) > .react-ui [data-tid="modal-content"]:has(.TANWrE) { width: min(700px,100%) !important; margin: 0 auto !important; max-height: calc(100dvh - 64px); overflow: auto; overscroll-behavior: contain; border-radius: 32px; background: #f7f0e6; scrollbar-width: thin; }
+body:has(.booking-system[open]) > .react-ui [data-tid="modal-content"]:has(.TANWrE) > div:first-child { width: 100% !important; max-width: 100% !important; }
+body:has(.booking-system[open]) > .react-ui [data-tid="modal-content"]:has(.TANWrE) [data-tid="Sticky__root"] > div:first-child { position: static !important; width: 100% !important; left: auto !important; }
+body:has(.booking-system[open]) > .react-ui [data-tid="modal-content"]:has(.TANWrE) [data-tid="Sticky__root"] > div:last-child:not(:first-child) { display: none; }
 @media (max-width: 1000px) and (min-width: 768px) {
   :is(.booking-system .kontur-host, body:has(.booking-system[open]) > .react-ui) .ZpDuj5 { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
   [data-bs-kontur] .ZpDuj5 > .MQe7xH { grid-column: 1 / -1; }
@@ -503,8 +511,12 @@ body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] a { f
   .booking-system .WidgetCardPriceButtonContainer { min-width: 0; }
   .booking-system #BookingCalendarWidget .UKwZzA { width: 100% !important; }
   [data-bs-kontur] [data-bs-description][data-bs-expanded="true"] { max-height: 192px; }
+  [data-bs-kontur] div:has(> [data-tid="ShowMoreLink"]) { max-height: 192px; }
   body:has(.booking-system[open]) > .react-ui [data-tid="modal-container"] > div { width: calc(100% - 24px) !important; max-width: calc(100% - 24px) !important; margin: 12px auto !important; }
   body:has(.booking-system[open]) > .react-ui [data-tid="modal-content"] > div:first-child { box-sizing: border-box; width: 100% !important; max-width: 100% !important; }
+  body:has(.booking-system[open]) > .react-ui [data-tid="modal-container"]:has(.TANWrE) { padding: 16px 12px !important; }
+  body:has(.booking-system[open]) > .react-ui [data-tid="modal-container"]:has(.TANWrE) > div { width: 100% !important; max-width: 100% !important; }
+  body:has(.booking-system[open]) > .react-ui [data-tid="modal-content"]:has(.TANWrE) { max-height: calc(100dvh - 32px); border-radius: 20px; }
 }
 @media (max-width: 360px) {
   body:has(.booking-system[open]) > .react-ui .bj44ek { grid-template-columns: minmax(0,1fr); }

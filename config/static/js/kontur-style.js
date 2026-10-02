@@ -3,12 +3,12 @@
   "use strict";
   var modal = document.querySelector("[data-booking-modal]");
   if (!modal || typeof MutationObserver === "undefined") return;
-  var timer = null;
+  var pending = false;
   var descriptionId = 0;
   var contentObserver = new MutationObserver(schedule);
 
   function decorate() {
-    timer = null;
+    pending = false;
     if (!modal.open) return;
     var roots = Array.from(modal.querySelectorAll(".kontur-host"))
       .concat(Array.from(document.querySelectorAll("body > .react-ui")));
@@ -36,7 +36,10 @@
           if (!description.id) description.id = "bs-kontur-description-" + (++descriptionId);
           toggle.setAttribute("aria-controls", description.id);
           toggle.addEventListener("click", function () {
-            var nativeLink = this.previousElementSibling.querySelector('[data-tid="ShowMoreLink"]');
+            var paragraph = this.previousElementSibling;
+            var nativeLink = paragraph.querySelector('[data-tid="ShowMoreLink"]');
+            // Bound the paragraph before React inserts the full description.
+            if (this.getAttribute("aria-expanded") !== "true") paragraph.setAttribute("data-bs-expanded", "true");
             if (nativeLink) nativeLink.click();
           });
           description.insertAdjacentElement("afterend", toggle);
@@ -52,7 +55,7 @@
     });
   }
   function schedule() {
-    if (!timer) timer = setTimeout(decorate, 0);
+    if (!pending) { pending = true; queueMicrotask(decorate); }
   }
   function sync() {
     contentObserver.disconnect();
@@ -61,8 +64,7 @@
         attributes: true, attributeFilter: ["disabled"] });
       schedule();
     } else {
-      clearTimeout(timer);
-      timer = null;
+      pending = false;
     }
   }
   new MutationObserver(sync).observe(modal, { attributes: true, attributeFilter: ["open"] });
