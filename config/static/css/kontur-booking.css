@@ -510,6 +510,8 @@ body:has(.booking-system[open]) > .react-ui [data-tid="modal-content"]:has(.TANW
   :is(.booking-system .kontur-host, body:has(.booking-system[open]) > .react-ui) .ZpDuj5 { grid-template-columns: minmax(0,1fr); gap: 12px !important; }
   .booking-system .WidgetCardPriceButtonContainer { min-width: 0; }
   .booking-system #BookingCalendarWidget .UKwZzA { width: 100% !important; }
+  .booking-system #BookingCalendarWidget ._9PeHjV { flex: 0 1 auto; width: 100%; min-height: 0; }
+  .booking-system #BookingCalendarWidget .VUyg6j { align-items: stretch; gap: 12px; }
   [data-bs-kontur] [data-bs-description][data-bs-expanded="true"] { max-height: 192px; }
   [data-bs-kontur] div:has(> [data-tid="ShowMoreLink"]) { max-height: 192px; }
   body:has(.booking-system[open]) > .react-ui [data-tid="modal-container"] > div { width: calc(100% - 24px) !important; max-width: calc(100% - 24px) !important; margin: 12px auto !important; }
@@ -526,7 +528,7 @@ body:has(.booking-system[open]) > .react-ui [data-tid="modal-content"]:has(.TANW
 /* Keep the amenities action below both columns, including expanded groups. */
 [data-bs-kontur] [data-tid="Comforts"] {
   position: relative; display: grid; grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 24px; margin-top: 16px; padding: 16px 0 52px;
+  gap: 24px; margin-top: 16px; padding: 16px 0 0;
   border-top: 1px solid rgb(132 127 87 / 20%);
 }
 [data-bs-kontur] [data-tid="Comforts"] .KJCWhZ {
@@ -539,9 +541,11 @@ body:has(.booking-system[open]) > .react-ui [data-tid="modal-content"]:has(.TANW
 }
 [data-bs-kontur] [data-tid="Comforts"] [data-tid="Title"] { font-weight: 500; line-height: 24px; }
 [data-bs-kontur] [data-tid="ComfortsShowLink"] {
-  position: absolute; left: 0; bottom: 0; display: inline-flex; align-items: center;
-  gap: 8px; min-height: 44px; margin: 0; color: #9b5026 !important; line-height: 24px;
+  display: none !important;
 }
+[data-bs-kontur] [data-tid="Comforts"][data-bs-comforts-expanded="false"] { display: none; }
+[data-bs-kontur] [data-bs-comforts-toggle] { display: block; margin: 8px 0 16px; padding: 10px 0; min-height: 44px; border: 0; background: transparent; color: #9b5026; text-decoration: underline; text-underline-offset: 4px; font: 400 16px/24px 'Montserrat', sans-serif; cursor: pointer; }
+[data-bs-kontur] [data-bs-comforts-toggle]:focus-visible { outline: 1px solid #847f57; outline-offset: 3px; }
 .booking-system [data-fallback-form] .form__checkbox { align-items: center; min-height: 44px; }
 .booking-system [data-fallback-form] .form__checkbox > span { min-width: 0; line-height: 24px; }
 @media (max-width: 600px) {
