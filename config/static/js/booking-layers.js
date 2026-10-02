@@ -30,6 +30,18 @@
       inertElements.forEach(function (value, element) { element.inert = value; });
       inertElements.clear();
     }
+    function fitMenus() {
+      document.querySelectorAll('body > .react-ui [data-tid="Select__menu"]').forEach(function (menu) {
+        if (!menu.getClientRects().length) return;
+        var maxWidth = Math.max(0, window.innerWidth - 16) + "px";
+        if (menu.style.maxWidth !== maxWidth) menu.style.maxWidth = maxWidth;
+        var rect = menu.getBoundingClientRect();
+        var left = Math.max(8, Math.min(rect.left, window.innerWidth - rect.width - 8));
+        var top = Math.max(8, Math.min(rect.top, window.innerHeight - Math.min(rect.height, window.innerHeight - 16) - 8));
+        if (Math.abs(rect.left - left) > 1) menu.style.left = left + "px";
+        if (Math.abs(rect.top - top) > 1) menu.style.top = top + "px";
+      });
+    }
     function fitRangePickers() {
       document.querySelectorAll('body > .react-ui [data-tid="DateRangePicker__root"]').forEach(function (picker) {
         if (picker.closest('[data-tid="modal-content"]') || !picker.getClientRects().length) return;
@@ -82,6 +94,7 @@
       }).filter(Boolean).pop();
       modal.inert = Boolean(inner);
       fitRangePickers();
+      fitMenus();
       if (inner && inner !== focusedInner && !active.some(function (root) { return root.contains(document.activeElement); })) {
         var control = inner.querySelector('button:not([disabled]), input:not([type="hidden"]):not([disabled]), [tabindex="0"]');
         focus(control || inner);
@@ -150,6 +163,7 @@
         observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class", "hidden"] });
         document.addEventListener("keydown", trapTab);
         window.addEventListener("resize", fitRangePickers);
+        window.addEventListener("resize", fitMenus);
         sync();
         focus(modal.querySelector('[data-booking-close]'));
       },
@@ -158,6 +172,7 @@
         portals().forEach(function (element) { parkedPortals.set(element, element.hidden); element.hidden = true; });
         document.removeEventListener("keydown", trapTab);
         window.removeEventListener("resize", fitRangePickers);
+        window.removeEventListener("resize", fitMenus);
         if (backdrop) backdrop.remove();
         backdrop = null;
         observer = null;

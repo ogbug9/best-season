@@ -92,9 +92,9 @@ window.HotelWidget={init(c){initCount++;c.hooks.onInit();},add(c){if(c.type==='b
   frame(()=>{const button=photo.querySelector('button'),r=button.getBoundingClientRect();record('YARL receives pointer above booking shell',button.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)));record('background shell inert during photos',document.querySelector('dialog').inert);});
  };
  host.querySelector('[data-test-select]').onclick=function(){
-  const menu=document.createElement('div');menu.className='react-ui';menu.innerHTML='<div class="test-popup" role="listbox" style="position:absolute"><button>Выбрать второй домик</button></div>';
+  const menu=document.createElement('div');menu.className='react-ui';menu.innerHTML='<div class="test-popup" role="listbox" data-tid="Select__menu" style="position:absolute;width:400px;left:48px"><button>Выбрать второй домик</button></div>';
   document.body.append(menu);menu.querySelector('button').onclick=()=>{menu.remove();record('Select selection works',true);};
-  frame(()=>{const button=menu.querySelector('button'),r=button.getBoundingClientRect();record('Select receives pointer and shell stays open',document.querySelector('dialog').open&&button.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)));});
+  frame(()=>{const button=menu.querySelector('button'),r=button.getBoundingClientRect(),bounds=menu.firstElementChild.getBoundingClientRect();record('Select receives pointer and shell stays open',document.querySelector('dialog').open&&button.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)));record('Select fits viewport',bounds.left>=8&&bounds.right<=innerWidth-6&&bounds.top>=8&&bounds.bottom<=innerHeight-6);});
  };
  host.insertAdjacentHTML('beforeend','<div><span data-test-description-text>Короткое описание. </span><a data-tid="ShowMoreLink" tabindex="0">Подробнее</a></div>');
  host.querySelector('[data-tid="ShowMoreLink"]').onclick=function(){

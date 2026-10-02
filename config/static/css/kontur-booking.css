@@ -451,6 +451,8 @@ body:has(.booking-system[open]) > .react-ui [data-tid="modal-close"] { width: 40
 .booking-system-backdrop { position: fixed; inset: 0; z-index: 999; background: rgb(17 24 43 / 65%); }
 body:has(.booking-system[open]) > .react-ui { position: fixed; inset: 0; z-index: 1001 !important; pointer-events: none; }
 body:has(.booking-system[open]) > .react-ui > * { pointer-events: auto; }
+body:has(.booking-system[open]) > .react-ui [data-tid="Select__menu"] { box-sizing: border-box; max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); overflow: auto; }
+body:has(.booking-system[open]) > .react-ui [data-tid="Select__menu"] button { max-width: 100%; }
 body:has(.booking-system[open]) > .yarl__portal { position: fixed; inset: 0; z-index: 1002 !important; }
 
 /* The SDK's fixed field widths were calculated for its original font. */
