@@ -21,6 +21,17 @@ from core.models import ContentPage, InterfaceText, SiteSettings
 
 
 class ContentSafetyTests(TestCase):
+    def test_image_plan_handles_canonical_domain_outside_allowed_hosts(self):
+        from core.management.commands.prepare_site_images import page_plan
+        site = Site.objects.first()
+        site.hostname = 'canonical-unavailable.example'; site.save(update_fields=['hostname'])
+        page = site.root_page.add_child(instance=ContentPage(title='Preview', slug='preview'))
+        with override_settings(ALLOWED_HOSTS=['testserver']):
+            self.assertIsInstance(page_plan([page]), set)
+            self.assertEqual(self.client.get('/', HTTP_HOST=site.hostname).status_code, 400)
+        site.refresh_from_db()
+        self.assertEqual(site.hostname, 'canonical-unavailable.example')
+
     def test_mobile_home_photos_seed_once_and_preserve_editor_clear(self):
         from home.models import HomePage
         home = Site.objects.first().root_page.add_child(instance=HomePage(title='Главная', slug='mobile-home'))

@@ -1,6 +1,8 @@
 """Discover actual template usage and warm it outside HTTP requests."""
 from collections import defaultdict
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.http.request import validate_host
 from django.test import RequestFactory
 from wagtail.images import get_image_model
 from wagtail.models import Page, Site
@@ -12,8 +14,18 @@ def page_plan(pages):
     token = rendition_plan.set(plan)
     try:
         site = Site.objects.filter(is_default_site=True).first()
+        host = site.hostname if site else 'localhost'
+        # The configured canonical domain may not be enabled yet. Render on a
+        # permitted host without changing the Site, DNS or public validation.
+        if not validate_host(host, settings.ALLOWED_HOSTS):
+            hosts = [item for item in settings.ALLOWED_HOSTS if item and item != '*']
+            host = next((item for item in hosts if not item.startswith('.')), None)
+            if host is None and hosts:
+                host = 'preview' + hosts[0]
+            if host is None:
+                raise CommandError('Для подготовки фото нужен разрешённый хост в ALLOWED_HOSTS.')
         for page in pages:
-            request = RequestFactory().get(page.url or '/', HTTP_HOST=site.hostname if site else 'localhost')
+            request = RequestFactory().get(page.url or '/', HTTP_HOST=host)
             request.session = {}
             request.bs_utm = {}
             request.is_preview = False
