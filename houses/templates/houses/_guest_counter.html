@@ -1,3 +1,4 @@
+{% load content_tags %}
 {% load houses_tags %}
 {% comment %}
   Строка счётчика гостей: название, минус/значение/плюс, подпись снизу.
@@ -14,7 +15,7 @@
               aria-label="Добавить: {{ label|lower }}">+</button>
     </span>
   </div>
-  {% if key == "children" %}<p class="guests__note">Бесплатно: {{ age }} лет и младше</p>{% elif note %}
+  {% if key == "children" %}<p class="guests__note">{% cms_text "_guest_counter-2c5eb60c160a" %} {{ age }} {% cms_text "_guest_counter-bbc1298c9097" %}</p>{% elif note %}
     {% with parts=note|guest_note_parts %}<p class="guests__note">{{ parts.0 }}<span class="guests__note-end">{{ parts.1 }}{% if details %} <span class="guests__hint"><button type="button" class="guests__hint-toggle" aria-label="Условия доплаты: {{ label|lower }}" aria-describedby="guests-hint-{{ key }}">i</button><span class="guests__hint-text" id="guests-hint-{{ key }}" role="tooltip">{{ details }}</span></span>{% endif %}</span></p>{% endwith %}
   {% endif %}
 </div>

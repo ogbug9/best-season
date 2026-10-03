@@ -1,0 +1,910 @@
+{
+  "404-af9d33066ad6": {
+    "label": "config/templates/404.html: Страница не найдена",
+    "text": "Страница не найдена"
+  },
+  "404-32cf86312d82": {
+    "label": "config/templates/404.html: Такой страницы нет. Вернитесь на главную или посмотрите домики.",
+    "text": "Такой страницы нет. Вернитесь на главную или посмотрите домики."
+  },
+  "404-e2e0cfa630aa": {
+    "label": "config/templates/404.html: Такой страницы нет",
+    "text": "Такой страницы нет"
+  },
+  "404-55f0d4e3d0ae": {
+    "label": "config/templates/404.html: Возможно, адрес набран с опечаткой или страницу переместили.",
+    "text": "Возможно, адрес набран с опечаткой или страницу переместили."
+  },
+  "404-ad94907f6423": {
+    "label": "config/templates/404.html: На главную",
+    "text": "На главную"
+  },
+  "404-aa5b7a42a613": {
+    "label": "config/templates/404.html: Забронировать даты",
+    "text": "Забронировать даты"
+  },
+  "500-46173e2541fe": {
+    "label": "config/templates/500.html: Ошибка на сервере",
+    "text": "Ошибка на сервере"
+  },
+  "500-4d1b27ecd7c2": {
+    "label": "config/templates/500.html: Что-то пошло не так",
+    "text": "Что-то пошло не так"
+  },
+  "500-b8654570e7f8": {
+    "label": "config/templates/500.html: Мы уже разбираемся. Попробуйте обновить страницу через пару минут.",
+    "text": "Мы уже разбираемся. Попробуйте обновить страницу через пару минут."
+  },
+  "500-ad94907f6423": {
+    "label": "config/templates/500.html: На главную",
+    "text": "На главную"
+  },
+  "base-f35ba214e95d": {
+    "label": "config/templates/base.html: Перейти к содержимому",
+    "text": "Перейти к содержимому"
+  },
+  "base-0cd618b74e9c": {
+    "label": "config/templates/base.html: Заявка отправлена.",
+    "text": "Заявка отправлена."
+  },
+  "base-b3462448b4a0": {
+    "label": "config/templates/base.html: Ответим",
+    "text": "Ответим"
+  },
+  "base-0e5ac608bbfd": {
+    "label": "config/templates/base.html: Свяжемся с вами в ближайшее время.",
+    "text": "Свяжемся с вами в ближайшее время."
+  },
+  "base-5d9d7f118153": {
+    "label": "config/templates/base.html: Забронировать",
+    "text": "Забронировать"
+  },
+  "base-d0c0ee65c67e": {
+    "label": "config/templates/base.html: Согласиться",
+    "text": "Согласиться"
+  },
+  "booking_cta-5d9d7f118153": {
+    "label": "config/templates/includes/booking_cta.html: Забронировать",
+    "text": "Забронировать"
+  },
+  "booking_modal-813da71cbef9": {
+    "label": "config/templates/includes/booking_modal.html: Онлайн-бронирование",
+    "text": "Онлайн-бронирование"
+  },
+  "booking_modal-f586f23df9a3": {
+    "label": "config/templates/includes/booking_modal.html: Если вы уже выбрали дом, даты и гостей на сайте, укажите их ещё раз в форме бронирования ниже.",
+    "text": "Если вы уже выбрали дом, даты и гостей на сайте, укажите их ещё раз в форме бронирования ниже."
+  },
+  "booking_modal-2d5d0bca46ed": {
+    "label": "config/templates/includes/booking_modal.html: Загружаем систему бронирования…",
+    "text": "Загружаем систему бронирования…"
+  },
+  "booking_modal-9250eb726e9a": {
+    "label": "config/templates/includes/booking_modal.html: Календарь доступности",
+    "text": "Календарь доступности"
+  },
+  "booking_modal-449e49a038a3": {
+    "label": "config/templates/includes/booking_modal.html: Домики",
+    "text": "Домики"
+  },
+  "booking_modal-af751288687d": {
+    "label": "config/templates/includes/booking_modal.html: Баня и беседки",
+    "text": "Баня и беседки"
+  },
+  "booking_modal-7c12fd5e89a0": {
+    "label": "config/templates/includes/booking_modal.html: Нет подходящего домика или свободных дат? Попробуйте другие даты или оставьте заявку — поможем с выб",
+    "text": "Нет подходящего домика или свободных дат? Попробуйте другие даты или оставьте заявку — поможем с выбором."
+  },
+  "booking_modal-40bcd1704497": {
+    "label": "config/templates/includes/booking_modal.html: Оставить заявку",
+    "text": "Оставить заявку"
+  },
+  "booking_modal-1c2b1f9736f4": {
+    "label": "config/templates/includes/booking_modal.html: Оставьте заявку — подберём свободный домик на ваши даты,\n        назовём цену и ответим лично. Отпра",
+    "text": "Оставьте заявку — подберём свободный домик на ваши даты,\n        назовём цену и ответим лично. Отправка заявки не подтверждает бронирование."
+  },
+  "booking_modal-beccab9d8c9d": {
+    "label": "config/templates/includes/booking_modal.html: Онлайн-бронирование временно недоступно. Оставьте заявку — подберём\n        свободный домик на ваши ",
+    "text": "Онлайн-бронирование временно недоступно. Оставьте заявку — подберём\n        свободный домик на ваши даты и ответим лично. Отправка заявки не подтверждает бронирование."
+  },
+  "booking_modal-298e41327fee": {
+    "label": "config/templates/includes/booking_modal.html: Повторить загрузку",
+    "text": "Повторить загрузку"
+  },
+  "booking_modal-5de96583a02b": {
+    "label": "config/templates/includes/booking_modal.html: Написать в Telegram",
+    "text": "Написать в Telegram"
+  },
+  "booking_modal-3adb5333cfe3": {
+    "label": "config/templates/includes/booking_modal.html: Написать в WhatsApp",
+    "text": "Написать в WhatsApp"
+  },
+  "faq_section-aec7a4625e64": {
+    "label": "config/templates/includes/faq_section.html: Ответы на вопросы",
+    "text": "Ответы на вопросы"
+  },
+  "faq_section-e3fa138ad417": {
+    "label": "config/templates/includes/faq_section.html: Ответы",
+    "text": "Ответы"
+  },
+  "faq_section-cb6e474f34f1": {
+    "label": "config/templates/includes/faq_section.html: на вопросы",
+    "text": "на вопросы"
+  },
+  "footer-125394ee160a": {
+    "label": "config/templates/includes/footer.html: ВКонтакте",
+    "text": "ВКонтакте"
+  },
+  "footer-aa5b7a42a613": {
+    "label": "config/templates/includes/footer.html: Забронировать даты",
+    "text": "Забронировать даты"
+  },
+  "footer-6ea391cc2463": {
+    "label": "config/templates/includes/footer.html: ИП Новосад Софья Павловна",
+    "text": "ИП Новосад Софья Павловна"
+  },
+  "footer-d47f74a52d01": {
+    "label": "config/templates/includes/footer.html: ОГРНИП:",
+    "text": "ОГРНИП:"
+  },
+  "footer-6a2f62061838": {
+    "label": "config/templates/includes/footer.html: ОГРНИП: 323774600773141",
+    "text": "ОГРНИП: 323774600773141"
+  },
+  "footer-41e2469679b6": {
+    "label": "config/templates/includes/footer.html: ИНН:",
+    "text": "ИНН:"
+  },
+  "footer-6a6a061fd3d7": {
+    "label": "config/templates/includes/footer.html: ИНН: 770902179335",
+    "text": "ИНН: 770902179335"
+  },
+  "footer-c75bbc08a90a": {
+    "label": "config/templates/includes/footer.html: © Лучший Сезон",
+    "text": "© Лучший Сезон"
+  },
+  "footer-8792ac747bae": {
+    "label": "config/templates/includes/footer.html: . Все права защищены.",
+    "text": ". Все права защищены."
+  },
+  "footer-62a4aef192cf": {
+    "label": "config/templates/includes/footer.html: * Meta запрещена на территории РФ",
+    "text": "* Meta запрещена на территории РФ"
+  },
+  "footer-f3e25ea65c86": {
+    "label": "config/templates/includes/footer.html: Шрифт Etude Noire — Дмитрий Антонов / Blue Curve Designstudio,\n          лицензия",
+    "text": "Шрифт Etude Noire — Дмитрий Антонов / Blue Curve Designstudio,\n          лицензия"
+  },
+  "footer_columns-011d8814fe39": {
+    "label": "config/templates/includes/footer_columns.html: Правовые документы",
+    "text": "Правовые документы"
+  },
+  "header-b37239054438": {
+    "label": "config/templates/includes/header.html: Можно с животными",
+    "text": "Можно с животными"
+  },
+  "header-600391c82b3e": {
+    "label": "config/templates/includes/header.html: Есть доплата",
+    "text": "Есть доплата"
+  },
+  "header-aa5b7a42a613": {
+    "label": "config/templates/includes/header.html: Забронировать даты",
+    "text": "Забронировать даты"
+  },
+  "header-d328e53dc456": {
+    "label": "config/templates/includes/header.html: Главная",
+    "text": "Главная"
+  },
+  "header-1887350f1a37": {
+    "label": "config/templates/includes/header.html: Перейти в раздел",
+    "text": "Перейти в раздел"
+  },
+  "price_flag-5f201355756a": {
+    "label": "config/templates/includes/price_flag.html: от",
+    "text": "от"
+  },
+  "about_page-278ffbae4550": {
+    "label": "core/templates/core/about_page.html: Путе",
+    "text": "Путе"
+  },
+  "about_page-659081f9a741": {
+    "label": "core/templates/core/about_page.html: шест",
+    "text": "шест"
+  },
+  "about_page-b662e72dc3fa": {
+    "label": "core/templates/core/about_page.html: вовать",
+    "text": "вовать"
+  },
+  "about_page-6ed487146e23": {
+    "label": "core/templates/core/about_page.html: Узнать больше",
+    "text": "Узнать больше"
+  },
+  "about_page-c1f51c3d5260": {
+    "label": "core/templates/core/about_page.html: Связаться с нами",
+    "text": "Связаться с нами"
+  },
+  "about_page-8b1c29b112a0": {
+    "label": "core/templates/core/about_page.html: Больше пушистиков",
+    "text": "Больше пушистиков"
+  },
+  "about_page-bd8ca31e7f18": {
+    "label": "core/templates/core/about_page.html: Больше интересных новостей",
+    "text": "Больше интересных новостей"
+  },
+  "contacts_page-353ad7d1834d": {
+    "label": "core/templates/core/contacts_page.html: Телефон:",
+    "text": "Телефон:"
+  },
+  "contacts_page-9acc3fbe2040": {
+    "label": "core/templates/core/contacts_page.html: Почта:",
+    "text": "Почта:"
+  },
+  "contacts_page-b87e6ba86a55": {
+    "label": "core/templates/core/contacts_page.html: Адрес:",
+    "text": "Адрес:"
+  },
+  "contacts_page-125394ee160a": {
+    "label": "core/templates/core/contacts_page.html: ВКонтакте",
+    "text": "ВКонтакте"
+  },
+  "contacts_page-1b6d70106339": {
+    "label": "core/templates/core/contacts_page.html: · ИНН",
+    "text": "· ИНН"
+  },
+  "contacts_page-f0d20ac2a599": {
+    "label": "core/templates/core/contacts_page.html: · ОГРНИП",
+    "text": "· ОГРНИП"
+  },
+  "contacts_page-90457f42f688": {
+    "label": "core/templates/core/contacts_page.html: Показать карту",
+    "text": "Показать карту"
+  },
+  "content_page-a859d91f587f": {
+    "label": "core/templates/core/content_page.html: Скачать PDF",
+    "text": "Скачать PDF"
+  },
+  "content_page-aa5b7a42a613": {
+    "label": "core/templates/core/content_page.html: Забронировать даты",
+    "text": "Забронировать даты"
+  },
+  "directions_page-a88a4debb15d": {
+    "label": "core/templates/core/directions_page.html: На автомобиле",
+    "text": "На автомобиле"
+  },
+  "directions_page-7087612994cd": {
+    "label": "core/templates/core/directions_page.html: Расстояние:",
+    "text": "Расстояние:"
+  },
+  "directions_page-26803a9646b8": {
+    "label": "core/templates/core/directions_page.html: Время в пути:",
+    "text": "Время в пути:"
+  },
+  "directions_page-f7445243bed5": {
+    "label": "core/templates/core/directions_page.html: Открыть маршрут в Яндекс.Картах",
+    "text": "Открыть маршрут в Яндекс.Картах"
+  },
+  "directions_page-1956920f76c5": {
+    "label": "core/templates/core/directions_page.html: На электричке или автобусе",
+    "text": "На электричке или автобусе"
+  },
+  "directions_page-915c8675d775": {
+    "label": "core/templates/core/directions_page.html: Трансфер",
+    "text": "Трансфер"
+  },
+  "directions_page-0701381c8c21": {
+    "label": "core/templates/core/directions_page.html: Позвонить",
+    "text": "Позвонить"
+  },
+  "directions_page-10320d936a2e": {
+    "label": "core/templates/core/directions_page.html: Мы на карте",
+    "text": "Мы на карте"
+  },
+  "directions_page-90457f42f688": {
+    "label": "core/templates/core/directions_page.html: Показать карту",
+    "text": "Показать карту"
+  },
+  "directions_page-ee5c15bb3870": {
+    "label": "core/templates/core/directions_page.html: Карта загрузится с сервера Яндекса по нажатию.",
+    "text": "Карта загрузится с сервера Яндекса по нажатию."
+  },
+  "directions_page-eeba4f863379": {
+    "label": "core/templates/core/directions_page.html: Готовы приехать?",
+    "text": "Готовы приехать?"
+  },
+  "directions_page-e8d3050844b6": {
+    "label": "core/templates/core/directions_page.html: Выберите даты — свободные номера покажет система бронирования.",
+    "text": "Выберите даты — свободные номера покажет система бронирования."
+  },
+  "directions_page-aa5b7a42a613": {
+    "label": "core/templates/core/directions_page.html: Забронировать даты",
+    "text": "Забронировать даты"
+  },
+  "territory_page-59589fe2a549": {
+    "label": "core/templates/core/territory_page.html: Подробнее",
+    "text": "Подробнее"
+  },
+  "_nearby_card-59589fe2a549": {
+    "label": "core/templates/core/_nearby_card.html: Подробнее",
+    "text": "Подробнее"
+  },
+  "_nearby_card-36c25d9ffcfd": {
+    "label": "core/templates/core/_nearby_card.html: Свернуть",
+    "text": "Свернуть"
+  },
+  "home_page-ed598bbf587b": {
+    "label": "home/templates/home/home_page.html: Дата въезда",
+    "text": "Дата въезда"
+  },
+  "home_page-7d95dbee2098": {
+    "label": "home/templates/home/home_page.html: Дата въезда — выезда",
+    "text": "Дата въезда — выезда"
+  },
+  "home_page-ac73830877c9": {
+    "label": "home/templates/home/home_page.html: Дата выезда",
+    "text": "Дата выезда"
+  },
+  "home_page-ff2a49a5c38f": {
+    "label": "home/templates/home/home_page.html: 1 гость",
+    "text": "1 гость"
+  },
+  "home_page-aa5b7a42a613": {
+    "label": "home/templates/home/home_page.html: Забронировать даты",
+    "text": "Забронировать даты"
+  },
+  "home_page-59589fe2a549": {
+    "label": "home/templates/home/home_page.html: Подробнее",
+    "text": "Подробнее"
+  },
+  "home_page-0dafa11ce08d": {
+    "label": "home/templates/home/home_page.html: Наши домики",
+    "text": "Наши домики"
+  },
+  "home_page-5f07fab5a183": {
+    "label": "home/templates/home/home_page.html: Наша территория",
+    "text": "Наша территория"
+  },
+  "home_page-41b97f8e0eff": {
+    "label": "home/templates/home/home_page.html: Больше развлечений и услуг",
+    "text": "Больше развлечений и услуг"
+  },
+  "home_page-82c3bd246f5a": {
+    "label": "home/templates/home/home_page.html: Интересное рядом",
+    "text": "Интересное рядом"
+  },
+  "home_page-da6258d9e1d3": {
+    "label": "home/templates/home/home_page.html: Интересное",
+    "text": "Интересное"
+  },
+  "home_page-51ee4ce808e8": {
+    "label": "home/templates/home/home_page.html: рядом",
+    "text": "рядом"
+  },
+  "home_page-0539128d2cc8": {
+    "label": "home/templates/home/home_page.html: Как доехать",
+    "text": "Как доехать"
+  },
+  "home_page-349a3904b3e5": {
+    "label": "home/templates/home/home_page.html: Впечатления наших гостей",
+    "text": "Впечатления наших гостей"
+  },
+  "home_page-315c321e11cf": {
+    "label": "home/templates/home/home_page.html: Истории тех, кто уже побывал в «Лучшем сезоне». О домиках, природе и маленьких моментах отдыха.",
+    "text": "Истории тех, кто уже побывал в «Лучшем сезоне». О домиках, природе и маленьких моментах отдыха."
+  },
+  "home_page-59bc888ec6a6": {
+    "label": "home/templates/home/home_page.html: Читать отзывы на Яндексе",
+    "text": "Читать отзывы на Яндексе"
+  },
+  "home_page-1cd77dd774fe": {
+    "label": "home/templates/home/home_page.html: Лучший сезон на карте Тульской области — Яндекс Карты",
+    "text": "Лучший сезон на карте Тульской области — Яндекс Карты"
+  },
+  "house_index_page-ed598bbf587b": {
+    "label": "houses/templates/houses/house_index_page.html: Дата въезда",
+    "text": "Дата въезда"
+  },
+  "house_index_page-26a3ae77bfaa": {
+    "label": "houses/templates/houses/house_index_page.html: Даты",
+    "text": "Даты"
+  },
+  "house_index_page-ac73830877c9": {
+    "label": "houses/templates/houses/house_index_page.html: Дата выезда",
+    "text": "Дата выезда"
+  },
+  "house_index_page-ff2a49a5c38f": {
+    "label": "houses/templates/houses/house_index_page.html: 1 гость",
+    "text": "1 гость"
+  },
+  "house_index_page-aa5b7a42a613": {
+    "label": "houses/templates/houses/house_index_page.html: Забронировать даты",
+    "text": "Забронировать даты"
+  },
+  "house_index_page-583ce108eb43": {
+    "label": "houses/templates/houses/house_index_page.html: Домики пока не добавлены.",
+    "text": "Домики пока не добавлены."
+  },
+  "house_index_page-159ce14c6926": {
+    "label": "houses/templates/houses/house_index_page.html: Что добавить",
+    "text": "Что добавить"
+  },
+  "house_index_page-aec7a4625e64": {
+    "label": "houses/templates/houses/house_index_page.html: Ответы на вопросы",
+    "text": "Ответы на вопросы"
+  },
+  "house_index_page-e3fa138ad417": {
+    "label": "houses/templates/houses/house_index_page.html: Ответы",
+    "text": "Ответы"
+  },
+  "house_index_page-cb6e474f34f1": {
+    "label": "houses/templates/houses/house_index_page.html: на вопросы",
+    "text": "на вопросы"
+  },
+  "house_index_page-1b96fb9abe3e": {
+    "label": "houses/templates/houses/house_index_page.html: Выбрали домик?",
+    "text": "Выбрали домик?"
+  },
+  "house_index_page-e4d2c144d765": {
+    "label": "houses/templates/houses/house_index_page.html: Свободные даты и стоимость — в системе бронирования.",
+    "text": "Свободные даты и стоимость — в системе бронирования."
+  },
+  "house_page-a46bc5fa21a3": {
+    "label": "houses/templates/houses/house_page.html: Фотографии домика",
+    "text": "Фотографии домика"
+  },
+  "house_page-7ac84107c129": {
+    "label": "houses/templates/houses/house_page.html: Смотреть",
+    "text": "Смотреть"
+  },
+  "house_page-c0d934ae2838": {
+    "label": "houses/templates/houses/house_page.html: Смотреть все фотографии",
+    "text": "Смотреть все фотографии"
+  },
+  "house_page-c8c7e8482bf6": {
+    "label": "houses/templates/houses/house_page.html: Вместимость до",
+    "text": "Вместимость до"
+  },
+  "house_page-f51cb058d5cb": {
+    "label": "houses/templates/houses/house_page.html: -х человек",
+    "text": "-х человек"
+  },
+  "house_page-9bdb4917feac": {
+    "label": "houses/templates/houses/house_page.html: м²",
+    "text": "м²"
+  },
+  "house_page-966d89a4aa2c": {
+    "label": "houses/templates/houses/house_page.html: Спальные места",
+    "text": "Спальные места"
+  },
+  "house_page-8280889d935a": {
+    "label": "houses/templates/houses/house_page.html: О домике",
+    "text": "О домике"
+  },
+  "house_page-b457d34be745": {
+    "label": "houses/templates/houses/house_page.html: Удобства",
+    "text": "Удобства"
+  },
+  "house_page-59589fe2a549": {
+    "label": "houses/templates/houses/house_page.html: Подробнее",
+    "text": "Подробнее"
+  },
+  "house_page-36c25d9ffcfd": {
+    "label": "houses/templates/houses/house_page.html: Свернуть",
+    "text": "Свернуть"
+  },
+  "house_page-33ddcf19676b": {
+    "label": "houses/templates/houses/house_page.html: Отзывы о домике",
+    "text": "Отзывы о домике"
+  },
+  "_booking_panel-0e3bad770688": {
+    "label": "houses/templates/houses/_booking_panel.html: Дата заезда",
+    "text": "Дата заезда"
+  },
+  "_booking_panel-ac73830877c9": {
+    "label": "houses/templates/houses/_booking_panel.html: Дата выезда",
+    "text": "Дата выезда"
+  },
+  "_booking_panel-73fbff850e41": {
+    "label": "houses/templates/houses/_booking_panel.html: выезда",
+    "text": "выезда"
+  },
+  "_booking_panel-ad57d4e4d55b": {
+    "label": "houses/templates/houses/_booking_panel.html: Количество гостей",
+    "text": "Количество гостей"
+  },
+  "_booking_panel-5f201355756a": {
+    "label": "houses/templates/houses/_booking_panel.html: от",
+    "text": "от"
+  },
+  "_booking_panel-ceb6a90800a8": {
+    "label": "houses/templates/houses/_booking_panel.html: Предварительный расчёт. Календарь не показывает занятость домов. Доступность и итоговая стоимость — ",
+    "text": "Предварительный расчёт. Календарь не показывает занятость домов. Доступность и итоговая стоимость — в онлайн-бронировании."
+  },
+  "_booking_panel-5d9d7f118153": {
+    "label": "houses/templates/houses/_booking_panel.html: Забронировать",
+    "text": "Забронировать"
+  },
+  "_calendar_months-31a8ee2fb6b7": {
+    "label": "houses/templates/houses/_calendar_months.html: Пн",
+    "text": "Пн"
+  },
+  "_calendar_months-839b2d5c5aa3": {
+    "label": "houses/templates/houses/_calendar_months.html: Вт",
+    "text": "Вт"
+  },
+  "_calendar_months-7ec16b9e41ff": {
+    "label": "houses/templates/houses/_calendar_months.html: Ср",
+    "text": "Ср"
+  },
+  "_calendar_months-956618723dd8": {
+    "label": "houses/templates/houses/_calendar_months.html: Чт",
+    "text": "Чт"
+  },
+  "_calendar_months-4ca114c23be8": {
+    "label": "houses/templates/houses/_calendar_months.html: Пт",
+    "text": "Пт"
+  },
+  "_calendar_months-95dab017a4da": {
+    "label": "houses/templates/houses/_calendar_months.html: Сб",
+    "text": "Сб"
+  },
+  "_calendar_months-7971972c7cbb": {
+    "label": "houses/templates/houses/_calendar_months.html: Вс",
+    "text": "Вс"
+  },
+  "_guest_counter-2c5eb60c160a": {
+    "label": "houses/templates/houses/_guest_counter.html: Бесплатно:",
+    "text": "Бесплатно:"
+  },
+  "_guest_counter-bbc1298c9097": {
+    "label": "houses/templates/houses/_guest_counter.html: лет и младше",
+    "text": "лет и младше"
+  },
+  "_house_card-45c2f1fa658e": {
+    "label": "houses/templates/houses/_house_card.html: Фото",
+    "text": "Фото"
+  },
+  "_house_card-9fdafbeb8b0e": {
+    "label": "houses/templates/houses/_house_card.html: спальных места",
+    "text": "спальных места"
+  },
+  "_house_card-59589fe2a549": {
+    "label": "houses/templates/houses/_house_card.html: Подробнее",
+    "text": "Подробнее"
+  },
+  "_house_card-5d9d7f118153": {
+    "label": "houses/templates/houses/_house_card.html: Забронировать",
+    "text": "Забронировать"
+  },
+  "_mobile_services-159ce14c6926": {
+    "label": "houses/templates/houses/_mobile_services.html: Что добавить",
+    "text": "Что добавить"
+  },
+  "_mobile_services-289c607aaaeb": {
+    "label": "houses/templates/houses/_mobile_services.html: Чем можно разнообразить ваш отдых:",
+    "text": "Чем можно разнообразить ваш отдых:"
+  },
+  "_mobile_services-2f4d1710f014": {
+    "label": "houses/templates/houses/_mobile_services.html: русская баня, беседка, фотосессия с животными.",
+    "text": "русская баня, беседка, фотосессия с животными."
+  },
+  "_mobile_services-eee3d339d07a": {
+    "label": "houses/templates/houses/_mobile_services.html: Скажите заранее — подготовим к вашему приезду.",
+    "text": "Скажите заранее — подготовим к вашему приезду."
+  },
+  "_mobile_services-41b97f8e0eff": {
+    "label": "houses/templates/houses/_mobile_services.html: Больше развлечений и услуг",
+    "text": "Больше развлечений и услуг"
+  },
+  "promotions_page-97b8783453d5": {
+    "label": "promotions/templates/promotions/promotions_page.html: Действует до",
+    "text": "Действует до"
+  },
+  "promotions_page-3535fea44523": {
+    "label": "promotions/templates/promotions/promotions_page.html: Сейчас действующих акций нет.",
+    "text": "Сейчас действующих акций нет."
+  },
+  "reviews_page-d30ae9e0714b": {
+    "label": "reviews/templates/reviews/reviews_page.html: Отзывы пока не опубликованы.",
+    "text": "Отзывы пока не опубликованы."
+  },
+  "_service_card-59589fe2a549": {
+    "label": "services/templates/services/_service_card.html: Подробнее",
+    "text": "Подробнее"
+  },
+  "_service_card-5d9d7f118153": {
+    "label": "services/templates/services/_service_card.html: Забронировать",
+    "text": "Забронировать"
+  },
+  "request_form-0cd618b74e9c": {
+    "label": "forms/templates/forms/request_form.html: Заявка отправлена.",
+    "text": "Заявка отправлена."
+  },
+  "request_form-b3462448b4a0": {
+    "label": "forms/templates/forms/request_form.html: Ответим",
+    "text": "Ответим"
+  },
+  "request_form-0e5ac608bbfd": {
+    "label": "forms/templates/forms/request_form.html: Свяжемся с вами в ближайшее время.",
+    "text": "Свяжемся с вами в ближайшее время."
+  },
+  "request_form-def50857df02": {
+    "label": "forms/templates/forms/request_form.html: Проверьте поля: нужно имя, согласие и хотя бы один способ связи.",
+    "text": "Проверьте поля: нужно имя, согласие и хотя бы один способ связи."
+  },
+  "request_form-638a41496ab9": {
+    "label": "forms/templates/forms/request_form.html: Слишком много заявок подряд. Позвоните нам — так быстрее.",
+    "text": "Слишком много заявок подряд. Позвоните нам — так быстрее."
+  },
+  "request_form-f47a0fe77ed2": {
+    "label": "forms/templates/forms/request_form.html: Я согласен на обработку персональных данных",
+    "text": "Я согласен на обработку персональных данных"
+  },
+  "request_form-c02b77578811": {
+    "label": "forms/templates/forms/request_form.html: на условиях",
+    "text": "на условиях"
+  },
+  "request_form-649bda914d2f": {
+    "label": "forms/templates/forms/request_form.html: согласия",
+    "text": "согласия"
+  },
+  "request_result-766d77346e54": {
+    "label": "forms/templates/forms/request_result.html: Заявка на бронирование",
+    "text": "Заявка на бронирование"
+  },
+  "request_result-f3ac78cd5da4": {
+    "label": "forms/templates/forms/request_result.html: Вернуться на страницу",
+    "text": "Вернуться на страницу"
+  },
+  "form-feedback-name": {
+    "label": "Форма feedback: name",
+    "text": "Как вас зовут"
+  },
+  "form-feedback-phone": {
+    "label": "Форма feedback: phone",
+    "text": "Телефон"
+  },
+  "form-feedback-email": {
+    "label": "Форма feedback: email",
+    "text": "Электронная почта"
+  },
+  "form-feedback-message": {
+    "label": "Форма feedback: message",
+    "text": "Сообщение"
+  },
+  "form-feedback-topic": {
+    "label": "Форма feedback: topic",
+    "text": "Тема заявки"
+  },
+  "form-feedback-consent_given": {
+    "label": "Форма feedback: consent_given",
+    "text": "Согласен на обработку персональных данных"
+  },
+  "form-transfer-name": {
+    "label": "Форма transfer: name",
+    "text": "Как вас зовут"
+  },
+  "form-transfer-phone": {
+    "label": "Форма transfer: phone",
+    "text": "Телефон"
+  },
+  "form-transfer-email": {
+    "label": "Форма transfer: email",
+    "text": "Электронная почта"
+  },
+  "form-transfer-date_from": {
+    "label": "Форма transfer: date_from",
+    "text": "Дата приезда"
+  },
+  "form-transfer-guests": {
+    "label": "Форма transfer: guests",
+    "text": "Сколько гостей"
+  },
+  "form-transfer-message": {
+    "label": "Форма transfer: message",
+    "text": "Откуда забрать и другие детали"
+  },
+  "form-transfer-consent_given": {
+    "label": "Форма transfer: consent_given",
+    "text": "Согласен на обработку персональных данных"
+  },
+  "form-certificate-name": {
+    "label": "Форма certificate: name",
+    "text": "Как вас зовут"
+  },
+  "form-certificate-phone": {
+    "label": "Форма certificate: phone",
+    "text": "Телефон"
+  },
+  "form-certificate-email": {
+    "label": "Форма certificate: email",
+    "text": "Электронная почта"
+  },
+  "form-certificate-message": {
+    "label": "Форма certificate: message",
+    "text": "Пожелания к сертификату"
+  },
+  "form-certificate-topic": {
+    "label": "Форма certificate: topic",
+    "text": "Тема заявки"
+  },
+  "form-certificate-consent_given": {
+    "label": "Форма certificate: consent_given",
+    "text": "Согласен на обработку персональных данных"
+  },
+  "form-house_question-name": {
+    "label": "Форма house_question: name",
+    "text": "Как вас зовут"
+  },
+  "form-house_question-phone": {
+    "label": "Форма house_question: phone",
+    "text": "Телефон"
+  },
+  "form-house_question-email": {
+    "label": "Форма house_question: email",
+    "text": "Электронная почта"
+  },
+  "form-house_question-house": {
+    "label": "Форма house_question: house",
+    "text": "Дом"
+  },
+  "form-house_question-message": {
+    "label": "Форма house_question: message",
+    "text": "Ваш вопрос"
+  },
+  "form-house_question-consent_given": {
+    "label": "Форма house_question: consent_given",
+    "text": "Согласен на обработку персональных данных"
+  },
+  "form-fallback-name": {
+    "label": "Форма fallback: name",
+    "text": "Как вас зовут"
+  },
+  "form-fallback-phone": {
+    "label": "Форма fallback: phone",
+    "text": "Телефон"
+  },
+  "form-fallback-email": {
+    "label": "Форма fallback: email",
+    "text": "Электронная почта"
+  },
+  "form-fallback-house": {
+    "label": "Форма fallback: house",
+    "text": "Дом"
+  },
+  "form-fallback-date_from": {
+    "label": "Форма fallback: date_from",
+    "text": "Заезд"
+  },
+  "form-fallback-date_to": {
+    "label": "Форма fallback: date_to",
+    "text": "Выезд"
+  },
+  "form-fallback-guests": {
+    "label": "Форма fallback: guests",
+    "text": "Гостей"
+  },
+  "form-fallback-children": {
+    "label": "Форма fallback: children",
+    "text": "Детей (входят в число гостей)"
+  },
+  "form-fallback-pets": {
+    "label": "Форма fallback: pets",
+    "text": "Питомцев"
+  },
+  "form-fallback-message": {
+    "label": "Форма fallback: message",
+    "text": "Пожелания"
+  },
+  "form-fallback-consent_given": {
+    "label": "Форма fallback: consent_given",
+    "text": "Согласен на обработку персональных данных"
+  },
+  "footer-column-0": {
+    "label": "Подвал: колонка 1",
+    "text": "Размещение"
+  },
+  "footer-link-akcii": {
+    "label": "Подвал: akcii",
+    "text": "Акции"
+  },
+  "footer-link-__booking__": {
+    "label": "Подвал: __booking__",
+    "text": "Бронирование"
+  },
+  "footer-link-razmeshchenie": {
+    "label": "Подвал: razmeshchenie",
+    "text": "Дома"
+  },
+  "footer-link-pravila-bronirovaniya": {
+    "label": "Подвал: pravila-bronirovaniya",
+    "text": "Правила бронирования"
+  },
+  "footer-link-vyezdy-kompaniy": {
+    "label": "Подвал: vyezdy-kompaniy",
+    "text": "Выезды компаний"
+  },
+  "footer-link-rassylka": {
+    "label": "Подвал: rassylka",
+    "text": "Рассылка"
+  },
+  "footer-link-oferta": {
+    "label": "Подвал: oferta",
+    "text": "Оферта"
+  },
+  "footer-link-politika-konfidencialnosti": {
+    "label": "Подвал: politika-konfidencialnosti",
+    "text": "Политика конфиденциальности"
+  },
+  "footer-link-soglasie-na-obrabotku": {
+    "label": "Подвал: soglasie-na-obrabotku",
+    "text": "Персональные данные"
+  },
+  "footer-column-1": {
+    "label": "Подвал: колонка 2",
+    "text": "Территория"
+  },
+  "footer-link-razvlecheniya": {
+    "label": "Подвал: razvlecheniya",
+    "text": "Развлечения"
+  },
+  "footer-link-chem-zanyatsya": {
+    "label": "Подвал: chem-zanyatsya",
+    "text": "Чем заняться"
+  },
+  "footer-link-uslugi": {
+    "label": "Подвал: uslugi",
+    "text": "Доп услуги"
+  },
+  "footer-link-meropriyatiya": {
+    "label": "Подвал: meropriyatiya",
+    "text": "Мероприятия"
+  },
+  "footer-link-interesnoe-ryadom": {
+    "label": "Подвал: interesnoe-ryadom",
+    "text": "Интересное рядом"
+  },
+  "footer-column-2": {
+    "label": "Подвал: колонка 3",
+    "text": "О нас"
+  },
+  "footer-link-galereya": {
+    "label": "Подвал: galereya",
+    "text": "Галерея"
+  },
+  "footer-link-otzyvy": {
+    "label": "Подвал: otzyvy",
+    "text": "Отзывы"
+  },
+  "footer-link-kontakty": {
+    "label": "Подвал: kontakty",
+    "text": "Контакты"
+  },
+  "footer-link-voprosy": {
+    "label": "Подвал: voprosy",
+    "text": "FAQ"
+  },
+  "footer-link-partneram": {
+    "label": "Подвал: partneram",
+    "text": "Партнерам"
+  },
+  "include-b0f097f65241": {
+    "label": "Заголовок/подводка: Написать нам",
+    "text": "Написать нам"
+  },
+  "include-9d1ad5bd0f25": {
+    "label": "Заголовок/подводка: Заказать трансфер",
+    "text": "Заказать трансфер"
+  },
+  "include-035ecdffbb8e": {
+    "label": "Заголовок/подводка: Проверьте данные заявки",
+    "text": "Проверьте данные заявки"
+  },
+  "channel-telegram": {
+    "label": "Общая подпись ссылки: Telegram",
+    "text": "Telegram"
+  },
+  "channel-whatsapp": {
+    "label": "Общая подпись ссылки: WhatsApp",
+    "text": "WhatsApp"
+  }
+}

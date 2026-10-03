@@ -1,3 +1,5 @@
+{% load marketing_tags %}
+{% load content_tags %}
 {% load wagtailcore_tags static %}
 {% wagtail_site as current_site %}
 {% with s=settings.core.SiteSettings %}
@@ -60,7 +62,7 @@
         {% endcomment %}
         <span class="header__paw-wrap" tabindex="0" aria-label="Можно с животными. Есть доплата">
           <span class="header__paw" role="img" aria-label="Можно с животными"></span>
-          <span class="header__paw-note" aria-hidden="true">Можно с животными<br>Есть доплата</span>
+          <span class="header__paw-note" aria-hidden="true">{% cms_text "header-b37239054438" %}<br>{% cms_text "header-600391c82b3e" %}</span>
         </span>
         {% if s.phone %}
           <a class="header__phone" href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a>
@@ -68,7 +70,7 @@
           <a class="header__phone header__phone--fallback" href="tel:+79912550837">+7 (991) 255-08-37</a>
         {% endif %}
         <button type="button" class="btn btn--primary btn--pill" data-booking-open data-entry-point="1">
-          Забронировать даты
+          {% cms_text "header-aa5b7a42a613" %}
         </button>
       </div>
 
@@ -76,7 +78,7 @@
         <summary class="nav-toggle__button" aria-label="Меню"><span aria-hidden="true">☰</span></summary>
         <nav class="nav nav--mobile" aria-label="Мобильное меню">
           <ul class="nav__list">
-            <li><a class="nav-mobile__home" href="{% pageurl current_site.root_page %}">Главная</a></li>
+            <li><a class="nav-mobile__home" href="{% pageurl current_site.root_page %}">{% cms_text "header-d328e53dc456" %}</a></li>
             {% for item in current_site.root_page.get_children.live %}
               {% if item.show_in_menus or item.slug == 'akcii' %}
               <li>
@@ -86,7 +88,7 @@
                     {% for child in item.get_children.live.in_menu %}
                       <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
                     {% empty %}
-                      <li><a class="nav__sublink" href="{% pageurl item %}">Перейти в раздел</a></li>
+                      <li><a class="nav__sublink" href="{% pageurl item %}">{% cms_text "header-1887350f1a37" %}</a></li>
                     {% endfor %}
                   </ul>
                 </details>
@@ -95,19 +97,19 @@
             {% endfor %}
           </ul>
           <div class="nav-mobile__bottom">
-            <button type="button" class="btn btn--primary" data-booking-open data-entry-point="1">Забронировать даты</button>
-            <p class="nav-mobile__pets">Можно с животными<br>Есть доплата</p>
+            <button type="button" class="btn btn--primary" data-booking-open data-entry-point="1">{% cms_text "header-aa5b7a42a613" %}</button>
+            <p class="nav-mobile__pets">{% cms_text "header-b37239054438" %}<br>{% cms_text "header-600391c82b3e" %}</p>
             <div class="nav-mobile__contacts">
               <a class="nav-mobile__phone" href="tel:{{ s.phone|default:'+79912550837' }}">{{ s.phone_display|default:s.phone|default:'+7 (991) 255-08-37' }}</a>
               <a href="mailto:{{ s.email|default:'bestseasonst@gmail.com' }}">{{ s.email|default:'bestseasonst@gmail.com' }}</a>
               <p>{{ s.work_hours|default:'10:00 - 22:00' }}</p>
             </div>
             <ul class="socials">
-              {% if s.telegram_url %}<li><a class="socials__item" href="{{ s.telegram_url }}" target="_blank" rel="noopener"><img src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="Telegram"></a></li>{% endif %}
-              {% if s.vk_url %}<li><a class="socials__item" href="{{ s.vk_url }}" target="_blank" rel="noopener"><img src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="ВКонтакте"></a></li>{% endif %}
-              {% if s.tiktok_url %}<li><a class="socials__item" href="{{ s.tiktok_url }}" target="_blank" rel="noopener"><img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="TikTok"></a></li>{% endif %}
-              {% if s.whatsapp_url %}<li><a class="socials__item" href="{{ s.whatsapp_url }}" target="_blank" rel="noopener"><img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="WhatsApp"></a></li>{% endif %}
-              {% if s.instagram_url %}<li><a class="socials__item" href="{{ s.instagram_url }}" target="_blank" rel="noopener"><img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="Instagram"></a></li>{% endif %}
+              {% if s.telegram_url %}<li><a class="socials__item" href="{% marketing_url s.telegram_url 'header' %}" target="_blank" rel="noopener"><img src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="Telegram"></a></li>{% endif %}
+              {% if s.vk_url %}<li><a class="socials__item" href="{% marketing_url s.vk_url 'header' %}" target="_blank" rel="noopener"><img src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="ВКонтакте"></a></li>{% endif %}
+              {% if s.tiktok_url %}<li><a class="socials__item" href="{% marketing_url s.tiktok_url 'header' %}" target="_blank" rel="noopener"><img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="TikTok"></a></li>{% endif %}
+              {% if s.whatsapp_url %}<li><a class="socials__item" href="{% marketing_url s.whatsapp_url 'header' %}" target="_blank" rel="noopener"><img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="WhatsApp"></a></li>{% endif %}
+              {% if s.instagram_url %}<li><a class="socials__item" href="{% marketing_url s.instagram_url 'header' %}" target="_blank" rel="noopener"><img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="Instagram"></a></li>{% endif %}
             </ul>
           </div>
         </nav>

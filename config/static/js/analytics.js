@@ -59,10 +59,11 @@
     if (!link) return;
     var url;
     try { url = new URL(link.href, window.location.href); } catch (_) { return; }
+    if (link.matches && link.matches('[data-directions-link]')) track('directions_click');
     var channel = "";
     if (url.protocol === "tel:") channel = "phone";
-    else if (url.hostname === "t.me" || url.hostname === "telegram.me" || (contacts.telegramUrl && url.href === contacts.telegramUrl)) channel = "telegram";
-    else if (url.hostname === "wa.me" || url.hostname === "api.whatsapp.com" || (contacts.whatsappUrl && url.href === contacts.whatsappUrl)) channel = "whatsapp";
+    else if (url.hostname === "t.me" || url.hostname === "telegram.me" || sameContact(url, contacts.telegramUrl)) channel = "telegram";
+    else if (url.hostname === "wa.me" || url.hostname === "api.whatsapp.com" || sameContact(url, contacts.whatsappUrl)) channel = "whatsapp";
     if (!channel) return;
     var place = "other";
     if (link.closest("[data-booking-fallback]")) place = "fallback";
@@ -72,12 +73,17 @@
     track("contact_click", { channel: channel, place: place });
   });
 
+  function sameContact(url, configured) {
+    if (!configured) return false;
+    try { var other = new URL(configured); return url.origin === other.origin && url.pathname === other.pathname; } catch (_) { return false; }
+  }
+
   if (document.body.classList.contains("page-directions")) track("directions_view");
   var house = document.body.getAttribute("data-house-slug");
   if (house) {
     var scrolled = false;
     function checkScroll() {
-      if (scrolled || (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight < 0.75) return;
+      if (scrolled || (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight <= 0.75) return;
       scrolled = true;
       track("house_scroll_75", { house: house });
       window.removeEventListener("scroll", checkScroll);

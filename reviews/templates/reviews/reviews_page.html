@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load content_tags %}
 {% load wagtailcore_tags layout_tags %}
 
 {% block body_class %}page-reviews{% endblock %}
@@ -26,7 +27,7 @@
 </section>
 {% else %}
 <section class="section">
-  <div class="container container--narrow"><p>Отзывы пока не опубликованы.</p></div>
+  <div class="container container--narrow"><p>{% cms_text "reviews_page-d30ae9e0714b" %}</p></div>
 </section>
 {% endif %}
 {% endblock %}

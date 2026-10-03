@@ -1,3 +1,4 @@
+{% load content_tags %}
 {% load wagtailcore_tags media_tags %}
 {% comment %}
   Карточка домика. Одна на главную и на «Размещение»: в макете они
@@ -23,7 +24,7 @@
               <button type="button" class="house__dot{% if forloop.first %} is-active{% endif %}"
                       role="tab" data-house-dot="{{ forloop.counter0 }}"
                       aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
-                <span class="visually-hidden">Фото {{ forloop.counter }}</span>
+                <span class="visually-hidden">{% cms_text "_house_card-45c2f1fa658e" %} {{ forloop.counter }}</span>
               </button>
             {% endfor %}
           </div>
@@ -60,13 +61,13 @@
         <h3 class="house__title"><a class="house__link" href="{% pageurl house %}">{{ house.title }}</a></h3>
       {% endif %}
       <p class="house__meta">
-        {{ house.capacity }} спальных места{% if house.short_description %} + {{ house.short_description }}{% endif %}
+        {{ house.capacity }} {% cms_text "_house_card-9fdafbeb8b0e" %}{% if house.short_description %} + {{ house.short_description }}{% endif %}
       </p>
     </div>
-    <a class="btn btn--outline house__more" href="{% pageurl house %}">Подробнее</a>
+    <a class="btn btn--outline house__more" href="{% pageurl house %}">{% cms_text "_house_card-59589fe2a549" %}</a>
   </div>
 
   <button type="button" class="btn btn--primary house__book" data-booking-open data-house-id="{{ house.pk }}" data-house-title="{{ house.title }}" data-pms-name="{{ house.pms_name }}" data-entry-point="{{ entry|default:'3' }}">
-    Забронировать
+    {% cms_text "_house_card-5d9d7f118153" %}
   </button>
 </li>

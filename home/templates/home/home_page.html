@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load marketing_tags %}
+{% load content_tags %}
 {% load static wagtailcore_tags media_tags territory_tags nearby_tags layout_tags %}
 
 {% comment %}
@@ -77,17 +79,17 @@
       {% endcomment %}
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
-        <span class="searchbar__date-desktop">Дата въезда</span><span class="searchbar__date-mobile">Дата въезда — выезда</span>
+        <span class="searchbar__date-desktop">{% cms_text "home_page-ed598bbf587b" %}</span><span class="searchbar__date-mobile">{% cms_text "home_page-7d95dbee2098" %}</span>
       </span>
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
-        Дата выезда
+        {% cms_text "home_page-ac73830877c9" %}
       </span>
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--guest" aria-hidden="true"></span>
-        1 гость
+        {% cms_text "home_page-ff2a49a5c38f" %}
       </span>
-      <span class="searchbar__cta btn btn--primary">Забронировать даты</span>
+      <span class="searchbar__cta btn btn--primary">{% cms_text "home_page-aa5b7a42a613" %}</span>
     </button>
 
     {% comment %}
@@ -114,7 +116,7 @@
       <picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/bg-1.png' %}"><img class="home-background__image home-background__image--1" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2120" height="2152" alt="" loading="lazy"></picture>
     </div>
     {% if page.about_image %}
-      <img class="about__mobile-image" src="{% static 'img/home-about-mobile.webp' %}" width="586" height="1300" alt="" loading="lazy" decoding="async">
+      {% picture page.about_mobile_image preset="mosaic" sizes="100vw" css_class="about__mobile-image" picture_class="about__mobile-image" alt="" %}
       {% picture page.about_image preset="mosaic" alt=page.about_title %}
     {% else %}
       <span class="ph" aria-hidden="true"></span>
@@ -125,9 +127,9 @@
       {% if page.about_title %}<h2 class="section__title">{{ page.about_title }}</h2>{% endif %}
       {{ page.about_text|richtext|layout_richtext:"about" }}
       <p class="split__actions">
-        <button type="button" class="btn btn--primary" data-booking-open data-entry-point="2">Забронировать даты</button>
+        <button type="button" class="btn btn--primary" data-booking-open data-entry-point="2">{% cms_text "home_page-aa5b7a42a613" %}</button>
         {% if page.about_page %}
-          <a class="btn btn--outline" href="{% pageurl page.about_page %}">Подробнее</a>
+          <a class="btn btn--outline" href="{% pageurl page.about_page %}">{% cms_text "home_page-59589fe2a549" %}</a>
         {% endif %}
       </p>
     </div>
@@ -156,7 +158,7 @@
   </div>
   <div class="quote__media">
     {% if page.quote_image %}
-      <img class="quote__mobile-image" src="{% static 'img/home-quote-mobile.webp' %}" width="525" height="700" alt="" loading="lazy" decoding="async">
+      {% picture page.quote_mobile_image preset="mosaic" sizes="100vw" css_class="quote__mobile-image" picture_class="quote__mobile-image" alt="" %}
       {% picture page.quote_image preset="mosaic" alt=page.quote_author %}
     {% else %}
       <span class="ph" aria-hidden="true"></span>
@@ -187,7 +189,7 @@
 <section class="section" id="houses">
   <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-houses.svg' %}"><img class="home-bg__layer home-bg__layer--houses" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1186" height="1333" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
-    <h2 class="section__title section__title--center">Наши домики</h2>
+    <h2 class="section__title section__title--center">{% cms_text "home_page-0dafa11ce08d" %}</h2>
     <ul class="cards cards--houses">
       {% for house in houses %}
         {% include "houses/_house_card.html" with house=house entry="3" %}
@@ -212,7 +214,7 @@
         живёт в этом же квадрате, а не над ним.
       {% endcomment %}
       <li class="mosaic__head">
-        <h2 class="section__title">Наша территория</h2>
+        <h2 class="section__title">{% cms_text "home_page-5f07fab5a183" %}</h2>
         {% if page.territory_lead %}<p class="section__lead">{{ page.territory_lead }}</p>{% endif %}
       </li>
       {% for item in territory %}
@@ -237,7 +239,7 @@
             <div class="territory-card__details">
               {% if item.description %}<p><span class="home-desktop-copy">{{ item.description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ item.description }}</span></p>{% endif %}
               {% if item.details_url %}
-                <a class="territory-card__link" href="{{ item.details_url }}">Подробнее</a>
+                <a class="territory-card__link" href="{{ item.details_url }}">{% cms_text "home_page-59589fe2a549" %}</a>
               {% endif %}
             </div>
           </div>
@@ -246,7 +248,7 @@
       {% if page.territory_more_page %}
         <li class="mosaic__item mosaic__item--more">
           <a class="mosaic__more" href="{% pageurl page.territory_more_page %}">
-            <span class="mosaic__more-label"><span class="home-desktop-copy">{{ page.territory_more_label|territory_lines|linebreaksbr }}</span><span class="home-mobile-copy">Больше развлечений и услуг</span></span>
+            <span class="mosaic__more-label"><span class="home-desktop-copy">{{ page.territory_more_label|territory_lines|linebreaksbr }}</span><span class="home-mobile-copy">{% cms_text "home_page-41b97f8e0eff" %}</span></span>
             <span class="mosaic__more-arrow" aria-hidden="true"></span>
           </a>
         </li>
@@ -260,7 +262,7 @@
 {% if nearby %}
 <section class="section home-nearby">
   <div class="container">
-    <h2 class="section__title section__title--center"><span class="home-desktop-copy">Интересное рядом</span><span class="home-mobile-copy">Интересное<br>рядом</span></h2>
+    <h2 class="section__title section__title--center"><span class="home-desktop-copy">{% cms_text "home_page-82c3bd246f5a" %}</span><span class="home-mobile-copy">{% cms_text "home_page-da6258d9e1d3" %}<br>{% cms_text "home_page-51ee4ce808e8" %}</span></h2>
     <ul class="cards cards--nearby">
       {% for place in nearby %}
         {% comment %}
@@ -306,7 +308,7 @@
       <h2 class="section__title">{{ page.gallery_title }}</h2>
       {% if page.gallery_text %}<p class="section__lead"><span class="home-desktop-copy">{{ page.gallery_text|gallery_lines|linebreaksbr }}</span><span class="home-mobile-copy">{{ page.gallery_text|mobile_gallery|layout_lines:"gallery_mobile"|linebreaksbr }}</span></p>{% endif %}
       {% if page.gallery_page %}
-        <p><a class="btn btn--outline" href="{% pageurl page.gallery_page %}">Подробнее</a></p>
+        <p><a class="btn btn--outline" href="{% pageurl page.gallery_page %}">{% cms_text "home_page-59589fe2a549" %}</a></p>
       {% endif %}
     </div>
   </div>
@@ -320,7 +322,7 @@
     <h2>{{ page.directions_title }}</h2>
     <p>{{ page.directions_teaser }}</p>
     {% if page.directions_page %}
-      <p><a class="btn btn--primary" href="{% pageurl page.directions_page %}">Как доехать</a></p>
+      <p><a class="btn btn--primary" href="{% pageurl page.directions_page %}">{% cms_text "home_page-0539128d2cc8" %}</a></p>
     {% endif %}
   </div>
 </section>
@@ -341,11 +343,11 @@
 <section class="section yandex-reviews" id="yandex-reviews" aria-labelledby="yandex-reviews-title">
   <div class="container yandex-reviews__layout">
     <div class="yandex-reviews__intro">
-      <h2 class="section__title yandex-reviews__title" id="yandex-reviews-title">Впечатления наших гостей</h2>
-      <p class="yandex-reviews__text">Истории тех, кто уже побывал в «Лучшем сезоне». О домиках, природе и маленьких моментах отдыха.</p>
+      <h2 class="section__title yandex-reviews__title" id="yandex-reviews-title">{% cms_text "home_page-349a3904b3e5" %}</h2>
+      <p class="yandex-reviews__text">{% cms_text "home_page-315c321e11cf" %}</p>
       <a class="btn btn--outline yandex-reviews__link"
-         href="https://yandex.ru/maps/org/luchshiy_sezon/3306085141/reviews/"
-         target="_blank" rel="noopener noreferrer">Читать отзывы на Яндексе</a>
+         href="{% marketing_url 'https://yandex.ru/maps/org/luchshiy_sezon/3306085141/reviews/' 'home_page' %}"
+         target="_blank" rel="noopener noreferrer">{% cms_text "home_page-59bc888ec6a6" %}</a>
     </div>
     <div class="yandex-reviews__shell">
       <div class="yandex-reviews__widget">
@@ -354,8 +356,8 @@
               title="Отзывы о «Лучшем сезоне» на Яндекс Картах"
               width="560" height="640" loading="lazy"></iframe>
       <a class="yandex-reviews__attribution"
-         href="https://yandex.ru/maps/org/luchshiy_sezon/3306085141/"
-         target="_blank" rel="noopener noreferrer">Лучший сезон на карте Тульской области — Яндекс Карты</a>
+         href="{% marketing_url 'https://yandex.ru/maps/org/luchshiy_sezon/3306085141/' 'home_page' %}"
+         target="_blank" rel="noopener noreferrer">{% cms_text "home_page-1cd77dd774fe" %}</a>
       </div>
     </div>
   </div>

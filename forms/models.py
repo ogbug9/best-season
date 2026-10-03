@@ -72,8 +72,10 @@ class FormSubmission(models.Model):
     )
     notified_at = models.DateTimeField(
         "Уведомление отправлено", null=True, blank=True,
-        help_text="Проставляется после успешной отправки в Telegram и на email.",
+        help_text="Последняя успешная отправка хотя бы по одному каналу; статусы каналов ниже.",
     )
+    telegram_notified_at = models.DateTimeField('Доставлено в Telegram', null=True, blank=True)
+    email_notified_at = models.DateTimeField('Отправлено на email', null=True, blank=True)
     created_at = models.DateTimeField("Получена", auto_now_add=True, db_index=True)
 
     class Meta:

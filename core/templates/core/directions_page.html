@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load marketing_tags %}
+{% load content_tags %}
 {% load wagtailcore_tags media_tags layout_tags %}
 {% block body_class %}page-directions{% endblock %}
 
@@ -22,17 +24,17 @@
 {% if page.car_route or page.car_distance %}
 <section class="section">
   <div class="container container--narrow">
-    <h2>На автомобиле</h2>
+    <h2>{% cms_text "directions_page-a88a4debb15d" %}</h2>
     {% if page.car_distance or page.car_time %}
       <ul class="facts">
-        {% if page.car_distance %}<li><b>Расстояние:</b> {{ page.car_distance }}</li>{% endif %}
-        {% if page.car_time %}<li><b>Время в пути:</b> {{ page.car_time }}</li>{% endif %}
+        {% if page.car_distance %}<li><b>{% cms_text "directions_page-7087612994cd" %}</b> {{ page.car_distance }}</li>{% endif %}
+        {% if page.car_time %}<li><b>{% cms_text "directions_page-26803a9646b8" %}</b> {{ page.car_time }}</li>{% endif %}
       </ul>
     {% endif %}
     {{ page.car_route|richtext }}
     {% if page.yandex_route_url %}
-      <p><a class="btn btn--outline" href="{{ page.yandex_route_url }}" rel="noopener" target="_blank">
-        Открыть маршрут в Яндекс.Картах
+      <p><a class="btn btn--outline" data-directions-link href="{% marketing_url page.yandex_route_url 'directions_page' %}" rel="noopener" target="_blank">
+        {% cms_text "directions_page-f7445243bed5" %}
       </a></p>
     {% endif %}
   </div>
@@ -43,7 +45,7 @@
 {% if page.transit_route %}
 <section class="section section--deep">
   <div class="container container--narrow">
-    <h2>На электричке или автобусе</h2>
+    <h2>{% cms_text "directions_page-1956920f76c5" %}</h2>
     {{ page.transit_route|richtext }}
   </div>
 </section>
@@ -53,7 +55,7 @@
 {% if page.transfer_price or page.transfer_note %}
 <section class="section">
   <div class="container container--narrow">
-    <h2>Трансфер</h2>
+    <h2>{% cms_text "directions_page-915c8675d775" %}</h2>
     {% if page.transfer_price %}<p class="card__price">{{ page.transfer_price }}</p>{% endif %}
     {{ page.transfer_note|richtext }}
   </div>
@@ -63,13 +65,14 @@
 {% comment %} 4.2.4 Форма заявки на трансфер {% endcomment %}
 <section class="section">
   <div class="container container--narrow">
-    {% include "forms/request_form.html" with form=transfer_form form_type="transfer" title="Заказать трансфер" lead="Оставьте заявку — подберём время и назовём точную стоимость." submit_label="Заказать трансфер" %}
+    {% cms_text "include-9d1ad5bd0f25" as cms_include_9d1ad5bd0f25 %}
+{% include "forms/request_form.html" with form=transfer_form form_type="transfer" title=cms_include_9d1ad5bd0f25 lead="Оставьте заявку — подберём время и назовём точную стоимость." submit_label="Заказать трансфер" %}
 
     {% with s=settings.core.SiteSettings %}
       <p class="split__actions">
-        {% if s.phone %}<a class="btn btn--outline" href="tel:{{ s.phone }}">Позвонить</a>{% endif %}
-        {% if s.telegram_url %}<a class="btn btn--outline" href="{{ s.telegram_url }}" rel="noopener" target="_blank">Telegram</a>{% endif %}
-        {% if s.whatsapp_url %}<a class="btn btn--outline" href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">WhatsApp</a>{% endif %}
+        {% if s.phone %}<a class="btn btn--outline" href="tel:{{ s.phone }}">{% cms_text "directions_page-0701381c8c21" %}</a>{% endif %}
+        {% if s.telegram_url %}<a class="btn btn--outline" href="{% marketing_url s.telegram_url 'directions_page' %}" rel="noopener" target="_blank">{% cms_text "channel-telegram" %}</a>{% endif %}
+        {% if s.whatsapp_url %}<a class="btn btn--outline" href="{% marketing_url s.whatsapp_url 'directions_page' %}" rel="noopener" target="_blank">{% cms_text "channel-whatsapp" %}</a>{% endif %}
       </p>
     {% endwith %}
   </div>
@@ -83,15 +86,15 @@
 {% if page.map_embed_url %}
 <section class="section">
   <div class="container">
-    <h2>Мы на карте</h2>
+    <h2>{% cms_text "directions_page-10320d936a2e" %}</h2>
     <div class="map" data-map data-map-src="{{ page.map_embed_url }}">
       {% if page.map_image %}
         {% picture page.map_image preset="gallery" alt="Карта проезда" %}
       {% endif %}
       <button type="button" class="btn btn--primary map__button" data-map-load>
-        Показать карту
+        {% cms_text "directions_page-90457f42f688" %}
       </button>
-      <p class="map__note">Карта загрузится с сервера Яндекса по нажатию.</p>
+      <p class="map__note">{% cms_text "directions_page-ee5c15bb3870" %}</p>
     </div>
   </div>
 </section>
@@ -100,11 +103,11 @@
 {% comment %} 4.2.6 Кнопка возврата к бронированию {% endcomment %}
 <section class="section section--deep">
   <div class="container container--narrow center">
-    <h2>Готовы приехать?</h2>
-    <p>Выберите даты — свободные номера покажет система бронирования.</p>
+    <h2>{% cms_text "directions_page-eeba4f863379" %}</h2>
+    <p>{% cms_text "directions_page-e8d3050844b6" %}</p>
     <p>
       <button type="button" class="btn btn--primary" data-booking-open data-entry-point="8">
-        Забронировать даты
+        {% cms_text "directions_page-aa5b7a42a613" %}
       </button>
     </p>
   </div>

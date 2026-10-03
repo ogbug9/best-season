@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load content_tags %}
 {% load wagtailcore_tags %}
 
 {% comment %}
@@ -6,18 +7,18 @@
   возврат на главную или к домам.
 {% endcomment %}
 
-{% block title %}Страница не найдена{% endblock %}
-{% block meta_description %}Такой страницы нет. Вернитесь на главную или посмотрите домики.{% endblock %}
+{% block title %}{% cms_text "404-af9d33066ad6" %}{% endblock %}
+{% block meta_description %}{% cms_text "404-32cf86312d82" %}{% endblock %}
 
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow center">
     <p class="error-code" aria-hidden="true">404</p>
-    <h1>Такой страницы нет</h1>
-    <p class="section__lead">Возможно, адрес набран с опечаткой или страницу переместили.</p>
+    <h1>{% cms_text "404-e2e0cfa630aa" %}</h1>
+    <p class="section__lead">{% cms_text "404-55f0d4e3d0ae" %}</p>
     <p class="split__actions" style="justify-content: center;">
-      <a class="btn btn--primary" href="/">На главную</a>
-      <button type="button" class="btn btn--outline" data-booking-open data-entry-point="1">Забронировать даты</button>
+      <a class="btn btn--primary" href="/">{% cms_text "404-ad94907f6423" %}</a>
+      <button type="button" class="btn btn--outline" data-booking-open data-entry-point="1">{% cms_text "404-aa5b7a42a613" %}</button>
     </p>
   </div>
 </section>

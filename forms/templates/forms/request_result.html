@@ -1,10 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Заявка на бронирование{% endblock %}
+{% load content_tags %}
+{% block title %}{% cms_text "request_result-766d77346e54" %}{% endblock %}
 {% block content %}
 <section class="container">
-  <h1>Заявка на бронирование</h1>
+  <h1>{% cms_text "request_result-766d77346e54" %}</h1>
   {% if result_message %}<p role="alert">{{ result_message }}</p>{% endif %}
-  {% include "forms/request_form.html" with title="Проверьте данные заявки" %}
-  <p><a href="{{ back_to }}">Вернуться на страницу</a></p>
+  {% cms_text "include-035ecdffbb8e" as cms_include_035ecdffbb8e %}
+{% include "forms/request_form.html" with title=cms_include_035ecdffbb8e %}
+  <p><a href="{{ back_to }}">{% cms_text "request_result-f3ac78cd5da4" %}</a></p>
 </section>
 {% endblock %}

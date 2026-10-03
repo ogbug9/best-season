@@ -1,7 +1,9 @@
-{% load static wagtailcore_tags wagtailuserbar layout_tags %}
+{% load content_tags %}
+{% load static wagtailcore_tags wagtailuserbar layout_tags seo_tags %}
 {% wagtail_site as current_site %}
 {% page_description page current_site as description %}
 {% social_image page current_site as fallback_og_image %}
+{% canonical_url as canonical %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -17,7 +19,7 @@
       в проверке SEO, а уникальные описания требует п. 10.6 ТЗ.
     {% endcomment %}
     <meta name="description" content="{% block meta_description %}{{ description }}{% endblock %}">
-    <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    <link rel="canonical" href="{{ canonical }}">
 
     {# Open Graph — превью проверяется в Telegram и ВК, п. 10.9 ТЗ #}
     <meta property="og:type" content="website">
@@ -25,8 +27,11 @@
     <meta property="og:site_name" content="{{ current_site.site_name }}">
     <meta property="og:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}">
     <meta property="og:description" content="{{ description }}">
-    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
-    {% block og_image %}{% if fallback_og_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ fallback_og_image.file.url }}">{% endif %}{% endblock %}
+    <meta property="og:url" content="{{ canonical }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}">
+    <meta name="twitter:description" content="{{ description }}">
+    {% block og_image %}{% if fallback_og_image %}{% absolute_media_url fallback_og_image.file.url as og_url %}<meta property="og:image" content="{{ og_url }}"><meta name="twitter:image" content="{{ og_url }}">{% endif %}{% endblock %}
 
     <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
 
@@ -44,19 +49,8 @@
     <link rel="stylesheet" href="{% static 'css/buttons.css' %}?v=20261003-states-v2">
 
     {# Микроразметка организации — п. 10.5 ТЗ #}
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LodgingBusiness",
-      "name": "{{ current_site.site_name }}",
-      "url": "{{ request.scheme }}://{{ request.get_host }}/"{% if settings.core.SiteSettings.phone %},
-      "telephone": "{{ settings.core.SiteSettings.phone }}"{% endif %}{% if settings.core.SiteSettings.address %},
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "{{ settings.core.SiteSettings.address }}"
-      }{% endif %}
-    }
-    </script>
+    {% organization_schema %}
+    {% breadcrumbs_schema %}
     {% block structured_data %}{% endblock %}
 </head>
 
@@ -64,13 +58,13 @@
     {% block page_background %}{% endblock %}
     {% wagtailuserbar %}
 
-    <a class="skip-link" href="#main">Перейти к содержимому</a>
+    <a class="skip-link" href="#main">{% cms_text "base-f35ba214e95d" %}</a>
 
     {% include "includes/header.html" %}
 
     <div class="page-content">
     <main id="main">
-        {% if request.GET.form == "ok" %}<p class="container form__note form__note--ok" role="status">Заявка отправлена. {% if settings.core.SiteSettings.form_reply_time %}Ответим {{ settings.core.SiteSettings.form_reply_time }}.{% else %}Свяжемся с вами в ближайшее время.{% endif %}</p>{% endif %}
+        {% if form_success_type %}<p class="container form__note form__note--ok" role="status">{% cms_text "base-0cd618b74e9c" %} {% if settings.core.SiteSettings.form_reply_time %}{% cms_text "base-b3462448b4a0" %} {{ settings.core.SiteSettings.form_reply_time }}.{% else %}{% cms_text "base-0e5ac608bbfd" %}{% endif %}</p>{% endif %}
         {% block content %}{% endblock %}
     </main>
 
@@ -83,7 +77,7 @@
     {% endcomment %}
     <button type="button" class="btn btn--primary sticky-cta"
             data-sticky-cta data-booking-open data-entry-point="6">
-      Забронировать
+      {% cms_text "base-5d9d7f118153" %}
     </button>
 
     {% include "includes/booking_modal.html" %}
@@ -99,7 +93,7 @@
       </span>
       <p class="cookie-text">{{ settings.core.SiteSettings.cookie_text|default:"Мы используем сторонние файлы cookie для обеспечения наилучшего пользовательского опыта и аналитики производительности." }}</p>
       <div class="cookie-actions">
-        <button type="button" class="btn btn--primary cookie-accept" data-cookie-accept>Согласиться</button>
+        <button type="button" class="btn btn--primary cookie-accept" data-cookie-accept>{% cms_text "base-d0c0ee65c67e" %}</button>
         <button type="button" class="cookie-close" data-cookie-close aria-label="Закрыть без согласия">×</button>
       </div>
     </aside>

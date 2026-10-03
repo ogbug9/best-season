@@ -2,9 +2,10 @@ from django.db import models
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
-from wagtail.fields import RichTextField
+from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Orderable, Page
 from wagtail.snippets.models import register_snippet
+from .content_blocks import AboutContentBlock, LEGAL_BLOCKS
 
 # Ограниченный набор форматирования: п. 8 ТЗ — редактор не должен иметь
 # возможности сломать вёрстку произвольной разметкой.
@@ -514,6 +515,22 @@ class ArchivePhotoImport(models.Model):
     image = models.ForeignKey('wagtailimages.Image', null=True, on_delete=models.SET_NULL, related_name='+')
 
 
+@register_snippet
+class InterfaceText(models.Model):
+    key = models.CharField(max_length=120, unique=True, editable=False)
+    label = models.CharField('Где используется', max_length=255, editable=False)
+    text = models.TextField('Текст (без HTML и стилей)', blank=True)
+    panels = [FieldPanel('text')]
+
+    class Meta:
+        verbose_name = 'Подпись интерфейса'
+        verbose_name_plural = 'Подписи интерфейса'
+        ordering = ['label']
+
+    def __str__(self):
+        return self.label
+
+
 class ContentPage(Page):
     """Простая текстовая страница: «О нас», правовые, «Цены и условия»,
     «Партнёрам». Всё, что не требует особой структуры."""
@@ -524,6 +541,14 @@ class ContentPage(Page):
         null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
     )
     body = RichTextField("Текст", blank=True, features=BODY_FEATURES)
+    legal_body = StreamField(LEGAL_BLOCKS,
+                             blank=True, use_json_field=True, verbose_name='Полный текст документа')
+    legal_source_sha256 = models.CharField(max_length=64, blank=True, editable=False)
+    about_content = StreamField(
+        [('content', AboutContentBlock())],
+        blank=True, max_num=1, use_json_field=True, verbose_name='Содержимое «О нас»',
+    )
+    about_initialized = models.BooleanField(default=False, editable=False)
     show_booking_cta = models.BooleanField(
         "Показывать кнопку бронирования внизу", default=True,
     )
@@ -532,6 +557,8 @@ class ContentPage(Page):
         FieldPanel("intro"),
         FieldPanel("hero_image"),
         FieldPanel("body"),
+        FieldPanel("legal_body"),
+        FieldPanel("about_content"),
         FieldPanel("show_booking_cta"),
     ]
 
@@ -543,8 +570,10 @@ class ContentPage(Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         if self.slug == "o-nas":
-            from .about_content import PILLARS, VALUES, PETS, DIARY
-            context.update(about_pillars=PILLARS, about_values=VALUES, about_pets=PETS, about_diary=DIARY)
+            if self.about_content:
+                context['about'] = self.about_content[0].value
+                context.update(about_pillars=context['about']['pillars'], about_values=context['about']['values'],
+                               about_pets=context['about']['pets'], about_diary=context['about']['diary'])
             context["about_contacts"] = Page.objects.live().descendant_of(self).filter(slug="kontakty").first()
         return context
 

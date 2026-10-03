@@ -187,16 +187,26 @@ class AnalyticsTests(TestCase):
         from forms.models import FormType
         home = Site.objects.first().root_page.url
         for kind in FormType.values:
+            session = self.client.session
+            session['bs_form_success'] = {'type': kind, 'path': home}
+            session.save()
             self.assertContains(self.client.get(home, {"form": "ok", "ft": kind}), f'data-form-success="{kind}"')
+            self.assertNotContains(self.client.get(home, {"form": "ok", "ft": kind}), 'data-form-success')
         for query in ({"form": "ok", "ft": "unknown"}, {"form": "error", "ft": "fallback"}, {"ft": "fallback"}):
             self.assertNotContains(self.client.get(home, query), "data-form-success")
 
     def test_reply_time_and_empty_default(self):
         settings_obj = SiteSettings.for_site(Site.objects.first())
         home = Site.objects.first().root_page.url
+        session = self.client.session
+        session['bs_form_success'] = {'type': 'fallback', 'path': home}
+        session.save()
         self.assertContains(self.client.get(home, {"form": "ok", "ft": "fallback"}), "Свяжемся с вами в ближайшее время.")
         settings_obj.form_reply_time = "в течение рабочего дня"
         settings_obj.save()
+        session = self.client.session
+        session['bs_form_success'] = {'type': 'fallback', 'path': home}
+        session.save()
         body = self.client.get(home, {"form": "ok", "ft": "fallback"}).content.decode()
         self.assertEqual(body.count("Ответим в течение рабочего дня."), 2)
         self.assertNotIn("Свяжемся с вами в ближайшее время.", body)

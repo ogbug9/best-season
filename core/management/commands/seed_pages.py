@@ -272,6 +272,7 @@ class Command(BaseCommand):
     help = "Создаёт недостающие страницы сайта по карте из макета"
 
     def add_arguments(self, parser):
+        parser.add_argument('--create-only', action='store_true', help='Только отсутствующие страницы; без правок существующего контента/согласий.')
         parser.add_argument(
             "--dry-run",
             action="store_true",
@@ -279,6 +280,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.create_only = options['create_only']
         self.dry = options["dry_run"]
         self.created = 0
         self.skipped = 0
@@ -295,15 +297,17 @@ class Command(BaseCommand):
             return
 
         with transaction.atomic():
-            self.fix_site_hostname(site)
-            self.fix_home(home)
+            if not self.create_only:
+                self.fix_site_hostname(site)
+                self.fix_home(home)
             for node in TREE:
                 self.create_node(home, node)
             self.create_legal(home)
-            self.seed_legal_settings(site)
-            self.hide_duplicates()
-            self.order_menu(home)
-            self.ensure_menu_visible(home)
+            if not self.create_only:
+                self.seed_legal_settings(site)
+                self.hide_duplicates()
+                self.order_menu(home)
+                self.ensure_menu_visible(home)
 
             if self.dry:
                 transaction.set_rollback(True)
@@ -482,7 +486,8 @@ class Command(BaseCommand):
             parent, get_model(model_path), slug, title, fields,
             in_menu=slug not in NOT_IN_MENU,
         )
-        self.reconcile(page, parent, slug)
+        if not self.create_only:
+            self.reconcile(page, parent, slug)
         for child in children:
             self.create_node(page, child)
 

@@ -87,7 +87,7 @@ body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
 .page-house .calendar__cell { height: 42px; }
 .page-house .calendar__day { width: 36px; height: 36px; font-size: 14px; line-height: 17px; }
 .page-house .calendar__day { position: relative; }
-.page-house .calendar__day::after { content: ''; position: absolute; top: 50%; left: 50%; width: min(42px, calc((100vw - 93px) / 7)); height: 44px; transform: translate(-50%, -50%); }
+.page-house .calendar__day::before { content: ''; position: absolute; top: 50%; left: 50%; width: clamp(36px, calc((100vw - 109px) / 7), 44px); height: 44px; transform: translate(-50%, -50%); }
 .page-house .guests { order: 3; min-height: 326.71px; padding: 24px; gap: 22.9px; border-radius: 16px; }
 .page-house .guests { margin-top: 0; }
 .page-house .guests__title { font-size: 20px; line-height: 24px; font-weight: 500; }

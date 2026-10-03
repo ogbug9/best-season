@@ -399,20 +399,20 @@
     slider.addEventListener('pointerdown', function (event) {
       if (!event.isPrimary || event.button !== 0) return;
       suppressClick = false;
-      start = { x: event.clientX, y: event.clientY, id: event.pointerId };
+      start = { x: event.clientX, y: event.clientY, id: event.pointerId, mouse: event.pointerType === 'mouse' };
     });
     slider.addEventListener('pointermove', function (event) {
       if (!start || event.pointerId !== start.id) return;
       var dx = event.clientX - start.x, dy = event.clientY - start.y;
       if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
         suppressClick = true;
-        slider.setPointerCapture(event.pointerId);
+        if (start.mouse) slider.setPointerCapture(event.pointerId);
       }
     });
     slider.addEventListener('pointerup', function (event) {
       if (!start || event.pointerId !== start.id) return;
       var dx = event.clientX - start.x, dy = event.clientY - start.y;
-      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
+      if (start.mouse && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
       start = null; restart();
     });
     slider.addEventListener('pointercancel', function () { start = null; });

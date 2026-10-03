@@ -49,6 +49,9 @@ class HomePage(Page):
         null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
         help_text="Куда ведёт кнопка «Подробнее» из блока о ферме.",
     )
+    about_mobile_image = models.ForeignKey('wagtailimages.Image', verbose_name='Фото блока о ферме на телефоне', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+    quote_mobile_image = models.ForeignKey('wagtailimages.Image', verbose_name='Фото цитаты на телефоне', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+    mobile_photos_initialized = models.BooleanField(default=False, editable=False)
 
     territory_lead = models.CharField(
         "Подпись под заголовком «Наша территория»", max_length=200, blank=True,
@@ -147,6 +150,7 @@ class HomePage(Page):
                 FieldPanel("about_title"),
                 FieldPanel("about_text"),
                 FieldPanel("about_image"),
+                FieldPanel("about_mobile_image"),
                 FieldPanel("about_page"),
             ],
             heading="О ферме",
@@ -156,6 +160,7 @@ class HomePage(Page):
                 FieldPanel("quote_text"),
                 FieldPanel("quote_author"),
                 FieldPanel("quote_image"),
+                FieldPanel("quote_mobile_image"),
             ],
             heading="Блок-цитата",
         ),

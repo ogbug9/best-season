@@ -48,15 +48,16 @@ run("manage.py", "setup_roles")
 # Досоздаёт недостающие страницы по карте сайта. Идемпотентно: то, что уже
 # есть, не трогается — ни текст, ни порядок, ни настройки. Консоли у Amvera
 # нет, поэтому разовые команды вызываются отсюда.
-run("manage.py", "seed_pages")
+run("manage.py", "seed_pages", "--create-only")
 # Наполняет справочники текстами из макета. Тоже идемпотентно: то, что
 # уже заведено, не трогается.
-run("manage.py", "seed_content")
+run("manage.py", "seed_content", "--initial-only")
 # Фото, галереи, три кадра первого экрана и отзывы из Desktop.svg. Команда
 # применяет набор один раз; дальнейшие редакторские правки не перезаписывает.
 run("manage.py", "apply_desktop_reference", "--if-not-applied")
 run("manage.py", "import_archive_photos", "--if-not-applied")
-run("manage.py", "prepare_mobile_images")
+run("manage.py", "initialize_site_content")
+run("manage.py", "prepare_site_images")
 # Исходники архива используются командой импорта, но не отдаются как static.
 # Не дублируем 1.36 GiB фотографий в STATIC_ROOT на каждом старте контейнера.
 run("manage.py", "collectstatic", "--noinput", "--ignore=*originals*")

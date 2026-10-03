@@ -1,3 +1,4 @@
+{% load content_tags %}
 {% load icon_tags houses_tags %}
 {% comment %}
   Блок бронирования с первого экрана страницы дома.
@@ -20,18 +21,18 @@
       <div class="booking-field booking-field--dates">
         <button type="button" class="booking-field__slot" data-field="date_from" aria-controls="house-calendar" aria-pressed="false">
           {% house_icon "calendar" %}
-          <span data-label-date-from>Дата заезда</span>
+          <span data-label-date-from>{% cms_text "_booking_panel-0e3bad770688" %}</span>
         </button>
         <span class="booking-field__dash" aria-hidden="true">—</span>
         <button type="button" class="booking-field__slot" data-field="date_to" aria-controls="house-calendar" aria-pressed="false">
           {% house_icon "calendar" %}
-          <span data-label-date-to><span class="home-desktop-copy">Дата выезда</span><span class="home-mobile-copy">выезда</span></span>
+          <span data-label-date-to><span class="home-desktop-copy">{% cms_text "_booking_panel-ac73830877c9" %}</span><span class="home-mobile-copy">{% cms_text "_booking_panel-73fbff850e41" %}</span></span>
         </button>
       </div>
       <div class="booking-field booking-field--guests">
         <span class="booking-field__slot booking-field__slot--static">
           {% house_icon "guest" %}
-          <span class="home-desktop-copy" data-label-guests>{{ quote.guests|guests }}</span><span class="home-mobile-copy">Количество гостей</span>
+          <span class="home-desktop-copy" data-label-guests>{{ quote.guests|guests }}</span><span class="home-mobile-copy">{% cms_text "_booking_panel-ad57d4e4d55b" %}</span>
         </span>
       </div>
     </div>
@@ -49,7 +50,7 @@
       {% comment %} ---------- Гости, итог, кнопка ---------- {% endcomment %}
       <div class="booking-panel__sidebar">
       <div class="guests" data-guests>
-        <h2 class="guests__title">Количество гостей</h2>
+        <h2 class="guests__title">{% cms_text "_booking_panel-ad57d4e4d55b" %}</h2>
 
         {% include "houses/_guest_counter.html" with key="adults" label="Взрослые" value=quote.adults min=1 max=page.max_adults note=page.extra_guest_fee_note details=page.extra_guest_fee_details %}
         {% include "houses/_guest_counter.html" with key="children" label="Дети" value=quote.children min=0 max=page.max_children age=settings.core.SiteSettings.child_free_max_age %}
@@ -71,7 +72,7 @@
           итоговой суммой до выбора дат нельзя: гость запомнит её.
         {% endcomment %}
         <p class="booking-total">
-          <span data-total>{% if quote.total %}{{ quote.total|price_ru }} ₽{% else %}от {{ quote.price_from|price_ru }} ₽{% endif %}</span>
+          <span data-total>{% if quote.total %}{{ quote.total|price_ru }} ₽{% else %}{% cms_text "_booking_panel-5f201355756a" %} {{ quote.price_from|price_ru }} ₽{% endif %}</span>
           {% comment %}
             Пояснение к расчёту — подсказкой у цены, а не абзацем: в макете
             абзаца нет, а без него гость может принять календарь за
@@ -80,7 +81,7 @@
           {% endcomment %}
           <span class="booking-hint" data-booking-hint>
             <button type="button" class="booking-hint__toggle" aria-label="Как считается стоимость" aria-describedby="booking-hint-{{ page.pk }}">i</button>
-            <span class="booking-hint__text" id="booking-hint-{{ page.pk }}" role="tooltip">Предварительный расчёт. Календарь не показывает занятость домов. Доступность и итоговая стоимость — в онлайн-бронировании.</span>
+            <span class="booking-hint__text" id="booking-hint-{{ page.pk }}" role="tooltip">{% cms_text "_booking_panel-ceb6a90800a8" %}</span>
           </span>
         </p>
 
@@ -88,7 +89,7 @@
 
         <button type="button" class="btn btn--primary booking-submit"
                 data-booking-open data-house-id="{{ page.pk }}" data-entry-point="4">
-          Забронировать
+          {% cms_text "_booking_panel-5d9d7f118153" %}
         </button>
 
         {% comment %}

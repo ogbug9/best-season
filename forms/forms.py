@@ -20,6 +20,14 @@ from .models import FormSubmission, FormType
 class BaseRequestForm(forms.ModelForm):
     """Общая часть всех форм: контакты, согласие и ловушка для ботов."""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from core.templatetags.content_tags import texts, DEFAULTS
+        labels = texts(None)
+        for name, field in self.fields.items():
+            key = f'form-{self.form_type}-{name}'
+            field.label = labels.get(key, DEFAULTS.get(key, {}).get('text', field.label))
+
     # Ловушка. Поле спрятано от человека стилями и меткой aria-hidden,
     # но бот, заполняющий всё подряд, его заполнит — такую заявку отвергаем.
     website = forms.CharField(
@@ -93,7 +101,8 @@ class BaseRequestForm(forms.ModelForm):
         if request is not None:
             submission.source_url = request.POST.get("source_url", "")[:500]
             for key in ("utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"):
-                setattr(submission, key, request.POST.get(key, "")[:120])
+                saved = getattr(request, 'bs_utm', {}).get(key, '')
+                setattr(submission, key, (request.POST.get(key) or saved)[:120])
 
         if commit:
             submission.save()

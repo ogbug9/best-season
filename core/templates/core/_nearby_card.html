@@ -1,3 +1,4 @@
+{% load content_tags %}
 {% load wagtailcore_tags media_tags nearby_tags %}
         <li class="place{% if forloop.counter0|divisibleby:2 %} place--dark{% else %} place--olive{% endif %}">
           <div class="place__head">
@@ -28,12 +29,12 @@
             {% endcomment %}
             <div class="place__actions">
               {% if place.link_url %}
-                <a class="btn btn--outline place__more" href="{{ place.link_url }}" rel="noopener" target="_blank">Подробнее</a>
+                <a class="btn btn--outline place__more" href="{{ place.link_url }}" rel="noopener" target="_blank">{% cms_text "_nearby_card-59589fe2a549" %}</a>
               {% elif page.nearby_more_page %}
-                <a class="btn btn--outline place__more" href="{% pageurl page.nearby_more_page %}">Подробнее</a>
+                <a class="btn btn--outline place__more" href="{% pageurl page.nearby_more_page %}">{% cms_text "_nearby_card-59589fe2a549" %}</a>
               {% elif level == "2" and place.description %}
                 <details class="place__details">
-                  <summary class="btn btn--outline place__more"><span class="place__expand-label">Подробнее</span><span class="place__collapse-label">Свернуть</span></summary>
+                  <summary class="btn btn--outline place__more"><span class="place__expand-label">{% cms_text "_nearby_card-59589fe2a549" %}</span><span class="place__collapse-label">{% cms_text "_nearby_card-36c25d9ffcfd" %}</span></summary>
                   <p class="place__details-copy">{{ place.description|linebreaksbr }}</p>
                 </details>
               {% endif %}

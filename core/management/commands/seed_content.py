@@ -527,8 +527,14 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--dry-run", action="store_true")
+        parser.add_argument('--initial-only', action='store_true', help='Не менять уже наполненный сайт при перезапуске.')
 
     def handle(self, *args, **options):
+        from houses.models import HousePage
+        from core.models import TerritoryItem
+        if options['initial_only'] and (HousePage.objects.exists() or TerritoryItem.objects.exists()):
+            self.stdout.write('Сайт уже наполнен; существующий контент и цены сохранены.')
+            return
         self.dry = options["dry_run"]
         self.created = 0
 

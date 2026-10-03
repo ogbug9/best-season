@@ -1,6 +1,7 @@
 from .base import *
 
 DEBUG = False
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 
 # Wagtail renditions are expensive to create on a cold /data volume. Generating
 # several variants for every photo while rendering a page times out Gunicorn.

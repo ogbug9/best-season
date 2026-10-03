@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load content_tags %}
 {% load static wagtailcore_tags promotion_tags media_tags %}
 {% block body_class %}page-promotions{% endblock %}
 {% block content %}
@@ -16,7 +17,7 @@
           <h2 class="promo__title">{{ promo.title|promotion_title|linebreaksbr }}</h2>
           {% if promo.short_description %}<p class="promo__text"><span class="home-desktop-copy">{{ promo.short_description|promotion_description|linebreaksbr }}</span><span class="home-mobile-copy">{{ promo.short_description|mobile_promotion_description|linebreaksbr }}</span></p>{% endif %}
           {% if promo.description %}<div class="promo__text prose">{{ promo.description|richtext }}</div>{% endif %}
-          {% if promo.date_to %}<p class="promo__text">Действует до {{ promo.date_to|date:"d.m.Y" }}</p>{% endif %}
+          {% if promo.date_to %}<p class="promo__text">{% cms_text "promotions_page-97b8783453d5" %} {{ promo.date_to|date:"d.m.Y" }}</p>{% endif %}
         </div>
         {% if promo.cta_type == 'request' %}
         <a class="btn btn--primary promo__book" href="?promotion={{ promo.slug }}#promotion-request" data-promotion-request-open data-form-type="{{ promo.request_form_type }}" data-topic="Акция: {{ promo.title }}">{{ promo.button_label }}</a>
@@ -26,7 +27,7 @@
       </li>
       {% endfor %}
     </ul>
-    {% else %}<p>Сейчас действующих акций нет.</p>{% endif %}
+    {% else %}<p>{% cms_text "promotions_page-3535fea44523" %}</p>{% endif %}
   </div>
 </section>
 {% include "includes/faq_section.html" %}

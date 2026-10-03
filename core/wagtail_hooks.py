@@ -13,6 +13,15 @@ from django.urls import reverse
 from wagtail import hooks
 from wagtail.admin import messages
 
+
+@hooks.register('after_publish_page')
+def prepare_published_images(request, page):
+    from core.management.commands.prepare_site_images import page_plan, prepare
+    failures = prepare(page_plan([page]))
+    if failures:
+        messages.warning(request, f'Не подготовлено вариантов фото: {failures}. Исходники сохранены; обратитесь к администратору.')
+
+
 DELETE_DENIED = (
     "Удаление страниц доступно только администратору. "
     "Чтобы убрать страницу с сайта, снимите её с публикации."

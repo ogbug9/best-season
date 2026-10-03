@@ -1,3 +1,5 @@
+{% load marketing_tags %}
+{% load content_tags %}
 {% load wagtailcore_tags static %}
 {% wagtail_site as current_site %}
 {% with s=settings.core.SiteSettings %}
@@ -41,31 +43,31 @@
         {% endcomment %}
         <ul class="socials">
           {% if s.telegram_url %}
-            <li><a class="socials__item" href="{{ s.telegram_url }}" rel="noopener" target="_blank">
+            <li><a class="socials__item" href="{% marketing_url s.telegram_url 'footer' %}" rel="noopener" target="_blank">
               <img src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Telegram</span></a></li>
           {% else %}
             <li><span class="socials__item"><img src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Telegram</span></span></li>
           {% endif %}
           {% if s.vk_url %}
-            <li><a class="socials__item" href="{{ s.vk_url }}" rel="noopener" target="_blank">
-              <img src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">ВКонтакте</span></a></li>
+            <li><a class="socials__item" href="{% marketing_url s.vk_url 'footer' %}" rel="noopener" target="_blank">
+              <img src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">{% cms_text "footer-125394ee160a" %}</span></a></li>
           {% else %}
-            <li><span class="socials__item"><img src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">ВКонтакте</span></span></li>
+            <li><span class="socials__item"><img src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">{% cms_text "footer-125394ee160a" %}</span></span></li>
           {% endif %}
           {% if s.tiktok_url %}
-            <li><a class="socials__item" href="{{ s.tiktok_url }}" rel="noopener" target="_blank">
+            <li><a class="socials__item" href="{% marketing_url s.tiktok_url 'footer' %}" rel="noopener" target="_blank">
               <img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></a></li>
           {% else %}
             <li><span class="socials__item"><img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></span></li>
           {% endif %}
           {% if s.whatsapp_url %}
-            <li><a class="socials__item" href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">
+            <li><a class="socials__item" href="{% marketing_url s.whatsapp_url 'footer' %}" rel="noopener" target="_blank">
               <img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">WhatsApp</span></a><span class="socials__note" aria-hidden="true">*</span></li>
           {% else %}
             <li><span class="socials__item"><img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">WhatsApp</span></span><span class="socials__note" aria-hidden="true">*</span></li>
           {% endif %}
           {% if s.instagram_url %}
-            <li><a class="socials__item" href="{{ s.instagram_url }}" rel="noopener" target="_blank">
+            <li><a class="socials__item" href="{% marketing_url s.instagram_url 'footer' %}" rel="noopener" target="_blank">
               <img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Instagram</span></a><span class="socials__note" aria-hidden="true">*</span></li>
           {% else %}
             <li><span class="socials__item"><img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Instagram</span></span><span class="socials__note" aria-hidden="true">*</span></li>
@@ -74,7 +76,7 @@
 
         <p>
           <button type="button" class="btn btn--primary footer__cta" data-booking-open data-entry-point="1">
-            Забронировать даты
+            {% cms_text "footer-aa5b7a42a613" %}
           </button>
         </p>
       </div>
@@ -84,22 +86,21 @@
 
     <div class="footer__legal">
       <div class="footer__requisites">
-        {% if s.legal_name %}<span>{{ s.legal_name }}</span>{% else %}<span>ИП Новосад Софья Павловна</span>{% endif %}
-        {% if s.ogrnip %}<span>ОГРНИП: {{ s.ogrnip }}</span>{% else %}<span>ОГРНИП: 323774600773141</span>{% endif %}
-        {% if s.inn %}<span>ИНН: {{ s.inn }}</span>{% else %}<span>ИНН: 770902179335</span>{% endif %}
+        {% if s.legal_name %}<span>{{ s.legal_name }}</span>{% else %}<span>{% cms_text "footer-6ea391cc2463" %}</span>{% endif %}
+        {% if s.ogrnip %}<span>{% cms_text "footer-d47f74a52d01" %} {{ s.ogrnip }}</span>{% else %}<span>{% cms_text "footer-6a2f62061838" %}</span>{% endif %}
+        {% if s.inn %}<span>{% cms_text "footer-41e2469679b6" %} {{ s.inn }}</span>{% else %}<span>{% cms_text "footer-6a6a061fd3d7" %}</span>{% endif %}
       </div>
 
       <div class="footer__center">
-        <p>© Лучший Сезон {% now "Y" %}. Все права защищены.</p>
-        <p class="footer__meta-note">* Meta запрещена на территории РФ</p>
+        <p>{% cms_text "footer-c75bbc08a90a" %} {% now "Y" %}{% cms_text "footer-8792ac747bae" %}</p>
+        <p class="footer__meta-note">{% cms_text "footer-62a4aef192cf" %}</p>
         {% comment %}
           Указание автора обязательно по лицензии CC BY 4.0, под которой
           распространяется шрифт Etude Noire. Убирать нельзя — без него
           использование шрифта неправомерно.
         {% endcomment %}
         <p class="footer__meta-note">
-          Шрифт Etude Noire — Дмитрий Антонов / Blue Curve Designstudio,
-          лицензия <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" target="_blank">CC BY 4.0</a>
+          {% cms_text "footer-f3e25ea65c86" %} <a href="{% marketing_url 'https://creativecommons.org/licenses/by/4.0/' 'footer' %}" rel="license noopener" target="_blank">CC BY 4.0</a>
         </p>
       </div>
 

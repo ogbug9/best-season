@@ -1,3 +1,4 @@
+{% load content_tags %}
 {% comment %}
   Лента с ценой. Ждёт в контексте `amount` (уже отформатированную сумму)
   и `unit` (подпись под ценой).
@@ -18,5 +19,5 @@
     <path d="M0.5 0V127.5L47 101.3L93.5 127.5V0" fill="none"
           stroke="#F7F0E6" stroke-width="1" stroke-linejoin="miter"/>
   </svg>
-  <span>от</span><b>{{ amount }} ₽</b><span>{{ unit }}</span>
+  <span>{% cms_text "price_flag-5f201355756a" %}</span><b>{{ amount }} ₽</b><span>{{ unit }}</span>
 </p>

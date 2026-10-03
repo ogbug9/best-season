@@ -1,9 +1,11 @@
+{% load content_tags %}
 {% load wagtailcore_tags %}
 {% with s=settings.core.SiteSettings %}
 
 {% comment %}
   Форма заявки. Подключается так:
-    {% include "forms/request_form.html" with form=transfer_form form_type="transfer" title="Заказать трансфер" %}
+    {% cms_text "include-9d1ad5bd0f25" as cms_include_9d1ad5bd0f25 %}
+{% include "forms/request_form.html" with form=transfer_form form_type="transfer" title=cms_include_9d1ad5bd0f25 %}
 
   Поля берутся из класса формы, поэтому шаблон один на все пять форм
   раздела 7 ТЗ. Отправка обычным POST — без JavaScript форма тоже работает,
@@ -18,23 +20,23 @@
 
   {% comment %} Куда вернуть гостя и что записать в источник заявки {% endcomment %}
   <input type="hidden" name="source_url" value="{{ back_to|default:request.path }}">
-  <input type="hidden" name="utm_source" value="{{ request.GET.utm_source|default:'' }}">
-  <input type="hidden" name="utm_medium" value="{{ request.GET.utm_medium|default:'' }}">
-  <input type="hidden" name="utm_campaign" value="{{ request.GET.utm_campaign|default:'' }}">
-  <input type="hidden" name="utm_content" value="{{ request.GET.utm_content|default:'' }}">
-  <input type="hidden" name="utm_term" value="{{ request.GET.utm_term|default:'' }}">
+  <input type="hidden" name="utm_source" value="{{ request.bs_utm.utm_source|default:'' }}">
+  <input type="hidden" name="utm_medium" value="{{ request.bs_utm.utm_medium|default:'' }}">
+  <input type="hidden" name="utm_campaign" value="{{ request.bs_utm.utm_campaign|default:'' }}">
+  <input type="hidden" name="utm_content" value="{{ request.bs_utm.utm_content|default:'' }}">
+  <input type="hidden" name="utm_term" value="{{ request.bs_utm.utm_term|default:'' }}">
 
-  {% if request.GET.form == "ok" %}
+  {% if form_success_type == form_type %}
     <p class="form__note form__note--ok" role="status">
-      Заявка отправлена. {% if s.form_reply_time %}Ответим {{ s.form_reply_time }}.{% else %}Свяжемся с вами в ближайшее время.{% endif %}
+      {% cms_text "request_form-0cd618b74e9c" %} {% if s.form_reply_time %}{% cms_text "request_form-b3462448b4a0" %} {{ s.form_reply_time }}.{% else %}{% cms_text "request_form-0e5ac608bbfd" %}{% endif %}
     </p>
   {% elif request.GET.form == "error" %}
     <p class="form__note form__note--error" role="alert">
-      Проверьте поля: нужно имя, согласие и хотя бы один способ связи.
+      {% cms_text "request_form-def50857df02" %}
     </p>
   {% elif request.GET.form == "rate" %}
     <p class="form__note form__note--error" role="alert">
-      Слишком много заявок подряд. Позвоните нам — так быстрее.
+      {% cms_text "request_form-638a41496ab9" %}
     </p>
   {% endif %}
 
@@ -53,9 +55,9 @@
           <label class="form__checkbox">
             {{ field }}
             <span>
-              Я согласен на обработку персональных данных
+              {% cms_text "request_form-f47a0fe77ed2" %}
               {% if consent_page %}
-                на условиях <a href="{% pageurl consent_page %}">согласия</a>
+                {% cms_text "request_form-c02b77578811" %} <a href="{% pageurl consent_page %}">{% cms_text "request_form-649bda914d2f" %}</a>
               {% endif %}
             </span>
           </label>

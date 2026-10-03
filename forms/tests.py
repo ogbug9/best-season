@@ -216,8 +216,63 @@ class NotificationTests(FormTestCase):
         self.client.post(reverse("forms:submit", args=["transfer"]), payload())
         self.assertEqual(FormSubmission.objects.count(), 1)
 
+    @override_settings(TELEGRAM_BOT_TOKEN='test-token', TELEGRAM_CHAT_ID='test-chat', NOTIFY_EMAIL='owner@example.test')
+    @patch('forms.notifications.requests.post')
+    def test_notification_matches_saved_fields_all_utm_and_time(self, mocked):
+        from forms.notifications import _lines
+        mocked.return_value.json.return_value = {'ok': True}
+        data = payload(topic='Сертификат', utm_source='source', utm_medium='medium', utm_campaign='campaign', utm_content='content', utm_term='term')
+        self.client.post(reverse('forms:submit', args=['feedback']), data)
+        submission = FormSubmission.objects.get()
+        body = '\n'.join(_lines(submission))
+        self.assertEqual(mail.outbox[0].body, body)
+        self.assertEqual(mocked.call_args.kwargs['data']['text'], body)
+        for key in ('source', 'medium', 'campaign', 'content', 'term'):
+            self.assertIn(f'utm_{key}: {key}', body)
+        self.assertRegex(body, r'Получена: \d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2}')
+        self.assertIn(submission.topic, body)
+        self.assertIsNotNone(submission.telegram_notified_at)
+        self.assertIsNotNone(submission.email_notified_at)
+
+    @override_settings(TELEGRAM_BOT_TOKEN='test-token', TELEGRAM_CHAT_ID='test-chat', NOTIFY_EMAIL='owner@example.test')
+    @patch('forms.notifications.requests.post')
+    def test_telegram_api_failure_does_not_suppress_email_or_lose_saved_request(self, mocked):
+        mocked.return_value.json.return_value = {'ok': False}
+        response = self.client.post(reverse('forms:submit', args=['transfer']), payload())
+        self.assertEqual(response.status_code, 302)
+        submission = FormSubmission.objects.get()
+        self.assertIsNone(submission.telegram_notified_at)
+        self.assertIsNotNone(submission.email_notified_at)
+        self.assertEqual(len(mail.outbox), 1)
+
+    @override_settings(TELEGRAM_BOT_TOKEN='test-token', TELEGRAM_CHAT_ID='test-chat')
+    @patch('forms.notifications.requests.post')
+    def test_long_message_is_transmitted_without_truncation(self, mocked):
+        from forms.notifications import _lines, send_telegram
+        mocked.return_value.json.return_value = {'ok': True}
+        submission = FormSubmission.objects.create(form_type='feedback',name='Тест',message='Длинный текст. '*800)
+        self.assertTrue(send_telegram(submission))
+        chunks = [call.kwargs['data']['text'] for call in mocked.call_args_list]
+        self.assertTrue(all(len(chunk)<=4096 for chunk in chunks))
+        self.assertEqual(''.join(chunks), '\n'.join(_lines(submission)))
+
 
 class UtmTests(FormTestCase):
+    @patch('forms.views.notify')
+    def test_utm_survives_navigation_and_new_campaign_replaces_previous(self, notify):
+        self.client.get('/', {'utm_source':'first', 'utm_medium':'social', 'utm_term':'old'})
+        self.client.get('/kak-dobratsya/')
+        self.client.post(reverse('forms:submit', args=['feedback']), payload(utm_source='',utm_medium=''))
+        first = FormSubmission.objects.get()
+        self.assertEqual(first.utm_source, 'first')
+        self.assertEqual(first.utm_term, 'old')
+        self.client.get('/', {'utm_source':'second','utm_campaign':'new'})
+        self.client.post(reverse('forms:submit', args=['feedback']), payload())
+        last = FormSubmission.objects.latest('pk')
+        self.assertEqual(last.utm_source, 'second')
+        self.assertEqual(last.utm_campaign, 'new')
+        self.assertEqual(last.utm_term, '')
+
     def test_utm_is_captured(self):
         self.client.post(
             reverse("forms:submit", args=["feedback"]),

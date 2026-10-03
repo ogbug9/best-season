@@ -1,3 +1,4 @@
+{% load content_tags %}
 {% comment %}
   Сетка календаря. Вынесена отдельным файлом: скрипт при перелистывании
   просит у сервера те же данные и перерисовывает только этот кусок,
@@ -32,13 +33,13 @@
       <caption class="visually-hidden">{{ month.title }}</caption>
       <thead>
         <tr>
-          <th scope="col"><abbr title="Понедельник">Пн</abbr></th>
-          <th scope="col"><abbr title="Вторник">Вт</abbr></th>
-          <th scope="col"><abbr title="Среда">Ср</abbr></th>
-          <th scope="col"><abbr title="Четверг">Чт</abbr></th>
-          <th scope="col"><abbr title="Пятница">Пт</abbr></th>
-          <th scope="col"><abbr title="Суббота">Сб</abbr></th>
-          <th scope="col"><abbr title="Воскресенье">Вс</abbr></th>
+          <th scope="col"><abbr title="Понедельник">{% cms_text "_calendar_months-31a8ee2fb6b7" %}</abbr></th>
+          <th scope="col"><abbr title="Вторник">{% cms_text "_calendar_months-839b2d5c5aa3" %}</abbr></th>
+          <th scope="col"><abbr title="Среда">{% cms_text "_calendar_months-7ec16b9e41ff" %}</abbr></th>
+          <th scope="col"><abbr title="Четверг">{% cms_text "_calendar_months-956618723dd8" %}</abbr></th>
+          <th scope="col"><abbr title="Пятница">{% cms_text "_calendar_months-4ca114c23be8" %}</abbr></th>
+          <th scope="col"><abbr title="Суббота">{% cms_text "_calendar_months-95dab017a4da" %}</abbr></th>
+          <th scope="col"><abbr title="Воскресенье">{% cms_text "_calendar_months-7971972c7cbb" %}</abbr></th>
         </tr>
       </thead>
       <tbody>

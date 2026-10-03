@@ -1,3 +1,5 @@
+{% load marketing_tags %}
+{% load content_tags %}
 {% load wagtailcore_tags %}
 {% with s=settings.core.SiteSettings %}
 
@@ -22,18 +24,18 @@
     <button type="button" class="booking-modal__close" data-booking-close
             aria-label="Закрыть окно бронирования">×</button>
 
-    <h2 class="booking-modal__title" id="booking-modal-title">Онлайн-бронирование</h2>
+    <h2 class="booking-modal__title" id="booking-modal-title">{% cms_text "booking_modal-813da71cbef9" %}</h2>
 
     {% comment %} Подводящий текст обязателен по п. 5.4.3 и п. 5.4.4 {% endcomment %}
     <p class="booking-modal__lead" data-booking-note>
       {{ s.booking_lead_text|default:"Выберите даты и количество гостей — система покажет свободные домики и стоимость." }}
-      Если вы уже выбрали дом, даты и гостей на сайте, укажите их ещё раз в форме бронирования ниже.
+      {% cms_text "booking_modal-f586f23df9a3" %}
     </p>
 
     <p class="booking-modal__lead" data-booking-selection hidden></p>
 
     <p class="booking-modal__loading" data-booking-loading hidden role="status">
-      Загружаем систему бронирования…
+      {% cms_text "booking_modal-2d5d0bca46ed" %}
     </p>
 
     {% comment %}
@@ -44,24 +46,24 @@
 
     <div data-booking-catalog hidden>
       <section class="booking-system__section" aria-labelledby="booking-calendar-title">
-        <h3 id="booking-calendar-title">Календарь доступности</h3>
+        <h3 id="booking-calendar-title">{% cms_text "booking_modal-9250eb726e9a" %}</h3>
         <div class="kontur-host" id="BookingCalendarWidget" data-kontur-type="availabilityCalendar"></div>
       </section>
       <section class="booking-system__section" aria-labelledby="booking-rooms-title">
-        <h3 id="booking-rooms-title">Домики</h3>
+        <h3 id="booking-rooms-title">{% cms_text "booking_modal-449e49a038a3" %}</h3>
         <div class="kontur-host" id="BookingRoomsWidget" data-kontur-type="roomsList"></div>
       </section>
       {% if s.booking_show_hourly %}
       <section class="booking-system__section" aria-labelledby="booking-hourly-title">
-        <h3 id="booking-hourly-title">Баня и беседки</h3>
+        <h3 id="booking-hourly-title">{% cms_text "booking_modal-af751288687d" %}</h3>
         <div class="kontur-host" id="BookingHourlyWidget" data-kontur-type="hourlyObjectsList"></div>
       </section>
       {% endif %}
     </div>
 
     <div class="booking-system__help" data-booking-help hidden>
-      <p>Нет подходящего домика или свободных дат? Попробуйте другие даты или оставьте заявку — поможем с выбором.</p>
-      <button type="button" class="btn btn--outline" data-booking-request>Оставить заявку</button>
+      <p>{% cms_text "booking_modal-7c12fd5e89a0" %}</p>
+      <button type="button" class="btn btn--outline" data-booking-request>{% cms_text "booking_modal-40bcd1704497" %}</button>
     </div>
 
     {% comment %} ---- Резервный блок, п. 5.6.2 ---- {% endcomment %}
@@ -73,16 +75,14 @@
         виджет действительно не поднялся.
       {% endcomment %}
       <p class="booking-fallback__note" data-fallback-note-idle role="status">
-        Оставьте заявку — подберём свободный домик на ваши даты,
-        назовём цену и ответим лично. Отправка заявки не подтверждает бронирование.
+        {% cms_text "booking_modal-1c2b1f9736f4" %}
       </p>
       <p class="booking-fallback__note" data-fallback-note-error role="status" hidden>
-        Онлайн-бронирование временно недоступно. Оставьте заявку — подберём
-        свободный домик на ваши даты и ответим лично. Отправка заявки не подтверждает бронирование.
+        {% cms_text "booking_modal-beccab9d8c9d" %}
       </p>
 
       <button type="button" class="btn btn--outline booking-system__retry" data-booking-retry hidden>
-        Повторить загрузку
+        {% cms_text "booking_modal-298e41327fee" %}
       </button>
 
       <div data-fallback-form>
@@ -91,10 +91,10 @@
 
       <p class="booking-fallback__contacts">
         {% if s.telegram_url %}
-          <a class="btn btn--outline" href="{{ s.telegram_url }}" rel="noopener" target="_blank">Написать в Telegram</a>
+          <a class="btn btn--outline" href="{% marketing_url s.telegram_url 'booking_modal' %}" rel="noopener" target="_blank">{% cms_text "booking_modal-5de96583a02b" %}</a>
         {% endif %}
         {% if s.whatsapp_url %}
-          <a class="btn btn--outline" href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">Написать в WhatsApp</a>
+          <a class="btn btn--outline" href="{% marketing_url s.whatsapp_url 'booking_modal' %}" rel="noopener" target="_blank">{% cms_text "booking_modal-3adb5333cfe3" %}</a>
         {% endif %}
         {% if s.phone %}
           <a class="btn btn--outline" href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a>

@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load marketing_tags %}
+{% load content_tags %}
 {% load wagtailcore_tags media_tags layout_tags %}
 {% block body_class %}page-contacts{% endblock %}
 {% with s=settings.core.SiteSettings %}
@@ -20,23 +22,23 @@
         обязаны совпадать (раздел 11 ТЗ).
       {% endcomment %}
       <ul class="facts">
-        {% if s.phone %}<li><b>Телефон:</b> <a href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a></li>{% endif %}
-        {% if s.email %}<li><b>Почта:</b> <a href="mailto:{{ s.email }}">{{ s.email }}</a></li>{% endif %}
-        {% if s.address %}<li><b>Адрес:</b> {{ s.address }}</li>{% endif %}
+        {% if s.phone %}<li><b>{% cms_text "contacts_page-353ad7d1834d" %}</b> <a href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a></li>{% endif %}
+        {% if s.email %}<li><b>{% cms_text "contacts_page-9acc3fbe2040" %}</b> <a href="mailto:{{ s.email }}">{{ s.email }}</a></li>{% endif %}
+        {% if s.address %}<li><b>{% cms_text "contacts_page-b87e6ba86a55" %}</b> {{ s.address }}</li>{% endif %}
       </ul>
 
       <p class="split__actions">
-        {% if s.telegram_url %}<a class="btn btn--outline" href="{{ s.telegram_url }}" rel="noopener" target="_blank">Telegram</a>{% endif %}
-        {% if s.whatsapp_url %}<a class="btn btn--outline" href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">WhatsApp</a>{% endif %}
-        {% if s.vk_url %}<a class="btn btn--outline" href="{{ s.vk_url }}" rel="noopener" target="_blank">ВКонтакте</a>{% endif %}
+        {% if s.telegram_url %}<a class="btn btn--outline" href="{% marketing_url s.telegram_url 'contacts_page' %}" rel="noopener" target="_blank">{% cms_text "channel-telegram" %}</a>{% endif %}
+        {% if s.whatsapp_url %}<a class="btn btn--outline" href="{% marketing_url s.whatsapp_url 'contacts_page' %}" rel="noopener" target="_blank">{% cms_text "channel-whatsapp" %}</a>{% endif %}
+        {% if s.vk_url %}<a class="btn btn--outline" href="{% marketing_url s.vk_url 'contacts_page' %}" rel="noopener" target="_blank">{% cms_text "contacts_page-125394ee160a" %}</a>{% endif %}
       </p>
 
       {% if page.body %}<div class="prose">{{ page.body|richtext }}</div>{% endif %}
 
       <p class="footer__requisites">
         {% if s.legal_name %}{{ s.legal_name }}{% endif %}
-        {% if s.inn %} · ИНН {{ s.inn }}{% endif %}
-        {% if s.ogrnip %} · ОГРНИП {{ s.ogrnip }}{% endif %}
+        {% if s.inn %} {% cms_text "contacts_page-1b6d70106339" %} {{ s.inn }}{% endif %}
+        {% if s.ogrnip %} {% cms_text "contacts_page-f0d20ac2a599" %} {{ s.ogrnip }}{% endif %}
         {% if s.legal_address %}<br>{{ s.legal_address }}{% endif %}
       </p>
     </div>
@@ -45,7 +47,7 @@
       <div class="split__media">
         <div class="map" data-map data-map-src="{{ page.map_embed_url }}">
           {% if page.map_image %}{% picture page.map_image preset="gallery" alt="Карта проезда" %}{% endif %}
-          <button type="button" class="btn btn--primary map__button" data-map-load>Показать карту</button>
+          <button type="button" class="btn btn--primary map__button" data-map-load>{% cms_text "contacts_page-90457f42f688" %}</button>
         </div>
       </div>
     {% endif %}
@@ -54,7 +56,8 @@
 
 <section class="section">
   <div class="container container--narrow">
-    {% include "forms/request_form.html" with form=feedback_form form_type="feedback" title="Написать нам" lead="Ответим на почту или в мессенджер." %}
+    {% cms_text "include-b0f097f65241" as cms_include_b0f097f65241 %}
+{% include "forms/request_form.html" with form=feedback_form form_type="feedback" title=cms_include_b0f097f65241 lead="Ответим на почту или в мессенджер." %}
   </div>
 </section>
 {% endblock %}

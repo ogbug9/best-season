@@ -1,3 +1,4 @@
+{% load content_tags %}
 {% comment %} Точка входа в бронирование.
 
    Предвыбор конкретного дома виджет Контура не поддерживает
@@ -13,7 +14,7 @@
   <button type="button" class="btn btn--primary" data-booking-open
           {% if house_id %}data-house-id="{{ house_id }}" data-house-title="{{ page.title }}" data-pms-name="{{ page.pms_name }}"{% endif %}
           {% if entry_point %}data-entry-point="{{ entry_point }}"{% endif %}>
-    Забронировать{% if house_title %} {{ house_title }}{% endif %}
+    {% cms_text "booking_cta-5d9d7f118153" %}{% if house_title %} {{ house_title }}{% endif %}
   </button>
 
 </div>

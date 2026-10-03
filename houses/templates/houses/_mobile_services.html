@@ -1,9 +1,10 @@
+{% load content_tags %}
 {% load wagtailcore_tags media_tags territory_tags %}
 {% if mobile_services %}
 <section class="section mobile-catalog-services">
   <div class="container">
-    <h2 class="section__title">Что добавить</h2>
-    <p class="mobile-catalog-services__intro">Чем можно разнообразить ваш отдых:<br>русская баня, беседка, фотосессия с животными.<br>Скажите заранее — подготовим к вашему приезду.</p>
+    <h2 class="section__title">{% cms_text "_mobile_services-159ce14c6926" %}</h2>
+    <p class="mobile-catalog-services__intro">{% cms_text "_mobile_services-289c607aaaeb" %}<br>{% cms_text "_mobile_services-2f4d1710f014" %}<br>{% cms_text "_mobile_services-eee3d339d07a" %}</p>
     <ul class="mobile-service-tiles">
       {% for item in mobile_services %}
       <li class="service-tile">
@@ -12,7 +13,7 @@
       </li>
       {% endfor %}
     </ul>
-    {% if mobile_services_page %}<a class="btn btn--primary" href="{% pageurl mobile_services_page %}">Больше развлечений и услуг</a>{% endif %}
+    {% if mobile_services_page %}<a class="btn btn--primary" href="{% pageurl mobile_services_page %}">{% cms_text "_mobile_services-41b97f8e0eff" %}</a>{% endif %}
   </div>
 </section>
 {% endif %}

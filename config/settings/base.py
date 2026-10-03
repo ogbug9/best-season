@@ -31,6 +31,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1,localhost", cast=Csv(
 # Application definition
 
 INSTALLED_APPS = [
+    'wagtail.contrib.table_block',
     "home",
     "search",
     # Приложения проекта — структура из 05-arhitektura-i-plan.md
@@ -69,6 +70,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "core.middleware.CampaignMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -240,6 +242,8 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="noreply@best-season.online")
 NOTIFY_EMAIL = config("NOTIFY_EMAIL", default="")
+EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=5, cast=int)
+BACKUP_ROOT = config('BACKUP_ROOT', default='')
 
 # hotelId и параметры виджета Контур.Отеля — см. 03-kontur-widget.md. Пока не подтверждены Софией.
 KONTUR_HOTEL_ID = config("KONTUR_HOTEL_ID", default="")

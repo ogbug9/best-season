@@ -1,10 +1,11 @@
+{% load content_tags %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ошибка на сервере</title>
+  <title>{% cms_text "500-46173e2541fe" %}</title>
   {% comment %}
     Шаблон 500 не наследуется от base.html намеренно: если упало из-за
     настроек сайта или обращения к базе, наследование утянет за собой ту же
@@ -17,9 +18,9 @@
   <main class="section">
     <div class="container container--narrow center">
       <p class="error-code" aria-hidden="true">500</p>
-      <h1>Что-то пошло не так</h1>
-      <p>Мы уже разбираемся. Попробуйте обновить страницу через пару минут.</p>
-      <p><a class="btn btn--primary" href="/">На главную</a></p>
+      <h1>{% cms_text "500-4d1b27ecd7c2" %}</h1>
+      <p>{% cms_text "500-b8654570e7f8" %}</p>
+      <p><a class="btn btn--primary" href="/">{% cms_text "500-ad94907f6423" %}</a></p>
     </div>
   </main>
 </body>

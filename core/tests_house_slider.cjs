@@ -19,11 +19,11 @@ test('auto advances every 3 seconds, pauses on hover and respects reduced motion
  const s=setup();assert.equal(s.active(),0);s.tick();assert.equal(s.active(),1);s.hover(true);s.tick();assert.equal(s.active(),1);
  assert.equal(setup({reduced:true}).hasTimer(),false);assert.equal(setup({hidden:true}).hasTimer(),false);
 });
-test('mouse and touch swipes change photo without following its link; ordinary clicks navigate',()=>{
+test('mouse changes photo; touch leaves the gesture to the outer cards; ordinary clicks navigate',()=>{
  for(const pointerType of ['mouse','touch']){
   const s=setup();const event=(x,y)=>({isPrimary:true,button:0,pointerId:1,pointerType,clientX:x,clientY:y});
   s.slider.events.pointerdown(event(200,100));s.slider.events.pointermove(event(100,100));s.slider.events.pointerup(event(100,100));
-  assert.equal(s.active(),1);let prevented=false;s.slider.events.click({preventDefault(){prevented=true;}});assert.ok(prevented);
+  assert.equal(s.active(),pointerType === 'mouse' ? 1 : 0);let prevented=false;s.slider.events.click({preventDefault(){prevented=true;}});assert.ok(prevented);
   prevented=false;s.slider.events.pointerdown(event(100,100));s.slider.events.pointerup(event(100,100));s.slider.events.click({preventDefault(){prevented=true;}});assert.equal(prevented,false);
  }
 });

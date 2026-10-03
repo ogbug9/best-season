@@ -1,3 +1,4 @@
+{% load content_tags %}
 {% load wagtailcore_tags %}
 {% comment %}
   Колонки подвала. Собираются из дерева страниц, но группировка своя:
@@ -25,7 +26,7 @@
   {% for column in footer_columns %}
       {% if column.legal %}
       <div class="footer__documents">
-        <p class="footer__column-title">Правовые документы</p>
+        <p class="footer__column-title">{% cms_text "footer_columns-011d8814fe39" %}</p>
         <ul class="footer__legal-links">
           {% for link in column.legal %}
             <li><a href="{{ link.url }}">{{ link.title }}</a></li>

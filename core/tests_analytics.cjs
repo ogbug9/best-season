@@ -42,7 +42,7 @@ function fixture(options = {}) {
   return {window,scripts,replacements,attrs,run,flush,emit,
     consent(value) {events['bs:cookie-consent']({detail:value});},
     click(href,place='other') {
-      const link = {href,closest:selector => ({fallback:'[data-booking-fallback]',header:'header',footer:'footer',contacts:'.contacts, .contacts-section'})[place] === selector};
+      const link = {href,matches:selector => place === 'route' && selector === '[data-directions-link]',closest:selector => ({fallback:'[data-booking-fallback]',header:'header',footer:'footer',contacts:'.contacts, .contacts-section'})[place] === selector};
       events.click({target:{closest:() => link}});
     },
     goals() {return Array.from(window.dataLayer || []);},
@@ -109,6 +109,9 @@ test('directions view is queued once and delivered after agreement', () => {
 });
 test('house reading reaches 75 percent once with slug', () => {
   const f=fixture({house:'domik-1'}); f.window.scrollY=2199; f.emit('scroll'); assert.equal(f.goals().length,0);
-  f.window.scrollY=2200; f.emit('scroll'); f.emit('scroll'); f.emit('load');
+  f.window.scrollY=2200; f.emit('scroll'); assert.equal(f.goals().length,0);
+  f.window.scrollY=2201; f.emit('scroll'); f.emit('scroll'); f.emit('load');
   assert.equal(f.goals().length,1); assert.equal(f.goals()[0].event,'house_scroll_75'); assert.equal(f.goals()[0].params.house,'domik-1');
 });
+
+test('route click has its own consent-gated goal', () => { const f=fixture(); f.click('https://yandex.ru/maps/?rtext=x', 'route'); assert.equal(f.goals()[0].event,'directions_click'); assert.equal(f.window.ym,undefined); f.consent('accepted'); f.flush(); assert.equal(f.queue().filter(args=>args[2] === 'directions_click').length,1); });

@@ -5286,6 +5286,9 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 /* Уточнения макетов меню и просмотра фото, 03.10.2026. */
 .page-houses .houses-search .searchbar__field { background: #D5CEBC; }
 .house__slides { touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+@media (hover: none), (max-width: 699px) {
+  .house__slides { touch-action: auto; }
+}
 .house__slides img { -webkit-user-drag: none; }
 .house__media { z-index: 0; }
 .house__overlay, .house__book { position: relative; z-index: 2; }
@@ -5358,3 +5361,18 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 .nav-section > summary > a { color: inherit; text-decoration: none; }
 
 html:has(.lightbox[open]) { overflow: hidden; }
+
+/* Invisible touch targets keep the approved icon dimensions and coordinates. */
+@media (max-width: 699px) {
+  :is(.guests__step, .guests__hint-toggle, .booking-hint__toggle, .booking-field__slot, .cookie-accept, .cookie-close, .footer__cta, .lightbox__nav) { position: relative; }
+  .site .lightbox__nav { position: absolute; }
+  :is(.guests__step, .guests__hint-toggle, .booking-hint__toggle, .booking-field__slot, .cookie-accept, .cookie-close, .footer__cta, .lightbox__nav)::after {
+    content: ''; position: absolute; width: max(100%, 44px); height: max(100%, 44px);
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+  }
+  .site.page-house .guests__step::after { inset: auto; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }
+  .site.page-house [data-counter="adults"] .guests__step::after { top: calc(50% - 4px); }
+  .site.page-house .guests__hint-toggle::after { top: calc(50% + 4px); }
+  .site.page-house [data-counter="pets"] .guests__hint-toggle::after { top: calc(50% + 9px); }
+  :is(.guests__step, .cookie-close, .lightbox__nav):focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+}

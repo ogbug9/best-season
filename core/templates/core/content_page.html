@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags media_tags legal_docs layout_tags %}
+{% load content_tags %}
+{% load static wagtailcore_tags media_tags legal_docs layout_tags %}
+{% block extra_css %}{% legal_pdf_url page.slug as legal_pdf %}{% if legal_pdf %}<link rel="stylesheet" href="{% static 'css/legal.css' %}">{% endif %}{% endblock %}
 
 {% block content %}
 <section class="section page-head">
@@ -18,11 +20,16 @@
 {% legal_pdf_url page.slug as legal_pdf %}
 {% if legal_pdf %}
 <section class="section">
-  <div class="container container--narrow prose">
-    <p><a href="{{ legal_pdf }}" target="_blank" rel="noopener">Открыть документ PDF</a></p>
-    <object data="{{ legal_pdf }}" type="application/pdf" width="100%" height="800" aria-label="{{ page.title }}">
-      <p>Для просмотра документа <a href="{{ legal_pdf }}">откройте PDF</a>.</p>
-    </object>
+  <div class="container container--narrow prose legal-document">
+    <p><a href="{{ legal_pdf }}" download>{% cms_text "content_page-a859d91f587f" %}</a></p>
+    {% if page.legal_body %}
+      {% for block in page.legal_body %}
+        {% if block.block_type == 'heading' %}<h2>{{ block.value }}</h2>
+        {% elif block.block_type == 'paragraph' %}<p>{{ block.value|urlize }}</p>
+        {% elif block.block_type == 'list' %}<ul class="legal-list">{% for item in block.value %}<li>{{ item|urlize }}</li>{% endfor %}</ul>
+        {% elif block.block_type == 'table' %}{% legal_table block.value %}{% endif %}
+      {% endfor %}
+    {% elif page.body %}{{ page.body|richtext }}{% endif %}
   </div>
 </section>
 {% elif page.body %}
@@ -35,7 +42,7 @@
 <section class="section section--deep">
   <div class="container container--narrow center">
     <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7">
-      Забронировать даты
+      {% cms_text "content_page-aa5b7a42a613" %}
     </button>
   </div>
 </section>

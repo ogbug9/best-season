@@ -125,6 +125,7 @@ def submit(request, form_type):
 
     if wants_json:
         return JsonResponse({"ok": True})
+    request.session['bs_form_success'] = {'type': form_type, 'path': urlsplit(back_to).path or '/'}
     return redirect(outcome_url("ok"))
 
 

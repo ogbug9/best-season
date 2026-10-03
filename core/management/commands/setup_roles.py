@@ -40,6 +40,7 @@ COLLECTION_PERMISSIONS = [
 
 # Справочники, которые редактор ведёт сам.
 SNIPPET_PERMISSIONS = [
+    ('core', 'interfacetext', ['change', 'view']),
     ("reviews", "review", ["add", "change", "delete", "view"]),
     ("promotions", "promotion", ["add", "change", "delete", "view"]),
     ("services", "service", ["add", "change", "delete", "view"]),

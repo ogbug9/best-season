@@ -63,9 +63,11 @@ FOOTER_COLUMNS = [
 ]
 
 
-def _links(pairs, pages):
+def _links(pairs, pages, request):
+    from core.templatetags.content_tags import value
     out = []
     for slug, label in pairs:
+        label = value(request, f'footer-link-{slug}', label)
         if slug == "__booking__":
             out.append({"title": label, "booking": True})
             continue
@@ -84,6 +86,7 @@ def footer(request):
     пока часть страниц ещё не заведена.
     """
     from wagtail.models import Page
+    from core.templatetags.content_tags import value
 
     wanted = set()
     for column in FOOTER_COLUMNS:
@@ -97,12 +100,12 @@ def footer(request):
         pages = {}
 
     columns = []
-    for column in FOOTER_COLUMNS:
+    for index, column in enumerate(FOOTER_COLUMNS):
         columns.append(
             {
-                "title": column["title"],
-                "links": _links(column["slugs"], pages),
-                "legal": _links(column.get("legal_slugs", []), pages),
+                "title": value(request, f'footer-column-{index}', column['title']),
+                "links": _links(column["slugs"], pages, request),
+                "legal": _links(column.get("legal_slugs", []), pages, request),
             }
         )
     return {"footer_columns": columns}
@@ -111,10 +114,10 @@ def footer(request):
 def booking(request):
     # Ошибочный POST получает отдельную страницу с заполненной формой.
     # У модальной формы свои ID: на странице может быть ещё одна заявка.
-    form_type = request.GET.get("ft", "")
+    from forms.success import confirmed_success
     context = {
         "fallback_booking_form": FallbackBookingForm(auto_id="booking_%s"),
-        "form_success_type": form_type if request.GET.get("form") == "ok" and form_type in FormType.values else "",
+        "form_success_type": confirmed_success(request),
     }
 
     hotel_id, metrika_id = "", ""

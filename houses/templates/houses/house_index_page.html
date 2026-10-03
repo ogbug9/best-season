@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load content_tags %}
 {% load static wagtailcore_tags media_tags nearby_tags territory_tags layout_tags %}
 
 {% comment %}
@@ -38,24 +39,24 @@
     <button type="button" class="searchbar houses-search" data-booking-open data-entry-point="1">
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
-        <span class="home-desktop-copy">Дата въезда</span><span class="home-mobile-copy">Даты</span>
+        <span class="home-desktop-copy">{% cms_text "house_index_page-ed598bbf587b" %}</span><span class="home-mobile-copy">{% cms_text "house_index_page-26a3ae77bfaa" %}</span>
       </span>
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
-        Дата выезда
+        {% cms_text "house_index_page-ac73830877c9" %}
       </span>
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--guest" aria-hidden="true"></span>
-        1 гость
+        {% cms_text "house_index_page-ff2a49a5c38f" %}
       </span>
-      <span class="searchbar__cta btn btn--primary">Забронировать даты</span>
+      <span class="searchbar__cta btn btn--primary">{% cms_text "house_index_page-aa5b7a42a613" %}</span>
     </button>
 
     <ul class="cards cards--houses">
       {% for house in houses %}
         {% include "houses/_house_card.html" with house=house entry="1" level="2" %}
       {% empty %}
-        <li><p>Домики пока не добавлены.</p></li>
+        <li><p>{% cms_text "house_index_page-583ce108eb43" %}</p></li>
       {% endfor %}
     </ul>
   </div>
@@ -74,7 +75,7 @@
   <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-slogan.svg' %}"><img class="home-bg__layer home-bg__layer--services" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1186" height="1332" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container houses-services__inner">
     <div class="houses-catalog__head houses-catalog__head--services">
-      <h2 class="section__title section__title--center">Что добавить</h2>
+      <h2 class="section__title section__title--center">{% cms_text "house_index_page-159ce14c6926" %}</h2>
       <p>{{ page.services_intro_display|linebreaksbr }}</p>
     </div>
 
@@ -114,7 +115,7 @@
 {% if faq %}
 <section class="section houses-faq">
   <div class="container">
-    <h2 class="section__title section__title--center"><span class="home-desktop-copy">Ответы на вопросы</span><span class="home-mobile-copy">Ответы<br>на вопросы</span></h2>
+    <h2 class="section__title section__title--center"><span class="home-desktop-copy">{% cms_text "house_index_page-aec7a4625e64" %}</span><span class="home-mobile-copy">{% cms_text "house_index_page-e3fa138ad417" %}<br>{% cms_text "house_index_page-cb6e474f34f1" %}</span></h2>
     <div class="faq">
       {% for item in faq %}
         <details class="faq__item{% if forloop.counter0|divisibleby:2 %} faq__item--dark{% else %} faq__item--olive{% endif %}">
@@ -130,8 +131,8 @@
 {# Точка входа в бронирование в конце каталога — таблица п. 5.1 ТЗ #}
 <section class="section section--deep">
   <div class="container container--narrow center">
-    <h2>Выбрали домик?</h2>
-    <p>Свободные даты и стоимость — в системе бронирования.</p>
+    <h2>{% cms_text "house_index_page-1b96fb9abe3e" %}</h2>
+    <p>{% cms_text "house_index_page-e4d2c144d765" %}</p>
     {% include "includes/booking_cta.html" with entry_point="5" %}
   </div>
 </section>
