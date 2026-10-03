@@ -1,0 +1,1 @@
+{% load static %}{% with source='img/about/'|add:image|add:'.webp' %}<div class="about-photo about-photo--{{ image }}{% if value %} about-value__photo{% endif %}"><img src="{% static source %}" alt="{% if not value %}{{ caption }}{% endif %}" loading="lazy" decoding="async"></div>{% endwith %}

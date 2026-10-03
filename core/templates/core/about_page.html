@@ -1,30 +1,30 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags %}
 {% block body_class %}page-about{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261002-about">{% endblock %}
-{% block extra_js %}<script src="{% static 'js/about.js' %}?v=20261002-about" defer></script>{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261003-reference">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/about.js' %}?v=20261003-reference" defer></script>{% endblock %}
 {% block content %}
 <section class="about-hero">
-  <div class="container"><h1>О нас</h1><p>Лучший сезон — место, куда приезжают,<br>чтобы побыть вместе.<br>Встретить утро на террасе с кофе, днём уйти<br>гулять по лесу, а вечером сесть у костра<br>с гитарой или растопить баню.</p></div>
+  <div class="container"><h1>О нас</h1><p>Лучший сезон — место, куда приезжают,<br> чтобы побыть вместе.<br> Встретить утро на террасе с кофе, днём уйти<br> гулять по лесу, а вечером сесть у костра<br> с гитарой или растопить баню.</p></div>
 </section>
 <section class="about-history container" aria-label="История Лучшего сезона">
   <div class="about-history__intro">
-    <div class="ph about-photo" role="img" aria-label="Заглушка: вид глэмпинга сверху"></div>
-    <div><p>Мы в Заокском районе Тульской области, в двух часах от Москвы.<br>Среди сосновых лесов, недалеко от Оки.</p><p>Наша работа — создавать место, где можно остаться в тишине, вдохнуть лесной воздух и почувствовать себя как дома.</p><p>А ещё у нас есть собственная ферма, которая радует гостей и натуральными продуктами к нашим завтракам.</p></div>
+    {% include 'core/includes/about_photo.html' with image='aerial' caption='Вид глэмпинга сверху' %}
+    <div><p>Мы в Заокском районе Тульской области, в двух часах от Москвы.<br> С трёх сторон лес, вдоль территории течёт Скнижка, рядом питомник «Долина роз»</p><p>Наш район считается одним из самых чистых в области, воздух здесь чище и плотнее — это заметно в первую же ночь: спится здесь иначе.</p><p>А ещё у нас есть собственная Ферма, которая порадует свежими и натуральными продуктами к вашему завтраку.</p></div>
   </div>
   <div class="about-history__route">
-    <div class="about-history__row"><div class="ph about-photo" role="img" aria-label="Заглушка: рука на коре дерева"></div><p>Проект вырос из личной истории и желания делиться.<br>В стенах нашего семейного дома всегда было много друзей, гостеприимства, огоньков разговоров и тёплых вечеров.<br>Со временем нас становилось всё больше — и тех, с кем хотелось разделить эту атмосферу и состояние, тоже.</p></div>
-    <div class="about-history__row about-history__row--reverse"><div class="ph about-photo" role="img" aria-label="Заглушка: терраса домика"></div><div class="about-history__name"><p>Так появился</p><h2>Лучший сезон</h2><p>— место, куда можно приезжать с тем же чувством,<br>что тебя здесь рады. Где тепло, спокойно,<br>и по-настоящему хорошо.</p></div></div>
-    <div class="about-history__row"><div class="ph about-photo" role="img" aria-label="Заглушка: вечер на ферме"></div><p>У нас нет любимого времени года.<br>Мы уверены, что каждый сезон по-своему прекрасен, а с нужными людьми любая поездка может стать незабываемой.</p></div>
+    <div class="about-history__row">{% include 'core/includes/about_photo.html' with image='story-moss' caption='Рука на мягком лесном мху' %}<p>Проект вырос из личной истории<br> и желания делиться.<br> В стенах нашего семейного дома<br> всегда было много друзей, гостеприимства,<br> длинных разговоров и тёплых вечеров.<br> Со временем нас <span class="about-history__desktop">в семье </span>становилось<br> всё больше — и тех, с кем хотелось разделить<br> эту атмосферу и состояние, тоже.</p></div>
+    <div class="about-history__row about-history__row--reverse">{% include 'core/includes/about_photo.html' with image='story-terrace' caption='Терраса домика и зелёная территория' %}<div class="about-history__name"><p>Так появился</p><h2>Лучший сезон</h2><p>— место, куда можно приехать с тем же чувством,<br> что тебя здесь рады. Где светло, спокойно<br> и по-настоящему хорошо.</p></div></div>
+    <div class="about-history__row">{% include 'core/includes/about_photo.html' with image='story-season' caption='Прогулка на природе' %}<p>У нас нет любимого времени года.<br> Мы уверены, что каждый сезон по-своему<br> прекрасный, а с нужными людьми любая<br> поездка может стать незабываемой.</p></div>
   </div>
-  <p class="about-motto">Не ждите подходящего момента,<br>ваш лучший сезон уже начался <img src="{% static 'img/paw-small.png' %}" alt="" width="36" height="36"></p>
+  <p class="about-motto">Не ждите подходящего момента,<br> ваш лучший сезон уже начался <img src="{% static 'img/paw-small.png' %}" alt="" width="36" height="36"></p>
 </section>
 <div class="about-sections">
 <section class="container about-section about-pillars" aria-labelledby="pillars-title">
   <h2 id="pillars-title" class="section__title">Три столпа</h2>
   <div class="about-carousel" data-about-carousel data-mobile-start="1">
     <ol class="about-track" tabindex="0" aria-label="Три столпа" data-about-track>
-      {% for item in about_pillars %}<li class="about-pillar"><div class="ph about-photo" role="img" aria-label="Заглушка фотографии: {{ item.title }}"></div><h3>{{ item.title }}</h3><p>{{ item.text }}</p></li>{% endfor %}
+      {% for item in about_pillars %}<li class="about-pillar">{% include 'core/includes/about_photo.html' with image=item.image caption=item.title %}<h3>{{ item.title|linebreaksbr }}</h3><p>{{ item.text|linebreaksbr }}</p></li>{% endfor %}
     </ol><div class="about-dots" data-about-dots hidden aria-label="Выбор столпа"></div>
   </div>
 </section>
@@ -32,19 +32,19 @@
   <h2 id="values-title" class="section__title">Наши ценности</h2>
   <div class="about-carousel" data-about-carousel>
     <ol class="about-track" tabindex="0" aria-label="Наши ценности" data-about-track>
-      {% for item in about_values %}<li class="about-value about-value--{{ forloop.counter }}"><div class="ph about-value__photo" aria-hidden="true"></div><div class="about-value__copy"><h3>{% if item.journey %}<span class="about-journey" aria-label="{{ item.title }}"><span aria-hidden="true">Путе</span><span aria-hidden="true">шест</span><span aria-hidden="true">вовать</span></span>{% else %}{{ item.title }}{% endif %}</h3><p class="about-value__lead">{{ item.lead }}</p><p>{{ item.text }}</p></div></li>{% endfor %}
+      {% for item in about_values %}<li class="about-value about-value--{{ forloop.counter }}">{% include 'core/includes/about_photo.html' with image=item.image value=True %}<div class="about-value__copy"><h3>{% if item.journey %}<span class="about-journey" aria-label="{{ item.title }}"><span aria-hidden="true">Путе</span><span aria-hidden="true">шест</span><span aria-hidden="true">вовать</span></span>{% else %}{{ item.title|linebreaksbr }}{% endif %}</h3><p class="about-value__lead">{{ item.lead|linebreaksbr }}</p><p>{{ item.text|linebreaksbr }}</p></div></li>{% endfor %}
     </ol><div class="about-dots" data-about-dots hidden aria-label="Выбор ценности"></div>
   </div>
 </section>
 <section class="container about-section about-pets" aria-labelledby="pets-title">
   <h2 id="pets-title" class="section__title">Ищут дом</h2>
-  <p class="about-section__lead">Иногда к нам приходят котята, брошенные собаки или кто-то ещё.<br>Мы не приют — просто не умеем проходить мимо. Пока что они — наши подопечные, они живут у нас,<br>но всем становится намного проще и спокойнее, если питомцы найдут своих людей — навсегда.</p>
-  <div class="about-pets__grid">{% for pet in about_pets %}<article class="about-pet{% if forloop.last %} about-pet--olive{% endif %}"><h3>{{ pet.name }}</h3><div class="ph about-photo" role="img" aria-label="Заглушка фотографии: {{ pet.name }}"></div><p>{{ pet.copy }}</p><details class="about-pet__details"><summary class="btn btn--outline">Узнать больше</summary><div><p>{{ pet.details }}</p>{% if about_contacts %}<a href="{% pageurl about_contacts %}">Связаться с нами</a>{% endif %}</div></details></article>{% endfor %}</div>
+  <p class="about-section__lead">Иногда к нам приходят котята, брошенные собаки или кто-то ещё.<br> Мы не приют — просто не умеем проходить мимо. Пока для них не нашлись хозяева, они живут у нас.<br> Но если вы взглянете на кого-то с этой страницы и поймёте, что это ваш, — напишите нам.</p>
+  <div class="about-pets__grid">{% for pet in about_pets %}<article class="about-pet{% if forloop.last %} about-pet--olive{% endif %}"><h3>{{ pet.name }}</h3>{% include 'core/includes/about_photo.html' with image=pet.image caption=pet.name %}<p>{{ pet.copy|linebreaksbr }}</p><details class="about-pet__details"><summary class="btn btn--outline">Узнать больше</summary><div><p>{{ pet.details }}</p>{% if about_contacts %}<a href="{% pageurl about_contacts %}">Связаться с нами</a>{% endif %}</div></details></article>{% endfor %}</div>
   <p class="about-section__action">{% if about_contacts %}<a class="btn btn--outline" href="{% pageurl about_contacts %}">Больше пушистиков <span aria-hidden="true">→</span></a>{% endif %}</p>
 </section>
 <section class="container about-section about-diary" aria-labelledby="diary-title">
-  <h2 id="diary-title" class="section__title">Дневник Сезона</h2><p class="about-section__lead">Что у нас происходит: новые постройки, сезонные акции, наши рубрики<br>и места по соседству, куда стоит съездить.</p>
-  <div class="about-carousel" data-about-carousel><ol class="about-track" tabindex="0" aria-label="Дневник Сезона" data-about-track>{% for title in about_diary %}<li class="about-entry"><div class="ph about-photo" role="img" aria-label="Заглушка фотографии: {{ title }}"></div><h3>{{ title }}</h3></li>{% endfor %}</ol><div class="about-dots" data-about-dots hidden aria-label="Выбор записи дневника"></div></div>
+  <h2 id="diary-title" class="section__title">Дневник Сезона</h2><p class="about-section__lead">Что у нас происходит: новые постройки, сезонные акции, наши рубрики<br> и места по соседству, куда стоит съездить.</p>
+  <div class="about-carousel" data-about-carousel><ol class="about-track" tabindex="0" aria-label="Дневник Сезона" data-about-track>{% for item in about_diary %}<li class="about-entry">{% include 'core/includes/about_photo.html' with image=item.image caption=item.title %}<h3>{{ item.title|linebreaksbr }}</h3></li>{% endfor %}</ol><div class="about-dots" data-about-dots hidden aria-label="Выбор записи дневника"></div></div>
   <p class="about-section__action">{% if settings.core.SiteSettings.vk_url %}<a class="btn btn--outline" href="{{ settings.core.SiteSettings.vk_url }}" target="_blank" rel="noopener">Больше интересных новостей <span aria-hidden="true">→</span></a>{% elif about_contacts %}<a class="btn btn--outline" href="{% pageurl about_contacts %}">Больше интересных новостей <span aria-hidden="true">→</span></a>{% endif %}</p>
 </section>
 <section class="container about-section about-map" aria-labelledby="map-title"><h2 id="map-title" class="section__title">Карта глэмпа</h2><p class="about-section__lead">Всё, что есть на территории. Посмотрите, как здесь всё устроено.</p><div class="about-map__placeholder" role="img" aria-label="Заглушка карты территории глэмпинга"></div></section>
