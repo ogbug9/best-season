@@ -99,6 +99,8 @@
 .about-pet__details a { color: inherit; }
 .about-section__action { margin: 40px 0 0; text-align: center; }
 .about-section__action .btn { min-height: 52px; padding: 13px 39px; font-size: 18px; line-height: 24px; }
+.about-pets .about-section__action .btn { width: 318px; }
+.about-diary .about-section__action .btn { width: 419px; }
 .page-about .about-section__action .btn { background-color: #F7F0E6; }
 .page-about :is(.about-section__action, .about-pet__details) .btn:hover { background-color: #E5D0C0; }
 .page-about :is(.about-section__action, .about-pet__details) .btn:is(:active, .is-pressed) { background-color: #9B5026; color: #F7F0E6; --button-surface: #9B5026; }
@@ -187,6 +189,7 @@
   .about-pet__details > .btn { min-height: 33.066px; padding: 7.533px 10px; font-size: 12px; line-height: 18px; }
   .about-section__action { margin-top: 24px; }
   .about-section__action .btn { width: 100%; min-height: 46px; padding: 12px 16px; font-size: 16px; line-height: 20px; }
+  .about-pets .about-section__action .btn, .about-diary .about-section__action .btn { width: 100%; }
   .about-entry .about-photo { height: auto; aspect-ratio: 350 / 210; border-radius: 18px; }
   .about-entry h3 { font-size: 21px; line-height: 28px; margin-top: 16px; }
   .about-map .about-section__lead { margin-bottom: 20px; }
