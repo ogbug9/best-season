@@ -44,7 +44,9 @@
         <li class="house-mosaic__item gallery__item">
           <a class="house-mosaic__link gallery__link" href="{% full_image_url image 'jpeg' %}"
              data-gallery-item data-full="{% full_image_url image %}" data-caption="{{ page.title }}">
-            {% picture image preset="mosaic" alt=page.title %}
+            {% comment %} Первая плитка — LCP страницы дома: без lazy браузер
+               находит её сразу при разборе HTML (п. 1.2 ТЗ, LCP ≤ 2,5 с). {% endcomment %}
+            {% if forloop.first %}{% picture image preset="mosaic" alt=page.title loading="eager" %}{% else %}{% picture image preset="mosaic" alt=page.title %}{% endif %}
             {% if forloop.last %}
               <span class="house-mosaic__more">{% house_icon "camera" %}{% cms_text "house_page-7ac84107c129" %}</span>
             {% endif %}
