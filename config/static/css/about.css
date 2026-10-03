@@ -35,7 +35,7 @@
 .about-history__row--reverse .about-photo { grid-column: 2; grid-row: 1; }
 .about-history__name { grid-column: 1; grid-row: 1; text-align: right; }
 .about-history__name > p:first-child { text-align: left; padding-left: 30px; }
-.about-history__name h2 { color: #847F57; font: 700 60px/70px var(--font-heading); margin: 8px 0 12px; }
+.about-history__name h2 { color: #847F57; font: 500 60px/80px var(--font-heading); margin: 8px 0 12px; text-align: left; padding-left: 60px; }
 .about-history .about-motto { margin: 120px 0 140px; text-align: center; font: italic 300 40px/43.565px var(--font-body); }
 .about-motto img { display: inline-block; vertical-align: middle; }
 .about-sections { background: none; }
@@ -63,6 +63,7 @@
 .about-photo--value-sharing img { width: 113.75%; height: 113.5%; left: -7%; top: -13.5%; }
 .about-photo--value-care img { width: 100%; height: 100%; }
 .about-value__copy { position: relative; z-index: 1; height: 100%; padding: 60px 28px 40px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+.about-value__copy > * { flex-shrink: 0; }
 .about-value h3 { margin: 0 0 12px; font: 500 40px/46px var(--font-heading); color: #F7F0E6; }
 .about-value p { margin: 0; font: 400 20px/24px var(--font-body); }
 .about-value .about-value__lead { margin-bottom: 28px; font-style: italic; font-weight: 300; color: #ECC3A6; }
@@ -70,7 +71,7 @@
 .about-value--1 h3 { margin-bottom: 42px; }
 .about-value--3 .about-value__copy { justify-content: flex-start; padding-top: 60px; }
 .about-value--4 .about-value__copy, .about-value--5 .about-value__copy { padding-top: 80px; }
-.about-journey { display: grid; text-align: left; }
+.about-journey { display: grid; text-align: left; padding-inline: 6px; }
 .about-journey > span { display: block; position: relative; }
 .about-journey > span::after { content: ''; position: absolute; width: 42px; height: 30px; border: 1px dashed #F0C949; border-top: 0; border-right: 0; border-radius: 0 0 0 100%; pointer-events: none; }
 .about-journey > span:first-child::after { left: 40px; top: 100%; }
@@ -144,7 +145,7 @@
   .about-history__row--reverse .about-photo { align-self: center; }
   .about-history__name { text-align: center; width: 100%; }
   .about-history__name > p:first-child { text-align: center; padding-left: 0; }
-  .about-history__name h2 { font-size: 32px; line-height: 40px; margin: 3px 0 6px; }
+  .about-history__name h2 { font-size: 32px; line-height: 40px; margin: 3px 0 6px; text-align: center; padding-left: 0; }
   .about-history__desktop { display: none; }
   .about-history__row--reverse { margin-bottom: 39px; }
   .about-history__name br { display: none; }
@@ -170,7 +171,8 @@
   .about-value--1 .about-value__copy { padding: 60px 40px 36px; }
   .about-value--3 .about-value__copy { padding-top: 45px; }
   .about-value--4 .about-value__copy, .about-value--5 .about-value__copy { padding-top: 50px; }
-  .about-journey > span:nth-child(2) { padding-left: 80px; }
+  .about-journey > span:nth-child(2) { padding-left: 80px; margin-top: 14px; }
+  .about-journey > span:last-child { margin-top: 14px; }
   .about-dots { gap: 0; margin-top: .5px; }
   .about-dots button { width: 9px; height: 24px; }
   .about-dots button::before { width: 5px; height: 5px; }
@@ -206,4 +208,13 @@
   .about-value h3 { font-size: 30px; line-height: 36px; }
   .about-history__row > p, .about-history__row:last-child > p { margin-left: 60px; }
   .about-section__action .btn { font-size: 14px; padding-inline: 10px; }
+}
+
+@media (max-width: 379px) {
+  .about-value h3 { font-size: 31px; line-height: 38px; }
+  .about-value p { font-size: 17px; }
+  .about-value .about-value__lead { margin-bottom: 20px; }
+  .about-value--1 .about-value__copy { padding: 36px 30px; }
+  .about-value--1 h3 { margin-bottom: 24px; }
+  .about-journey > span:nth-child(2) { padding-left: 65px; }
 }
