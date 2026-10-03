@@ -15,6 +15,15 @@
 
 {% block structured_data %}{% accommodation_schema %}{% endblock %}
 
+{% comment %}
+  На телефоне LCP страницы — фон заголовка из home-mobile.css: из CSS браузер
+  находит его на ~3 с позже (PageSpeed). Те же файлы и тот же media, что в CSS.
+{% endcomment %}
+{% block extra_css %}
+  <link rel="preload" as="image" href="{% static 'img/mobile-backgrounds/house-booking.svg' %}" media="(max-width: 699px)" fetchpriority="high">
+  <link rel="preload" as="image" href="{% static 'img/mobile-backgrounds/house-top.svg' %}" media="(max-width: 699px)">
+{% endblock %}
+
 {% block content %}
 
 {# ---------- 1. Заголовок ---------- #}
