@@ -13,12 +13,14 @@ import sys
 os.environ.setdefault("PYTHONUNBUFFERED", "1")
 
 
-def run(*args):
+def run(*args, required=True):
     print(f"[start] {' '.join(args)}", flush=True)
     result = subprocess.run([sys.executable, *args])
     if result.returncode != 0:
         print(f"[start] ОШИБКА, код {result.returncode}", flush=True)
-        sys.exit(result.returncode)
+        if required:
+            sys.exit(result.returncode)
+        print("[start] шаг необязательный, продолжаю запуск", flush=True)
 
 
 def ensure_superuser():
@@ -57,10 +59,15 @@ run("manage.py", "seed_content", "--initial-only")
 run("manage.py", "apply_desktop_reference", "--if-not-applied")
 run("manage.py", "import_archive_photos", "--if-not-applied")
 run("manage.py", "initialize_site_content")
-run("manage.py", "prepare_site_images")
 # Исходники архива используются командой импорта, но не отдаются как static.
 # Не дублируем 1.36 GiB фотографий в STATIC_ROOT на каждом старте контейнера.
+# collectstatic — строго до prepare_site_images: та рендерит шаблоны с
+# {% static %}, а без манифеста ManifestStaticFilesStorage падает
+# («Missing staticfiles manifest entry»).
 run("manage.py", "collectstatic", "--noinput", "--ignore=*originals*")
+# Прогрев фото — оптимизация, а не условие работы сайта: при сбое сайт
+# всё равно запускается, недостающие варианты создадутся при публикации.
+run("manage.py", "prepare_site_images", required=False)
 
 print("[start] запускаю gunicorn", flush=True)
 os.execvp(
