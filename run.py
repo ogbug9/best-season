@@ -65,9 +65,16 @@ run("manage.py", "initialize_site_content")
 # {% static %}, а без манифеста ManifestStaticFilesStorage падает
 # («Missing staticfiles manifest entry»).
 run("manage.py", "collectstatic", "--noinput", "--ignore=*originals*")
-# Прогрев фото — оптимизация, а не условие работы сайта: при сбое сайт
-# всё равно запускается, недостающие варианты создадутся при публикации.
-run("manage.py", "prepare_site_images", required=False)
+# Прогрев фото — оптимизация, а не условие работы сайта. Идёт фоном с низким
+# приоритетом: при новом наборе размеров нарезка сотен исходников на CPU
+# тарифа занимает десятки минут, и держать всё это время 503 нельзя.
+# Пока варианта нет, страница отдаёт исходник, как до подготовки.
+# Процесс переживает exec ниже; gunicorn сам подбирает завершившихся детей.
+print("[start] manage.py prepare_site_images (фоном)", flush=True)
+subprocess.Popen(
+    [sys.executable, "manage.py", "prepare_site_images"],
+    preexec_fn=lambda: os.nice(10),
+)
 
 print("[start] запускаю gunicorn", flush=True)
 os.execvp(

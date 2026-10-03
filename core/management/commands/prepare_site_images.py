@@ -37,12 +37,14 @@ def page_plan(pages):
     return plan
 
 
-def prepare(plan):
+def prepare(plan, log=None):
     grouped = defaultdict(set)
     for image_id, spec in plan:
         grouped[image_id].add(spec)
     failures = 0
-    for image in get_image_model().objects.filter(pk__in=grouped).iterator():
+    for index, image in enumerate(get_image_model().objects.filter(pk__in=grouped).iterator(), 1):
+        if log and index % 25 == 0:
+            log(f'Фото обработано: {index} из {len(grouped)}.')
         for spec in sorted(grouped[image.pk]):
             try:
                 rendition = image.get_rendition(spec)
@@ -68,7 +70,7 @@ class Command(BaseCommand):
         plan = page_plan(pages)
         self.stdout.write(f'Фото: {len({p[0] for p in plan})}; используемых вариантов: {len(plan)}.')
         if not options['plan_only']:
-            failures = prepare(plan)
+            failures = prepare(plan, log=self.stdout.write)
             if failures:
                 message = f'Не подготовлено вариантов: {failures}. Проверьте наличие файлов media.'
                 if options['strict']:
