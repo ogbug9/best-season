@@ -3,6 +3,9 @@
 .page-about { overflow-x: clip; background: #F7F0E6 url('../img/about/decoration-desktop.svg') center top / 1440px 8251px no-repeat; }
 .page-about .sticky-cta { display: none; }
 .page-about .container { width: min(1240px, calc(100% - 40px)); max-width: 1240px; }
+.page-about .container--header { width: min(1260px, calc(100% - 32px)); max-width: 1260px; }
+.page-about .header:not(.header--scrolled):not(:has(.nav-toggle[open])) .header__bar { background: #F7F0E6; }
+.page-about .header:not(.header--scrolled):not(:has(.nav-toggle[open])) :is(.nav__link, .header__phone, .header__logo, .header__name, .header__paw, .nav-toggle__button) { color: #494949; }
 .about-hero { height: 860px; padding-top: 332px; background: #232323; }
 .about-hero .container { padding-left: 60px; }
 .about-hero h1 { margin: 0 0 20px; color: #847F57; font: 500 90px/95px var(--font-heading); }
@@ -127,6 +130,7 @@
 }
 @media (max-width: 699px) {
   .page-about { background-image: url('../img/about/decoration-mobile.svg'); background-size: 390px 6564px; }
+  .page-about .container--header { width: 100%; max-width: none; }
   .about-hero { height: 570px; padding-top: 150px; }
   .about-hero .container { padding-left: 0; }
   .about-hero h1 { font-size: 36px; line-height: 38px; margin-bottom: 12px; }
@@ -146,7 +150,6 @@
   .about-history__name { text-align: center; width: 100%; }
   .about-history__name > p:first-child { text-align: center; padding-left: 0; }
   .about-history__name h2 { font-size: 32px; line-height: 40px; margin: 3px 0 6px; text-align: center; padding-left: 0; }
-  .about-history__desktop { display: none; }
   .about-history__row--reverse { margin-bottom: 39px; }
   .about-history__name br { display: none; }
   .about-history__row:last-child > p { margin-left: 100px; max-width: 230px; }
