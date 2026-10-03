@@ -25,13 +25,12 @@ WAGTAILADMIN_BASE_URL = config(
 # при деплое разворачивается заново, а /data переживает пересборку.
 MEDIA_ROOT = config("MEDIA_ROOT", default="/data/media")
 
-# ManifestStaticFilesStorage is recommended in production, to prevent
-# outdated JavaScript / CSS assets being served from cache
-# (e.g. after a Wagtail upgrade).
-# See https://docs.djangoproject.com/en/5.2/ref/contrib/staticfiles/#manifeststaticfilesstorage
+# Манифест с хешами в именах, как и раньше, плюс заранее сжатые .gz:
+# Amvera не сжимает ответы сама, а main.css без сжатия весит 230 КБ
+# и блокирует первую отрисовку на мобильном (п. 10.3 ТЗ).
 STORAGES["staticfiles"][
     "BACKEND"
-] = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+] = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 try:
     from .local import *

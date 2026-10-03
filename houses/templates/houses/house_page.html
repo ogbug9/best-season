@@ -42,8 +42,8 @@
     <ul class="house-mosaic gallery" data-gallery>
       {% for image in mosaic %}
         <li class="house-mosaic__item gallery__item">
-          <a class="house-mosaic__link gallery__link" href="{{ image.file.url }}"
-             data-gallery-item data-full="{{ image.file.url }}" data-caption="{{ page.title }}">
+          <a class="house-mosaic__link gallery__link" href="{% full_image_url image 'jpeg' %}"
+             data-gallery-item data-full="{% full_image_url image %}" data-caption="{{ page.title }}">
             {% picture image preset="mosaic" alt=page.title %}
             {% if forloop.last %}
               <span class="house-mosaic__more">{% house_icon "camera" %}{% cms_text "house_page-7ac84107c129" %}</span>
@@ -58,8 +58,8 @@
     <ul class="house-mosaic__rest" hidden>
       {% for item in page.remaining_gallery_images %}
         <li class="gallery__item gallery__item--rest">
-          <a class="gallery__link" href="{{ item.image.file.url }}" data-gallery-item
-             data-full="{{ item.image.file.url }}" data-caption="{{ item.caption|default:page.title }}">
+          <a class="gallery__link" href="{% full_image_url item.image 'jpeg' %}" data-gallery-item
+             data-full="{% full_image_url item.image %}" data-caption="{{ item.caption|default:page.title }}">
             {{ item.caption|default:page.title }}
           </a>
         </li>

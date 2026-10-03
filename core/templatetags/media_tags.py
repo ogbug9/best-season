@@ -203,3 +203,25 @@ def mobile_srcset(image, preset='hero_mobile', extension='webp'):
     if not image:
         return ''
     return ', '.join(_mobile_srcsets(image, preset)[extension])
+
+
+# Просмотрщик фото: исходники с камеры весят 6–9 МБ, на экран хватает 2048 px.
+# WebP — для лайтбокса, JPEG — для ссылки без скрипта.
+FULL_SPECS = tuple(
+    (2048, extension, f'max-2048x2048|format-{extension}|{extension}quality-82')
+    for extension in ('webp', 'jpeg')
+)
+
+
+@register.simple_tag
+def full_image_url(image, extension='webp'):
+    """Подготовленный крупный вариант; без него — исходник, как раньше."""
+    if not image:
+        return ''
+    spec = next(s for _, ext, s in FULL_SPECS if ext == extension)
+    generate = getattr(settings, 'GENERATE_IMAGE_RENDITIONS_ON_REQUEST', False) and rendition_plan.get() is None
+    try:
+        rendition = image.get_rendition(spec) if generate else prepared_renditions(image, FULL_SPECS).get(spec)
+    except Exception:
+        rendition = None
+    return rendition.url if rendition else image.file.url

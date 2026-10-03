@@ -136,6 +136,30 @@ class ContentSafetyTests(TestCase):
             self.assertIn('360w', html)
             self.assertIn('width="360" height="240"', html)
 
+    def test_lightbox_uses_prepared_large_variant_not_camera_original(self):
+        from PIL import Image
+        from core.management.commands.prepare_site_images import prepare
+        from core.templatetags.media_tags import FULL_SPECS, full_image_url, rendition_plan
+        with tempfile.TemporaryDirectory() as media, override_settings(MEDIA_ROOT=media, GENERATE_IMAGE_RENDITIONS_ON_REQUEST=False):
+            content = io.BytesIO(); Image.new('RGB', (3000, 2000), 'olive').save(content, format='JPEG'); content.seek(0)
+            image = get_image_model().objects.create(title='Test', file=ImageFile(content, name='camera.jpg'))
+            # До подготовки — прежний исходник, без обработки в запросе.
+            with patch.object(image, 'get_rendition', side_effect=AssertionError('HTTP processing')):
+                self.assertEqual(full_image_url(image), image.file.url)
+            plan = set()
+            token = rendition_plan.set(plan)
+            try:
+                full_image_url(image); full_image_url(image, 'jpeg')
+            finally:
+                rendition_plan.reset(token)
+            self.assertEqual(plan, {(image.pk, spec) for _, _, spec in FULL_SPECS})
+            self.assertEqual(prepare(plan), 0)
+            with patch.object(image, 'get_rendition', side_effect=AssertionError('HTTP processing')):
+                webp, jpeg = full_image_url(image), full_image_url(image, 'jpeg')
+            self.assertTrue(webp.endswith('.webp') and jpeg.endswith('.jpg'))
+            rendition = image.renditions.get(filter_spec=FULL_SPECS[0][2])
+            self.assertEqual((rendition.width, rendition.height), (2048, 1365))
+
 
 class BackupTests(SimpleTestCase):
     def test_outbound_utm_preserves_routes_and_skips_payments_and_sdk(self):

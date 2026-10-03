@@ -29,5 +29,7 @@ if not settings.DEBUG:
     media_root = str(settings.MEDIA_ROOT)
     os.makedirs(media_root, exist_ok=True)
 
-    application = WhiteNoise(application, autorefresh=True)
+    # В именах вариантов Wagtail есть хеш файла и кадрирования, замена фото
+    # даёт новое имя — неделя кеша не покажет посетителю старый снимок.
+    application = WhiteNoise(application, autorefresh=True, max_age=7 * 24 * 3600)
     application.add_files(media_root, prefix=settings.MEDIA_URL)

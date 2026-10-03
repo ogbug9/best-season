@@ -69,6 +69,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    # HTML страниц — 100+ КБ, прокси Amvera его не сжимает. Статику
+    # whitenoise отдаёт уже сжатой, сюда она не доходит.
+    "django.middleware.gzip.GZipMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "core.middleware.CampaignMiddleware",
     "django.middleware.common.CommonMiddleware",
