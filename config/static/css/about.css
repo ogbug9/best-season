@@ -6,10 +6,10 @@
 .page-about .container--header { width: min(1260px, calc(100% - 32px)); max-width: 1260px; }
 .page-about .header:not(.header--scrolled):not(:has(.nav-toggle[open])) .header__bar { background: #F7F0E6; }
 .page-about .header:not(.header--scrolled):not(:has(.nav-toggle[open])) :is(.nav__link, .header__phone, .header__logo, .header__name, .header__paw, .nav-toggle__button) { color: #494949; }
-.about-hero { height: 860px; padding-top: 332px; background: #232323; }
+.site.page-about main > .about-hero:first-child { height: 860px; padding-top: 332px; background: #232323; }
 .about-hero .container { padding-left: 60px; }
-.about-hero h1 { margin: 0 0 20px; color: #847F57; font: 500 90px/95px var(--font-heading); }
-.about-hero p { margin: 0; max-width: 560px; color: #F7F0E6; font: 400 20px/24px var(--font-body); }
+.about-hero h1 { margin: 0 0 8px; color: #847F57; font: 500 90px/95px var(--font-heading); }
+.about-hero p { margin: 0 0 0 5px; max-width: 560px; color: #F7F0E6; font: 400 20px/24px var(--font-body); }
 .about-photo, .about-value__photo { position: relative; display: block; overflow: hidden; aspect-ratio: auto; background: #C9A086; }
 .about-photo img { position: absolute; display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; }
 .about-photo--aerial img { width: 113.2165%; height: 100%; left: -6.6082%; top: 0; }
@@ -39,7 +39,9 @@
 .about-history__name { grid-column: 1; grid-row: 1; text-align: right; }
 .about-history__name > p:first-child { text-align: left; padding-left: 30px; }
 .about-history__name h2 { color: #847F57; font: 500 60px/80px var(--font-heading); margin: 8px 0 12px; text-align: left; padding-left: 60px; }
-.about-history .about-motto { margin: 120px 0 140px; text-align: center; font: italic 300 40px/43.565px var(--font-body); }
+.about-history .about-motto { width: 810px; max-width: 100%; margin: 120px auto 140px; text-align: left; font: italic 300 40px/43.565px var(--font-body); }
+.about-motto__line { display: block; }
+.about-motto__line + .about-motto__line { padding-left: 14px; }
 .about-motto img { display: inline-block; vertical-align: middle; }
 .about-sections { background: none; }
 .about-section { margin-top: 140px; }
@@ -105,7 +107,7 @@
 .page-about :is(.about-section__action, .about-pet__details) .btn:hover { background-color: #E5D0C0; }
 .page-about :is(.about-section__action, .about-pet__details) .btn:is(:active, .is-pressed) { background-color: rgb(73 73 73 / 20%); color: #494949; --button-surface: rgb(73 73 73 / 20%); }
 .about-entry .about-photo { height: 240px; border-radius: 20px; }
-.about-entry h3 { margin: 20px 0 0; font: 600 24px/29px var(--font-body); color: #847F57; text-align: center; }
+.about-entry h3 { margin: 20px 0 0; font: 600 24px/29px var(--font-body); color: #847F57; text-align: left; }
 .about-map .about-section__lead { margin-bottom: 40px; }
 .about-map__placeholder { height: 600px; border-radius: 20px; background: #C9A086; overflow: hidden; }
 .about-map__frame { display: block; width: 100%; height: 100%; border: 0; }
@@ -135,10 +137,10 @@
 @media (max-width: 699px) {
   .page-about { background-image: url('../img/about/decoration-mobile.svg'); background-size: 390px 6564px; }
   .page-about .container--header { width: 100%; max-width: none; }
-  .about-hero { height: 570px; padding-top: 150px; }
+  .site.page-about main > .about-hero:first-child { height: 570px; padding-top: 150px; }
   .about-hero .container { padding-left: 0; }
   .about-hero h1 { font-size: 36px; line-height: 38px; margin-bottom: 12px; }
-  .about-hero p { font-size: 14px; line-height: 17px; max-width: 350px; }
+  .about-hero p { margin-left: 0; font-size: 14px; line-height: 17px; max-width: 350px; }
   .about-hero p br { display: none; }
   .about-history__intro { margin: 0; min-height: 491.569px; padding: 20px 18px; display: flex; flex-direction: column; gap: 20px; border-radius: 16px; }
   .about-history__intro .about-photo { height: auto; aspect-ratio: 314 / 195.569; }
@@ -157,7 +159,9 @@
   .about-history__row--reverse { margin-bottom: 39px; }
   .about-history__name br { display: none; }
   .about-history__row:last-child > p { margin-left: 100px; max-width: 230px; }
-  .about-history .about-motto { margin: 60px -10px 60px; font-size: 18px; line-height: 22px; }
+  .about-history .about-motto { width: 350px; margin: 60px auto; font-size: 18px; line-height: 22px; }
+  .about-motto__line { padding-left: 8px; }
+  .about-motto__line + .about-motto__line { padding-left: 12px; }
   .about-motto img { width: 24px; height: 24px; }
   .about-sections { background: none; }
   .about-section { margin-top: 60px; }
