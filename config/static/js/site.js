@@ -326,11 +326,22 @@
     });
   });
 
-  dialog.querySelector("[data-lightbox-prev]").addEventListener("click", function () {
-    show(current - 1);
+  function animateStep(button) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    button.classList.remove('is-stepping');
+    void button.offsetWidth;
+    button.classList.add('is-stepping');
+  }
+  dialog.querySelectorAll('.lightbox__nav').forEach(function (button) {
+    button.addEventListener('animationend', function (event) { if (event.target === button) button.classList.remove('is-stepping'); });
   });
-  dialog.querySelector("[data-lightbox-next]").addEventListener("click", function () {
+  dialog.querySelector("[data-lightbox-prev]").addEventListener("click", function (event) {
+    show(current - 1);
+    animateStep(event.currentTarget);
+  });
+  dialog.querySelector("[data-lightbox-next]").addEventListener("click", function (event) {
     show(current + 1);
+    animateStep(event.currentTarget);
   });
   dialog.querySelector("[data-lightbox-close]").addEventListener("click", function () {
     dialog.close();
