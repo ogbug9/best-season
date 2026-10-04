@@ -7,9 +7,15 @@
     <p class="mobile-catalog-services__intro">{% cms_text "_mobile_services-289c607aaaeb" %}<br>{% cms_text "_mobile_services-2f4d1710f014" %}<br>{% cms_text "_mobile_services-eee3d339d07a" %}</p>
     <ul class="mobile-service-tiles">
       {% for item in mobile_services %}
-      <li class="service-tile">
+      <li class="service-tile territory-card" tabindex="0">
         {% if item.image %}{% picture item.image preset="card" alt=item.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
-        <h3 class="service-tile__title">{{ item.title|territory_lines|linebreaksbr }}</h3>
+        <div class="mosaic__caption">
+          <h3 class="service-tile__title">{{ item.title|territory_lines|linebreaksbr }}</h3>
+          <div class="territory-card__details">
+            {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+            {% if item.details_url %}<a class="btn btn--primary territory-card__link" href="{{ item.details_url }}">{% cms_text "_service_card-59589fe2a549" %}</a>{% endif %}
+          </div>
+        </div>
       </li>
       {% endfor %}
     </ul>

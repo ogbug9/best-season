@@ -1,4 +1,5 @@
 /* Мобильные макеты 390px. Файл подключён только до 699px. */
+.site.page-houses .mobile-service-tiles .territory-card__link { width: auto; min-height: 24px; height: 24px; margin-top: 8px; padding: 5px 16px; font-size: 10px; line-height: 14px; }
 :is(.page-home, .page-houses, .page-house, .page-promotions) .searchbar__icon {
   flex: 0 0 18px; width: 18px; height: 20px; overflow: visible;
   mask-position: center; mask-repeat: no-repeat;

@@ -86,7 +86,7 @@ class HouseIndexPage(Page):
         return text
 
     def get_context(self, request):
-        from services.models import Service
+        from services.models import Service, ServicesPage
 
         context = super().get_context(request)
         context["houses"] = (
@@ -102,12 +102,20 @@ class HouseIndexPage(Page):
         services = Service.objects.filter(is_published=True)
         context["services"] = services
         context["hourly_services"] = services.filter(is_hourly=True)
-        context["tile_services"] = services.filter(
+        context["tile_services"] = list(services.filter(
             is_hourly=False,
             slug__in=("arenda-sapov", "master-klassy", "fotosessii", "arenda-velosipedov"),
-        )
+        ))
         # Тот же аккордеон, что на главной — набор вопросов общий
         from core.models import FaqItem, TerritoryItem, TerritoryPage
+
+        territory_copy = {' '.join(item.title.casefold().split()): item for item in TerritoryItem.objects.filter(is_published=True)}
+        services_page = ServicesPage.objects.live().first()
+        services_url = services_page.get_url(request) if services_page else ''
+        for service in context['tile_services']:
+            item = territory_copy.get(' '.join(service.name.casefold().split()))
+            service.tile_description = service.short_description or (item.description if item else '')
+            service.tile_details_url = (services_url + '#service-' + service.slug) if services_url else ''
 
         mobile_titles = ('Русская баня', 'Фотосессии', 'Река "Скнижка"', 'Большая беседка')
         mobile_tiles = {item.title: item for item in TerritoryItem.objects.filter(
@@ -115,6 +123,9 @@ class HouseIndexPage(Page):
         ).select_related('image')}
         context['mobile_services'] = [mobile_tiles[title] for title in mobile_titles if title in mobile_tiles]
         context['mobile_services_page'] = TerritoryPage.objects.live().first()
+        territory_url = context['mobile_services_page'].get_url(request) if context['mobile_services_page'] else ''
+        for item in context['mobile_services']:
+            item.details_url = item.link_url or territory_url
 
         from core.faq_sets import CATALOG_FAQ, page_faq
 

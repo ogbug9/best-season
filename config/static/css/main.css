@@ -5551,3 +5551,5 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .faq__question:focus-visible { outline: 2px solid #9B5026; outline-offset: 4px; }
 .faq__answer { overflow: hidden; }
 .faq__answer[hidden] { display: none; }
+.service-tile.territory-card .territory-card__details p { white-space: normal; width: 100%; min-width: 0; max-height: 92px; overflow-y: auto; }
+.service-tile.territory-card .mosaic__caption :is(h2, h3) { white-space: normal; }

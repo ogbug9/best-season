@@ -97,9 +97,15 @@
     {% if tile_services %}
       <ul class="cards cards--service-tiles">
         {% for service in tile_services %}
-          <li class="service-tile" id="service-{{ service.slug }}">
+          <li class="service-tile territory-card" id="service-{{ service.slug }}" tabindex="0">
             {% if service.display_image %}{% picture service.display_image preset="mosaic" alt=service.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
-            <h3 class="service-tile__title">{{ service.name }}</h3>
+            <div class="mosaic__caption">
+              <h3 class="service-tile__title">{{ service.name|linebreaksbr }}</h3>
+              <div class="territory-card__details">
+                {% if service.tile_description %}<p>{{ service.tile_description }}</p>{% endif %}
+                {% if service.tile_details_url %}<a class="btn btn--primary territory-card__link" href="{{ service.tile_details_url }}">{% cms_text "_service_card-59589fe2a549" %}</a>{% endif %}
+              </div>
+            </div>
           </li>
         {% endfor %}
       </ul>
