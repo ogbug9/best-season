@@ -2763,7 +2763,7 @@ body[data-modal-open] {
   margin-block: var(--s-8);
 }
 @media (min-width: 900px) {
-  .page-home .about { margin-top: 119px; }
+  .page-home .about { margin-top: 87px; }
   .page-home .home-faq-background-anchor > .section {
     padding-top: 70px;
     padding-bottom: 50px;
@@ -5231,7 +5231,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-house .reviews__text { margin-right: -3px; }
   .page-house .equipment__title { font-size: 22px; line-height: 27px; }
   .page-house .equipment__list li { font-size: 22px; line-height: 27px; }
-  .page-home .about__text .section__title { transform: translateY(-5px); }
+  .page-home .about__text .section__title { transform: none; }
   .page-home .slogan__frame { transform: translateY(-27px); }
   .page-home .mosaic__head { transform: translateY(-11px); }
   .page-home .home-nearby > .container > .section__title { transform: translateY(-5px); }
