@@ -5553,13 +5553,12 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .faq__answer[hidden] { display: none; }
 .service-tile.territory-card .territory-card__details p { white-space: normal; width: 100%; min-width: 0; max-height: 92px; overflow-y: auto; }
 .service-tile.territory-card .mosaic__caption :is(h2, h3) { white-space: normal; }
-/* Photo navigation: match the close control's surface and size. */
-.site .lightbox__nav { display: grid; place-items: center; width: 50px; height: 50px; padding: 0; border: 0; border-radius: 50%; background: #E0D9C9; color: #847F57; --optical-x: -1px; --step-x: -4px; }
+/* Preserve the existing photo controls; optically centre their arrows. */
+.site .lightbox__nav { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; --optical-x: -1px; --step-x: -4px; }
 .site .lightbox__nav--next { --optical-x: 1px; --step-x: 4px; }
-.lightbox__nav svg { transform: translateX(var(--optical-x)); }
+.lightbox__nav span { transform: translateX(var(--optical-x)); }
 .lightbox__nav.is-stepping { animation: photo-nav-press 180ms ease-out; }
-.lightbox__nav.is-stepping svg { animation: photo-nav-arrow 180ms ease-out; }
+.lightbox__nav.is-stepping span { animation: photo-nav-arrow 180ms ease-out; }
 @keyframes photo-nav-press { 0%, 100% { transform: translateY(-50%) scale(1); } 40% { transform: translateY(-50%) scale(.92); } }
 @keyframes photo-nav-arrow { 0%, 100% { transform: translateX(var(--optical-x)); } 40% { transform: translateX(calc(var(--optical-x) + var(--step-x))); } }
-@media (max-width: 699px) { .site .lightbox__nav { width: 44px; height: 44px; } }
-@media (prefers-reduced-motion: reduce) { .lightbox__nav.is-stepping, .lightbox__nav.is-stepping svg { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .lightbox__nav.is-stepping, .lightbox__nav.is-stepping span { animation: none; } }
