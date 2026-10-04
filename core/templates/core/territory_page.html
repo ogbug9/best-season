@@ -32,7 +32,7 @@
             <div class="territory-card__details">
               {% if item.description %}<p><span class="home-desktop-copy">{{ item.description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ item.description }}</span></p>{% endif %}
               {% if item.details_url %}
-                <a class="territory-card__link" href="{{ item.details_url }}">{% cms_text "territory_page-59589fe2a549" %}</a>
+                <a class="btn btn--primary territory-card__link" href="{{ item.details_url }}">{% cms_text "territory_page-59589fe2a549" %}</a>
               {% endif %}
             </div>
           </div>

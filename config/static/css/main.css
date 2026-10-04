@@ -190,7 +190,11 @@ body {
   color: var(--accent);
   text-underline-offset: 0.15em;
 }
-.site :where(a:hover):not(:where(.kontur-host *, .react-ui, .react-ui *)) { color: var(--accent-hover); }
+
+@media (hover: hover) and (pointer: fine) {
+.site :where(a:hover):not(:where(.kontur-host *, .react-ui, .react-ui *)){ color: var(--accent-hover); }
+}
+
 
 .site :where(p + p):not(:where(.kontur-host *, .react-ui, .react-ui *)) { margin-top: var(--s-4); }
 /* Заголовок и следующий за ним абзац стояли вплотную: сброс margin
@@ -310,15 +314,23 @@ body {
 }
 /* В макете активный и наведённый пункт подчёркнут, а не перекрашен.
    Подчёркивание рисуем отступя от текста, иначе оно липнет к буквам. */
-.nav__link:hover,
 .nav__link[aria-current="page"],
-.nav__item--has-children:hover > .nav__link,
-.nav__item--has-children:focus-within > .nav__link {
+.nav__item--has-children:focus-within > .nav__link{
   color: var(--c-dark);
   text-decoration: underline;
   text-underline-offset: 5px;
   text-decoration-thickness: 1px;
 }
+@media (hover: hover) and (pointer: fine) {
+.nav__link:hover,
+.nav__item--has-children:hover > .nav__link{
+  color: var(--c-dark);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+}
+}
+
 
 /* Вес и кегль телефона заданы ниже, по инспектору: 400, 16px */
 .header__phone { text-decoration: none; white-space: nowrap; }
@@ -368,7 +380,11 @@ body {
   color: var(--text);
 }
 .footer :where(a) { color: var(--text); text-decoration: none; }
-.footer :where(a:hover) { color: var(--c-terra); text-decoration: underline; }
+
+@media (hover: hover) and (pointer: fine) {
+.footer :where(a:hover){ color: var(--c-terra); text-decoration: underline; }
+}
+
 .footer__grid {
   display: grid;
   gap: var(--s-6);
@@ -590,7 +606,11 @@ body {
 .card__link { text-decoration: none; color: inherit; display: block; }
 .card__link picture { border-radius: var(--radius-lg); overflow: hidden; }
 .card__title { margin-top: var(--s-3); }
-.card__link:hover .card__title { color: var(--c-terra); }
+
+@media (hover: hover) and (pointer: fine) {
+.card__link:hover .card__title{ color: var(--c-terra); }
+}
+
 .card__meta { font-size: 0.9375rem; opacity: 0.85; }
 
 .card--quote blockquote { margin: 0; }
@@ -795,7 +815,11 @@ body {
   object-fit: cover;
   transition: transform 0.25s ease;
 }
-.gallery__link:hover img { transform: scale(1.04); }
+
+@media (hover: hover) and (pointer: fine) {
+.gallery__link:hover img{ transform: scale(1.04); }
+}
+
 
 /* Свёрнутое состояние ставит скрипт: без JS показываются все кадры сразу,
    иначе часть галереи была бы недоступна. */
@@ -1112,8 +1136,12 @@ body {
   line-height: 1;
   cursor: pointer;
 }
+
+@media (hover: hover) and (pointer: fine) {
 .lightbox__close:hover,
-.lightbox__nav:hover { background: var(--c-terra); border-color: var(--c-terra); }
+.lightbox__nav:hover{ background: var(--c-terra); border-color: var(--c-terra); }
+}
+
 
 .lightbox__close { top: var(--s-3); right: var(--s-3); font-size: 1.5rem; }
 .lightbox__nav { top: 50%; transform: translateY(-50%); }
@@ -1228,7 +1256,11 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .gallery__link img { transition: none; }
-  .gallery__link:hover img { transform: none; }
+
+@media (hover: hover) and (pointer: fine) {
+.gallery__link:hover img{ transform: none; }
+}
+
 }
 
 /* =========================================================================
@@ -1743,11 +1775,18 @@ body:not(.page-home) main > :first-child {
   mask: url("../img/paw-big.png") no-repeat center / 30px 28px;
   color: var(--c-deep);
 }
-.header__paw-wrap:hover .header__paw,
-.header__paw-wrap:focus-visible .header__paw {
+
+.header__paw-wrap:focus-visible .header__paw{
   -webkit-mask: url("../img/paw-small.png") no-repeat center / 30px 23px;
   mask: url("../img/paw-small.png") no-repeat center / 30px 23px;
 }
+@media (hover: hover) and (pointer: fine) {
+.header__paw-wrap:hover .header__paw{
+  -webkit-mask: url("../img/paw-small.png") no-repeat center / 30px 23px;
+  mask: url("../img/paw-small.png") no-repeat center / 30px 23px;
+}
+}
+
 /* Кнопка в шапке: инспектор даёт группу 428×40 при лапе 30 и телефоне 136
    с зазорами 24, значит на кнопку остаётся 214×40. Подпись 174×20,
    Montserrat 400 16/20, кремовая — отсюда поля 20 по горизонтали и 10 по
@@ -1822,12 +1861,19 @@ body:not(.page-home) main > :first-child {
   transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
 }
 /* :focus-within обязателен — без него меню недоступно с клавиатуры (п. 10.13 ТЗ) */
-.nav__item--has-children:hover > .nav__dropdown,
-.nav__item--has-children:focus-within > .nav__dropdown {
+.nav__item--has-children:focus-within > .nav__dropdown{
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
+@media (hover: hover) and (pointer: fine) {
+.nav__item--has-children:hover > .nav__dropdown{
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+}
+
 
 .nav__sublink {
   /* В макете пункты выпадающего списка — заливка-пилюля во всю ширину
@@ -1842,7 +1888,11 @@ body:not(.page-home) main > :first-child {
   text-decoration: none;
   font-size: 0.9375rem;
 }
-.nav__sublink:hover { background: var(--c-hover-warm); color: var(--c-dark); }
+
+@media (hover: hover) and (pointer: fine) {
+.nav__sublink:hover{ background: var(--c-hover-warm); color: var(--c-dark); }
+}
+
 @media (min-width: 1100px) {
   .nav--desktop .nav__item:nth-child(3) > .nav__dropdown { min-width: 143px; width: 143px; }
   .nav--desktop .nav__item:nth-child(5) > .nav__dropdown { min-width: 121px; width: 121px; }
@@ -1937,11 +1987,15 @@ body:not(.page-home) main > :first-child {
   background: linear-gradient(180deg, rgba(58,60,21,0.15) 0%, rgba(58,60,21,0.82) 70%);
   transition: background 0.2s ease;
 }
+
+@media (hover: hover) and (pointer: fine) {
 .card--house:hover::before,
 .card--nearby:hover::before,
-.card--tile:hover::before {
+.card--tile:hover::before{
   background: linear-gradient(180deg, rgba(58,60,21,0.55) 0%, rgba(58,60,21,0.92) 70%);
 }
+}
+
 
 .card--house .card__title,
 .card--nearby .card__title,
@@ -1978,13 +2032,20 @@ body:not(.page-home) main > :first-child {
     overflow: hidden;
     transition: opacity 0.2s ease, max-height 0.2s ease;
   }
-  .card--house:hover .card__reveal,
-  .card--house:focus-within .card__reveal,
-  .card--tile:hover .card__reveal,
-  .card--tile:focus-within .card__reveal {
+
+.card--house:focus-within .card__reveal,
+.card--tile:focus-within .card__reveal{
     opacity: 1;
     max-height: 16rem;
   }
+@media (hover: hover) and (pointer: fine) {
+.card--house:hover .card__reveal,
+.card--tile:hover .card__reveal{
+    opacity: 1;
+    max-height: 16rem;
+  }
+}
+
 }
 
 /* ---------- Плитка-ссылка в мозаике ---------- */
@@ -2014,7 +2075,11 @@ body:not(.page-home) main > :first-child {
   line-height: 29px;
   color: var(--c-cream);
 }
-.mosaic__more:hover { background: var(--c-deep); color: var(--c-cream); }
+
+@media (hover: hover) and (pointer: fine) {
+.mosaic__more:hover{ background: var(--c-deep); color: var(--c-cream); }
+}
+
 .mosaic__more::after {
   content: "";
   box-sizing: border-box;
@@ -2103,7 +2168,11 @@ body:not(.page-home) main > :first-child {
   text-decoration: none;
   font-size: 0.9375rem;
 }
-.hero__link:hover { background: var(--c-cream); color: var(--c-deep); }
+
+@media (hover: hover) and (pointer: fine) {
+.hero__link:hover{ background: var(--c-cream); color: var(--c-deep); }
+}
+
 
 /* ---------- Подвал по макету ---------- */
 .footer { padding-top: 100px; }
@@ -2142,7 +2211,11 @@ body:not(.page-home) main > :first-child {
 .socials li { position: relative; display: flex; align-items: flex-start; }
 .socials__item { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 100px; background: transparent; color: var(--c-cream); }
 .socials__item img { display: block; width: 40px; height: 40px; }
-.socials__item:hover { background: var(--c-olive); }
+
+@media (hover: hover) and (pointer: fine) {
+.socials__item:hover{ background: var(--c-olive); }
+}
+
 .socials__note { position: absolute; top: -5px; right: -3px; width: 7px; height: 18px; font-family: var(--font-body); font-weight: 400; font-size: 16px; line-height: 115%; }
 .footer__brand .btn { width: 214px; min-height: 40px; height: 40px; padding: 0; font-size: 16px; font-weight: 400; }
 .footer__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 24px; align-content: start; }
@@ -2151,7 +2224,11 @@ body:not(.page-home) main > :first-child {
 .footer__column li, .footer__legal-links li { line-height: 22px; }
 .footer__column a, .footer__documents a, .footer__booking-link { font-family: var(--font-body); font-weight: 400; font-size: 18px; line-height: 22px; color: var(--c-dark); }
 .footer__booking-link { display: inline; border: 0; padding: 0; background: none; cursor: pointer; text-align: left; }
-.footer__booking-link:hover { color: var(--c-terra); text-decoration: underline; }
+
+@media (hover: hover) and (pointer: fine) {
+.footer__booking-link:hover{ color: var(--c-terra); text-decoration: underline; }
+}
+
 .footer__documents { grid-column: 1 / -1; }
 .footer__legal-links { grid-auto-flow: column; grid-template-rows: repeat(2, 22px); grid-template-columns: 100px auto; column-gap: 30px; justify-content: start; }
 @media (min-width: 1200px) {
@@ -2434,7 +2511,10 @@ body:not(.page-home) main > :first-child {
   cursor: pointer;
 }
 
-.booking-modal__close:hover { background: var(--c-olive-soft); }
+@media (hover: hover) and (pointer: fine) {
+.booking-modal__close:hover{ background: var(--c-olive-soft); }
+}
+
 
 #BookingFormWidget { margin-top: var(--s-5); }
 
@@ -4029,13 +4109,21 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 .house__media img {
   transition: transform 0.35s ease;
 }
-.house:hover .house__media img {
+
+@media (hover: hover) and (pointer: fine) {
+.house:hover .house__media img{
   transform: scale(1.03);
 }
+}
+
 .house__book { transition: background-color 0.2s ease; }
 .house__more { transition: background-color 0.2s ease, color 0.2s ease; }
 @media (prefers-reduced-motion: reduce) {
-  .house:hover .house__media img { transform: none; }
+
+@media (hover: hover) and (pointer: fine) {
+.house:hover .house__media img{ transform: none; }
+}
+
 }
 
 /* ---------- Подписи кнопок ----------
@@ -4219,8 +4307,11 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 /* Именно :focus-visible, а не :focus-within: при клике мышью браузер
    оставляет фокус на обёртке, и облачко висело на экране после нажатия.
    С клавиатуры :focus-visible срабатывает — подсказка остаётся доступной. */
-.header__paw-wrap:hover .header__paw-note,
-.header__paw-wrap:focus-visible .header__paw-note { opacity: 1; }
+.header__paw-wrap:focus-visible .header__paw-note{ opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+.header__paw-wrap:hover .header__paw-note{ opacity: 1; }
+}
+
 
 /* «Подробнее»: панель инспектора даёт межстрочный 20, в выгрузке JSON
    он записан как 19.5 — то же значение до округления. */
@@ -4412,7 +4503,11 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   transform: translateX(-3px) rotate(45deg);
 }
 .page-house .calendar__arrow--prev::before { transform: translateX(3px) rotate(-135deg); }
-.page-house .calendar__arrow:hover:not([disabled]) { background: var(--c-hover); border-color: transparent; }
+
+@media (hover: hover) and (pointer: fine) {
+.page-house .calendar__arrow:hover:not([disabled]){ background: var(--c-hover); border-color: transparent; }
+}
+
 .page-house .calendar__arrow[disabled] { cursor: default; }
 .page-house .calendar__arrow[disabled]::before { border-color: #CBD2E0; }
 
@@ -4446,7 +4541,11 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   cursor: pointer;
 }
 .page-house .calendar__day--off { color: #CBD2E0; cursor: default; }
-.page-house .calendar__day:hover:not(.calendar__day--off) { background: var(--c-hover); }
+
+@media (hover: hover) and (pointer: fine) {
+.page-house .calendar__day:hover:not(.calendar__day--off){ background: var(--c-hover); }
+}
+
 
 /* Полоса диапазона идёт по всей ячейке, поэтому фон живёт на td,
    а круг у краёв — на самой кнопке. */
@@ -4466,8 +4565,11 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   border-end-end-radius: var(--radius);
 }
 
-.page-house .calendar__cell--selected .calendar__day,
-.page-house .calendar__cell--selected .calendar__day:hover { background: #FFCDA6; }
+.page-house .calendar__cell--selected .calendar__day{ background: #FFCDA6; }
+@media (hover: hover) and (pointer: fine) {
+.page-house .calendar__cell--selected .calendar__day:hover{ background: #FFCDA6; }
+}
+
 
 .page-house .calendar__day:focus-visible,
 .page-house .calendar__arrow:focus-visible,
@@ -4568,7 +4670,12 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   color: var(--text); font: 400 14px/1.4 var(--font-body);
   opacity: 0; visibility: hidden;
 }
-.page-house .guests__hint:is(:hover, :focus-within) .guests__hint-text { opacity: 1; visibility: visible; }
+
+.page-house .guests__hint:is(:focus-within) .guests__hint-text{ opacity: 1; visibility: visible; }
+@media (hover: hover) and (pointer: fine) {
+.page-house .guests__hint:is(:hover, :focus-within) .guests__hint-text{ opacity: 1; visibility: visible; }
+}
+
 @media (min-width: 700px) and (max-width: 899px) {
   .page-house .guests__hint-text { left: auto; right: 0; }
 }
@@ -4636,7 +4743,12 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   visibility: hidden;
   transition: opacity 0.15s, visibility 0.15s;
 }
-.page-house .booking-hint:is(:hover, :focus-within) .booking-hint__text { opacity: 1; visibility: visible; }
+
+.page-house .booking-hint:is(:focus-within) .booking-hint__text{ opacity: 1; visibility: visible; }
+@media (hover: hover) and (pointer: fine) {
+.page-house .booking-hint:is(:hover, :focus-within) .booking-hint__text{ opacity: 1; visibility: visible; }
+}
+
 .page-house .booking-hint.is-dismissed .booking-hint__text { opacity: 0; visibility: hidden; }
 /* Правая колонка по макету The First: карточка гостей 339.3 (441.62–780.92),
    строка «ночи/гости» — текст с 802, цена — с 845, кнопка 887.92–959.39,
@@ -5103,30 +5215,64 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 @supports not ((-webkit-backdrop-filter: blur(4px)) or (backdrop-filter: blur(4px))) {
   .territory-card::after { background: #00000040; }
 }
-.territory-card:is(:hover, :focus-within, .is-open)::after { opacity: 1; }
+
+.territory-card:is(:focus-within, .is-open)::after{ opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+.territory-card:is(:hover, :focus-within, .is-open)::after{ opacity: 1; }
+}
+
 /* На промежуточных ширинах сохраняем центрирование содержимого. */
-.territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption {
+.territory-card:is(:focus-within, .is-open) .mosaic__caption{
   justify-content: center;
   padding: 20px 38px 20px 39px;
 }
-.territory-card:is(:hover, :focus-within, .is-open) .territory-card__details { display: block; }
+@media (hover: hover) and (pointer: fine) {
+.territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption{
+  justify-content: center;
+  padding: 20px 38px 20px 39px;
+}
+}
+
+
+.territory-card:is(:focus-within, .is-open) .territory-card__details{ display: block; }
+@media (hover: hover) and (pointer: fine) {
+.territory-card:is(:hover, :focus-within, .is-open) .territory-card__details{ display: block; }
+}
+
 /* Десктоп: строки заголовка и описания — ровно как в макете. Переносы
    стоят в шаблоне (territory_lines / layout_lines), браузер своих не
    добавляет. Описание 262px в плитке 295 — поля по 16px; строка длиннее
    («и съёмочная команда Алины») свисает поровну в обе стороны. */
 @media (min-width: 1280px) {
-  /* В десктопном макете кнопка каждой карточки стоит в 20px от низа,
+/* В десктопном макете кнопка каждой карточки стоит в 20px от низа,
      а зазор между заголовком и описанием — 14px. */
-  .territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption {
+.territory-card:is(:focus-within, .is-open) .mosaic__caption{
     justify-content: flex-end;
     gap: 14px;
     padding-inline: 16px;
   }
-  .territory-card:is(:hover, :focus-within, .is-open) .territory-card__details {
+@media (hover: hover) and (pointer: fine) {
+.territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption{
+    justify-content: flex-end;
+    gap: 14px;
+    padding-inline: 16px;
+  }
+}
+
+
+.territory-card:is(:focus-within, .is-open) .territory-card__details{
     display: flex;
     flex-direction: column;
     align-items: center;
   }
+@media (hover: hover) and (pointer: fine) {
+.territory-card:is(:hover, :focus-within, .is-open) .territory-card__details{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
   .territory-card .mosaic__caption :is(h2, h3),
   .territory-card .territory-card__details p { white-space: nowrap; }
   .territory-card .territory-card__details p { width: max-content; min-width: 262px; margin: 0; }
@@ -5150,7 +5296,12 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .territory-card { aspect-ratio: auto; min-height: 295px; }
   .territory-card > picture, .territory-card > .ph { position: absolute; inset: 0; }
   .territory-card .mosaic__caption { min-height: 295px; padding-inline: 16px; }
-  .territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption { padding-inline: 16px; }
+
+.territory-card:is(:focus-within, .is-open) .mosaic__caption{ padding-inline: 16px; }
+@media (hover: hover) and (pointer: fine) {
+.territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption{ padding-inline: 16px; }
+}
+
 }
 @media (prefers-reduced-motion: reduce) {
   .territory-card > picture, .territory-card > .ph { transition: none; }
@@ -5311,7 +5462,11 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 .site .lightbox__nav { top: calc(50% + 19px); width: 40px; height: 40px; min-width: 40px; min-height: 40px; border: 1px solid #847F57; background: #E0D9C9; color: #847F57; }
 .site .lightbox__nav--prev { left: 20px; }
 .site .lightbox__nav--next { right: 20px; background: #847F57; color: #F7F0E6; }
-.site .lightbox :is(button):hover { background: #9B5026; color: #F7F0E6; border-color: #9B5026; }
+
+@media (hover: hover) and (pointer: fine) {
+.site .lightbox :is(button):hover{ background: #9B5026; color: #F7F0E6; border-color: #9B5026; }
+}
+
 @media (max-width: 1279px) {
   body.menu-open { overflow: hidden; }
   .site .header:has(.nav-toggle[open]) { top: 0; transform: none; }

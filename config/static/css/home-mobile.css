@@ -322,5 +322,9 @@
   background: #D5CEBC; color: #494949; border-color: transparent;
   box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
 }
-.site .hero .searchbar:hover .searchbar__field { background: #E5D0C0; }
+
+@media (hover: hover) and (pointer: fine) {
+.site .hero .searchbar:hover .searchbar__field{ background: #E5D0C0; }
+}
+
 .site .hero .searchbar:active .searchbar__field { background: #9B5026; color: #F7F0E6; }
