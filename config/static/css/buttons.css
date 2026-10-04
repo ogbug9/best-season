@@ -117,6 +117,13 @@
   .site [data-request-form] .btn:is(.is-loading, .is-success) { padding-inline: 0; }
 }
 
+@media (max-width: 699px) {
+  .site.page-home .about__text .btn.btn--outline:not(:where(:active, :focus-visible, .is-pressed, .is-loading, .is-success, :disabled, [aria-disabled="true"], [data-state="loading"], [data-state="success"])) { background-color: #9B5026; color: #F7F0E6; }
+}
+@media (max-width: 699px) and (hover: hover) and (pointer: fine) {
+  .site.page-home .about__text .btn.btn--outline:hover:not(:where(:active, :focus-visible)) { background-color: #E5D0C0; color: #494949; }
+}
+
 /* Общие состояния CTA, включая шапку, подвал и карточки акций. */
 .site .btn.nearby-more,
 .site .about__text .btn.btn--outline { background-color: #F7F0E6; color: #494949; }
