@@ -1497,7 +1497,7 @@ body {
   line-height: 1;
   color: var(--c-terra);
 }
-.faq__item[open] .faq__question::after { content: "−"; }
+.faq__item.is-open .faq__question::after { content: "−"; }
 
 .faq__answer {
   padding: 0 var(--s-4) var(--s-4);
@@ -2062,7 +2062,7 @@ body:not(.page-home) main > :first-child {
    переменная --c-card-dark, которой в палитре нет — правило молча не
    работало, а цвет приходил от классов .faq__item--dark/--olive. */
 .faq__question::after { color: var(--c-cream); }
-.faq__item[open] .faq__question { border-radius: 10px; }
+.faq__item.is-open .faq__question { border-radius: 10px; }
 
 /* Ответ в макете лежит прямо на кремовом фоне: ни рамки, ни белой
    подложки. Боковые поля 32px — из замера: плашка 1240, текст 1176 */
@@ -3474,7 +3474,7 @@ body[data-modal-open] {
   transform: rotate(45deg) translate(-3px, -3px);
   transition: transform 0.2s ease;
 }
-.faq__item[open] .faq__question::after { transform: rotate(-135deg) translate(-3px, -3px); }
+.faq__item.is-open .faq__question::after { transform: rotate(-135deg) translate(-3px, -3px); }
 /* Значения ответа собраны в одном правиле выше (.faq__answer, замеры
    инспектора). Здесь раньше стоял кремовый текст — наследие тёмной
    секции; на кремовом фоне он был почти нечитаем. */
@@ -5390,3 +5390,9 @@ html:has(.lightbox[open]) { overflow: hidden; }
     background: #9B5026; color: #F7F0E6;
   }
 }
+
+/* FAQ: native buttons, one expanded answer. PNG/SVG panels: 1240 x 63. */
+.faq__item .faq__question { width: 100%; border: 0; text-align: left; font-family: var(--font-body); }
+.faq__question:focus-visible { outline: 2px solid #9B5026; outline-offset: 4px; }
+.faq__answer { overflow: hidden; }
+.faq__answer[hidden] { display: none; }

@@ -10,6 +10,42 @@
 
 /* ---------- Цвет закреплённой шапки ---------- */
 (function () {
+  'use strict';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var animations = new WeakMap();
+  function set(item, open) {
+    var button = item.querySelector('.faq__question');
+    var answer = item.querySelector('.faq__answer');
+    var previous = animations.get(answer);
+    var height = answer.hidden ? 0 : answer.getBoundingClientRect().height;
+    if (previous) previous.cancel();
+    button.setAttribute('aria-expanded', String(open));
+    item.classList.toggle('is-open', open);
+    answer.hidden = false;
+    if (reduced.matches || !answer.animate) { answer.hidden = !open; return; }
+    var animation = answer.animate([
+      {height: height + 'px', opacity: height ? 1 : 0},
+      {height: (open ? answer.scrollHeight : 0) + 'px', opacity: open ? 1 : 0}
+    ], {duration: 200, easing: 'ease-out'});
+    animations.set(answer, animation);
+    animation.onfinish = function () {
+      answer.hidden = button.getAttribute('aria-expanded') !== 'true';
+      animations.delete(answer);
+    };
+  }
+  document.querySelectorAll('.faq').forEach(function (faq) {
+    faq.querySelectorAll('.faq__question').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var item = button.closest('.faq__item');
+        var open = button.getAttribute('aria-expanded') !== 'true';
+        if (open) faq.querySelectorAll('.faq__item.is-open').forEach(function (other) { if (other !== item) set(other, false); });
+        set(item, open);
+      });
+    });
+  });
+})();
+
+(function () {
   "use strict";
   var header = document.querySelector('.header');
   if (!header) return;
