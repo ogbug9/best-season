@@ -562,3 +562,25 @@
   });
   window.matchMedia('(max-width: 1279px)').addEventListener('change', function () { menu.open = false; sync(); });
 })();
+(function () {
+  var pressed = null;
+  function release() {
+    if (pressed) pressed.button.classList.remove('is-pressed');
+    pressed = null;
+  }
+  document.addEventListener('pointerdown', function (event) {
+    if (event.pointerType !== 'touch') return;
+    var button = event.target.closest('.btn');
+    if (!button || button.closest('.kontur-host, .react-ui, :disabled, [aria-disabled="true"]')) return;
+    release();
+    pressed = { button: button, id: event.pointerId, x: event.clientX, y: event.clientY };
+    button.classList.add('is-pressed');
+  }, { passive: true });
+  document.addEventListener('pointermove', function (event) {
+    if (pressed && event.pointerId === pressed.id && Math.hypot(event.clientX - pressed.x, event.clientY - pressed.y) > 12) release();
+  }, { passive: true });
+  ['pointerup', 'pointercancel'].forEach(function (name) {
+    document.addEventListener(name, function (event) { if (pressed && event.pointerId === pressed.id) release(); }, { passive: true });
+  });
+  window.addEventListener('blur', release);
+})();

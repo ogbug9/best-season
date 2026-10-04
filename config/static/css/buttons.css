@@ -146,4 +146,5 @@
 @media (hover: hover) and (pointer: fine) {
 .site :is(.btn.nearby-more, .about__text .btn.btn--outline):hover { background-color: #E5D0C0; }
 }
+.site :is(.btn.nearby-more, .about__text .btn.btn--outline):focus-visible { background-color: rgba(140,168,251,.3); color: #494949; border-color: #8CA8FB; --button-surface: rgba(140,168,251,.3); }
 .site :is(.btn.nearby-more, .about__text .btn.btn--outline):is(:active, .is-pressed) { background-color: rgb(73 73 73 / 20%); color: #494949; --button-surface: rgb(73 73 73 / 20%); }
