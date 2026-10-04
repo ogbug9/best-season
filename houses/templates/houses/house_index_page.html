@@ -36,7 +36,7 @@
       ловушкой — гость заполнил бы их, а в модалку они бы не попали.
       Иконки в макете есть: два вектора 16×18 у дат и 12×16 у гостей.
     {% endcomment %}
-    <button type="button" class="searchbar houses-search" data-booking-open data-entry-point="1">
+    <button type="button" class="searchbar houses-search{% if not settings.core.SiteSettings.booking_show_search_fields %} searchbar--cta-only{% endif %}" data-booking-open data-entry-point="1">
       <span class="searchbar__field">
         <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
         <span class="home-desktop-copy">{% cms_text "house_index_page-ed598bbf587b" %}</span><span class="home-mobile-copy">{% cms_text "house_index_page-26a3ae77bfaa" %}</span>

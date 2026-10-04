@@ -68,6 +68,30 @@ class BookingModalTests(TestCase):
             self.assertFalse(stripped.startswith("* {"), "Глобальный сброс запрещён")
             self.assertFalse(stripped.startswith("div {"), "Голый div запрещён")
 
+    def test_search_fields_flag_restores_home_and_catalog_without_changing_entry_points(self):
+        from home.models import HomePage
+        from houses.models import HouseIndexPage
+        site = Site.objects.first()
+        home = HomePage(title='Flag home', slug='flag-home')
+        site.root_page.add_child(instance=home)
+        home.save_revision().publish()
+        catalog = HouseIndexPage(title='Flag catalog', slug='flag-catalog')
+        home.add_child(instance=catalog)
+        catalog.save_revision().publish()
+        site.root_page = home
+        site.save()
+        settings_obj = SiteSettings.for_site(site)
+        for enabled in (False, True, False):
+            settings_obj.booking_show_search_fields = enabled
+            settings_obj.save()
+            cache.clear()
+            for url, entry in ((home.url, '2'), (catalog.url, '1')):
+                with self.subTest(enabled=enabled, entry=entry):
+                    html = self.client.get(url).content.decode()
+                    button = re.search(r'<button[^>]*class="searchbar[^>]*data-entry-point="' + entry + r'"[^>]*>', html)
+                    self.assertIsNotNone(button)
+                    self.assertEqual('searchbar--cta-only' in button.group(), not enabled)
+
 
 class FallbackTests(TestCase):
     """П. 5.6 ТЗ: резервный блок обязателен в первой очереди и проверяется

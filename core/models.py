@@ -286,6 +286,10 @@ class SiteSettings(BaseSiteSetting):
     booking_show_hourly = models.BooleanField(
         "Показывать баню и беседки в окне бронирования", default=True,
     )
+    booking_show_search_fields = models.BooleanField(
+        "Показывать даты и гостей над кнопкой бронирования", default=False,
+        help_text="Главная и «Размещение». Выбор в самом виджете остаётся доступным.",
+    )
 
     @property
     def kontur_is_configured(self):
@@ -343,6 +347,7 @@ class SiteSettings(BaseSiteSetting):
                 FieldPanel("kontur_hotel_id"),
                 FieldPanel("booking_lead_text"),
                 FieldPanel("booking_show_hourly"),
+                FieldPanel("booking_show_search_fields"),
                 FieldPanel("guests_adults_note"),
                 FieldPanel("guests_children_note"),
                 FieldPanel("guests_included"),

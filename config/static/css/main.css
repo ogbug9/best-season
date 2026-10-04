@@ -5378,12 +5378,12 @@ html:has(.lightbox[open]) { overflow: hidden; }
 }
 
 /* Approved hero: keep the booking CTA, hide the date/guest decorations. */
-.page-home .hero .searchbar--cta-only {
+.site .searchbar--cta-only {
   display: flex; justify-content: center; width: 254px; max-width: 100%;
   padding: 0; border: 0; background: none;
 }
-.page-home .hero .searchbar--cta-only .searchbar__field { display: none; }
-.page-home .hero .searchbar--cta-only .searchbar__cta { width: 100%; margin: 0; }
+.site .searchbar--cta-only .searchbar__field { display: none; }
+.site .searchbar--cta-only .searchbar__cta { width: 100%; margin: 0; }
 @media (max-width: 699px) {
   .page-home .hero .searchbar--cta-only { width: 240px; }
   .page-home .hero .searchbar--cta-only:not(:where(:hover, :active, :focus-visible)) .searchbar__cta.btn--primary:not(:where(:hover, :active, :focus-visible, .is-pressed, .is-loading, .is-success, :disabled, [aria-disabled="true"], [data-state="loading"], [data-state="success"])) {
