@@ -109,12 +109,11 @@ class HouseIndexPage(Page):
         # Тот же аккордеон, что на главной — набор вопросов общий
         from core.models import FaqItem, TerritoryItem, TerritoryPage
 
-        territory_copy = {' '.join(item.title.casefold().split()): item for item in TerritoryItem.objects.filter(is_published=True)}
         services_page = ServicesPage.objects.live().first()
         services_url = services_page.get_url(request) if services_page else ''
         for service in context['tile_services']:
-            item = territory_copy.get(' '.join(service.name.casefold().split()))
-            service.tile_description = service.short_description or (item.description if item else '')
+            # The four service descriptions are awaiting owner-approved copy.
+            service.tile_description = service.short_description
             service.tile_details_url = (services_url + '#service-' + service.slug) if services_url else ''
 
         mobile_titles = ('Русская баня', 'Фотосессии', 'Река "Скнижка"', 'Большая беседка')
@@ -125,7 +124,8 @@ class HouseIndexPage(Page):
         context['mobile_services_page'] = TerritoryPage.objects.live().first()
         territory_url = context['mobile_services_page'].get_url(request) if context['mobile_services_page'] else ''
         for item in context['mobile_services']:
-            item.details_url = item.link_url or territory_url
+            item.tile_description = '' if item.title == 'Фотосессии' else item.description
+            item.details_url = (services_url + '#service-fotosessii') if item.title == 'Фотосессии' and services_url else (item.link_url or territory_url)
 
         from core.faq_sets import CATALOG_FAQ, page_faq
 
