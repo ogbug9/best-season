@@ -2,43 +2,55 @@
   'use strict';
   var small = window.matchMedia('(max-width: 699px)');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!window.Swiper) return; // Native scrolling remains usable if the asset fails.
   document.querySelectorAll('[data-about-carousel]').forEach(function (carousel) {
     var track = carousel.querySelector('[data-about-track]');
     var dots = carousel.querySelector('[data-about-dots]');
-    var cards = Array.from(track.children), count = 0, current = 0, frame = 0;
-    function step() { return cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth; }
-    function mark() {
-      current = Math.min(count - 1, Math.max(0, Math.round(track.scrollLeft / step())));
-      Array.from(dots.children).forEach(function (button, index) { button.setAttribute('aria-current', String(index === current)); });
+    var pillars = !!carousel.closest('.about-pillars');
+    var instance = null;
+    track.classList.add('swiper-wrapper');
+    Array.from(track.children).forEach(function (card) { card.classList.add('swiper-slide'); });
+    function mark(swiper) {
+      dots.querySelectorAll('button').forEach(function (button) {
+        button.setAttribute('aria-current', String(button.classList.contains('swiper-pagination-bullet-active')));
+      });
+      dots.hidden = swiper.isLocked;
     }
-    function go(index, instant) {
-      current = Math.max(0, Math.min(count - 1, index));
-      track.scrollTo({left: current * step(), behavior: instant || reduced.matches ? 'instant' : 'smooth'});
-      mark();
-    }
-    function setup(initial) {
-      var visible = Number(getComputedStyle(track).getPropertyValue('--about-visible')) || 1;
-      count = Math.max(1, cards.length - visible + 1);
+    function setup() {
+      if (instance) { instance.destroy(true, true); instance = null; }
       dots.replaceChildren();
-      dots.hidden = count === 1;
-      for (var index = 0; index < count; index++) {
-        var button = document.createElement('button');
-        button.type = 'button';
-        button.setAttribute('aria-label', 'Показать карточку ' + (index + 1));
-        button.dataset.index = String(index);
-        dots.append(button);
-      }
-      go(initial && small.matches ? Number(carousel.dataset.mobileStart || 0) : current, true);
+      if (pillars && !small.matches) { dots.hidden = true; return; }
+      dots.hidden = false;
+      instance = new Swiper(carousel, {
+        slidesPerView: pillars ? 'auto' : 1, spaceBetween: 10, loop: pillars,
+        initialSlide: pillars ? Number(carousel.dataset.mobileStart || 0) : 0,
+        speed: reduced.matches ? 0 : 250,
+        grabCursor: true, simulateTouch: true,
+        preventClicks: true, preventClicksPropagation: true,
+        threshold: 6, watchOverflow: true,
+        breakpoints: pillars ? {} : {
+          700: {slidesPerView: 2, spaceBetween: 20},
+          1000: {slidesPerView: 3, spaceBetween: 20}
+        },
+        pagination: {
+          el: dots, clickable: true,
+          renderBullet: function (index, className) {
+            return '<button type="button" class="' + className + '" aria-label="Показать карточку ' + (index + 1) + '"></button>';
+          }
+        },
+        a11y: {enabled: true, containerMessage: track.getAttribute('aria-label'), paginationBulletMessage: 'Показать карточку {{index}}'},
+        on: {init: mark, paginationUpdate: mark, lock: mark, unlock: mark}
+      });
     }
-    dots.addEventListener('click', function (event) { var button = event.target.closest('button'); if (button) go(Number(button.dataset.index)); });
     track.addEventListener('keydown', function (event) {
-      if (event.target !== track || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-      event.preventDefault();
-      go(event.key === 'Home' ? 0 : event.key === 'End' ? count - 1 : current + (event.key === 'ArrowRight' ? 1 : -1));
+      if (!instance || event.target !== track) return;
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        instance[event.key === 'ArrowRight' ? 'slideNext' : 'slidePrev']();
+      }
     });
-    track.addEventListener('scroll', function () { if (!frame) frame = requestAnimationFrame(function () { frame = 0; mark(); }); }, {passive: true});
-    var observer = new ResizeObserver(function () { setup(false); });
-    observer.observe(track);
-    setup(true);
+    small.addEventListener('change', setup);
+    reduced.addEventListener('change', function () { if (instance) instance.params.speed = reduced.matches ? 0 : 250; });
+    setup();
   });
 })();

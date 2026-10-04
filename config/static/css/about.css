@@ -89,6 +89,11 @@
 .about-dots button { display: grid; place-items: center; border: 0; width: 16px; height: 20px; padding: 0; background: transparent; cursor: pointer; }
 .about-dots button::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #847F5780; }
 .about-dots button[aria-current="true"]::before { background: #847F57; }
+.about-dots .swiper-pagination-bullet-active::before { background: #847F57; }
+.about-carousel.swiper-initialized { position: relative; overflow: hidden; touch-action: pan-y; min-width: 0; }
+.swiper-initialized .about-track { display: flex; gap: 0; width: 100%; overflow: visible; scroll-snap-type: none; transition-property: transform; box-sizing: content-box; }
+.swiper-initialized .about-track > li { flex-shrink: 0; position: relative; }
+.about-carousel .swiper-notification { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .about-pets__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .about-pet { padding: 20px 20px 30px; border-radius: 40px; background: #1E1E1E; color: #F7F0E6; text-align: center; }
 .about-pet--olive { background: #847F57; }
@@ -173,6 +178,10 @@
   .about-lead__mobile, .about-lead__paragraph { display: block; }
   .about-lead__paragraph + .about-lead__paragraph { text-indent: 0; }
   .about-track, .about-pillars .about-track { --about-visible: 1; grid-auto-columns: 100%; gap: 10px; }
+  .about-pillars .about-carousel { width: calc(100% + 20px); }
+  .about-pillars .swiper-initialized .about-track { gap: 0; }
+  .about-pillars .swiper-slide { width: calc(100% - 20px); }
+  .about-pillars .about-dots { width: calc(100% - 20px); }
   .about-pillar { min-height: 421.33px; border-radius: 32px; padding: 10px; }
   .about-pillar .about-photo { height: 215px; border-radius: 24px; }
   .about-pillar h3 { margin: 12px 12px; font-size: 25.6px; line-height: 30px; }
