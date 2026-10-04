@@ -4,9 +4,10 @@
 {% block extra_css %}{% legal_pdf_url page.slug as legal_pdf %}{% if legal_pdf %}<link rel="stylesheet" href="{% static 'css/legal.css' %}">{% endif %}{% endblock %}
 
 {% block content %}
-<section class="section page-head">
+{% legal_pdf_url page.slug as legal_pdf %}
+<section class="section page-head{% if legal_pdf %} legal-page-head{% endif %}">
   <div class="container container--narrow">
-    <h1>{{ page.title|heading_breaks }}</h1>
+    <h1>{% if legal_pdf %}{{ page.title }}{% else %}{{ page.title|heading_breaks }}{% endif %}</h1>
     {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>

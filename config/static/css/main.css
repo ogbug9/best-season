@@ -5334,7 +5334,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .site .nav--mobile .nav__sublink { min-height: 40px; padding: 8px 20px; font: 400 16px/24px var(--font-body); background: #E0D9C9; border-radius: 100px; }
   .nav-mobile__bottom { display: flex; flex-direction: column; align-items: center; gap: 40px; padding-top: 36px; }
   .site .nav-mobile__bottom > .btn { width: min(280px, 100%); min-height: 40px; padding: 9px 20px; background: #9B5026; color: #F7F0E6; font-size: 16px; }
-  .nav-mobile__pets { padding: 14px 20px; margin: 0; border: 1px solid #9B5026; border-radius: 20px; font: 400 16px/20px var(--font-body); color: #494949; }
+  .nav-mobile__pets { padding: 14px 20px; margin: 0; border: 1px solid #9B5026; border-radius: 20px; font: 400 16px/20px var(--font-body); color: #494949; text-align: center; }
   .nav-mobile__contacts { display: grid; gap: 16px; text-align: center; color: #494949; font-size: 16px; }
   .nav-mobile__contacts p { margin: 0; }
   .nav-mobile__contacts a { text-decoration: none; }
@@ -5375,4 +5375,15 @@ html:has(.lightbox[open]) { overflow: hidden; }
   .site.page-house .guests__hint-toggle::after { top: calc(50% + 4px); }
   .site.page-house [data-counter="pets"] .guests__hint-toggle::after { top: calc(50% + 9px); }
   :is(.guests__step, .cookie-close, .lightbox__nav):focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+}
+
+/* Approved hero: keep the booking CTA, hide the date/guest decorations. */
+.page-home .hero .searchbar--cta-only {
+  display: flex; justify-content: center; width: 254px; max-width: 100%;
+  padding: 0; border: 0; background: none;
+}
+.page-home .hero .searchbar--cta-only .searchbar__field { display: none; }
+.page-home .hero .searchbar--cta-only .searchbar__cta { width: 100%; margin: 0; }
+@media (max-width: 699px) {
+  .page-home .hero .searchbar--cta-only { width: 240px; }
 }

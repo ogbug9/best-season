@@ -575,6 +575,12 @@ class ContentPage(Page):
                 context.update(about_pillars=context['about']['pillars'], about_values=context['about']['values'],
                                about_pets=context['about']['pets'], about_diary=context['about']['diary'])
             context["about_contacts"] = Page.objects.live().descendant_of(self).filter(slug="kontakty").first()
+            contacts = context["about_contacts"]
+            # Reuse the CMS map from Contacts, or the approved organisation
+            # already linked by the site's FAQ and Yandex reviews.
+            context["about_map_embed_url"] = (
+                getattr(contacts.specific, "map_embed_url", "") if contacts else ""
+            ) or "https://yandex.ru/map-widget/v1/?ol=biz&oid=3306085141&z=16"
         return context
 
     class Meta:
