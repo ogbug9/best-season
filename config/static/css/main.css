@@ -5386,4 +5386,7 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .page-home .hero .searchbar--cta-only .searchbar__cta { width: 100%; margin: 0; }
 @media (max-width: 699px) {
   .page-home .hero .searchbar--cta-only { width: 240px; }
+  .page-home .hero .searchbar--cta-only:not(:where(:hover, :active, :focus-visible)) .searchbar__cta.btn--primary:not(:where(:hover, :active, :focus-visible, .is-pressed, .is-loading, .is-success, :disabled, [aria-disabled="true"], [data-state="loading"], [data-state="success"])) {
+    background: #9B5026; color: #F7F0E6;
+  }
 }
