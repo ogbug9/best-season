@@ -103,7 +103,7 @@
 .about-diary .about-section__action .btn { width: 419px; }
 .page-about .about-section__action .btn { background-color: #F7F0E6; }
 .page-about :is(.about-section__action, .about-pet__details) .btn:hover { background-color: #E5D0C0; }
-.page-about :is(.about-section__action, .about-pet__details) .btn:is(:active, .is-pressed) { background-color: #9B5026; color: #F7F0E6; --button-surface: #9B5026; }
+.page-about :is(.about-section__action, .about-pet__details) .btn:is(:active, .is-pressed) { background-color: rgb(73 73 73 / 20%); color: #494949; --button-surface: rgb(73 73 73 / 20%); }
 .about-entry .about-photo { height: 240px; border-radius: 20px; }
 .about-entry h3 { margin: 20px 0 0; font: 600 24px/29px var(--font-body); color: #847F57; text-align: center; }
 .about-map .about-section__lead { margin-bottom: 40px; }

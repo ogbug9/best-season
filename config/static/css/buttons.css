@@ -15,16 +15,28 @@
   padding-inline: 0; white-space: nowrap;
 }
 .site .place__more { border-color: transparent; }
+.site .btn:not(:where(.kontur-host *, .react-ui *)):is(:focus-visible, :active, .is-pressed, .is-loading, .is-success, [data-state="loading"], [data-state="success"], :disabled, [aria-disabled="true"]) { background-image: none; }
+@media (hover: hover) and (pointer: fine) {
 .site .btn:not(:where(.kontur-host *, .react-ui *)):is(:hover, :focus-visible, :active, .is-pressed, .is-loading, .is-success, [data-state="loading"], [data-state="success"], :disabled, [aria-disabled="true"]) { background-image: none; }
+}
+/* Подложка для тёмного текста появляется только при взаимодействии. */
+.site :is(.house__more, .about__text .btn--outline):is(:focus-visible, :active, .is-pressed, .is-loading, .is-success, [data-state="loading"], [data-state="success"]) {
+  background-image: linear-gradient(var(--button-surface), var(--button-surface)), linear-gradient(#F7F0E6, #F7F0E6);
+}
+@media (hover: hover) and (pointer: fine) {
 /* Подложка для тёмного текста появляется только при взаимодействии. */
 .site :is(.house__more, .about__text .btn--outline):is(:hover, :focus-visible, :active, .is-pressed, .is-loading, .is-success, [data-state="loading"], [data-state="success"]) {
   background-image: linear-gradient(var(--button-surface), var(--button-surface)), linear-gradient(#F7F0E6, #F7F0E6);
 }
+}
+@media (hover: hover) and (pointer: fine) {
 .site .btn:not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):hover,
 .site :where(.searchbar:hover) .btn:not(:where([aria-disabled="true"], .is-loading, .is-success)) {
   background-color: #E5D0C0; color: #494949; border-color: transparent;
   --button-surface: #E5D0C0;
 }
+}
+@media (hover: hover) and (pointer: fine) {
 /* В SVG градиент относится к обводке, заливка — терракотовая 20%. */
 .site .btn:is(.btn--primary, .btn--outline):not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):hover::before,
 .site :where(.searchbar:hover) .btn.btn--primary:not(:where([aria-disabled="true"], .is-loading, .is-success))::before {
@@ -35,6 +47,7 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+}
 }
 .site .btn:not(:where(.kontur-host *, .react-ui *)):focus-visible,
 .site .equipment__switch:focus-visible ~ .equipment__toggle.btn {
@@ -49,12 +62,13 @@
 .site :where(.searchbar:focus-visible) .btn::before,
 .site .equipment__switch:focus-visible ~ .equipment__toggle.btn::before { content: none; }
 .site .btn:not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):is(:active, .is-pressed) {
-  background-color: #9B5026; color: #F7F0E6; border-color: #9B5026;
-  --button-surface: #9B5026;
+  background-color: rgb(73 73 73 / 20%); color: #494949; border-color: #494949;
+  --button-surface: rgb(73 73 73 / 20%);
 }
 .site .btn.btn--primary:not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):is(:active, .is-pressed),
 .site :where(.searchbar:active) .btn.btn--primary:not(:where([aria-disabled="true"], .is-loading, .is-success)) {
-  background-color: #9B5026; color: #F7F0E6; border-color: transparent;
+  background-color: #494949; color: #F7F0E6; border-color: transparent;
+  --button-surface: #494949;
 }
 .site .btn.btn--ghost:not(:where(.kontur-host *, .react-ui *)):is(:active, .is-pressed) { border-color: transparent; }
 .site .btn:not(:where(.kontur-host *, .react-ui *)):is(:active, .is-pressed)::before,
@@ -106,15 +120,23 @@
 /* Общие состояния CTA, включая шапку, подвал и карточки акций. */
 .site .btn.nearby-more,
 .site .about__text .btn.btn--outline { background-color: #F7F0E6; color: #494949; }
+@media (hover: hover) and (pointer: fine) {
 .site .btn:not(:where(.kontur-host *, .react-ui *)):hover::before { content: none; }
+}
 /* Растровые иконки содержат собственную серую подложку. В покое файл
    сохраняется; при взаимодействии blend отделяет значок от подложки. */
 .site a.socials__item { transition: background-color .2s ease; }
+@media (hover: hover) and (pointer: fine) {
 .site a.socials__item:hover { background-color: #E5D0C0; }
+}
+@media (hover: hover) and (pointer: fine) {
 .site a.socials__item:hover img { filter: grayscale(1) contrast(3); mix-blend-mode: multiply; }
+}
 .site a.socials__item:is(:active, .is-pressed) { background-color: #9B5026; }
 .site a.socials__item:is(:active, .is-pressed) img { filter: grayscale(1) contrast(3) invert(1); mix-blend-mode: screen; }
 .site a.socials__item:focus-visible { outline: 2px solid #9B5026; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .site a.socials__item { transition: none; } }
+@media (hover: hover) and (pointer: fine) {
 .site :is(.btn.nearby-more, .about__text .btn.btn--outline):hover { background-color: #E5D0C0; }
-.site :is(.btn.nearby-more, .about__text .btn.btn--outline):is(:active, .is-pressed) { background-color: #9B5026; color: #F7F0E6; --button-surface: #9B5026; }
+}
+.site :is(.btn.nearby-more, .about__text .btn.btn--outline):is(:active, .is-pressed) { background-color: rgb(73 73 73 / 20%); color: #494949; --button-surface: rgb(73 73 73 / 20%); }
