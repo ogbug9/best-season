@@ -1,4 +1,5 @@
 'use strict';
+const navigate=require('./pravki_05_10_navigation.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 const {PNG} = require('pngjs');
@@ -40,7 +41,7 @@ module.exports = async function checkContent(browser, base, out, checks) {
     const page=await context.newPage(), errors=[];
     page.on('pageerror',e=>errors.push(String(e)));
     for(const [route,items] of Object.entries(reference)) {
-      await page.goto(base+route);await page.evaluate(()=>document.fonts.ready);
+      await navigate(page,base+route);await page.evaluate(()=>document.fonts.ready);
       const faq=page.locator('.faq__item');
       record(`FAQ count ${route}`,width,await faq.count()===items.length);
       for(let i=0;i<items.length;i++) {
@@ -98,7 +99,7 @@ module.exports = async function checkContent(browser, base, out, checks) {
       }
     }
     if(width===390) {
-      await page.goto(base+'/');
+      await navigate(page,base+'/');
       await page.locator('.nav-toggle__button').click();
       record('Mobile menu opens',width,await page.locator('.nav-toggle').evaluate(e=>e.open));
       const menuButtons=page.locator('.nav-toggle [data-button-type]');
@@ -114,7 +115,7 @@ module.exports = async function checkContent(browser, base, out, checks) {
         await cd.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await cd.detach();
       }
     }
-    await page.goto(base+'/o-nas/');await page.evaluate(()=>document.fonts.ready);
+    await navigate(page,base+'/o-nas/');await page.evaluate(()=>document.fonts.ready);
     const hero=page.locator('.about-hero p');
     if(width===390) {
       const expected='Лучший сезон — это место, куда приезжают,\nчтобы побыть вместе.\nВстретить утро на террасе с кофе, днём уйти\nгулять по лесу, а вечером сесть у костра\nс гитарой или растопить баню.';
@@ -165,7 +166,7 @@ module.exports = async function checkContent(browser, base, out, checks) {
       } else record(`Value ${i+1} mobile containment`,width,await card.evaluate(e=>{const a=e.getBoundingClientRect(),b=e.querySelector('.about-value__copy').getBoundingClientRect();return b.bottom<=a.bottom+1&&a.height===525}));
     }
     record('Diary left alignment',width,(await page.locator('.about-entry h3').evaluateAll(es=>es.every(e=>getComputedStyle(e).textAlign==='left'))));
-    await page.goto(base+'/razmeshchenie/domik-1/');
+    await navigate(page,base+'/razmeshchenie/domik-1/');
     await page.locator('[data-gallery-item]').first().click();
     const image=page.locator('[data-lightbox-image]');
     const first=await image.getAttribute('src');
@@ -206,7 +207,7 @@ module.exports = async function checkContent(browser, base, out, checks) {
     await context.route('**/*',r=>new URL(r.request().url()).origin===base?r.continue():r.abort());
     const page=await context.newPage();
     for(const route of ['/','/razmeshchenie/','/akcii/','/o-nas/']) {
-      await page.goto(base+route);await page.evaluate(()=>document.fonts.ready);
+      await navigate(page,base+route);await page.evaluate(()=>document.fonts.ready);
       record(`Overflow ${route}`,width,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
     }
     await context.close();

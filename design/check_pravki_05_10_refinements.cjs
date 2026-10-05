@@ -1,4 +1,5 @@
 'use strict';
+const navigate=require('./pravki_05_10_navigation.cjs');
 const {PNG}=require('pngjs');
 const fs=require('node:fs');
 const path=require('node:path');
@@ -28,7 +29,7 @@ module.exports=async function refinements(browser,base,out,checks){
     });
     const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(String(e)));
     for(const route of ['/','/razmeshchenie/','/akcii/','/o-nas/']){
-      await page.goto(base+route);await page.evaluate(()=>document.fonts.ready);
+      await navigate(page,base+route);await page.evaluate(()=>document.fonts.ready);
       await page.evaluate(()=>document.querySelectorAll('.header').forEach(e=>e.style.visibility='hidden'));
       const buttons=page.locator('.searchbar--cta-only:visible,.btn.btn--outline:visible');
       for(let i=0;i<await buttons.count();i++){
@@ -73,7 +74,7 @@ module.exports=async function refinements(browser,base,out,checks){
       }
     }
     for(const narrow of width===390?[320,360,390,412,430]:[]){
-      await page.setViewportSize({width:narrow,height:1000});await page.goto(base+'/razmeshchenie/');
+      await page.setViewportSize({width:narrow,height:1000});await navigate(page,base+'/razmeshchenie/');
       const tiles=await page.locator('.mobile-service-tiles .service-tile').evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect();return {width:r.width,height:r.height}}));
       record('Mobile service tile proportions',narrow,tiles.length===4&&tiles.every(e=>Math.abs(e.width/e.height-170/179)<.005),tiles);
       await page.locator('.mobile-service-tiles .service-tile').first().click();
