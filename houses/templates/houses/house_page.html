@@ -196,9 +196,9 @@
 {% if page.gallery_images.all %}
 <dialog class="lightbox" data-lightbox aria-label="Просмотр фото">
   <button type="button" class="lightbox__close" data-lightbox-close aria-label="Закрыть">×</button>
-  <button type="button" class="lightbox__nav lightbox__nav--prev" data-lightbox-prev aria-label="Предыдущее фото"><span aria-hidden="true">‹</span></button>
+  <button type="button" class="lightbox__nav lightbox__nav--prev" data-lightbox-prev aria-label="Предыдущее фото"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle cx="20" cy="20" r="19.5" fill="none" stroke-width="1"/><polyline class="lightbox__chevron" points="22.5,14 16.5,20 22.5,26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <img class="lightbox__image" data-lightbox-image alt="">
-  <button type="button" class="lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="Следующее фото"><span aria-hidden="true">›</span></button>
+  <button type="button" class="lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="Следующее фото"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle cx="20" cy="20" r="19.5" fill="none" stroke-width="1"/><polyline class="lightbox__chevron" points="17.5,14 23.5,20 17.5,26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <p class="lightbox__caption" data-lightbox-caption></p>
 </dialog>
 {% endif %}

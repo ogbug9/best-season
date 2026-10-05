@@ -64,7 +64,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .searchbar__date-desktop,
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .hero .searchbar__field:nth-child(2) { display: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .searchbar__date-mobile { display: inline; }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .hero .searchbar__cta { width: 100%; height: 44px; margin-top: 10px; padding: 12px 20px; background: #9b5026; color: #fff; font-size: 16px; line-height: 20px; }
+:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .hero .searchbar__cta { width: 100%; height: 44px; margin-top: 10px; padding: 12px 20px; font-size: 16px; line-height: 20px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .searchbar__icon { width: 16px; height: 16px; flex-basis: 16px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .sticky-cta { display: none; }
 

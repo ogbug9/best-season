@@ -62,15 +62,14 @@
 .site :where(.searchbar:focus-visible) .btn::before,
 .site .equipment__switch:focus-visible ~ .equipment__toggle.btn::before { content: none; }
 .site .btn:not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):is(:active, .is-pressed) {
-  background-color: rgb(73 73 73 / 20%); color: #494949; border-color: #494949;
-  --button-surface: rgb(73 73 73 / 20%);
+  background-color: var(--button-pressed-bg); color: var(--button-pressed-text); border-color: var(--button-pressed-border);
+  --button-surface: var(--button-pressed-bg);
 }
 .site .btn.btn--primary:not(:where(.kontur-host *, .react-ui *, :disabled, [aria-disabled="true"], .is-loading, .is-success, [data-state="loading"], [data-state="success"])):is(:active, .is-pressed),
 .site :where(.searchbar:active) .btn.btn--primary:not(:where([aria-disabled="true"], .is-loading, .is-success)) {
-  background-color: #494949; color: #F7F0E6; border-color: transparent;
-  --button-surface: #494949;
+  background-color: var(--button-pressed-bg); color: var(--button-pressed-text); border-color: var(--button-pressed-border);
+  --button-surface: var(--button-pressed-bg);
 }
-.site .btn.btn--ghost:not(:where(.kontur-host *, .react-ui *)):is(:active, .is-pressed) { border-color: transparent; }
 .site .btn:not(:where(.kontur-host *, .react-ui *)):is(:active, .is-pressed)::before,
 .site :where(.searchbar:active) .btn::before { content: none; }
 .site .btn:not(:where(.kontur-host *, .react-ui *)):is(:disabled, [aria-disabled="true"]) {
@@ -117,19 +116,10 @@
   .site [data-request-form] .btn:is(.is-loading, .is-success) { padding-inline: 0; }
 }
 
-@media (max-width: 699px) {
-  .site.page-home .about__text .btn.btn--outline:not(:where(:active, :focus-visible, .is-pressed, .is-loading, .is-success, :disabled, [aria-disabled="true"], [data-state="loading"], [data-state="success"])) { background-color: #9B5026; color: #F7F0E6; }
-}
-@media (max-width: 699px) and (hover: hover) and (pointer: fine) {
-  .site.page-home .about__text .btn.btn--outline:hover:not(:where(:active, :focus-visible)) { background-color: #E5D0C0; color: #494949; }
-}
 
 /* Общие состояния CTA, включая шапку, подвал и карточки акций. */
 .site .btn.nearby-more,
-.site .about__text .btn.btn--outline { background-color: #F7F0E6; color: #494949; }
-@media (hover: hover) and (pointer: fine) {
-.site .btn:not(:where(.kontur-host *, .react-ui *)):hover::before { content: none; }
-}
+.site .about__text .btn.btn--outline { background-color: transparent; color: #494949; border: 1px solid #9B5026; }
 /* Растровые иконки содержат собственную серую подложку. В покое файл
    сохраняется; при взаимодействии blend отделяет значок от подложки. */
 .site a.socials__item { transition: background-color .2s ease; }
@@ -140,11 +130,39 @@
 .site a.socials__item:hover img { filter: grayscale(1) contrast(3); mix-blend-mode: multiply; }
 }
 .site a.socials__item:is(:active, .is-pressed) { background-color: #9B5026; }
-.site a.socials__item:is(:active, .is-pressed) img { filter: grayscale(1) contrast(3) invert(1); mix-blend-mode: screen; }
+.site a.socials__item:is(:active, .is-pressed) img { filter: none; mix-blend-mode: normal; }
 .site a.socials__item:focus-visible { outline: 2px solid #9B5026; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .site a.socials__item { transition: none; } }
 @media (hover: hover) and (pointer: fine) {
 .site :is(.btn.nearby-more, .about__text .btn.btn--outline):hover { background-color: #E5D0C0; }
 }
 .site :is(.btn.nearby-more, .about__text .btn.btn--outline):focus-visible { background-color: rgba(140,168,251,.3); color: #494949; border-color: #8CA8FB; --button-surface: rgba(140,168,251,.3); }
-.site :is(.btn.nearby-more, .about__text .btn.btn--outline):is(:active, .is-pressed) { background-color: rgb(73 73 73 / 20%); color: #494949; --button-surface: rgb(73 73 73 / 20%); }
+.site :is(.btn.nearby-more, .about__text .btn.btn--outline):is(:active, .is-pressed) { background-color: var(--button-pressed-bg); color: var(--button-pressed-text); border-color: var(--button-pressed-border); --button-surface: var(--button-pressed-bg); }
+
+/* Six shared states, independent of viewport. Type is fixed on creation. */
+.site {
+  --button-grey: #494949;
+  --button-pale-grey: #D5CFC7;
+  --button-orange: #9B5026;
+  --button-light: #F7F0E6;
+}
+.button--type-a { --button-pressed-bg: var(--button-grey); --button-pressed-text: var(--button-light); --button-pressed-border: var(--button-grey); }
+.button--type-b { --button-pressed-bg: var(--button-pale-grey); --button-pressed-text: var(--button-grey); --button-pressed-border: var(--button-grey); }
+.button--type-c { --button-pressed-bg: var(--button-pale-grey); --button-pressed-text: var(--button-grey); --button-pressed-border: var(--button-pale-grey); }
+.button--type-d, .button--type-e, .button--type-f { --button-pressed-bg: var(--button-orange); --button-pressed-text: var(--button-light); --button-pressed-border: var(--button-orange); }
+.site [data-button-type] { box-sizing: border-box; }
+.site :is(button, summary, .btn, [role="button"], .socials__item)[data-button-type]:is(:active, .is-pressed):not(:disabled, [aria-disabled="true"]) {
+  background-color: var(--button-pressed-bg); background-image: none;
+  color: var(--button-pressed-text); border-color: var(--button-pressed-border);
+  opacity: 1; filter: none; backdrop-filter: none; mix-blend-mode: normal;
+  transition-property: transform; --button-surface: var(--button-pressed-bg);
+}
+.site [data-button-type="b"]:is(:active, .is-pressed) { border-width: 1px; border-style: solid; }
+.site [data-button-type="c"] { border: 0; }
+.site [data-button-type="f"]:is(:active, .is-pressed) { border-width: 1px; border-style: solid; }
+.site [data-button-type]:is(:active, .is-pressed)::before { background-image: none; opacity: 1; filter: none; mix-blend-mode: normal; }
+.site [data-button-type]:focus-visible { outline: 2px solid #8CA8FB; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .site [data-button-type]:not(:disabled, [aria-disabled="true"]):hover { background-color: #E5D0C0; color: #494949; }
+  .site .lightbox__nav[data-button-type]:hover { background-color: #9B5026; color: #F7F0E6; }
+}

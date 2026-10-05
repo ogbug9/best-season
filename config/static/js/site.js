@@ -352,6 +352,22 @@
     if (event.key === "ArrowRight") show(current + 1);
   });
 
+  var swipeStart = null;
+  image.addEventListener('pointerdown', function (event) {
+    if (event.pointerType !== 'touch') return;
+    swipeStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
+    image.setPointerCapture(event.pointerId);
+  });
+  image.addEventListener('pointerup', function (event) {
+    if (!swipeStart || swipeStart.id !== event.pointerId) return;
+    var dx = event.clientX - swipeStart.x;
+    var dy = event.clientY - swipeStart.y;
+    swipeStart = null;
+    if (Math.abs(dx) < 40 || Math.abs(dx) <= Math.abs(dy)) return;
+    show(current + (dx < 0 ? 1 : -1));
+  });
+  image.addEventListener('pointercancel', function () { swipeStart = null; });
+
   // Только фон за рамкой закрывает окно; клики по кремовым полям его не закрывают.
   dialog.addEventListener("click", function (event) {
     if (event.target !== dialog) return;
@@ -563,18 +579,53 @@
   window.matchMedia('(max-width: 1279px)').addEventListener('change', function () { menu.open = false; sync(); });
 })();
 (function () {
+  // Assign a stable type; responsive CSS never chooses a different state.
+  var selector = 'button, summary, .btn, [role="button"], a.socials__item';
+  function assign(button) {
+    if (button.hasAttribute('data-button-type') || button.closest('.kontur-host, .react-ui, .yarl__portal')) return;
+    var type;
+    if (button.matches('.hero .searchbar--cta-only, .hero .searchbar__cta')) type = 'c';
+    else if (button.matches('.house__book, .territory-card__link')) type = 'd';
+    else if (button.matches('.promo__book, .place__more, .about-pet__details > summary, .lightbox__nav')) type = 'e';
+    else if (button.matches('.house__more')) type = 'f';
+    else if (button.matches('.btn--outline, .btn--ghost, .socials__item')) type = 'b';
+    else if (button.matches('.searchbar')) type = 'a';
+    else {
+      var style = getComputedStyle(button), background = style.backgroundColor;
+      if (background === 'rgb(132, 127, 87)') type = 'd';
+      else if (/^rgb\((155, 80, 38|35, 35, 35|73, 73, 73)\)$/.test(background)) type = 'a';
+      else if (background === 'rgba(0, 0, 0, 0)') type = /247, 240, 230|255, 255, 255/.test(style.borderColor) && parseFloat(style.borderWidth) > 0 ? 'f' : 'b';
+      else type = 'e';
+    }
+    button.dataset.buttonType = type;
+    button.classList.add('button--type-' + type);
+  }
+  function scan(root) {
+    if (root.nodeType !== 1) return;
+    if (root.matches(selector)) assign(root);
+    root.querySelectorAll(selector).forEach(assign);
+  }
+  scan(document.body);
+  new MutationObserver(function (records) {
+    records.forEach(function (record) { record.addedNodes.forEach(scan); });
+  }).observe(document.body, { childList: true, subtree: true });
+  document.addEventListener('touchstart', function () {}, { passive: true });
+})();
+(function () {
   var pressed = null;
   function release() {
-    if (pressed) pressed.button.classList.remove('is-pressed');
+    if (pressed) pressed.targets.forEach(function (button) { button.classList.remove('is-pressed'); });
     pressed = null;
   }
   document.addEventListener('pointerdown', function (event) {
     if (event.pointerType !== 'touch') return;
-    var button = event.target.closest('.btn');
-    if (!button || button.closest('.kontur-host, .react-ui, :disabled, [aria-disabled="true"]')) return;
+    var button = event.target.closest('[data-button-type]');
+    if (!button || button.closest('.kontur-host, .react-ui, .yarl__portal, :disabled, [aria-disabled="true"]')) return;
+    button = button.closest('button[data-button-type]') || button;
     release();
-    pressed = { button: button, id: event.pointerId, x: event.clientX, y: event.clientY };
-    button.classList.add('is-pressed');
+    var targets = [button].concat(Array.from(button.querySelectorAll('.btn[data-button-type]')));
+    pressed = { targets: targets, id: event.pointerId, x: event.clientX, y: event.clientY };
+    targets.forEach(function (target) { target.classList.add('is-pressed'); });
   }, { passive: true });
   document.addEventListener('pointermove', function (event) {
     if (pressed && event.pointerId === pressed.id && Math.hypot(event.clientX - pressed.x, event.clientY - pressed.y) > 12) release();

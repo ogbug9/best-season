@@ -1107,6 +1107,7 @@ body {
 .lightbox::backdrop { background: rgba(58, 60, 21, 0.9); }
 
 .lightbox__image {
+  touch-action: pan-y;
   width: 100%;
   max-height: 78svh;
   margin-inline: auto;
@@ -5350,8 +5351,17 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 
 .faq__answer p { margin: 0; }
 .faq__answer p + p { margin-top: 29px; }
+/* FAQ sheets use consecutive lines; only two home answers have a blank line. */
+:is(.page-home, .page-houses, .page-promotions) .faq__answer p + p { margin-top: 0; }
+:is(.page-home, .page-houses, .page-promotions) .faq__answer ul { margin: 0; }
+.page-home .faq__item:first-child .faq__answer > p:first-child,
+.page-home .faq__item:nth-child(5) .faq__answer > p:first-child { margin-bottom: 29px; }
+.page-home .faq__item:last-child .faq__answer ul { list-style-type: '▸ '; padding-left: 14px; }
+.page-houses .faq__answer ul { list-style-type: '- '; padding-left: 15px; }
 @media (max-width: 700px) {
   .faq__item .faq__answer { padding: 20px 16px; font-size: 18px; line-height: 24px; }
+  .page-home .faq__item:first-child .faq__answer > p:first-child,
+  .page-home .faq__item:nth-child(5) .faq__answer > p:first-child { margin-bottom: 24px; }
 }
 
 /* Правки по аудиту 30.09; координаты декора остаются локальны секциям. */
@@ -5461,7 +5471,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
 .site .lightbox__close { top: 32px; right: 32px; width: 50px; height: 50px; border: 0; border-radius: 15px; background: #E0D9C9; color: #847F57; font-size: 32px; }
 .site .lightbox__nav { top: calc(50% + 19px); width: 40px; height: 40px; min-width: 40px; min-height: 40px; border: 1px solid #847F57; background: #E0D9C9; color: #847F57; }
 .site .lightbox__nav--prev { left: 20px; }
-.site .lightbox__nav--next { right: 20px; background: #847F57; color: #F7F0E6; }
+.site .lightbox__nav--next { right: 20px; }
 
 @media (hover: hover) and (pointer: fine) {
 .site .lightbox :is(button):hover{ background: #9B5026; color: #F7F0E6; border-color: #9B5026; }
@@ -5541,9 +5551,6 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .site .searchbar--cta-only .searchbar__cta { width: 100%; margin: 0; }
 @media (max-width: 699px) {
   .page-home .hero .searchbar--cta-only { width: 240px; }
-  .page-home .hero .searchbar--cta-only:not(:where(:hover, :active, :focus-visible)) .searchbar__cta.btn--primary:not(:where(:hover, :active, :focus-visible, .is-pressed, .is-loading, .is-success, :disabled, [aria-disabled="true"], [data-state="loading"], [data-state="success"])) {
-    background: #9B5026; color: #F7F0E6;
-  }
 }
 
 /* FAQ: native buttons, one expanded answer. PNG/SVG panels: 1240 x 63. */
@@ -5554,11 +5561,14 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .service-tile.territory-card .territory-card__details p { white-space: normal; width: 100%; min-width: 0; max-height: 92px; overflow-y: auto; }
 .service-tile.territory-card .mosaic__caption :is(h2, h3) { white-space: normal; }
 /* Preserve the existing photo controls; optically centre their arrows. */
-.site .lightbox__nav { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; --optical-x: -1px; --step-x: -4px; }
-.site .lightbox__nav--next { --optical-x: 1px; --step-x: 4px; }
-.lightbox__nav span { transform: translateX(var(--optical-x)); }
+.site .lightbox__nav { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; --step-x: -3px; }
+.site .lightbox__nav--next { --step-x: 3px; }
+.lightbox__nav svg { display: block; width: 40px; height: 40px; }
+.lightbox__nav circle { stroke: #847F57; }
+.site .lightbox__nav:is(:active, .is-pressed) circle { stroke: var(--button-pressed-border); }
+@media (hover: hover) and (pointer: fine) { .site .lightbox__nav:hover circle { stroke: #9B5026; } }
 .lightbox__nav.is-stepping { animation: photo-nav-press 180ms ease-out; }
-.lightbox__nav.is-stepping span { animation: photo-nav-arrow 180ms ease-out; }
+.lightbox__nav.is-stepping .lightbox__chevron { animation: photo-nav-arrow 180ms ease-out; }
 @keyframes photo-nav-press { 0%, 100% { transform: translateY(-50%) scale(1); } 40% { transform: translateY(-50%) scale(.92); } }
-@keyframes photo-nav-arrow { 0%, 100% { transform: translateX(var(--optical-x)); } 40% { transform: translateX(calc(var(--optical-x) + var(--step-x))); } }
-@media (prefers-reduced-motion: reduce) { .lightbox__nav.is-stepping, .lightbox__nav.is-stepping span { animation: none; } }
+@keyframes photo-nav-arrow { 0%, 100% { transform: translateX(0); } 40% { transform: translateX(var(--step-x)); } }
+@media (prefers-reduced-motion: reduce) { .lightbox__nav.is-stepping, .lightbox__nav.is-stepping .lightbox__chevron { animation: none; } }
