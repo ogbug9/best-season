@@ -6,6 +6,8 @@
   var pending = false;
   var descriptionId = 0;
   var selectedTariff = null;
+  var calendarLayout = "";
+  var calendarFrame = false;
   var contentObserver = new MutationObserver(schedule);
 
   document.addEventListener("click", function (event) {
@@ -31,19 +33,14 @@
       behavior: "instant" });
   }
 
-  // Keep SDK-owned nodes intact: render a readable copy only while expanded.
+  // Keep SDK-owned nodes intact; readable copies never alter provider data.
   function formatDescription(description, link, expanded) {
     var copy = description.previousElementSibling;
     if (!copy || !copy.hasAttribute("data-bs-description-copy")) copy = null;
-    if (!expanded) {
-      description.removeAttribute("data-bs-description-formatted");
-      if (copy) copy.remove();
-      return description.id;
-    }
     var walker = document.createTreeWalker(description, NodeFilter.SHOW_TEXT);
     var text = [], node;
     while ((node = walker.nextNode())) {
-      if (!link.contains(node)) text.push(node.nodeValue);
+      if (!link || !link.contains(node)) text.push(node.nodeValue);
     }
     var source = text.join("").trim();
     if (!source) return description.id;
@@ -56,10 +53,15 @@
       copy.setAttribute("aria-label", "Описание домика");
       description.insertAdjacentElement("beforebegin", copy);
     }
-    if (copy.bsDescriptionSource !== source) {
-      copy.bsDescriptionSource = source;
+    copy.setAttribute("data-bs-description-compact", String(!expanded));
+    if (!link) copy.setAttribute("data-bs-room-description", "");
+    var preview = !link && !expanded;
+    var sourceKey = source + (preview ? ":preview" : ":full");
+    if (copy.bsDescriptionSource !== sourceKey) {
+      copy.bsDescriptionSource = sourceKey;
       var lines = source.replace(/([^\n])\s+([-•])\s+(?=[А-ЯЁA-Z])/g, "$1\n$2 ")
         .split(/\r?\n/).map(function (line) { return line.trim(); }).filter(Boolean);
+      if (preview) lines = lines.slice(0, 4);
       var content = document.createElement("div"), list = null;
       lines.forEach(function (line) {
         var bullet = /^[-•]\s+/.test(line);
@@ -83,6 +85,22 @@
     }
     description.setAttribute("data-bs-description-formatted", "true");
     return copy.id;
+  }
+
+  function refreshCalendarLayout() {
+    var calendar = modal.querySelector("#BookingCalendarWidget");
+    if (!calendar || !modal.open) return;
+    var width = Math.round(calendar.getBoundingClientRect().width);
+    if (!width) return;
+    var signature = width + ":" + calendar.childElementCount + ":" + calendar.querySelectorAll('[data-tid="Loader__Idle"]').length;
+    if (signature === calendarLayout || calendarFrame) return;
+    calendarFrame = true;
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+      calendarFrame = false;
+      if (!modal.open || !calendar.isConnected) return;
+      calendarLayout = Math.round(calendar.getBoundingClientRect().width) + ":" + calendar.childElementCount + ":" + calendar.querySelectorAll('[data-tid="Loader__Idle"]').length;
+      window.dispatchEvent(new Event("resize"));
+    }); });
   }
 
   function decorate() {
@@ -158,17 +176,46 @@
         if (toggle.textContent !== caption) toggle.textContent = caption;
         toggle.setAttribute("aria-expanded", String(expanded));
       });
+      // Room details have a plain text node instead of the SDK ShowMoreLink.
+      root.querySelectorAll('.A3OQYi .K2MWTk').forEach(function (heading) {
+        var description = heading.nextElementSibling;
+        // A previous pass has inserted the copy immediately after the heading.
+        if (description && description.hasAttribute("data-bs-description-copy")) description = description.nextElementSibling;
+        if (!description || description.querySelector('[data-tid="ShowMoreLink"]')
+          || description.textContent.trim().length < 200) return;
+        description.setAttribute("data-bs-description", "");
+        description.setAttribute("data-bs-room-description", "");
+        var toggle = description.nextElementSibling;
+        if (!toggle || !toggle.hasAttribute("data-bs-description-toggle")) {
+          toggle = document.createElement("button");
+          toggle.type = "button";
+          toggle.setAttribute("data-bs-description-toggle", "");
+          toggle.addEventListener("click", function () {
+            var paragraph = this.previousElementSibling;
+            paragraph.setAttribute("data-bs-expanded", String(this.getAttribute("aria-expanded") !== "true"));
+            schedule();
+          });
+          description.insertAdjacentElement("afterend", toggle);
+        }
+        var expanded = description.getAttribute("data-bs-expanded") === "true";
+        toggle.setAttribute("aria-controls", formatDescription(description, null, expanded));
+        var caption = expanded ? "Свернуть описание" : "Подробнее";
+        if (toggle.textContent !== caption) toggle.textContent = caption;
+        toggle.setAttribute("aria-expanded", String(expanded));
+      });
       root.querySelectorAll('[data-bs-description-copy]').forEach(function (copy) {
         if (!copy.nextElementSibling || !copy.nextElementSibling.hasAttribute('data-bs-description')) copy.remove();
       });
       root.querySelectorAll('[data-bs-description-toggle]').forEach(function (toggle) {
         var description = toggle.previousElementSibling;
-        if (!description || !description.hasAttribute("data-bs-description") || !description.querySelector('[data-tid="ShowMoreLink"]')) toggle.remove();
+        if (!description || !description.hasAttribute("data-bs-description")
+          || (!description.hasAttribute("data-bs-room-description") && !description.querySelector('[data-tid="ShowMoreLink"]'))) toggle.remove();
       });
       root.querySelectorAll('[data-bs-comforts-toggle]').forEach(function (toggle) {
         if (!toggle.previousElementSibling || !toggle.previousElementSibling.matches('[data-tid="Comforts"]')) toggle.remove();
       });
     });
+    refreshCalendarLayout();
     if (selectedTariff && !selectedTariff.isConnected) selectedTariff = null;
     if (selectedTariff && selectedTariff.isConnected && selectedTariff.querySelector(".WidgetNumberInputButton")) {
       var tariff = selectedTariff;
@@ -183,13 +230,15 @@
     contentObserver.disconnect();
     if (modal.open) {
       contentObserver.observe(document.body, { childList: true, subtree: true, characterData: true,
-        attributes: true, attributeFilter: ["disabled"] });
+        attributes: true, attributeFilter: ["disabled", "hidden"] });
       schedule();
     } else {
       pending = false;
       selectedTariff = null;
+      calendarLayout = "";
     }
   }
+  window.addEventListener("resize", schedule);
   new MutationObserver(sync).observe(modal, { attributes: true, attributeFilter: ["open"] });
   sync();
 })();

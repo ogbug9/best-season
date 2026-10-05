@@ -75,9 +75,11 @@
       {% endcomment %}
       <p class="booking-fallback__note" data-fallback-note-idle role="status">
         {% cms_text "booking_modal-1c2b1f9736f4" %}
+        <span class="booking-fallback__vpn">Если онлайн-бронирование не загрузилось и у вас включён <u>VPN</u>, отключите его и попробуйте снова.</span>
       </p>
       <p class="booking-fallback__note" data-fallback-note-error role="status" hidden>
         {% cms_text "booking_modal-beccab9d8c9d" %}
+        <span class="booking-fallback__vpn">Если онлайн-бронирование не загрузилось и у вас включён <u>VPN</u>, отключите его и попробуйте снова.</span>
       </p>
 
       <button type="button" class="btn btn--outline booking-system__retry" data-booking-retry hidden>
