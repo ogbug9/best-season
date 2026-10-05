@@ -2,9 +2,21 @@ from django.test import SimpleTestCase
 
 from core.faq_layout import AnswerParser, format_answer
 from core.templatetags.layout_tags import about_mobile_paragraphs
+from core.templatetags.layout_tags import LINES, layout_richtext
+from django.utils.safestring import mark_safe
 
 
 class FaqLayoutTests(SimpleTestCase):
+    def test_home_mobile_copy_preserves_desktop_and_custom_editor_copy(self):
+        source = mark_safe('<p>' + ' '.join(LINES['about_mobile'][1].split()) + '</p>')
+        rendered = str(layout_richtext(source, 'about'))
+        desktop, mobile = rendered.split('<span class="home-mobile-copy">')
+        self.assertNotIn('поистине', desktop)
+        self.assertIn('поистине уникальна', mobile)
+        self.assertIn('богатый и душистый питомник “Долина роз”.', mobile)
+        custom = mark_safe('<p>Новый текст редактора <a href="/custom/">со ссылкой</a>.</p>')
+        self.assertEqual(str(layout_richtext(custom, 'about')), custom)
+
     def test_inline_link_and_entities_survive_reference_break(self):
         source = ('<p>Все скидки действуют при бронировании напрямую — на сайте или '
                   'через <a href="/route/?x=1&amp;y=2">нас.</a> '

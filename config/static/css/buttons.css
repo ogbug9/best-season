@@ -168,6 +168,12 @@
 .site [data-button-type="f"]:is(:active, .is-pressed) { border-width: 1px; border-style: solid; }
 .site [data-button-type]:is(:active, .is-pressed)::before { background-image: none; opacity: 1; filter: none; mix-blend-mode: normal; }
 .site [data-button-type]:focus-visible { outline: 2px solid #8CA8FB; outline-offset: 3px; }
+@media (max-width: 699px) {
+  .site.page-home .about__text .btn.home-about-more:not(:is(:focus-visible, :active, .is-pressed, .is-loading, .is-success, [data-state="loading"], [data-state="success"], :disabled, [aria-disabled="true"])) {
+    background-color: transparent;
+    color: #F7F0E6;
+  }
+}
 @media (hover: hover) and (pointer: fine) {
   .site [data-button-type]:not(:disabled, [aria-disabled="true"]):hover { background-color: #E5D0C0; color: #494949; }
   .site .lightbox__nav[data-button-type]:hover { background-color: #9B5026; color: #F7F0E6; }

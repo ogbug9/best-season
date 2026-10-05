@@ -288,14 +288,14 @@
 /* PNG: начало рисунка 1761, блока «О домике» около 1860 — сдвиг -99. */
 .page-house .house-about-section::before { --mobile-bg: url('../img/mobile-backgrounds/house-reviews.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -99px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
 .page-house .footer { --mobile-bg: url('../img/mobile-backgrounds/house-footer.webp'); --mobile-bg-opacity: .86; --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
-/* Растр 2× сохраняет пути SVG; прозрачность подобрана по плотности
+/* Растр 4× сохраняет пути SVG; прозрачность подобрана по плотности
    PNG в браузере на 390 px / DPR 1. Позиция следует за реквизитами. */
 :is(.page-home, .page-houses, .page-promotions, .page-house) .footer__legal { position: relative; }
 .site:is(.page-home, .page-houses, .page-promotions, .page-house) .footer::before { content: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .footer__legal::before {
   content: ''; position: absolute; z-index: -1; pointer-events: none;
-  left: calc(50% - 195px + var(--mobile-bg-x)); top: -400px;
-  width: var(--mobile-bg-w); height: var(--mobile-bg-h);
+  left: calc(50% - 50vw); top: -400px;
+  width: 100vw; height: var(--mobile-bg-h);
   background: var(--mobile-bg) center / 100% 100% no-repeat;
   opacity: var(--mobile-bg-opacity);
 }

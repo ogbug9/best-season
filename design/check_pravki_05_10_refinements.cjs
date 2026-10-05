@@ -35,9 +35,10 @@ module.exports=async function refinements(browser,base,out,checks){
       for(let i=0;i<await buttons.count();i++){
         const button=buttons.nth(i);if(await button.isDisabled())continue;
         await button.scrollIntoViewIfNeeded();await page.mouse.move(0,0);await page.waitForTimeout(200);
-        const shape=await button.evaluate(e=>{const s=getComputedStyle(e),r=e.getBoundingClientRect();return {radius:parseFloat(s.borderTopLeftRadius),height:r.height,bg:s.backgroundColor,type:e.dataset.buttonType,wrapper:e.matches('.searchbar--cta-only')}});
+        const shape=await button.evaluate(e=>{const s=getComputedStyle(e),r=e.getBoundingClientRect();return {radius:parseFloat(s.borderTopLeftRadius),height:r.height,bg:s.backgroundColor,type:e.dataset.buttonType,wrapper:e.matches('.searchbar--cta-only'),homeMore:e.matches('.home-about-more')}});
         record(`Rounded button ${route} #${i+1}`,width,shape.radius>=shape.height/2-1,shape);
-        if(!shape.wrapper&&shape.type!=='f')record(`Opaque outline default ${route} #${i+1}`,width,/^rgb\(/.test(shape.bg),shape);
+        if(width===390&&shape.homeMore)record('Home mobile more transparent at rest',width,shape.bg==='rgba(0, 0, 0, 0)',shape);
+        else if(!shape.wrapper&&shape.type!=='f')record(`Opaque outline default ${route} #${i+1}`,width,/^rgb\(/.test(shape.bg),shape);
         for(const state of ['hover','pressed']){
           if(width===390&&state==='hover')continue;
           let touch;

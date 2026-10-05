@@ -1,6 +1,6 @@
 :root:has(.page-about) { scrollbar-width: none; }
 /* About us.svg: 1440 px. About us mob.svg: 390 px. */
-.page-about { overflow-x: clip; background: #F7F0E6 url('../img/about/decoration-desktop.svg') center top / 1440px 8251px no-repeat; }
+.page-about { overflow-x: clip; background: #F7F0E6 url('../img/about/decoration-desktop.svg') center top / 100% 8251px no-repeat; }
 .page-about .sticky-cta { display: none; }
 .page-about .container { width: min(1240px, calc(100% - 40px)); max-width: 1240px; }
 .page-about .container--header { width: min(1260px, calc(100% - 32px)); max-width: 1260px; }
@@ -154,7 +154,14 @@
   .about-history__name h2 { font-size: 46px; line-height: 52px; }
 }
 @media (max-width: 699px) {
-  .page-about { background-image: url('../img/about/decoration-mobile.svg'); background-size: 390px 6564px; }
+  .page-about { background-image: url('../img/about/decoration-mobile.svg'); background-size: 100% 6564px; }
+  .page-about .footer { overflow: clip; }
+  .page-about .footer__legal { position: relative; isolation: isolate; }
+  .page-about .footer__legal::before {
+    content: ''; position: absolute; z-index: -1; pointer-events: none;
+    left: calc(50% - 50vw); top: -400px; width: 100vw; height: 1100px;
+    background: url('../img/about/footer-mobile.webp') center / 100% 100% no-repeat;
+  }
   .page-about .container--header { width: 100%; max-width: none; }
   .site.page-about main > .about-hero:first-child { height: 570px; padding-top: 150px; }
   .about-hero .container { padding-left: 0; }

@@ -73,7 +73,8 @@ module.exports = async function checkContent(browser, base, out, checks) {
         const directions=await context.request.get(new URL(links[1],base).href);
         record('Directions destination HTTP 200',width,directions.status()===200);
         const paras=page.locator('.about__text > p');
-        record('Home updated about',width,!(await paras.allTextContents()).join(' ').includes('богатый и'));
+        const aboutCopy=(await paras.allInnerTexts()).join(' ');
+        record('Home updated about',width,width===390 ? aboutCopy.includes('поистине уникальна')&&aboutCopy.includes('богатый и душистый питомник “Долина роз”.') : !aboutCopy.includes('богатый и'));
         if(width===1440) record('Home about desktop lines',width,await paras.nth(1).evaluate(e=>e.getBoundingClientRect().height)===216);
       }
       if(route==='/razmeshchenie/') {

@@ -1,7 +1,7 @@
 """Переносы прочитанных текстов Desktop.png / Mobile.png (1440 / 390).
 
-Меняем только пробелы стандартного текста. Другой текст и форматирование
-редактора остаются без изменений.
+Переносы и отдельные одобренные мобильные версии стандартного текста.
+Другой текст и форматирование редактора остаются без изменений.
 """
 import re
 from html import unescape
@@ -11,6 +11,20 @@ from django.utils.html import conditional_escape, escape, format_html
 from django.utils.safestring import mark_safe
 
 register = template.Library()
+
+HOME_ABOUT_MOBILE_UPDATED = (
+    'Территория глэмпинга поистине уникальна —\n'
+    'с трех сторон нас окружает лес и небольшая\n'
+    'местная речка Скнижка, а рядом раскинулся\n'
+    'богатый и душистый питомник “Долина роз”.\n'
+    'Также наш район является самым\n'
+    'озонированным в Тульской области, воздух\n'
+    'здесь чище и плотнее, так что здесь отлично\n'
+    'можно выспаться. А ещё у нас есть\n'
+    'собственная контактная ферма, которая\n'
+    'порадует свежими и натуральными\n'
+    'продуктами к вашему завтраку.'
+)
 
 
 @register.filter(is_safe=True)
@@ -319,6 +333,11 @@ def layout_richtext(value, key):
         plain = unescape(content)
         desktop = layout_lines(plain, key + '_desktop')
         mobile = layout_lines(plain, key + '_mobile')
+        if key == 'about' and ' '.join(plain.split()) in {
+            ' '.join(LINES['about_mobile'][1].split()),
+            ' '.join(HOME_ABOUT_MOBILE_UPDATED.split()),
+        }:
+            mobile = HOME_ABOUT_MOBILE_UPDATED
         # В мобильном фрейме каталога показан только первый абзац
         # стандартного вступления; авторский текст оставляем целиком.
         if key == 'intro' and mobile != plain:
