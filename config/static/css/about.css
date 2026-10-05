@@ -1,6 +1,6 @@
 :root:has(.page-about) { scrollbar-width: none; }
 /* About us.svg: 1440 px. About us mob.svg: 390 px. */
-.page-about { overflow-x: clip; background: #F7F0E6 url('../img/about/decoration-desktop.svg') center top / 100% 8251px no-repeat; }
+.page-about { overflow-x: clip; background: #F7F0E6 url('../img/about/decoration-desktop.svg') center top / 5760px 8251px no-repeat; }
 .page-about .sticky-cta { display: none; }
 .page-about .container { width: min(1240px, calc(100% - 40px)); max-width: 1240px; }
 .page-about .container--header { width: min(1260px, calc(100% - 32px)); max-width: 1260px; }
