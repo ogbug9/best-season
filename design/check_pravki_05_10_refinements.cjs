@@ -45,6 +45,7 @@ module.exports=async function refinements(browser,base,out,checks){
           if(width===390){const box=await button.boundingBox();touch=await context.newCDPSession(page);await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:box.x+box.width/2,y:box.y+box.height/2}]});}
           else {await button.hover();if(state==='pressed')await page.mouse.down();}
           await page.waitForTimeout(180);
+          await button.evaluate(e=>Promise.all(e.getAnimations().map(a=>a.finished.catch(()=>{}))));
           const bg=await button.evaluate(e=>getComputedStyle(e).backgroundColor),rgb=bg.match(/\d+/g)?.slice(0,3).map(Number);
           const png=PNG.sync.read(await button.screenshot());
           const corners=[[0,0],[png.width-1,0],[0,png.height-1],[png.width-1,png.height-1]];
