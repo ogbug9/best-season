@@ -25,10 +25,10 @@
 .about-photo--pet-snezhka img { width: 100%; height: 253.2884%; left: 0; top: -69.6294%; }
 .about-photo--pet-dymok img { width: 131.6083%; height: 250.057%; left: -15.8357%; top: -100.775%; }
 .about-history { position: relative; margin-top: -40px; }
-.about-history__intro { margin: 0 10px; min-height: 516px; padding: 40px; display: grid; grid-template-columns: 700fr 380fr; gap: 60px; align-items: center; background: #847F57; border-radius: 20px; color: #F7F0E6; }
+.about-history__intro { margin: 0 10px; min-height: 516px; padding: 40px; display: grid; grid-template-columns: 700fr 410fr; gap: 30px; align-items: center; background: #847F57; border-radius: 20px; color: #F7F0E6; }
 .about-history__intro .about-photo { width: 100%; height: 436px; border-radius: 16px; }
 .about-history p { margin: 0; font: 400 20px/24px var(--font-body); }
-.about-history__intro p + p { margin-top: 20px; }
+.about-history__intro p + p { margin-top: 24px; }
 .about-history__route { position: relative; margin: 80px 10px 0; }
 .about-history__route::before { content: none; }
 .about-history__row { position: relative; display: grid; grid-template-columns: 455px 1fr; align-items: center; gap: 90px; min-height: 455px; margin-bottom: 80px; }
@@ -192,6 +192,8 @@
   .about-pillars .section__title { text-align: center; }
   .about-section__lead { text-align: left; font-size: 14px; line-height: 17px; margin: -8px 0 20px; }
   .about-section__lead br { display: none; }
+  .about-section__lead .br-mob { display: initial; }
+  .about-pets .about-section__lead, .about-diary .about-section__lead { font-size: 13px; line-height: 16px; }
   .about-lead__desktop { display: none; }
   .about-lead__mobile, .about-lead__paragraph { display: block; }
   .about-lead__paragraph + .about-lead__paragraph { text-indent: 0; }

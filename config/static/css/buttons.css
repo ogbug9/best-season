@@ -119,7 +119,7 @@
 
 /* Общие состояния CTA, включая шапку, подвал и карточки акций. */
 .site .btn.nearby-more,
-.site .about__text .btn.btn--outline { background-color: transparent; color: #494949; border: 1px solid #9B5026; }
+.site .about__text .btn.btn--outline { background-color: #F7F0E6; color: #494949; border: 1px solid #9B5026; }
 /* Растровые иконки содержат собственную серую подложку. В покое файл
    сохраняется; при взаимодействии blend отделяет значок от подложки. */
 .site a.socials__item { transition: background-color .2s ease; }
@@ -151,6 +151,12 @@
 .button--type-c { --button-pressed-bg: var(--button-pale-grey); --button-pressed-text: var(--button-grey); --button-pressed-border: var(--button-pale-grey); }
 .button--type-d, .button--type-e, .button--type-f { --button-pressed-bg: var(--button-orange); --button-pressed-text: var(--button-light); --button-pressed-border: var(--button-orange); }
 .site [data-button-type] { box-sizing: border-box; }
+/* The booking button and its label share the same pill-shaped surface. */
+.site .searchbar--cta-only { border-radius: var(--radius-pill); }
+.site .btn.btn--outline:not(:where(.kontur-host *, .react-ui *, .house__more)) {
+  background-color: #F7F0E6;
+  border-radius: var(--radius-pill);
+}
 .site :is(button, summary, .btn, [role="button"], .socials__item)[data-button-type]:is(:active, .is-pressed):not(:disabled, [aria-disabled="true"]) {
   background-color: var(--button-pressed-bg); background-image: none;
   color: var(--button-pressed-text); border-color: var(--button-pressed-border);

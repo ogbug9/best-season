@@ -38,6 +38,14 @@
       .concat(Array.from(document.querySelectorAll("body > .react-ui")));
     roots.forEach(function (root) {
       root.setAttribute("data-bs-kontur", "");
+      root.querySelectorAll('[data-tid="modal-content"]').forEach(function (dialog) {
+        var heading = dialog.querySelector('[data-tid="ModalHeader__root"]');
+        if (heading && heading.textContent.trim().indexOf("Корзина") === 0) {
+          dialog.setAttribute("data-bs-booking-cart", "");
+        } else if (dialog.hasAttribute("data-bs-booking-cart")) {
+          dialog.removeAttribute("data-bs-booking-cart");
+        }
+      });
       root.querySelectorAll('[data-tid="Comforts"]').forEach(function (comforts) {
         var toggle = comforts.nextElementSibling;
         if (!toggle || !toggle.hasAttribute("data-bs-comforts-toggle")) {

@@ -14,6 +14,17 @@ register = template.Library()
 
 
 @register.filter(is_safe=True)
+def faq_answer_layout(value, question):
+    from core.faq_layout import format_answer
+    return mark_safe(format_answer(value, question))
+
+
+@register.filter
+def faq_mobile_question(value, key=''):
+    return layout_lines(value, 'catalog_faq_mobile' if key == 'catalog_faq' else 'faq_mobile')
+
+
+@register.filter(is_safe=True)
 def about_hero_copy(value):
     """Keep the distinct approved desktop/mobile reference wording."""
     approved = ('Лучший сезон — место, куда приезжают, чтобы побыть вместе. '
@@ -54,7 +65,18 @@ def about_history_copy(value, section):
     mobile = lines.get(str(section), str(value))
     if ' '.join(str(value).split()).rstrip('.') != ' '.join(mobile.split()).rstrip('.'):
         mobile = str(value)
-    desktop_html = str(escape(value)).replace('\n', '<br class="br-desk">')
+    desktop_lines = {
+        '0': ('Мы в Заокском районе Тульской\nобласти, в двух часах от Москвы.\n'
+              'С трёх сторон лес, вдоль территории\nтечёт Скнижка, рядом питомник\n«Долина роз»'),
+        '1': ('Наш район считается одним из самых\nчистых в области, воздух здесь чище\n'
+              'и плотнее — это заметно в первую\nже ночь: спится здесь иначе.'),
+        '2': ('А ещё у нас есть собственная Ферма,\nкоторая порадует свежими\n'
+              'и натуральными продуктами\nк вашему завтраку.'),
+    }
+    desktop = desktop_lines.get(str(section), str(value))
+    if ' '.join(str(value).split()).rstrip('.') != ' '.join(desktop.split()).rstrip('.'):
+        desktop = str(value)
+    desktop_html = str(escape(desktop)).replace('\n', '<br class="br-desk">')
     mobile_html = str(escape(mobile)).replace('\n', '<br class="br-mob">')
     return format_html('<span class="home-desktop-copy">{}</span><span class="home-mobile-copy">{}</span>',
                        mark_safe(desktop_html), mark_safe(mobile_html))
@@ -63,6 +85,22 @@ def about_history_copy(value, section):
 @register.filter
 def about_mobile_paragraphs(value, section):
     """Approved mobile paragraph starts; escape CMS text and bind short words."""
+    reference = {
+        'pets': ('Иногда к нам приходят котята, брошенные собаки\n'
+                 'или кто-то ещё. Мы не приют — просто не умеем\n'
+                 'проходить мимо. Пока для них не нашлись\n'
+                 'хозяева, они живут у нас. Но если вы взглянете\n'
+                 'на кого-то с этой страницы и поймёте, что это ваш,\n'
+                 '— напишите нам.'),
+        'diary': ('Что у нас происходит: новые постройки, сезонные\n'
+                  'затеи, наши рубрики и места по соседству, куда\n'
+                  'стоит съездить.'),
+    }
+    planned = reference.get(section)
+    actual = ' '.join(str(value or '').split())
+    if planned and actual in {' '.join(planned.split()), ' '.join(planned.split()).replace('сезонные затеи', 'сезонные акции')}:
+        return format_html('<span class="about-lead__paragraph">{}</span>', mark_safe(
+            '<br class="br-mob">'.join(str(escape(line)) for line in planned.splitlines())))
     starts = {
         'map': 'Посмотрите,',
         'diary': 'и места по соседству',
@@ -245,6 +283,11 @@ LINES = {
     ],
     'catalog_faq': [
         'Во сколько заезд и выезд?\nМожно ли заехать раньше или уехать позже?',
+    ],
+    'catalog_faq_mobile': [
+        'Какая нужна предоплата?\nЕсть ли залог?',
+        'Во сколько заезд и выезд?\nМожно ли заехать раньше\nили уехать позже?',
+        'Можно ли слушать музыку\nи отмечать праздник?',
     ],
 }
 

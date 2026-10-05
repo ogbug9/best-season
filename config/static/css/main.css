@@ -5557,6 +5557,8 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .faq__item .faq__question { width: 100%; border: 0; text-align: left; font-family: var(--font-body); }
 .faq__question:focus-visible { outline: 2px solid #9B5026; outline-offset: 4px; }
 .faq__answer { overflow: hidden; }
+.faq__reference-break { display: none; }
+@media (min-width: 1280px) { .faq__reference-break { display: initial; } }
 .faq__answer[hidden] { display: none; }
 .service-tile.territory-card .territory-card__details p { white-space: normal; width: 100%; min-width: 0; max-height: 92px; overflow-y: auto; }
 .service-tile.territory-card .mosaic__caption :is(h2, h3) { white-space: normal; }
