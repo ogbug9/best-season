@@ -31,6 +31,60 @@
       behavior: "instant" });
   }
 
+  // Keep SDK-owned nodes intact: render a readable copy only while expanded.
+  function formatDescription(description, link, expanded) {
+    var copy = description.previousElementSibling;
+    if (!copy || !copy.hasAttribute("data-bs-description-copy")) copy = null;
+    if (!expanded) {
+      description.removeAttribute("data-bs-description-formatted");
+      if (copy) copy.remove();
+      return description.id;
+    }
+    var walker = document.createTreeWalker(description, NodeFilter.SHOW_TEXT);
+    var text = [], node;
+    while ((node = walker.nextNode())) {
+      if (!link.contains(node)) text.push(node.nodeValue);
+    }
+    var source = text.join("").trim();
+    if (!source) return description.id;
+    if (!copy) {
+      copy = document.createElement("div");
+      copy.setAttribute("data-bs-description-copy", "");
+      copy.id = "bs-kontur-description-copy-" + (++descriptionId);
+      copy.tabIndex = 0;
+      copy.setAttribute("role", "region");
+      copy.setAttribute("aria-label", "Описание домика");
+      description.insertAdjacentElement("beforebegin", copy);
+    }
+    if (copy.bsDescriptionSource !== source) {
+      copy.bsDescriptionSource = source;
+      var lines = source.replace(/([^\n])\s+([-•])\s+(?=[А-ЯЁA-Z])/g, "$1\n$2 ")
+        .split(/\r?\n/).map(function (line) { return line.trim(); }).filter(Boolean);
+      var content = document.createElement("div"), list = null;
+      lines.forEach(function (line) {
+        var bullet = /^[-•]\s+/.test(line);
+        var text = line.replace(/^[-•]\s+/, "");
+        var item;
+        if (bullet) {
+          if (!list) { list = document.createElement("ul"); content.appendChild(list); }
+          item = document.createElement("li"); list.appendChild(item);
+        } else {
+          list = null;
+          item = document.createElement("p"); content.appendChild(item);
+          if (/:$/.test(text) && text.length < 65) item.className = "booking-description-heading";
+        }
+        var heading = text.match(/^([^:]{2,45}:)(?:\s+(.*)|$)/);
+        if (heading) {
+          var title = document.createElement("strong"); title.textContent = heading[1];
+          item.append(title, document.createTextNode(heading[2] ? " " + heading[2] : ""));
+        } else item.textContent = text;
+      });
+      copy.replaceChildren(content);
+    }
+    description.setAttribute("data-bs-description-formatted", "true");
+    return copy.id;
+  }
+
   function decorate() {
     pending = false;
     if (!modal.open) return;
@@ -99,9 +153,13 @@
           });
           description.insertAdjacentElement("afterend", toggle);
         }
+        toggle.setAttribute("aria-controls", formatDescription(description, link, expanded));
         var caption = expanded ? "Свернуть описание" : "Подробнее";
         if (toggle.textContent !== caption) toggle.textContent = caption;
         toggle.setAttribute("aria-expanded", String(expanded));
+      });
+      root.querySelectorAll('[data-bs-description-copy]').forEach(function (copy) {
+        if (!copy.nextElementSibling || !copy.nextElementSibling.hasAttribute('data-bs-description')) copy.remove();
       });
       root.querySelectorAll('[data-bs-description-toggle]').forEach(function (toggle) {
         var description = toggle.previousElementSibling;

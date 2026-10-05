@@ -5574,3 +5574,12 @@ html:has(.lightbox[open]) { overflow: hidden; }
 @keyframes photo-nav-press { 0%, 100% { transform: translateY(-50%) scale(1); } 40% { transform: translateY(-50%) scale(.92); } }
 @keyframes photo-nav-arrow { 0%, 100% { transform: translateX(0); } 40% { transform: translateX(var(--step-x)); } }
 @media (prefers-reduced-motion: reduce) { .lightbox__nav.is-stepping, .lightbox__nav.is-stepping .lightbox__chevron { animation: none; } }
+
+/* House pages start with photos; the working booking entry sits before reviews. */
+.page-house .house-booking-cta { padding-block: 0 var(--s-8); }
+.page-house .house-booking-cta .container { display: flex; justify-content: center; }
+.page-house .house-booking-cta .btn { min-width: 240px; max-width: 100%; }
+@media (max-width: 699px) {
+  body.page-house main > .house-mosaic-section:first-child { padding-top: 112px; }
+  .page-house .house-booking-cta { padding-bottom: 32px; }
+}

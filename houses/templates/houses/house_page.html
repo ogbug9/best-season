@@ -2,12 +2,7 @@
 {% load content_tags %}
 {% load static wagtailcore_tags media_tags icon_tags houses_tags layout_tags l10n seo_tags %}
 
-{% comment %}
-  Страница дома. Порядок блоков — по макету «Первый домик»: заголовок,
-  блок бронирования, мозаика фото, карточки-факты, «О домике»/«Удобства»,
-  развёрнутое описание, отзывы. Редактор правит содержимое, не порядок
-  (п. 8 ТЗ).
-{% endcomment %}
+{# Фотографии, сведения о домике, удобства, кнопка бронирования, отзывы. #}
 
 {% block body_class %}page-house page-house--{{ page.slug }}{% endblock %}
 {% block body_attributes %}data-house-slug="{{ page.slug }}"{% endblock %}
@@ -15,28 +10,7 @@
 
 {% block structured_data %}{% accommodation_schema %}{% endblock %}
 
-{% comment %}
-  На телефоне LCP страницы — фон заголовка из home-mobile.css: из CSS браузер
-  находит его на ~3 с позже (PageSpeed). Те же файлы и тот же media, что в CSS.
-{% endcomment %}
-{% block extra_css %}
-  <link rel="preload" as="image" href="{% static 'img/mobile-backgrounds/house-booking.svg' %}" media="(max-width: 699px)" fetchpriority="high">
-  <link rel="preload" as="image" href="{% static 'img/mobile-backgrounds/house-top.svg' %}" media="(max-width: 699px)">
-{% endblock %}
-
 {% block content %}
-
-{# ---------- 1. Заголовок ---------- #}
-<section class="house-title">
-  {# Фон страницы домика: координаты — в main.css, блок «Фон страницы домика» #}
-  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-top.svg' %}"><img class="home-bg__layer home-bg__layer--house-top" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1111" height="872" alt="" loading="lazy" decoding="async"></picture></div>
-  <div class="container">
-    <h1>{{ page.title }}</h1>
-  </div>
-</section>
-
-{# ---------- 2. Бронирование ---------- #}
-{% include "houses/_booking_panel.html" %}
 
 {% comment %} ---------- 3. Мозаика фото ----------
    Пять кадров по макету: крупный слева, четыре справа. Клик открывает
@@ -47,7 +21,7 @@
 <section class="house-mosaic-section">
   <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}"><img class="home-bg__layer home-bg__layer--house-gallery" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1172" height="1199" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
-    <h2 class="visually-hidden">{% cms_text "house_page-a46bc5fa21a3" %}</h2>
+    <h1 class="visually-hidden">{{ page.title }}</h1>
     <ul class="house-mosaic gallery" data-gallery>
       {% for image in mosaic %}
         <li class="house-mosaic__item gallery__item">
@@ -172,6 +146,12 @@
   </div>
 </section>
 {% endif %}
+
+<section class="house-booking-cta" aria-label="Бронирование домика">
+  <div class="container">
+    <button type="button" class="btn btn--primary" data-booking-open data-house-id="{{ page.pk }}" data-entry-point="4">{% cms_text "_booking_panel-5d9d7f118153" %}</button>
+  </div>
+</section>
 
 {# ---------- 7. Отзывы о домике (п. 4.1.7 ТЗ) ---------- #}
 {% if page.house_reviews %}

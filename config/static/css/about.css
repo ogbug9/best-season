@@ -2,13 +2,11 @@
 /* Native vector paths avoid a page-sized raster surface. */
 .page-about { position: relative; isolation: isolate; overflow-x: clip; background: #F7F0E6; }
 .page-about .about-background { position: absolute; inset: 0; z-index: -1; overflow: clip; pointer-events: none; }
-.page-about .about-footer-background { position: absolute; z-index: -1; left: calc(50% - 50vw); top: -542.5625px; bottom: -80px; width: 100vw; overflow: clip; pointer-events: none; }
 .page-about .about-art { position: absolute; z-index: -1; pointer-events: none; left: 50%; transform: translateX(-50%); max-width: none; overflow: visible; display: block; }
 .page-about .about-art--main { top: 0; width: 5760px; height: 8251px; }
 .page-about .about-art--mobile { display: none; }
 .page-about .footer { overflow: visible; }
 .page-about .footer__legal { position: relative; isolation: isolate; }
-.page-about .about-art--footer { top: 0; width: 5760px; height: 1697px; }
 .page-about .sticky-cta { display: none; }
 .page-about .container { width: min(1240px, calc(100% - 40px)); max-width: 1240px; }
 .page-about .container--header { width: min(1260px, calc(100% - 32px)); max-width: 1260px; }
@@ -165,8 +163,6 @@
   .page-about .about-art--desktop { display: none; }
   .page-about .about-art--mobile { display: block; }
   .page-about .about-art--main { width: 1170px; height: 6564px; }
-  .page-about .about-footer-background { top: -400px; bottom: -20px; }
-  .page-about .about-art--footer { width: 1170px; height: 1373px; }
   .page-about .container--header { width: 100%; max-width: none; }
   .site.page-about main > .about-hero:first-child { height: 570px; padding-top: 150px; }
   .about-hero .container { padding-left: 0; }
@@ -274,4 +270,14 @@
   .about-value--1 .about-value__copy { padding: 36px 30px; }
   .about-value--1 h3 { margin-bottom: 24px; }
   .about-journey > span:nth-child(2) { padding-left: 65px; }
+}
+
+/* Reuse the homepage footer artwork and its scale in both versions. */
+.page-about .footer { position: relative; isolation: isolate; overflow: clip; }
+@media (min-width: 900px) {
+  .page-about .footer .home-bg { display: block; position: absolute; inset: 0; pointer-events: none; user-select: none; }
+  .page-about .footer .home-bg__layer--footer { position: absolute; z-index: -1; left: calc(50% - 499px); top: 281.1px; width: 2069px; height: 1853px; max-width: none; }
+}
+@media (max-width: 699px) {
+  .page-about .footer__legal::before { content: ''; position: absolute; z-index: -1; pointer-events: none; left: calc(50% - 50vw); top: -400px; width: 100vw; height: 1100px; background: url('../img/mobile-backgrounds/home-footer.webp') center / 100% 100% no-repeat; opacity: .84; }
 }
