@@ -2,11 +2,11 @@
 /* Native vector paths avoid a page-sized raster surface. */
 .page-about { position: relative; isolation: isolate; overflow-x: clip; background: #F7F0E6; }
 .page-about .about-background { position: absolute; inset: 0; z-index: -1; overflow: clip; pointer-events: none; }
-.page-about .about-footer-background { position: absolute; z-index: -1; left: calc(50% - 50vw); top: -542.5625px; width: 100vw; height: 1697px; overflow: clip; pointer-events: none; }
+.page-about .about-footer-background { position: absolute; z-index: -1; left: calc(50% - 50vw); top: -542.5625px; bottom: -80px; width: 100vw; overflow: clip; pointer-events: none; }
 .page-about .about-art { position: absolute; z-index: -1; pointer-events: none; left: 50%; transform: translateX(-50%); max-width: none; overflow: visible; display: block; }
 .page-about .about-art--main { top: 0; width: 5760px; height: 8251px; }
 .page-about .about-art--mobile { display: none; }
-.page-about .footer { overflow: clip; }
+.page-about .footer { overflow: visible; }
 .page-about .footer__legal { position: relative; isolation: isolate; }
 .page-about .about-art--footer { top: 0; width: 5760px; height: 1697px; }
 .page-about .sticky-cta { display: none; }
@@ -165,7 +165,7 @@
   .page-about .about-art--desktop { display: none; }
   .page-about .about-art--mobile { display: block; }
   .page-about .about-art--main { width: 1170px; height: 6564px; }
-  .page-about .about-footer-background { top: -400px; height: 1373px; }
+  .page-about .about-footer-background { top: -400px; bottom: -20px; }
   .page-about .about-art--footer { width: 1170px; height: 1373px; }
   .page-about .container--header { width: 100%; max-width: none; }
   .site.page-about main > .about-hero:first-child { height: 570px; padding-top: 150px; }
