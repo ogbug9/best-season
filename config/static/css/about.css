@@ -1,6 +1,14 @@
 :root:has(.page-about) { scrollbar-width: none; }
-/* Keep artwork at the 1440/390 design scale; wider canvases prevent gutter clipping. */
-.page-about { overflow-x: clip; background: #F7F0E6 url('../img/about/decoration-desktop.svg') center top / 5760px 8251px no-repeat; }
+/* Native vector paths avoid a page-sized raster surface. */
+.page-about { position: relative; isolation: isolate; overflow-x: clip; background: #F7F0E6; }
+.page-about .about-background { position: absolute; inset: 0; z-index: -1; overflow: clip; pointer-events: none; }
+.page-about .about-footer-background { position: absolute; z-index: -1; left: calc(50% - 50vw); top: -542.5625px; width: 100vw; height: 1697px; overflow: clip; pointer-events: none; }
+.page-about .about-art { position: absolute; z-index: -1; pointer-events: none; left: 50%; transform: translateX(-50%); max-width: none; overflow: visible; display: block; }
+.page-about .about-art--main { top: 0; width: 5760px; height: 8251px; }
+.page-about .about-art--mobile { display: none; }
+.page-about .footer { overflow: clip; }
+.page-about .footer__legal { position: relative; isolation: isolate; }
+.page-about .about-art--footer { top: 0; width: 5760px; height: 1697px; }
 .page-about .sticky-cta { display: none; }
 .page-about .container { width: min(1240px, calc(100% - 40px)); max-width: 1240px; }
 .page-about .container--header { width: min(1260px, calc(100% - 32px)); max-width: 1260px; }
@@ -154,14 +162,11 @@
   .about-history__name h2 { font-size: 46px; line-height: 52px; }
 }
 @media (max-width: 699px) {
-  .page-about { background-image: url('../img/about/decoration-mobile.svg'); background-size: 1170px 6564px; }
-  .page-about .footer { overflow: clip; }
-  .page-about .footer__legal { position: relative; isolation: isolate; }
-  .page-about .footer__legal::before {
-    content: ''; position: absolute; z-index: -1; pointer-events: none;
-    left: calc(50% - 50vw); top: -400px; width: 100vw; height: 1100px;
-    background: url('../img/about/footer-mobile.webp') center / 100% 100% no-repeat;
-  }
+  .page-about .about-art--desktop { display: none; }
+  .page-about .about-art--mobile { display: block; }
+  .page-about .about-art--main { width: 1170px; height: 6564px; }
+  .page-about .about-footer-background { top: -400px; height: 1373px; }
+  .page-about .about-art--footer { width: 1170px; height: 1373px; }
   .page-about .container--header { width: 100%; max-width: none; }
   .site.page-about main > .about-hero:first-child { height: 570px; padding-top: 150px; }
   .about-hero .container { padding-left: 0; }

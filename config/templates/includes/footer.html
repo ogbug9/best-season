@@ -85,6 +85,12 @@
     </div>
 
     <div class="footer__legal">
+      {% if page.slug == 'o-nas' %}
+        <div class="about-footer-background" aria-hidden="true">
+        {% include 'core/includes/about-art-footer-desktop.svg' %}
+        {% include 'core/includes/about-art-footer-mobile.svg' %}
+        </div>
+      {% endif %}
       <div class="footer__requisites">
         {% if s.legal_name %}<span>{{ s.legal_name }}</span>{% else %}<span>{% cms_text "footer-6ea391cc2463" %}</span>{% endif %}
         {% if s.ogrnip %}<span>{% cms_text "footer-d47f74a52d01" %} {{ s.ogrnip }}</span>{% else %}<span>{% cms_text "footer-6a2f62061838" %}</span>{% endif %}

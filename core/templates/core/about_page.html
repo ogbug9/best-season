@@ -3,8 +3,14 @@
 {% load content_tags %}
 {% load static wagtailcore_tags layout_tags %}
 {% block body_class %}page-about{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261005-about-bg-canvas">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261005-about-vector">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/vendor/swiper-12.0.3.min.js' %}" defer></script><script src="{% static 'js/about.js' %}?v=20261005-backgrounds" defer></script>{% endblock %}
+{% block page_background %}
+<div class="about-background" aria-hidden="true">
+{% include 'core/includes/about-art-desktop.svg' %}
+{% include 'core/includes/about-art-mobile.svg' %}
+</div>
+{% endblock %}
 {% block content %}
 <section class="about-hero">
   <div class="container"><h1>{{ about.hero_title|linebreaksbr }}</h1><p>{{ about.hero_text|about_hero_copy }}</p></div>
