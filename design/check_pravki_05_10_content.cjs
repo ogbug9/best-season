@@ -52,15 +52,20 @@ module.exports = async function checkContent(browser, base, out, checks) {
         record(`FAQ initial ${route} #${i+1}`,width,(await question.getAttribute('aria-expanded'))===String(i===0));
         if(i>0) await question.click();
         record(`FAQ open ${route} #${i+1}`,width,await answer.isVisible()&&await question.getAttribute('aria-expanded')==='true');
+        record(`FAQ open chevron ${route} #${i+1}`,width,await question.evaluate(e=>getComputedStyle(e,'::after').content)==='""');
         await question.focus();await page.keyboard.press('Enter');
         await answer.waitFor({state:'hidden'});
         record(`FAQ keyboard ${route} #${i+1}`,width,!await answer.isVisible()&&await question.getAttribute('aria-expanded')==='false');
+        record(`FAQ closed chevron ${route} #${i+1}`,width,await question.evaluate(e=>getComputedStyle(e,'::after').content)==='""');
         await question.click();
       }
       await page.evaluate(()=>document.querySelectorAll('.faq__item').forEach(e=>{e.classList.add('is-open');e.querySelector('.faq__question').setAttribute('aria-expanded','true');e.querySelector('.faq__answer').hidden=false}));
       await page.mouse.move(0,0);await page.evaluate(()=>document.activeElement.blur());
       await page.waitForTimeout(220);
+      const header=page.locator('.header');
+      await header.evaluateAll(es=>es.forEach(e=>e.style.visibility='hidden'));
       await page.locator('.faq').screenshot({path:path.join(out,`faq-${route==='/'?'home':route.split('/')[1]}-${width}.png`)});
+      await header.evaluateAll(es=>es.forEach(e=>e.style.removeProperty('visibility')));
       if(route==='/') {
         const links=await faq.first().locator('a').evaluateAll(es=>es.map(e=>e.getAttribute('href')));
         record('FAQ route links',width,links.length===3&&links[0]==='https://yandex.com/maps/-/CPsvELJx'&&links[1].includes('/kak-dobratsya/')&&links[2]==='https://www.tutu.ru/rasp.php?st1=20000&st2=43806',links);

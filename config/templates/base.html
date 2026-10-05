@@ -41,12 +41,12 @@
     <link rel="preload" href="{% static 'fonts/etude-noire-500-cyrillic.woff2' %}" as="font" type="font/woff2" crossorigin>
 
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}?v=20261001-corrections">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=20261005-pravki">
-    <link rel="stylesheet" href="{% static 'css/home-mobile.css' %}?v=20261005-pravki" media="(max-width: 699px)">
-    <link rel="stylesheet" href="{% static 'css/pages-mobile.css' %}?v=20261005-pravki" media="(max-width: 699px)">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=20261005-pravki-final">
+    <link rel="stylesheet" href="{% static 'css/home-mobile.css' %}?v=20261005-pravki-final" media="(max-width: 699px)">
+    <link rel="stylesheet" href="{% static 'css/pages-mobile.css' %}?v=20261005-pravki-final" media="(max-width: 699px)">
     <link rel="stylesheet" href="{% static 'css/kontur-booking.css' %}?v=20261003-comforts">
     {% block extra_css %}{% endblock %}
-    <link rel="stylesheet" href="{% static 'css/buttons.css' %}?v=20261005-pravki">
+    <link rel="stylesheet" href="{% static 'css/buttons.css' %}?v=20261005-pravki-final">
 
     {# Микроразметка организации — п. 10.5 ТЗ #}
     {% organization_schema %}
@@ -103,7 +103,7 @@
     <script src="{% static 'js/analytics.js' %}?v=20261001-booking-k1" defer></script>
     <script src="{% static 'js/scroll-intent.js' %}?v=20261002-swipe" defer></script>
     <script src="{% static 'js/button-states.js' %}?v=20261002-states" defer></script>
-    <script src="{% static 'js/site.js' %}?v=20261005-pravki" defer></script>
+    <script src="{% static 'js/site.js' %}?v=20261005-pravki-final" defer></script>
     {% comment %} Блок бронирования есть только на странице дома — на
        остальных скрипт выходит сразу, ничего не найдя. {% endcomment %}
     <script src="{% static 'js/calendar.js' %}?v=20260925-calendar" defer></script>

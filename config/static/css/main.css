@@ -3555,7 +3555,7 @@ body[data-modal-open] {
   transform: rotate(45deg) translate(-3px, -3px);
   transition: transform 0.2s ease;
 }
-.faq__item.is-open .faq__question::after { transform: rotate(-135deg) translate(-3px, -3px); }
+.faq__item.is-open .faq__question::after { content: ""; transform: rotate(-135deg) translate(-3px, -3px); }
 /* Значения ответа собраны в одном правиле выше (.faq__answer, замеры
    инспектора). Здесь раньше стоял кремовый текст — наследие тёмной
    секции; на кремовом фоне он был почти нечитаем. */
