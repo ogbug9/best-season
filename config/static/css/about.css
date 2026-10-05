@@ -76,14 +76,24 @@
 .about-value--1 h3 { margin-inline: 0; margin-bottom: 42px; }
 .about-value--3 .about-value__copy { justify-content: flex-start; padding-top: 60px; }
 .about-value--4 .about-value__copy, .about-value--5 .about-value__copy { padding-top: 80px; }
+/* Glyph positions measured in Карточки ценностей (2).png, 400 × 600. */
+.about-value--1 { --value-top: 78px; --value-title-gap: 36px; --value-copy-gap: 21px; }
+.about-value--2 { --value-top: 165px; --value-title-gap: 10px; --value-copy-gap: 21px; }
+.about-value--3 { --value-top: 79px; --value-title-gap: 6px; --value-copy-gap: 25px; }
+.about-value--4 { --value-top: 201px; --value-title-gap: 6px; --value-copy-gap: 25px; }
+.about-value--5 { --value-top: 199px; --value-title-gap: 6px; --value-copy-gap: 23px; }
+.about-value--6 { --value-top: 210px; --value-title-gap: 7px; --value-copy-gap: 25px; }
+.about-value .about-value__copy { justify-content: flex-start; padding-top: var(--value-top); }
+.about-value h3 { margin-bottom: var(--value-title-gap); }
+.about-value .about-value__lead { margin-bottom: var(--value-copy-gap); }
 .about-journey { display: grid; text-align: left; padding-inline: 6px; }
 .about-journey > span { display: block; position: relative; }
 .about-journey > span::after { content: ''; position: absolute; width: 42px; height: 30px; border: 1px dashed #F0C949; border-top: 0; border-right: 0; border-radius: 0 0 0 100%; pointer-events: none; }
 .about-journey > span:first-child::after { left: 40px; top: 100%; }
 .about-journey > span:nth-child(2)::after { right: 30px; top: 80%; transform: rotate(180deg); }
 .about-journey > span:last-child::after { content: none; }
-.about-journey > span:nth-child(2) { padding-left: 90px; margin-top: 18px; }
-.about-journey > span:last-child { text-align: right; margin-top: 18px; }
+.about-journey > span:nth-child(2) { padding-left: 90px; margin-top: 27px; }
+.about-journey > span:last-child { text-align: right; margin-top: 27px; }
 .about-dots { display: flex; justify-content: center; gap: 0; margin-top: 19px; }
 .about-dots[hidden] { display: none; }
 .about-dots button { display: grid; place-items: center; border: 0; width: 16px; height: 20px; padding: 0; background: transparent; cursor: pointer; }
@@ -151,6 +161,9 @@
   .about-hero h1 { font-size: 36px; line-height: 38px; margin-bottom: 12px; }
   .about-hero p { margin-left: 0; font-size: 14px; line-height: 17px; max-width: 350px; }
   .about-hero p br { display: none; }
+  .about-hero p .br-mob { display: initial; }
+  :is(.about-hero, .about-history) .home-desktop-copy { display: none; }
+  :is(.about-hero, .about-history) .home-mobile-copy { display: inline; }
   .about-history__intro { margin: 0; min-height: 491.569px; padding: 20px 18px; display: flex; flex-direction: column; gap: 20px; border-radius: 16px; }
   .about-history__intro .about-photo { height: auto; aspect-ratio: 314 / 195.569; }
   .about-history p { font-size: 14px; line-height: 17px; }
@@ -160,6 +173,7 @@
   .about-history__row .about-photo { width: min(250px, 100%); height: auto; aspect-ratio: 1; border-radius: 20px; }
   .about-history__row > p { margin-left: 100px; max-width: 250px; }
   .about-history__row > p br { display: none; }
+  .about-history__row > p .br-mob { display: initial; }
   .about-history__row--reverse { flex-direction: column; }
   .about-history__row--reverse .about-photo { align-self: center; }
   .about-history__name { text-align: center; width: 100%; }
@@ -195,11 +209,12 @@
   .about-value__copy { padding: 36px 20px; }
   .about-value h3 { font-size: 35px; line-height: 42px; }
   .about-value p { font-size: 18px; line-height: 22px; }
-  .about-value--1 .about-value__copy { padding: 60px 40px 36px; }
-  .about-value--3 .about-value__copy { padding-top: 45px; }
-  .about-value--4 .about-value__copy, .about-value--5 .about-value__copy { padding-top: 50px; }
-  .about-journey > span:nth-child(2) { padding-left: 80px; margin-top: 14px; }
-  .about-journey > span:last-child { margin-top: 14px; }
+  .about-value--1 .about-value__copy { padding-inline: 40px; }
+  .about-value .about-value__copy { padding-top: calc(var(--value-top) * .875); }
+  .about-value h3 { margin-bottom: calc(var(--value-title-gap) * .875); }
+  .about-value .about-value__lead { margin-bottom: calc(var(--value-copy-gap) * .875); }
+  .about-journey > span:nth-child(2) { padding-left: 80px; margin-top: 23.625px; }
+  .about-journey > span:last-child { margin-top: 23.625px; }
   .about-dots { gap: 0; margin-top: .5px; }
   .about-dots button { width: 9px; height: 24px; }
   .about-dots button::before { width: 5px; height: 5px; }
