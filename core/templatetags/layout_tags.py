@@ -13,6 +13,53 @@ from django.utils.safestring import mark_safe
 register = template.Library()
 
 
+@register.filter(is_safe=True)
+def about_hero_copy(value):
+    """Keep the distinct approved desktop/mobile reference wording."""
+    approved = ('Лучший сезон — место, куда приезжают, чтобы побыть вместе. '
+                'Встретить утро на террасе с кофе, днём уйти гулять по лесу, '
+                'а вечером сесть у костра с гитарой или растопить баню.')
+    desktop = str(escape(value)).replace('\n', '<br class="br-desk">')
+    if ' '.join(str(value).split()) == approved:
+        mobile = ('Лучший сезон — это место, куда приезжают,\n'
+                  'чтобы побыть вместе.\n'
+                  'Встретить утро на террасе с кофе, днём уйти\n'
+                  'гулять по лесу, а вечером сесть у костра\n'
+                  'с гитарой или растопить баню.')
+    else:
+        mobile = str(value)
+    mobile_html = str(escape(mobile)).replace('\n', '<br class="br-mob">')
+    return mark_safe(str(format_html(
+        '<span class="home-desktop-copy">{}</span><span class="home-mobile-copy">{}</span>',
+        mark_safe(desktop), mark_safe(mobile_html),
+    )))
+
+
+@register.filter(is_safe=True)
+def about_history_copy(value, section):
+    """Pin the approved 390px line endings without replacing editor copy."""
+    lines = {
+        '0': ('Мы в Заокском районе Тульской области,\nв двух часах от Москвы.\n'
+              'С трёх сторон лес, вдоль территории течёт\nСкнижка, рядом питомник «Долина роз».'),
+        '1': ('Наш район считается одним из самых\nчистых в области, воздух здесь чище\n'
+              'и плотнее — это заметно в первую\nже ночь: спится здесь иначе.'),
+        '2': ('А ещё у нас есть собственная Ферма,\nкоторая порадует свежими\n'
+              'и натуральными продуктами\nк вашему завтраку.'),
+        'story_first': ('Проект вырос из личной истории\nи желания делиться.\n'
+                        'В стенах нашего семейного дома\nвсегда было много друзей,\n'
+                        'гостеприимства, длинных\nразговоров и тёплых вечеров.\n'
+                        'Со временем нас в семье\nстановилось всё больше — и тех,\n'
+                        'с кем хотелось разделить\nэту атмосферу и состояние, тоже.'),
+    }
+    mobile = lines.get(str(section), str(value))
+    if ' '.join(str(value).split()).rstrip('.') != ' '.join(mobile.split()).rstrip('.'):
+        mobile = str(value)
+    desktop_html = str(escape(value)).replace('\n', '<br class="br-desk">')
+    mobile_html = str(escape(mobile)).replace('\n', '<br class="br-mob">')
+    return format_html('<span class="home-desktop-copy">{}</span><span class="home-mobile-copy">{}</span>',
+                       mark_safe(desktop_html), mark_safe(mobile_html))
+
+
 @register.filter
 def about_mobile_paragraphs(value, section):
     """Approved mobile paragraph starts; escape CMS text and bind short words."""
@@ -104,12 +151,12 @@ LINES = {
         'в бане с ромашковым чаем.',
         'Территория глэмпинга уникальна — с трех сторон\n'
         'нас окружает лес и небольшая местная речка\n'
-        'Скнижка, а рядом раскинулся богатый и душистый\n'
-        'питомник. Также наш район является самым\n'
-        'озонированным в Тульской области, воздух здесь\n'
-        'чище и плотнее, так что здесь отлично можно\n'
-        'выспаться. А ещё у нас есть собственная контактная\n'
-        'ферма, которая порадует свежими и натуральными\n'
+        'Скнижка, а рядом раскинулся душистый питомник.\n'
+        'Также наш район является самым озонированным\n'
+        'в Тульской области, воздух здесь чище и плотнее,\n'
+        'так что здесь отлично можно выспаться.\n'
+        'А ещё у нас есть собственная контактная ферма,\n'
+        'которая порадует свежими и натуральными\n'
         'продуктами к вашему завтраку.',
     ],
     'about_mobile': [
@@ -123,7 +170,7 @@ LINES = {
         'Территория глэмпинга уникальна —\n'
         'с трех сторон нас окружает лес и небольшая\n'
         'местная речка Скнижка, а рядом раскинулся\n'
-        'богатый и душистый питомник.\n'
+        'душистый питомник.\n'
         'Также наш район является самым\n'
         'озонированным в Тульской области, воздух\n'
         'здесь чище и плотнее, так что здесь отлично\n'

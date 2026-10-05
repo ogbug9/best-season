@@ -3,19 +3,19 @@
 {% load content_tags %}
 {% load static wagtailcore_tags layout_tags %}
 {% block body_class %}page-about{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261004-pravki">{% endblock %}
-{% block extra_js %}<script src="{% static 'js/vendor/swiper-12.0.3.min.js' %}" defer></script><script src="{% static 'js/about.js' %}?v=20261004-pravki" defer></script>{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261005-pravki">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/vendor/swiper-12.0.3.min.js' %}" defer></script><script src="{% static 'js/about.js' %}?v=20261005-pravki" defer></script>{% endblock %}
 {% block content %}
 <section class="about-hero">
-  <div class="container"><h1>{{ about.hero_title|linebreaksbr }}</h1><p>{{ about.hero_text|linebreaksbr }}</p></div>
+  <div class="container"><h1>{{ about.hero_title|linebreaksbr }}</h1><p>{{ about.hero_text|about_hero_copy }}</p></div>
 </section>
 <section class="about-history container" aria-label="История Лучшего сезона">
   <div class="about-history__intro">
     {% include 'core/includes/about_photo.html' with photo=about.history_photos.0 %}
-    <div>{% for paragraph in about.intro %}<p>{{ paragraph|linebreaksbr }}</p>{% endfor %}</div>
+    <div>{% for paragraph in about.intro %}<p>{{ paragraph|about_history_copy:forloop.counter0 }}</p>{% endfor %}</div>
   </div>
   <div class="about-history__route">
-    <div class="about-history__row">{% include 'core/includes/about_photo.html' with photo=about.history_photos.1 %}<p>{{ about.story_first|linebreaksbr }}</p></div>
+    <div class="about-history__row">{% include 'core/includes/about_photo.html' with photo=about.history_photos.1 %}<p>{{ about.story_first|about_history_copy:'story_first' }}</p></div>
     <div class="about-history__row about-history__row--reverse">{% include 'core/includes/about_photo.html' with photo=about.history_photos.2 %}<div class="about-history__name"><p>{{ about.story_name_lead|linebreaksbr }}</p><h2>{{ about.story_name|linebreaksbr }}</h2><p>{{ about.story_name_text|linebreaksbr }}</p></div></div>
     <div class="about-history__row">{% include 'core/includes/about_photo.html' with photo=about.history_photos.3 %}<p>{{ about.story_last|linebreaksbr }}</p></div>
   </div>
