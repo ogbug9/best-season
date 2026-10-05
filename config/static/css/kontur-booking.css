@@ -368,6 +368,9 @@ body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] {
 body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] :not(svg, path) { font-family: inherit !important; }
 body:has(.booking-system[open]) > .react-ui [data-tid="modal-close"] {
   box-sizing: border-box !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
   border: 0 !important;
   width: 50px !important;
   height: 50px !important;
@@ -376,7 +379,13 @@ body:has(.booking-system[open]) > .react-ui [data-tid="modal-close"] {
   color: #847f57 !important;
 }
 body:has(.booking-system[open]) > .react-ui [data-tid="modal-close"]:hover { background: rgb(132 127 87 / 25%) !important; }
-body:has(.booking-system[open]) > .react-ui [data-tid="modal-close"] svg { color: #847f57 !important; }
+body:has(.booking-system[open]) > .react-ui [data-tid="modal-close"] svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: 0 !important;
+  color: #847f57 !important;
+}
 /* Строка поиска внутри окна Контура — тоже без белой подложки. */
 body:has(.booking-system[open]) > .react-ui .BookingLightbox .VwZTwv { padding-inline: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; }
 /* Крестик Контура стоит вплотную к углу — отодвигаем, как у нашего окна (32px). */
@@ -426,7 +435,8 @@ body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] .T3qk
 [data-bs-kontur] [data-bs-description][data-bs-expanded="true"] { max-height: 264px; overflow: auto; overscroll-behavior: contain; padding-right: 8px; scrollbar-width: thin; }
 [data-bs-kontur] [data-tid="ShowMoreLink"] { color: #9b5026 !important; }
 body:has(.booking-system[open]) > .react-ui [data-tid="ModalHeader__root"] { font-size: 36px !important; line-height: 44px !important; padding-right: 48px; }
-body:has(.booking-system[open]) > .react-ui [data-tid="modal-close"] { width: 40px !important; height: 40px !important; }
+/* Preserve the existing rendered 52px frame while removing asymmetric SDK padding. */
+body:has(.booking-system[open]) > .react-ui [data-tid="modal-close"] { width: 52px !important; height: 52px !important; }
 @media (min-width: 768px) {
   .booking-system .BwFaze { display: grid; grid-template-columns: minmax(0,1fr) 220px; gap: 20px; align-items: start; }
   .booking-system .kItLDh.t2KDLw { flex-direction: column; align-items: flex-start !important; }
