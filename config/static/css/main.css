@@ -2723,7 +2723,7 @@ body[data-modal-open] {
   .page-home .home-after-hero { position: relative; overflow-x: clip; overflow-y: visible; }
   /* Раньше общий clip также скрывал часть фонового слоя над первым экраном.
      Ограничиваем только верх этого изображения, не нижнюю границу FAQ. */
-  .page-home .home-bg__layer--about { clip-path: inset(721px 0 0); }
+  .page-home .home-bg__layer--about { clip-path: inset(669px 0 0); }
   :is(.page-home, .page-houses, .page-promotions) .footer { position: relative; isolation: isolate; overflow: clip; }
   /* Секция территории от старой заглушки узора обрезала всё по своему
      краю (overflow: hidden) — слой территории обрывался прямыми линиями
@@ -2745,7 +2745,8 @@ body[data-modal-open] {
     height: var(--h);
     max-width: none;
   }
-  .page-home .home-bg__layer--about     { --x: -43px; --y: -721px; --w: 2124px; --h: 1827px; }
+  /* 06.10: слой идёт вместе с фото «О нас» (+52 px); верх открыт на те же 52 px — без проплешины. */
+  .page-home .home-bg__layer--about     { --x: -43px; --y: -669px; --w: 2124px; --h: 1827px; }
   .page-home .home-bg__layer--slogan    { --x: -654px; --y: -294.3px; --w: 1186px; --h: 1332px; }
   .page-home .home-bg__layer--houses    { --x: 908px; --y: -73.13px; --w: 1186px; --h: 1333px; }
   .page-home .home-bg__layer--territory { --x: -583px; --y: -277.13px; --w: 1714px; --h: 2584px; }
@@ -2873,7 +2874,9 @@ body[data-modal-open] {
   margin-block: var(--s-8);
 }
 @media (min-width: 900px) {
-  .page-home .about { margin-top: 87px; }
+  /* 06.10: после перехода с первого экрана под шапкой лежит фон, а заголовок
+     и фото начинаются ниже неё — тот же отступ, что у первого блока страниц. */
+  .page-home .about { margin-top: calc(var(--s-4) + var(--header-h) + var(--s-6)); }
   .page-home .home-faq-background-anchor > .section {
     padding-top: 70px;
     padding-bottom: 50px;
