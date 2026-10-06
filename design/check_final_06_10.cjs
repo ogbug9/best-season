@@ -90,7 +90,7 @@ async function f1(browser) {
     .map(s => getComputedStyle(document.querySelector(s), '::before').display));
   add('Ф1 token --bg-pattern-mobile-display: block shows, none hides all', token === 'block' && shown === 'block' && hidden.every(v => v === 'none'), {token, shown, hidden}, 390);
   const layers = await page.evaluate(() => [...new Set([...document.styleSheets].flatMap(s => { try { return [...s.cssRules]; } catch (_) { return []; } })
-    .flatMap(r => (r.cssText.match(/mobile-backgrounds\/lite\/[\w-]+\.svg/g) || [])))]);
+    .flatMap(r => (r.cssText.match(/mobile-backgrounds\/lite\/[\w.-]+\.svg/g) || [])))]);
   let darkest = 255;
   for (const layer of layers) {
     const svg = await (await page.request.get(`${base}/static/img/${layer}`)).text();
