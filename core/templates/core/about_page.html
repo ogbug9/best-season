@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load marketing_tags %}
 {% load content_tags %}
-{% load static wagtailcore_tags layout_tags %}
+{% load static wagtailcore_tags layout_tags media_tags %}
 {% block body_class %}page-about{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261006-final">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261006-hero">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/vendor/swiper-12.0.3.min.js' %}" defer></script><script src="{% static 'js/about.js' %}?v=20261006-final" defer></script>{% endblock %}
 {% block page_background %}
 <div class="about-background" aria-hidden="true" data-about-art="{% static 'img/about/about-art-desktop.svg' %}">
@@ -12,6 +12,7 @@
 {% endblock %}
 {% block content %}
 <section class="about-hero">
+  {% if about_hero_image %}<div class="about-hero__media" aria-hidden="true">{% picture about_hero_image preset="hero" alt="" loading="eager" mobile_preset="hero_mobile" %}</div>{% endif %}
   <div class="container"><h1>{{ about.hero_title|linebreaksbr }}</h1><p>{{ about.hero_text|about_hero_copy }}</p></div>
 </section>
 <section class="about-history container" aria-label="История Лучшего сезона">

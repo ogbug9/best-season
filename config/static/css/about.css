@@ -14,6 +14,11 @@
 .page-about .header:not(.header--scrolled):not(:has(.nav-toggle[open])) :is(.nav__link, .header__phone, .header__logo, .header__name, .header__paw, .nav-toggle__button) { color: #494949; }
 .site.page-about main > .about-hero:first-child { height: 860px; padding-top: 332px; background: #232323; }
 .about-hero .container { padding-left: 60px; }
+/* 06.10: до ролика — кадр первого экрана главной с тем же затемнением 50 %. */
+.page-about .about-hero { position: relative; isolation: isolate; overflow: hidden; }
+.about-hero__media { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.about-hero__media :is(picture, img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+.about-hero__media::after { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, .5); }
 .about-hero h1 { margin: 0 0 8px; color: #847F57; font: 500 90px/95px var(--font-heading); }
 .about-hero p { margin: 0 0 0 5px; max-width: 560px; color: #F7F0E6; font: 400 20px/24px var(--font-body); }
 .about-photo, .about-value__photo { position: relative; display: block; overflow: hidden; aspect-ratio: auto; background: #C9A086; }

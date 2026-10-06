@@ -579,6 +579,10 @@ class ContentPage(Page):
                 context['about'] = self.about_content[0].value
                 context.update(about_pillars=context['about']['pillars'], about_values=context['about']['values'],
                                about_pets=context['about']['pets'], about_diary=context['about']['diary'])
+            # 06.10: пока нет ролика, первый экран берёт первый кадр первого экрана главной.
+            from home.models import HomeSlide
+            slide = HomeSlide.objects.filter(page__live=True, image__isnull=False).select_related("image").order_by("page_id", "sort_order").first()
+            context["about_hero_image"] = slide.image if slide else None
             context["about_contacts"] = Page.objects.live().descendant_of(self).filter(slug="kontakty").first()
             contacts = context["about_contacts"]
             # Reuse the CMS map from Contacts, or the approved organisation
