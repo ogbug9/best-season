@@ -124,7 +124,7 @@ class HouseIndexPage(Page):
         context['mobile_services_page'] = TerritoryPage.objects.live().first()
         territory_url = context['mobile_services_page'].get_url(request) if context['mobile_services_page'] else ''
         for item in context['mobile_services']:
-            item.tile_description = '' if item.title == 'Фотосессии' else item.description
+            item.tile_description = item.description
             item.details_url = (services_url + '#service-fotosessii') if item.title == 'Фотосессии' and services_url else (item.link_url or territory_url)
 
         from core.faq_sets import CATALOG_FAQ, page_faq

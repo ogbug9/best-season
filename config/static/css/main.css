@@ -3821,6 +3821,10 @@ body.page-houses main > .houses-catalog {
    39 и 38 по бокам; поверх фотографии тёмный градиент снизу. */
 .cards--service-tiles {
   display: grid;
+  /* 06.10: родитель центрирует детей (justify-items: center) — без явной
+     ширины auto-fit схлопывал ряд до 40 px на 700–1279. */
+  justify-self: stretch;
+  width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(min(295px, 100%), 1fr));
   gap: 20px;
   margin: 0;
@@ -3841,6 +3845,9 @@ body.page-houses main > .houses-catalog {
 /* Точные размеры из инспектора — только там, где ряд из четырёх плиток
    помещается в кадр: 295×4 + 20×3 = 1240. Ниже плитки тянутся долями,
    иначе на 375 появлялась горизонтальная прокрутка до 1260. */
+@media (min-width: 700px) and (max-width: 1279px) {
+  .cards--service-tiles { grid-template-columns: repeat(2, 1fr); }
+}
 @media (min-width: 1280px) {
   .cards--service-tiles { grid-template-columns: repeat(4, 295px); }
   .service-tile {
@@ -5594,6 +5601,15 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .faq__answer[hidden] { display: none; }
 .service-tile.territory-card .territory-card__details p { white-space: normal; width: 100%; min-width: 0; max-height: 92px; overflow-y: auto; }
 .service-tile.territory-card .mosaic__caption :is(h2, h3) { white-space: normal; }
+/* 06.10, «Шаблоны карточек»: в плитках каталога 295×295 описание 16/22 целиком,
+   заголовок, текст и «Подробнее» стоят по центру плитки. */
+@media (min-width: 700px) {
+  .cards--service-tiles .territory-card .territory-card__details p { max-width: 262px; font-size: 16px; line-height: 22px; max-height: none; overflow: visible; }
+  .cards--service-tiles .territory-card:is(:focus-within, .is-open) .mosaic__caption { justify-content: center; gap: 14px; padding: 16px; }
+}
+@media (min-width: 700px) and (hover: hover) and (pointer: fine) {
+  .cards--service-tiles .territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption { justify-content: center; gap: 14px; padding: 16px; }
+}
 /* Preserve the existing photo controls; optically centre their arrows. */
 .site .lightbox__nav { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; --step-x: -3px; }
 .site .lightbox__nav--next { --step-x: 3px; }
