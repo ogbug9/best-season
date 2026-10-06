@@ -13,6 +13,7 @@
 :is(.page-houses, .page-house, .page-promotions) .header__bar { height: 72px; background: #847f57; }
 :is(.page-houses, .page-house, .page-promotions) .header__bar :is(.header__logo, .header__name, .header__phone) { color: #f7f0e6; }
 :is(.page-houses, .page-house, .page-promotions) .nav-toggle__button span,
+:is(.page-houses, .page-house, .page-promotions) .nav-toggle__button span::before,
 :is(.page-houses, .page-house, .page-promotions) .nav-toggle__button span::after { border-color: #f7f0e6; }
 :is(.page-houses, .page-house, .page-promotions) .icon { overflow: visible; flex-shrink: 0; object-fit: contain; }
 
