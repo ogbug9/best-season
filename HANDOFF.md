@@ -1150,3 +1150,7 @@
 
 ### Ф2 cookies
 - Токены шапки в :root (--header-w, --header-desk-top/h, --header-radius, --header-cta-h, --nav-font-size/line-height) используют и шапка, и плашка. От 900 px плашка = пилюле (1240/1260×86,91, r100), снизу 32 = отступ шапки; текст 16/20 как пункты меню, «Согласиться» и крестик 40 px. Мобилка и 700–899 не менялись; поведение и JS не трогались.
+
+### Ф3 «Наши ценности»
+- about.js: только у ценностей autoplay 3 с (disableOnInteraction false, pauseOnMouseEnter), rewind вместо loop, старт по IntersectionObserver, пауза при наведении мыши и касании (возобновление через 3 с после отпускания), reduced-motion без автолистания. Точки, drag и «Три столпа» не менялись.
+- Проверка check_final_06_10_values.cjs 1440/390: интервал ≈3,26 с (3000 + анимация 250), rewind 3→0 и 5→0, точка 3, hover, тач, reduced-motion — PASS.
