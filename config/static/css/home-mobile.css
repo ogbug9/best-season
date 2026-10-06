@@ -216,7 +216,7 @@
 .site .footer__documents { order: 1; width: 100%; }
 .site .footer__column:nth-child(2) { order: 2; }
 .site .footer__column:nth-child(3) { order: 3; }
-.site .footer__column-title { margin: 0; color: #494949; font-size: 20px; line-height: 24px; font-weight: 500; }
+.site .footer__column-title { margin: 0; color: #494949; font-size: 20px; line-height: 24px; font-weight: 400; }
 .site .footer__toggle { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; border: 0; padding: 0; color: inherit; background: none; font: inherit; text-align: left; cursor: pointer; }
 .site .footer__columns .footer__toggle::before { content: ''; position: absolute; inset: -5px 0; }
 .site .footer__toggle::after { content: ''; width: 10px; height: 10px; flex: none; background: url('../img/mobile-footer-plus.png') center / contain no-repeat; }
@@ -224,6 +224,14 @@
 .site .footer__column ul,
 .site .footer__legal-links { margin-top: 12px; }
 .site .footer__columns [hidden] { display: none; }
+/* 06.10: раскрытые пункты подвала — плашки как в мобильном меню (макет Menu mobile). */
+.site .footer__columns :is(.footer__column ul, .footer__legal-links):not([hidden]) { display: grid; grid-auto-flow: row; grid-template: none / 1fr; gap: 10px; }
+.site .footer__columns :is(.footer__column, .footer__documents) li { line-height: 24px; }
+.site .footer__columns :is(.footer__column, .footer__documents) li > :is(a, .footer__booking-link) {
+  display: flex; align-items: center; justify-content: flex-start; box-sizing: border-box; width: 100%; height: auto; min-height: 40px; padding: 8px 20px;
+  border: 0; border-radius: 100px; background: #E0D9C9; color: #494949;
+  font: 400 16px/24px var(--font-body); text-align: left; text-decoration: none; white-space: normal;
+}
 .site .footer__contacts { order: 2; gap: 14px; margin-top: 9px; }
 .site .footer__phone { color: #9b5026; font-size: 24px; line-height: 28px; font-weight: 500; }
 .site .footer__brand .socials { order: 3; margin: -8px 0 0; }
