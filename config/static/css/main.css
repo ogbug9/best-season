@@ -5631,3 +5631,22 @@ html:has(.lightbox[open]) { overflow: hidden; }
   body.page-house main > .house-mosaic-section:first-child { padding-top: 112px; }
   .page-house .house-booking-cta { padding-bottom: 32px; }
 }
+
+/* 06.10: заглушка раздела без текста — кадр главной, фраза и две кнопки. */
+.page-placeholder__card {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+  min-height: 420px; padding: 60px 24px; border-radius: 20px; background: #232323; text-align: center;
+}
+.page-placeholder__media { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.page-placeholder__media :is(picture, img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+.page-placeholder__media::after { content: ''; position: absolute; inset: 0; background: rgba(0, 0, 0, .5); }
+.page-placeholder__text { max-width: 640px; margin: 0; color: #F7F0E6; font: 400 24px/30px var(--font-body); }
+.page-placeholder__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+.page-placeholder__actions .btn { min-width: 214px; }
+@media (max-width: 699px) {
+  .page-placeholder__card { min-height: 320px; padding: 40px 20px; gap: 24px; }
+  .page-placeholder__text { font-size: 18px; line-height: 22px; }
+  .page-placeholder__actions { flex-direction: column; width: 100%; }
+  .page-placeholder__actions .btn { width: 100%; }
+}

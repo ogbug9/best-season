@@ -33,13 +33,27 @@
     {% elif page.body %}{{ page.body|richtext }}{% endif %}
   </div>
 </section>
+{% elif page.awaiting_copy %}
+{% comment %} 06.10: временная заглушка, пока в CMS нет текста раздела. {% endcomment %}
+<section class="section page-placeholder">
+  <div class="container">
+    <div class="page-placeholder__card">
+      {% if placeholder_image %}<div class="page-placeholder__media" aria-hidden="true">{% picture placeholder_image preset="hero" alt="" mobile_preset="hero_mobile" %}</div>{% endif %}
+      <p class="page-placeholder__text">Раздел наполняется — скоро здесь появится подробная информация.</p>
+      <div class="page-placeholder__actions">
+        <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7">{% cms_text "content_page-aa5b7a42a613" %}</button>
+        <a class="btn btn--outline page-placeholder__home" href="/">На главную</a>
+      </div>
+    </div>
+  </div>
+</section>
 {% elif page.body %}
 <section class="section">
   <div class="container container--narrow prose">{{ page.body|richtext }}</div>
 </section>
 {% endif %}
 
-{% if page.show_booking_cta %}
+{% if page.show_booking_cta and not page.awaiting_copy %}
 <section class="section section--deep">
   <div class="container container--narrow center">
     <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7">

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.html import strip_tags
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
@@ -536,6 +537,14 @@ class InterfaceText(models.Model):
         return self.label
 
 
+def home_hero_image():
+    """Первый кадр первого экрана главной — временный фон «О нас» и заглушек (06.10)."""
+    from home.models import HomeSlide
+    slide = (HomeSlide.objects.filter(page__live=True, image__isnull=False)
+             .select_related("image").order_by("page_id", "sort_order").first())
+    return slide.image if slide else None
+
+
 class ContentPage(Page):
     """Простая текстовая страница: «О нас», правовые, «Цены и условия»,
     «Партнёрам». Всё, что не требует особой структуры."""
@@ -572,17 +581,25 @@ class ContentPage(Page):
             return "core/about_page.html"
         return super().get_template(request, *args, **kwargs)
 
+    @property
+    def awaiting_copy(self):
+        """Текста ещё нет: пусто или служебная пометка из сида — показываем заглушку."""
+        if self.slug == "o-nas" or self.legal_body or self.about_content:
+            return False
+        text = " ".join(strip_tags(str(self.body or "")).split())
+        return not text or "Текст ожидается от заказчика" in text
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+        if self.awaiting_copy:
+            context["placeholder_image"] = home_hero_image()
         if self.slug == "o-nas":
             if self.about_content:
                 context['about'] = self.about_content[0].value
                 context.update(about_pillars=context['about']['pillars'], about_values=context['about']['values'],
                                about_pets=context['about']['pets'], about_diary=context['about']['diary'])
             # 06.10: пока нет ролика, первый экран берёт первый кадр первого экрана главной.
-            from home.models import HomeSlide
-            slide = HomeSlide.objects.filter(page__live=True, image__isnull=False).select_related("image").order_by("page_id", "sort_order").first()
-            context["about_hero_image"] = slide.image if slide else None
+            context["about_hero_image"] = home_hero_image()
             context["about_contacts"] = Page.objects.live().descendant_of(self).filter(slug="kontakty").first()
             contacts = context["about_contacts"]
             # Reuse the CMS map from Contacts, or the approved organisation

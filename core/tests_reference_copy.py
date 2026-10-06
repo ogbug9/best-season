@@ -61,3 +61,11 @@ class AboutNurseryNameMigrationTests(TestCase):
         self.assertEqual(data[0]['value']['intro'], ['Скнижка, рядом питомник', 'Другой текст'])
         edited = [{'type': 'content', 'value': {'intro': ['Редактор написал по-своему']}}]
         self.assertFalse(clean(edited)[1])
+
+
+class AwaitingCopyPlaceholderTests(TestCase):
+    def test_placeholder_only_while_copy_is_missing(self):
+        self.assertTrue(ContentPage(title='A', slug='a', body='<p>Условия. Текст ожидается от заказчика.</p>').awaiting_copy)
+        self.assertTrue(ContentPage(title='B', slug='b', body='').awaiting_copy)
+        self.assertFalse(ContentPage(title='C', slug='c', body='<p>Настоящий текст раздела.</p>').awaiting_copy)
+        self.assertFalse(ContentPage(title='О нас', slug='o-nas', body='').awaiting_copy)
