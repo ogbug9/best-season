@@ -1,3 +1,7 @@
+import re
+
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
@@ -6,6 +10,20 @@ from wagtail.fields import RichTextField
 from wagtail.snippets.models import register_snippet
 
 BODY_FEATURES = ["bold", "italic", "link", "ul", "ol"]
+DAY_MONTH = RegexValidator(r'^(0[1-9]|[12]\d|3[01])\.(0[1-9]|1[0-2])$', 'Формат ДД.ММ, например 30.04')
+
+
+def _day_month(value):
+    day, month = map(int, value.split('.'))
+    return month, day
+
+
+def in_season(today, start, end):
+    """Ежегодное окно «с ДД.ММ по ДД.ММ» включительно; окно может переходить через Новый год."""
+    current, first, last = (today.month, today.day), _day_month(start), _day_month(end)
+    if first <= last:
+        return first <= current <= last
+    return current >= first or current <= last
 
 
 @register_snippet
@@ -44,6 +62,14 @@ class Promotion(models.Model):
 
     date_from = models.DateField("Показывать с", null=True, blank=True)
     date_to = models.DateField("Показывать до", null=True, blank=True)
+    # Сезонные тарифы сменяют друг друга каждый год сами: «С мая по сентябрь»
+    # и «С октября по апрель» стоят на одном месте (одинаковый порядок).
+    season_start = models.CharField(
+        "Каждый год показывать с (ДД.ММ)", max_length=5, blank=True, validators=[DAY_MONTH],
+        help_text="Например 30.04. Пусто — показывать круглый год.")
+    season_end = models.CharField(
+        "по (ДД.ММ)", max_length=5, blank=True, validators=[DAY_MONTH],
+        help_text="Включительно, например 29.09. Окно может переходить через Новый год.")
 
     is_published = models.BooleanField("Опубликована", default=True)
     sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
@@ -67,6 +93,8 @@ class Promotion(models.Model):
             [
                 FieldPanel("date_from"),
                 FieldPanel("date_to"),
+                FieldPanel("season_start"),
+                FieldPanel("season_end"),
                 FieldPanel("is_published"),
                 FieldPanel("sort_order"),
             ],
@@ -82,6 +110,11 @@ class Promotion(models.Model):
     def __str__(self):
         return self.title
 
+    def clean(self):
+        super().clean()
+        if bool(self.season_start) != bool(self.season_end):
+            raise ValidationError({'season_end': 'Заполните обе даты сезона или оставьте обе пустыми.'})
+
     @property
     def is_active(self):
         """Акция показывается, если опубликована и период не истёк."""
@@ -92,6 +125,9 @@ class Promotion(models.Model):
             return False
         if self.date_to and today > self.date_to:
             return False
+        if self.season_start and self.season_end:
+            if all(re.fullmatch(r'\d\d\.\d\d', v) for v in (self.season_start, self.season_end)):
+                return in_season(today, self.season_start, self.season_end)
         return True
 
     @property
