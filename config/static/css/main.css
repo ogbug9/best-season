@@ -5601,14 +5601,18 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .faq__answer[hidden] { display: none; }
 .service-tile.territory-card .territory-card__details p { white-space: normal; width: 100%; min-width: 0; max-height: 92px; overflow-y: auto; }
 .service-tile.territory-card .mosaic__caption :is(h2, h3) { white-space: normal; }
-/* 06.10, «Шаблоны карточек»: в плитках каталога 295×295 описание 16/22 целиком,
-   заголовок, текст и «Подробнее» стоят по центру плитки. */
+/* 06.10, «Шаблоны карточек»: плитки каталога — как карточки главной: описание 18/22
+   с закреплёнными переносами, кнопка в 18 px от низа (замер по SVG: все строки на 2 px ниже). */
 @media (min-width: 700px) {
-  .cards--service-tiles .territory-card .territory-card__details p { max-width: 262px; font-size: 16px; line-height: 22px; max-height: none; overflow: visible; }
-  .cards--service-tiles .territory-card:is(:focus-within, .is-open) .mosaic__caption { justify-content: center; gap: 14px; padding: 16px; }
+  .cards--service-tiles .territory-card .territory-card__details p { width: 262px; max-width: none; white-space: nowrap; max-height: none; overflow: visible; }
+  /* В SVG у двух новых карточек описание 17/21 (строки на 6 % уже, шаг 21). */
+  :is(#service-arenda-sapov, #service-arenda-velosipedov) .territory-card__details p { font-size: 17px; line-height: 21px; }
 }
-@media (min-width: 700px) and (hover: hover) and (pointer: fine) {
-  .cards--service-tiles .territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption { justify-content: center; gap: 14px; padding: 16px; }
+@media (min-width: 1280px) {
+  .territory-card:is(:focus-within, .is-open) .mosaic__caption { padding-bottom: 18px; }
+}
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .territory-card:is(:hover, :focus-within, .is-open) .mosaic__caption { padding-bottom: 18px; }
 }
 /* Preserve the existing photo controls; optically centre their arrows. */
 .site .lightbox__nav { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; --step-x: -3px; }

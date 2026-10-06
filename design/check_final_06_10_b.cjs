@@ -39,6 +39,33 @@ async function strokes(page, clip) {
   }, png.toString('base64'));
 }
 
+
+// Card text vs «Шаблоны карточек.svg» (rendered 1:1, light pixels on the dark card), ±2 px.
+const CARDS = [
+  {route: '/', sel: '.territory-card', n: 0, name: 'Контактная ферма', title: [57, 85], lines: [46, 30, 57, 35], button: 249},
+  {route: '/', sel: '.territory-card', n: 2, name: 'Костровая зона', title: [57, 90], lines: [58, 91, 46, 81], button: 249},
+  {route: '/razmeshchenie/', sel: '.cards--service-tiles .territory-card', n: 0, name: 'Аренда сапов', title: [69], lines: [45, 48, 33, 34, 58], button: 249},
+  {route: '/razmeshchenie/', sel: '.cards--service-tiles .territory-card', n: 1, name: 'Мастер-классы', title: [42], lines: [54, 19, 25, 23, 36, 93], button: 249},
+  {route: '/razmeshchenie/', sel: '.cards--service-tiles .territory-card', n: 3, name: 'Аренда велосипедов', title: [40, 73], lines: [66, 45, 18, 40, 22], button: 249},
+];
+async function cardBands(page, el) {
+  const png = await el.screenshot();
+  return page.evaluate(async data => {
+    const img = new Image(); img.src = 'data:image/png;base64,' + data; await img.decode();
+    const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+    const x = c.getContext('2d'); x.drawImage(img, 0, 0); const d = x.getImageData(0, 0, c.width, c.height).data;
+    const bands = []; let cur = null;
+    for (let y = 10; y < c.height - 8; y++) {
+      let from = -1, to = -1;
+      for (let X = 8; X < c.width - 8; X++) { const k = (y * c.width + X) * 4; if ((d[k] + d[k + 1] + d[k + 2]) / 3 > 165 && Math.max(d[k], d[k + 1], d[k + 2]) - Math.min(d[k], d[k + 1], d[k + 2]) < 40) { if (from < 0) from = X; to = X; } }
+      if (from < 0) { if (cur) { bands.push(cur); cur = null; } continue; }
+      if (cur) { cur.y2 = y; cur.left = Math.min(cur.left, from); } else cur = {y1: y, y2: y, left: from};
+    }
+    if (cur) bands.push(cur);
+    return bands.filter(b => b.y2 - b.y1 >= 3);
+  }, png.toString('base64'));
+}
+
 async function mobile(browser) {
   const ctx = await context(browser, 390), page = await ctx.newPage();
   // Burger 16 / 16 / 9, step 5, bottom line right-aligned.
@@ -139,6 +166,18 @@ async function desktop(browser) {
     const expectW = width >= 1280 ? 295 : null;
     add(`catalogue tiles: ${grid.join('/')} px, descriptions inside`, grid.length === 4 && grid.every(w => expectW ? w === expectW : w > 250) &&
       rows.every(r => r.text > 20 && r.inside && !r.clipped), {grid, rows}, width);
+  }
+  await page.setViewportSize({width: 1440, height: 900});
+  for (const card of CARDS) {
+    await navigate(page, base + card.route);
+    await page.evaluate(() => document.fonts.ready);
+    const el = page.locator(card.sel).nth(card.n);
+    await el.scrollIntoViewIfNeeded(); await page.evaluate(() => scrollBy(0, -200)); await el.hover(); await page.waitForTimeout(400);
+    const bands = await cardBands(page, el);
+    const t = bands.slice(0, card.title.length), lines = bands.slice(card.title.length, -1), button = bands[bands.length - 1];
+    const ok = t.every((b, i) => Math.abs(b.y1 - card.title[i]) <= 2) && lines.length === card.lines.length &&
+      lines.every((b, i) => Math.abs(b.left - card.lines[i]) <= 2) && button && Math.abs(button.y1 - card.button) <= 2;
+    add(`card «${card.name}» text matches «Шаблоны карточек» (±2 px)`, ok, {title: t.map(b => b.y1), lines: lines.map(b => b.left), button: button && button.y1}, 1440);
   }
   await ctx.close();
 }

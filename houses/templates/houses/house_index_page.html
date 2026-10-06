@@ -102,7 +102,7 @@
             <div class="mosaic__caption">
               <h3 class="service-tile__title">{{ service.name|linebreaksbr }}</h3>
               <div class="territory-card__details">
-                {% if service.tile_description %}<p>{{ service.tile_description }}</p>{% endif %}
+                {% if service.tile_description %}<p><span class="home-desktop-copy">{{ service.tile_description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ service.tile_description }}</span></p>{% endif %}
                 {% if service.tile_details_url %}<a class="btn btn--primary territory-card__link" href="{{ service.tile_details_url }}">{% cms_text "_service_card-59589fe2a549" %}</a>{% endif %}
               </div>
             </div>
