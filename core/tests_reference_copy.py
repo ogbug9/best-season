@@ -50,3 +50,14 @@ class ReferenceCopyTests(TestCase):
         self.assertEqual(draft.content['about_text'], page.about_text)
         self.assertEqual(draft.content['hero_subtitle'], 'Незавершённая правка редактора')
         self.assertIn(migration.OLD, old_revision.content['about_text'])
+
+
+class AboutNurseryNameMigrationTests(TestCase):
+    def test_only_the_exact_phrase_is_removed(self):
+        import importlib
+        clean = importlib.import_module('core.migrations.0024_about_remove_nursery_name').clean
+        data, changed = clean([{'type': 'content', 'value': {'intro': ['Скнижка, рядом питомник «Долина роз»', 'Другой текст']}}])
+        self.assertTrue(changed)
+        self.assertEqual(data[0]['value']['intro'], ['Скнижка, рядом питомник', 'Другой текст'])
+        edited = [{'type': 'content', 'value': {'intro': ['Редактор написал по-своему']}}]
+        self.assertFalse(clean(edited)[1])
