@@ -82,8 +82,19 @@
     button.setAttribute('aria-expanded', 'false');
     links.hidden = true;
     button.addEventListener('click', () => {
-      links.hidden = !links.hidden;
-      button.setAttribute('aria-expanded', String(!links.hidden));
+      const opening = links.hidden;
+      // 06.10: в подвале, как в мобильном меню, раскрыт только один раздел.
+      const group = opening && button.closest('.footer__columns');
+      if (group) {
+        group.querySelectorAll('.footer__toggle[aria-expanded="true"]').forEach(other => {
+          if (other === button) return;
+          other.setAttribute('aria-expanded', 'false');
+          const list = document.getElementById(other.getAttribute('aria-controls'));
+          if (list) list.hidden = true;
+        });
+      }
+      links.hidden = !opening;
+      button.setAttribute('aria-expanded', String(opening));
     });
     const original = Array.from(title.childNodes);
     title.replaceChildren(button);
