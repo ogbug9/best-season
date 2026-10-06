@@ -161,7 +161,7 @@
 }
 @media (max-width: 699px) {
   .page-about .about-art--desktop { display: none; }
-  .page-about .about-art--mobile { display: block; }
+  .page-about .about-art--mobile { display: var(--bg-pattern-mobile-display); }
   .page-about .about-art--main { width: 1170px; height: 6564px; }
   .page-about .container--header { width: 100%; max-width: none; }
   .site.page-about main > .about-hero:first-child { height: 570px; padding-top: 150px; }
@@ -279,5 +279,5 @@
   .page-about .footer .home-bg__layer--footer { position: absolute; z-index: -1; left: calc(50% - 499px); top: 281.1px; width: 2069px; height: 1853px; max-width: none; }
 }
 @media (max-width: 699px) {
-  .page-about .footer__legal::before { content: ''; position: absolute; z-index: -1; pointer-events: none; left: calc(50% - 50vw); top: -400px; width: 100vw; height: 1100px; background: url('../img/mobile-backgrounds/home-footer.webp') center / 100% 100% no-repeat; opacity: .84; }
+  .page-about .footer__legal::before { content: ''; display: var(--bg-pattern-mobile-display); position: absolute; z-index: -1; pointer-events: none; left: calc(50% - 50vw); top: -400px; width: 100vw; height: 1100px; background: url('../img/mobile-backgrounds/home-footer.webp') center / 100% 100% no-repeat; opacity: .84; }
 }

@@ -266,34 +266,34 @@
     .page-promotions .offers-section, .page-promotions main > .section:last-child,
     .page-house .house-title, .page-house .house-about-section)::before,
 .page-houses .houses-catalog::after, .page-house .house-title::after {
-  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  content: ''; display: var(--bg-pattern-mobile-display); position: absolute; z-index: -1; pointer-events: none;
   left: calc(50% - 195px + var(--mobile-bg-x)); top: var(--mobile-bg-y);
   width: var(--mobile-bg-w); height: var(--mobile-bg-h);
   background: var(--mobile-bg) center / 100% 100% no-repeat;
 }
-.page-home .quote::before { --mobile-bg: url('../img/mobile-backgrounds/home-quote.svg'); --mobile-bg-x: 0px; --mobile-bg-y: -141.00px; --mobile-bg-w: 867px; --mobile-bg-h: 971px; }
-.page-home .home-after-hero > .section--pattern::before { --mobile-bg: url('../img/mobile-backgrounds/home-territory.svg'); --mobile-bg-x: -160px; --mobile-bg-y: -199.07px; --mobile-bg-w: 445px; --mobile-bg-h: 726px; }
-.page-home .home-nearby::before { --mobile-bg: url('../img/mobile-backgrounds/home-nearby.svg'); --mobile-bg-x: -197px; --mobile-bg-y: -236.74px; --mobile-bg-w: 967px; --mobile-bg-h: 957px; }
-.page-home .home-faq-background-anchor::before { --mobile-bg: url('../img/mobile-backgrounds/home-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -310.32px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
+.page-home .quote::before { --mobile-bg: url('../img/mobile-backgrounds/lite/home-quote.svg'); --mobile-bg-x: 0px; --mobile-bg-y: -141.00px; --mobile-bg-w: 867px; --mobile-bg-h: 971px; }
+.page-home .home-after-hero > .section--pattern::before { --mobile-bg: url('../img/mobile-backgrounds/lite/home-territory.svg'); --mobile-bg-x: -160px; --mobile-bg-y: -199.07px; --mobile-bg-w: 445px; --mobile-bg-h: 726px; }
+.page-home .home-nearby::before { --mobile-bg: url('../img/mobile-backgrounds/lite/home-nearby.svg'); --mobile-bg-x: -197px; --mobile-bg-y: -236.74px; --mobile-bg-w: 967px; --mobile-bg-h: 957px; }
+.page-home .home-faq-background-anchor::before { --mobile-bg: url('../img/mobile-backgrounds/lite/home-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -310.32px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
 .page-home .footer { --mobile-bg: url('../img/mobile-backgrounds/home-footer.webp'); --mobile-bg-opacity: .84; --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
-.page-houses .houses-catalog::after { --mobile-bg: url('../img/mobile-backgrounds/houses-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
-.page-houses .houses-catalog::before { --mobile-bg: url('../img/mobile-backgrounds/houses-catalog.svg'); --mobile-bg-x: 42px; --mobile-bg-y: 214.00px; --mobile-bg-w: 774px; --mobile-bg-h: 867px; }
-.page-houses .houses-faq::before { --mobile-bg: url('../img/mobile-backgrounds/houses-faq.svg'); --mobile-bg-x: -205px; --mobile-bg-y: -228.36px; --mobile-bg-w: 601px; --mobile-bg-h: 908px; }
+.page-houses .houses-catalog::after { --mobile-bg: url('../img/mobile-backgrounds/lite/houses-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
+.page-houses .houses-catalog::before { --mobile-bg: url('../img/mobile-backgrounds/lite/houses-catalog.svg'); --mobile-bg-x: 42px; --mobile-bg-y: 214.00px; --mobile-bg-w: 774px; --mobile-bg-h: 867px; }
+.page-houses .houses-faq::before { --mobile-bg: url('../img/mobile-backgrounds/lite/houses-faq.svg'); --mobile-bg-x: -205px; --mobile-bg-y: -228.36px; --mobile-bg-w: 601px; --mobile-bg-h: 908px; }
 .page-houses .footer { --mobile-bg: url('../img/mobile-backgrounds/houses-footer.webp'); --mobile-bg-opacity: .86; --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
-.page-promotions .offers-section::before { --mobile-bg: url('../img/mobile-backgrounds/promotions-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
-.page-promotions main > .section:last-child::before { --mobile-bg: url('../img/mobile-backgrounds/promotions-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -785.75px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
+.page-promotions .offers-section::before { --mobile-bg: url('../img/mobile-backgrounds/lite/promotions-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
+.page-promotions main > .section:last-child::before { --mobile-bg: url('../img/mobile-backgrounds/lite/promotions-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -785.75px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
 .page-promotions .footer { --mobile-bg: url('../img/mobile-backgrounds/promotions-footer.webp'); --mobile-bg-opacity: .82; --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
-.page-house .house-title::after { --mobile-bg: url('../img/mobile-backgrounds/house-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
-.page-house .house-title::before { --mobile-bg: url('../img/mobile-backgrounds/house-booking.svg'); --mobile-bg-x: 0px; --mobile-bg-y: 203.00px; --mobile-bg-w: 867px; --mobile-bg-h: 971px; }
+.page-house .house-title::after { --mobile-bg: url('../img/mobile-backgrounds/lite/house-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
+.page-house .house-title::before { --mobile-bg: url('../img/mobile-backgrounds/lite/house-booking.svg'); --mobile-bg-x: 0px; --mobile-bg-y: 203.00px; --mobile-bg-w: 867px; --mobile-bg-h: 971px; }
 /* PNG: начало рисунка 1761, блока «О домике» около 1860 — сдвиг -99. */
-.page-house .house-about-section::before { --mobile-bg: url('../img/mobile-backgrounds/house-reviews.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -99px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
+.page-house .house-about-section::before { --mobile-bg: url('../img/mobile-backgrounds/lite/house-reviews.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -99px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
 .page-house .footer { --mobile-bg: url('../img/mobile-backgrounds/house-footer.webp'); --mobile-bg-opacity: .86; --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
 /* Растр 4× сохраняет пути SVG; прозрачность подобрана по плотности
    PNG в браузере на 390 px / DPR 1. Позиция следует за реквизитами. */
 :is(.page-home, .page-houses, .page-promotions, .page-house) .footer__legal { position: relative; }
 .site:is(.page-home, .page-houses, .page-promotions, .page-house) .footer::before { content: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house) .footer__legal::before {
-  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  content: ''; display: var(--bg-pattern-mobile-display); position: absolute; z-index: -1; pointer-events: none;
   left: calc(50% - 50vw); top: -400px;
   width: 100vw; height: var(--mobile-bg-h);
   background: var(--mobile-bg) center / 100% 100% no-repeat;

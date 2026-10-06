@@ -7,9 +7,10 @@ from django.test import SimpleTestCase
 class AboutBackgroundTests(SimpleTestCase):
     def test_inline_definitions_are_unique_and_resolve_across_all_layers(self):
         folder = Path(__file__).parent / 'templates/core/includes'
+        desktop = Path(__file__).resolve().parents[1] / 'config/static/img/about/about-art-desktop.svg'
         ids = []
         refs = []
-        for path in folder.glob('about-art-*.svg'):
+        for path in [*folder.glob('about-art-*.svg'), desktop]:
             root = ET.parse(path).getroot()
             self.assertEqual(root.get('aria-hidden'), 'true')
             self.assertFalse(any(e.tag.endswith(('script', 'image')) for e in root.iter()))

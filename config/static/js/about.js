@@ -2,6 +2,21 @@
   'use strict';
   var small = window.matchMedia('(max-width: 699px)');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // The 1.4 MB desktop artwork is fetched only where it is shown (≥700 px), never on phones.
+  var art = document.querySelector('[data-about-art]');
+  var wide = window.matchMedia('(min-width: 700px)');
+  function loadArt() {
+    if (!art || !wide.matches || art.dataset.loaded) return;
+    art.dataset.loaded = 'true';
+    fetch(art.dataset.aboutArt).then(function (response) {
+      if (!response.ok) throw new Error(response.status);
+      return response.text();
+    }).then(function (svg) {
+      art.insertAdjacentHTML('afterbegin', svg);
+    }).catch(function () { delete art.dataset.loaded; });
+  }
+  wide.addEventListener('change', loadArt);
+  loadArt();
   if (!window.Swiper) return; // Native scrolling remains usable if the asset fails.
   document.querySelectorAll('[data-about-carousel]').forEach(function (carousel) {
     var track = carousel.querySelector('[data-about-track]');
