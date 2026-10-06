@@ -13,7 +13,8 @@ class FaqLayoutTests(SimpleTestCase):
         desktop, mobile = rendered.split('<span class="home-mobile-copy">')
         self.assertNotIn('поистине', desktop)
         self.assertIn('поистине уникальна', mobile)
-        self.assertIn('богатый и душистый питомник “Долина роз”.', mobile)
+        self.assertIn('богатый и душистый питомник.', mobile)
+        self.assertNotIn('Долина роз', mobile)
         custom = mark_safe('<p>Новый текст редактора <a href="/custom/">со ссылкой</a>.</p>')
         self.assertEqual(str(layout_richtext(custom, 'about')), custom)
 
