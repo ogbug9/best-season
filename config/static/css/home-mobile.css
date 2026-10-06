@@ -113,6 +113,8 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .cards--nearby > .place { flex: 0 0 100%; scroll-snap-align: start; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) #houses { padding-top: 53px; padding-bottom: 47px; }
 .page-home .slogan + #houses { padding-top: 60px; }
+/* 06.10, новый Main mob: сердце как у слогана «О нас» — ink 339–360, на 2 px ниже верха второй строки. */
+.page-home .slogan__frame .slogan__heart { right: 8px; bottom: -10px; width: 26px; height: 26px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .house { aspect-ratio: 350 / 287.39; border-radius: 12.3167px; padding: 18px 18.5px 20px; gap: 20px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .house__title { margin: 0; font-size: 16px; line-height: 20px; font-weight: 400; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .house__meta { margin: 10px 0 0; font-size: 12px; line-height: 15px; }
