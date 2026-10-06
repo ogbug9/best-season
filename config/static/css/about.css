@@ -45,12 +45,17 @@
 .about-history__name { grid-column: 1; grid-row: 1; text-align: right; }
 .about-history__name > p:first-child { text-align: left; padding-left: 30px; }
 .about-history__name h2 { color: #847F57; font: 500 60px/80px var(--font-heading); margin: 8px 0 12px; text-align: left; padding-left: 60px; }
-.about-history .about-motto { width: 810px; max-width: 100%; margin: 120px auto 140px; text-align: left; font: italic 300 40px/43.565px var(--font-body); }
+.about-history .about-motto { width: fit-content; max-width: 100%; margin: 120px auto 124px; text-align: left; font: italic 300 min(44px, calc((100vw - 40px) / 18.5))/1.089 var(--font-body); }
+/* 06.10, About us (2).png: блок по ширине содержимого и по центру, 44 px; строки 318 / 329,
+   сердце 1071–1120 (58 px), центр 719. Все отступы в em — позиция держится на любой ширине. */
 .about-motto__line { display: block; }
-.about-motto__line + .about-motto__line { padding-left: 14px; }
-.about-motto img { display: inline-block; vertical-align: middle; }
+.about-motto__line + .about-motto__line { padding-left: .2727em; }
+.about-motto img { display: inline-block; vertical-align: middle; width: 1.318em; height: 1.318em; margin-left: -.1136em; position: relative; top: .227em; }
 .about-sections { background: none; }
 .about-section { margin-top: 140px; }
+/* Сердце 58 px увеличивает вторую строку слогана на 16 px; «Три столпа» остаётся
+   на 145 px ниже слогана, как в About us (2).png. */
+@media (min-width: 700px) { .about-pillars:first-child { margin-top: 124px; } }
 .about-section .section__title { margin: 0 0 60px; text-align: center; font-size: 90px; line-height: 95px; }
 .about-section__lead { margin: -36px auto 40px; text-align: center; font: 400 20px/24px var(--font-body); }
 .about-track { --about-visible: 3; display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 40px) / 3); gap: 20px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; list-style: none; margin: 0; padding: 0; }
@@ -190,10 +195,9 @@
   .about-history__row--reverse { margin-bottom: 39px; }
   .about-history__name br { display: none; }
   .about-history__row:last-child > p { margin-left: 100px; max-width: 230px; }
-  .about-history .about-motto { width: 350px; margin: 60px auto; font-size: 18px; line-height: 22px; }
-  .about-motto__line { padding-left: 8px; }
-  .about-motto__line + .about-motto__line { padding-left: 12px; }
-  .about-motto img { width: 24px; height: 24px; }
+  /* About us mob (2).png: строки 28 / 33, сердце 339–360, центр 194. */
+  .about-history .about-motto { margin: 60px auto; font-size: min(18px, calc((100vw - 40px) / 18.8)); line-height: 1.2222; }
+  .about-motto img { margin-left: .1667em; }
   .about-sections { background: none; }
   .about-section { margin-top: 60px; }
   .about-section .section__title { margin-bottom: 24px; font-size: 36px; line-height: 42px; text-align: left; }
