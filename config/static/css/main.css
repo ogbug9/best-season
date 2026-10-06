@@ -1552,6 +1552,14 @@ body {
   /* Высота пилюли меню по инспектору — 87px. Раньше стояло 68 и первый
      экран внутренних страниц отступал меньше, чем нужно. */
   --header-h: 87px;
+  /* Пилюля меню на десктопе (≥900): общие размеры для шапки и плашки cookie. */
+  --header-w: min(100% - 2 * var(--s-4), 1260px);
+  --header-desk-top: 32px;
+  --header-desk-h: 86.91px;
+  --header-radius: 100px;
+  --header-cta-h: 40px;
+  --nav-font-size: 1rem;
+  --nav-line-height: 20px;
 }
 
 /* ---------- Кнопки: 6 состояний по COMPONENTS ---------- */
@@ -1652,6 +1660,25 @@ body {
   .cookie-accept { width: 99px; height: 27px; font-size: 9px; }
   .cookie-close { width: 27px; height: 27px; font-size: 15px; }
 }
+/* 06.10: на десктопе плашка размером с пилюлю меню, отступ снизу = отступу шапки сверху. */
+@media (min-width: 900px) {
+  .cookie-banner {
+    bottom: var(--header-desk-top);
+    width: var(--header-w);
+    max-width: none;
+    height: var(--header-desk-h);
+    padding: 0 32px;
+    border-radius: var(--header-radius);
+  }
+  .cookie-text {
+    flex: 1 1 auto;
+    width: auto;
+    font-size: var(--nav-font-size);
+    line-height: var(--nav-line-height);
+  }
+  .cookie-accept { width: auto; height: var(--header-cta-h); padding-inline: 20px; }
+  .cookie-close { width: var(--header-cta-h); height: var(--header-cta-h); font-size: 20px; }
+}
 
 @keyframes btn-spin { to { transform: rotate(360deg); } }
 
@@ -1670,7 +1697,7 @@ body {
 
   border: 0;
 }
-@media (min-width: 900px) { .header { top: 32px; } }
+@media (min-width: 900px) { .header { top: var(--header-desk-top); } }
 .page-home .hero { padding-top: calc(var(--header-h) + var(--s-7)); }
 /* Шапка вынесена из потока (position: absolute сверху), поэтому первый
    блок КАЖДОЙ страницы должен сам отступить на её высоту. Раньше это
@@ -1686,7 +1713,7 @@ body:not(.page-home) main > :first-child {
 .container--header {
   /* width у .container задан через min(), max-width его не перебивает —
      нужно переопределить именно width */
-  width: min(100% - 2 * var(--s-4), 1260px);
+  width: var(--header-w);
 }
 
 /* Инспектор (узел «Меню»): 1260×86.91, поля 20×32, раскладка
@@ -1698,7 +1725,7 @@ body:not(.page-home) main > :first-child {
   justify-content: space-between;
   gap: var(--s-4);
   padding: var(--s-2) var(--s-3);
-  border-radius: 100px;
+  border-radius: var(--header-radius);
   background: var(--c-cream);
   /* Поддержка неполная, поэтому фон непрозрачный и без размытия
      шапка выглядит так же — блюр только украшает. */
@@ -1717,7 +1744,7 @@ body:not(.page-home) main > :first-child {
        ширине пилюли 1260, и кнопка вылезала за скругление вправо.
        Промежутки распределяет space-between, минимум не задаём. */
     gap: 0;
-    min-height: 86.91px;
+    min-height: var(--header-desk-h);
     padding: 20px 32px;
   }
 }
@@ -1802,12 +1829,12 @@ body:not(.page-home) main > :first-child {
    срывается на вторую строку и пилюля вырастает до 102px. */
 .header__aside .btn {
   width: 214px;
-  min-height: 40px;
+  min-height: var(--header-cta-h);
   padding: 10px 20px;
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: 1rem;
-  line-height: 20px;
+  font-size: var(--nav-font-size);
+  line-height: var(--nav-line-height);
   white-space: nowrap;
   /* У общей кнопки рамка в 1px, в макете её нет. С рамкой высота
      выходила 42 вместо 40 при тех же полях 10. */
@@ -1833,8 +1860,8 @@ body:not(.page-home) main > :first-child {
 .nav--desktop .nav__link {
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: 1rem;
-  line-height: 20px;
+  font-size: var(--nav-font-size);
+  line-height: var(--nav-line-height);
   white-space: nowrap;
 }
 
