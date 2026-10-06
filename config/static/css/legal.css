@@ -1,5 +1,7 @@
 .legal-document { max-width: 880px; font-size: 18px; line-height: 1.65; overflow-wrap: normal; word-break: normal; hyphens: none; }
 .legal-page-head h1, .legal-document h2 { hyphens: none; overflow-wrap: normal; word-break: normal; }
+/* 06.10: «конфиденциальности» ≈ 13.6em; на 700–1439 кегль не шире контейнера (100vw − 200), с 1440 прежние 90 px. */
+@media (min-width: 700px) { .page-head.legal-page-head h1 { font-size: min(90px, calc((100vw - 200px) / 13.7)); } }
 .legal-document a { overflow-wrap: anywhere; }
 .legal-document p, .legal-document li { margin: 0 0 1.1em; }
 .legal-document h2 { margin: 2em 0 .8em; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; }
