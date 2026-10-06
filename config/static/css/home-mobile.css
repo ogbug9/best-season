@@ -186,6 +186,9 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .nearby-more__arrow { display: none; }
 
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .section--gallery { padding-top: 45px; }
+/* 06.10, Main mob: заголовок → описание 8 px, описание → фото 24 px (шаг строк 17 уже как в макете). */
+.page-home .section--gallery .photo-mosaic__text .section__title { margin-bottom: 8px; }
+.page-home .section--gallery .photo-mosaic__text .section__lead { margin-bottom: 24px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .section--gallery + .section,
 .page-home .section--gallery + .home-faq-background-anchor > .section { padding-top: 36px; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .photo-mosaic { display: flex; flex-direction: column; gap: 0; padding: 0; aspect-ratio: auto; }
