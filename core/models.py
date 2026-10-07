@@ -605,6 +605,41 @@ class Event(models.Model):
         return self.end_date or self.date
 
 
+@register_snippet
+class VideoClip(models.Model):
+    """Ролик для места под видео (docs/dop-stranicy/01-komponenty.md, K3).
+
+    Пока ролика нет, на месте стоит заглушка. Загрузите файл MP4 в
+    «Документы», выберите его здесь и место — заглушка сменится сама:
+    обложка остаётся, видео грузится только по нажатию.
+    """
+
+    SLOTS = [
+        ("territory-walk", "Территория: прогулка по глэмпингу"),
+        ("directions-road", "Как добраться: последний километр и въезд"),
+        ("gallery-morning-1", "Галерея: «Утреннее» 1"),
+        ("gallery-morning-2", "Галерея: «Утреннее» 2"),
+        ("gallery-morning-3", "Галерея: «Утреннее» 3"),
+        ("group-evening", "Выезды компаний: вечер в полном составе"),
+        ("scenario-day", "Чем заняться: один день в «Лучшем сезоне»"),
+    ]
+    slot = models.CharField("Место на сайте", max_length=32, choices=SLOTS, unique=True)
+    file = models.ForeignKey("wagtaildocs.Document", verbose_name="Файл видео (MP4)", on_delete=models.PROTECT, related_name="+")
+    poster = models.ForeignKey("wagtailimages.Image", verbose_name="Обложка", null=True, blank=True,
+                               on_delete=models.SET_NULL, related_name="+")
+    title = models.CharField("Подпись", max_length=120, blank=True)
+    is_published = models.BooleanField("Показывать на сайте", default=True)
+
+    panels = [FieldPanel("slot"), FieldPanel("file"), FieldPanel("poster"), FieldPanel("title"), FieldPanel("is_published")]
+
+    class Meta:
+        verbose_name = "Видео"
+        verbose_name_plural = "Видео на сайте"
+
+    def __str__(self):
+        return self.get_slot_display()
+
+
 class ChannelPost(models.Model):
     """Превью последних постов канала Telegram для «Рассылки» (docs/dop-stranicy/20).
 

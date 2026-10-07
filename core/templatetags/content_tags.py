@@ -79,3 +79,16 @@ def legal_table(value):
     body = rendered[1:] if headers else rendered
     caption = format_html('<caption>{}</caption>', value['table_caption']) if value.get('table_caption') else ''
     return format_html('<table>{}{}<tbody>{}</tbody></table>', caption, heading, format_html_join('', '{}', ((row,) for row in body)))
+
+
+@register.simple_tag
+def video_clip(slot):
+    """Опубликованный ролик для места или None — тогда выводится заглушка."""
+    if not slot:
+        return None
+    from core.models import VideoClip
+    try:
+        return VideoClip.objects.select_related("file", "poster").filter(slot=slot, is_published=True).first()
+    except DatabaseError:
+        return None
+

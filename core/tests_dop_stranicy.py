@@ -181,3 +181,27 @@ class EventsAndSnippetsTests(TestCase):
         context = context_for(ContentPage(title='М', slug='meropriyatiya'), RequestFactory().get('/'))
         self.assertEqual([e.title for e in context['upcoming']], ['Йога', 'Новый год'])
         self.assertEqual(context['archive'][0]['title'], 'Флористика')
+
+
+MEDIA_TMP_VIDEO = tempfile.mkdtemp()
+
+
+@override_settings(MEDIA_ROOT=MEDIA_TMP_VIDEO)
+class VideoClipTests(TestCase):
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(MEDIA_TMP_VIDEO, ignore_errors=True)
+
+    def test_slot_turns_into_video_when_clip_uploaded(self):
+        from django.core.files.base import ContentFile
+        from wagtail.documents import get_document_model
+        from core.models import VideoClip
+        render = lambda: render_to_string('includes/video_slot.html', {'slot': 'territory-walk', 'poster': None, 'title': 'Прогулка'},
+                                          request=RequestFactory().get('/'))
+        self.assertIn('video-slot--empty', render())
+        document = get_document_model().objects.create(title='walk', file=ContentFile(b'00', name='walk.mp4'))
+        VideoClip.objects.create(slot='territory-walk', file=document)
+        html = render()
+        self.assertIn('<video', html)
+        self.assertIn('preload="none"', html)

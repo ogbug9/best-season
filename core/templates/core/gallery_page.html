@@ -53,7 +53,8 @@
     <p class="center gallery-page__lead">Короткие ролики о том, как начинается день в «Лучшем сезоне».</p>
     <ul class="gallery-videos">
       {% for item in gallery_items|slice:":3" %}
-        <li data-reveal>{% include "includes/video_slot.html" with poster=item.image title="Утреннее" ratio="4x5" %}</li>
+        {% cycle "gallery-morning-1" "gallery-morning-2" "gallery-morning-3" as morning_slot silent %}
+        <li data-reveal>{% include "includes/video_slot.html" with slot=morning_slot poster=item.image title="Утреннее" ratio="4x5" %}</li>
       {% empty %}
         <li>{% include "includes/video_slot.html" with poster=None title="Здесь будут ролики «Утреннее»" ratio="4x5" %}</li>
       {% endfor %}

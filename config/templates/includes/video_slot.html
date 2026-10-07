@@ -1,10 +1,21 @@
-{% load content_tags marketing_tags media_tags %}
+{% load wagtailimages_tags content_tags marketing_tags media_tags %}
 {% comment %}
   Место под будущее видео (docs/dop-stranicy/01-komponenty.md, K3).
   Видео не встраиваем: пока ролика нет, показываем заглушку.
   А — есть poster (фото из уже загруженных), Б — фото нет.
-  {% include "includes/video_slot.html" with poster=image title="Утро на террасе" note="Снимаем этой осенью" %}
+  {% include "includes/video_slot.html" with slot="territory-walk" poster=image title="Утро на террасе" note="Снимаем этой осенью" %}
+  Когда в «Видео на сайте» есть ролик для slot, вместо заглушки выводится он.
 {% endcomment %}
+{% video_clip slot as clip %}
+{% if clip %}
+<figure class="video-slot video-slot--video{% if ratio == '4x5' %} video-slot--tall{% endif %}">
+  {% if clip.poster %}{% image clip.poster fill-1280x720 format-webp as poster_image %}{% endif %}
+  <video class="video-slot__video" controls preload="none" playsinline{% if poster_image %} poster="{{ poster_image.url }}"{% endif %}>
+    <source src="{{ clip.file.url }}" type="video/mp4">
+  </video>
+  {% if clip.title %}<figcaption class="visually-hidden">{{ clip.title }}</figcaption>{% endif %}
+</figure>
+{% else %}
 {% with s=settings.core.SiteSettings %}
 <figure class="video-slot{% if poster %} video-slot--poster{% else %} video-slot--empty{% endif %}{% if ratio == '4x5' %} video-slot--tall{% endif %}">
   {% if poster %}
@@ -23,3 +34,4 @@
   {% endif %}
 </figure>
 {% endwith %}
+{% endif %}

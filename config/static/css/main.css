@@ -5945,4 +5945,6 @@ html:has(.lightbox[open]) { overflow: hidden; }
   .events-list__date { font-size: 40px; }
   .events-list__item .btn { grid-column: 1 / -1; }
 }
+.video-slot--video { background: var(--c-deep); }
+.video-slot__video { display: block; width: 100%; height: 100%; object-fit: cover; }
 
