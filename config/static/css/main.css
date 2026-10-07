@@ -5922,3 +5922,13 @@ html:has(.lightbox[open]) { overflow: hidden; }
   .gallery-videos > li { scroll-snap-align: start; }
 }
 
+/* Поиск (docs/dop-stranicy/21): как поиск FAQ. */
+.search-form { display: flex; gap: 8px; margin: var(--s-4) auto 0; }
+.search-form label { flex: 1; }
+.search-results { margin: 0 0 var(--s-5); padding: 0; list-style: none; }
+.search-results__item { padding: 14px 0; border-bottom: 1px solid var(--c-olive-soft); }
+.search-results__item a { font-weight: 500; color: var(--c-deep); }
+.search-results__item p { margin: 4px 0 0; font-size: 15px; }
+.search-results__pages { display: flex; justify-content: space-between; }
+.error-links a { color: var(--c-terra); }
+

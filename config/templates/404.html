@@ -20,6 +20,12 @@
       <a class="btn btn--primary" href="/">{% cms_text "404-ad94907f6423" %}</a>
       <button type="button" class="btn btn--outline" data-booking-open data-entry-point="1">{% cms_text "404-aa5b7a42a613" %}</button>
     </p>
+    {% slugurl "razmeshchenie" as houses_url %}{% slugurl "akcii" as promo_url %}{% slugurl "kak-dobratsya" as road_url %}
+    {% if houses_url or promo_url or road_url %}
+      <p class="error-links">Может быть, вы искали:
+        {% if houses_url %}<a href="{{ houses_url }}">домики</a>{% endif %}{% if houses_url and promo_url %} · {% endif %}{% if promo_url %}<a href="{{ promo_url }}">акции</a>{% endif %}{% if road_url %}{% if houses_url or promo_url %} · {% endif %}<a href="{{ road_url }}">как добраться</a>{% endif %}
+      </p>
+    {% endif %}
   </div>
 </section>
 {% endblock %}

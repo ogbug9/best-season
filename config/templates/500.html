@@ -21,6 +21,15 @@
       <h1>{% cms_text "500-4d1b27ecd7c2" %}</h1>
       <p>{% cms_text "500-b8654570e7f8" %}</p>
       <p><a class="btn btn--primary" href="/">{% cms_text "500-ad94907f6423" %}</a></p>
+      {% if s.phone or s.telegram_url or s.whatsapp_url %}
+        <p>Хотите забронировать прямо сейчас? Напишите или позвоните — забронируем вручную.</p>
+        <p class="split__actions" style="justify-content: center;">
+          {% if s.phone %}<a class="btn btn--outline" href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a>{% endif %}
+          {% firstof s.telegram_chat_url s.telegram_url as telegram %}
+          {% if telegram %}<a class="btn btn--outline" href="{{ telegram }}" rel="noopener" target="_blank">Telegram</a>{% endif %}
+          {% if s.whatsapp_url %}<a class="btn btn--outline" href="{{ s.whatsapp_url }}" rel="noopener" target="_blank">WhatsApp</a>{% endif %}
+        </p>
+      {% endif %}
     </div>
   </main>
 </body>

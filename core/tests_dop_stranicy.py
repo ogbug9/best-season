@@ -143,3 +143,18 @@ class DopPagesTests(TestCase):
         from core.dop_pages import SCENARIOS
         self.assertEqual([s['code'] for s in SCENARIOS], ['couple', 'kids', 'dog', 'company', 'work'])
         self.assertTrue(all(len(s['steps']) >= 3 for s in SCENARIOS))
+
+
+class ServicePagesTests(TestCase):
+    def test_server_error_page_renders_without_request_context(self):
+        from core.views import server_error
+        response = server_error(RequestFactory().get('/'))
+        self.assertEqual(response.status_code, 500)
+        self.assertIn('error-code', response.content.decode())
+
+    def test_search_offers_faq_answers(self):
+        from core.models import FaqItem
+        from search.views import faq_matches
+        item = FaqItem.objects.create(question='Во сколько заезд?', answer='<p>С 14:00</p>')
+        self.assertIn(item, faq_matches('заезд'))
+        self.assertEqual(faq_matches('да'), [])

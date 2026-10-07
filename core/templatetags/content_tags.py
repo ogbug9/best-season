@@ -47,7 +47,8 @@ def filled(value):
 @register.simple_tag(takes_context=True)
 def cms_text(context, key):
     # Escape plain text; line breaks are the only supported formatting.
-    return mark_safe(str(conditional_escape(value(context['request'], key))).replace('\n', '<br>'))
+    # Без request (страница 500) тексты берутся из базы или из значений по умолчанию.
+    return mark_safe(str(conditional_escape(value(context.get('request'), key))).replace('\n', '<br>'))
 
 
 @register.simple_tag

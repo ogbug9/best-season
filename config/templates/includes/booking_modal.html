@@ -91,11 +91,12 @@
       </div>
 
       <p class="booking-fallback__contacts">
-        {% if s.telegram_url %}
-          <a class="btn btn--outline" href="{% marketing_url s.telegram_url 'booking_modal' %}" rel="noopener" target="_blank">{% cms_text "booking_modal-5de96583a02b" %}</a>
+        {% firstof s.telegram_chat_url s.telegram_url as telegram %}
+        {% if telegram %}
+          <a class="btn btn--outline" href="{% marketing_url telegram 'booking_modal' 'Здравствуйте! Не получилось забронировать на сайте' %}" rel="noopener" target="_blank">{% cms_text "booking_modal-5de96583a02b" %}</a>
         {% endif %}
         {% if s.whatsapp_url %}
-          <a class="btn btn--outline" href="{% marketing_url s.whatsapp_url 'booking_modal' %}" rel="noopener" target="_blank">{% cms_text "booking_modal-3adb5333cfe3" %}</a>
+          <a class="btn btn--outline" href="{% marketing_url s.whatsapp_url 'booking_modal' 'Здравствуйте! Не получилось забронировать на сайте' %}" rel="noopener" target="_blank">{% cms_text "booking_modal-3adb5333cfe3" %}</a>
         {% endif %}
         {% if s.phone %}
           <a class="btn btn--outline" href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a>

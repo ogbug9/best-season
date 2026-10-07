@@ -42,3 +42,6 @@ urlpatterns = urlpatterns + [
     # of your site, rather than the site root:
     #    path("pages/", include(wagtail_urls)),
 ]
+
+# Своя 500: шаблон не зависит от базы и контекстных процессоров.
+handler500 = "core.views.server_error"

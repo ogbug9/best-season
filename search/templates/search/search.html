@@ -1,38 +1,56 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags %}
+{% load wagtailcore_tags content_tags marketing_tags %}
 
-{% block body_class %}template-searchresults{% endblock %}
+{% block body_class %}template-searchresults page-search{% endblock %}
 
-{% block title %}Search{% endblock %}
+{% block title %}Поиск по сайту{% endblock %}
+
+{% comment %} Поиск (docs/dop-stranicy/21): оформлен как FAQ; сначала готовые ответы, потом страницы. {% endcomment %}
 
 {% block content %}
-<h1>Search</h1>
+<section class="section page-head">
+  <div class="container container--narrow center">
+    <h1>Поиск по сайту</h1>
+    <form class="faq-page__search search-form" action="{% url 'search' %}" method="get" role="search">
+      <label><span class="visually-hidden">Что ищем</span>
+        <input type="search" name="query" placeholder="Баня, собака, как добраться…"{% if search_query %} value="{{ search_query }}"{% endif %}></label>
+      <button type="submit" class="btn btn--primary">Найти</button>
+    </form>
+  </div>
+</section>
 
-<form action="{% url 'search' %}" method="get">
-    <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
-    <input type="submit" value="Search" class="button">
-</form>
-
-{% if search_results %}
-<ul>
-    {% for result in search_results %}
-    <li>
-        <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
-        {% if result.search_description %}
-        {{ result.search_description }}
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
-
-{% if search_results.has_previous %}
-<a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>
-{% endif %}
-
-{% if search_results.has_next %}
-<a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
-{% endif %}
-{% elif search_query %}
-No results found
+{% if search_query %}
+<section class="section">
+  <div class="container container--narrow">
+    {% if faq_results %}
+      <h2>Готовые ответы</h2>
+      <ul class="search-results">
+        {% for item in faq_results %}
+          <li class="search-results__item"><a href="{% if faq_page %}{% pageurl faq_page %}{% endif %}#q-{{ item.pk }}">{{ item.question }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% if search_results %}
+      <h2>Страницы</h2>
+      <ul class="search-results">
+        {% for result in search_results %}
+          <li class="search-results__item">
+            <a href="{% pageurl result %}">{{ result }}</a>
+            {% if result.search_description %}<p>{{ result.search_description }}</p>{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+      <p class="search-results__pages">
+        {% if search_results.has_previous %}<a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">← Назад</a>{% endif %}
+        {% if search_results.has_next %}<a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Дальше →</a>{% endif %}
+      </p>
+    {% elif not faq_results %}
+      <p class="center">Ничего не нашли. Посмотрите <a href="{% if faq_page %}{% pageurl faq_page %}{% endif %}">ответы на частые вопросы</a> или напишите нам — ответим сами.</p>
+      {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+        {% if telegram %}<p class="center"><a class="btn btn--outline" href="{% marketing_url telegram 'search' 'Здравствуйте! У меня вопрос' %}" rel="noopener" target="_blank">{% cms_text "channel-telegram" %}</a></p>{% endif %}
+      {% endwith %}
+    {% endif %}
+  </div>
+</section>
 {% endif %}
 {% endblock %}
