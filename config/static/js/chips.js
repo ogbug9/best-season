@@ -40,6 +40,10 @@
           item.classList.toggle("faq__item--dark", shown % 2 === 0);
           item.classList.toggle("faq__item--olive", shown % 2 === 1);
         }
+        if (item.classList.contains("place")) {
+          item.classList.toggle("place--dark", shown % 2 === 0);
+          item.classList.toggle("place--olive", shown % 2 === 1);
+        }
         shown += 1;
         item.hidden = false;
         item.classList.remove("is-fading");

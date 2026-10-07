@@ -443,6 +443,16 @@ class NearbyPlace(models.Model):
         "Ссылка «Подробнее»", blank=True,
         help_text="Внешний адрес: сайт музея, статья. Пусто — кнопки не будет.",
     )
+    # Страница «Интересное рядом» (docs/dop-stranicy/12-interesnoe-ryadom.md);
+    # на главной эти поля не выводятся.
+    SEASONS = [("spring", "Весна"), ("summer", "Лето"), ("autumn", "Осень"), ("winter", "Зима")]
+    distance_label = models.CharField("Расстояние", max_length=40, blank=True, help_text="Например: 3 км или ≈30 мин на машине.")
+    seasons = models.CharField(
+        "Сезоны", max_length=40, blank=True,
+        help_text="Через пробел: spring summer autumn winter. Пусто — круглый год.",
+    )
+    tags = models.CharField("Метки", max_length=120, blank=True, help_text="Через запятую, например: с детьми.")
+    route_url = models.URLField("Маршрут", blank=True, help_text="Пусто — маршрут в Яндекс Картах строится по названию.")
     is_published = models.BooleanField("Показывать на сайте", default=True)
     sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
 
@@ -451,9 +461,25 @@ class NearbyPlace(models.Model):
         FieldPanel("image"),
         FieldPanel("description"),
         FieldPanel("link_url"),
+        MultiFieldPanel([FieldPanel("distance_label"), FieldPanel("seasons"), FieldPanel("tags"), FieldPanel("route_url")],
+                        heading="Страница «Интересное рядом»"),
         FieldPanel("is_published"),
         FieldPanel("sort_order"),
     ]
+
+    @property
+    def season_codes(self):
+        codes = [code for code in self.seasons.split() if code in dict(self.SEASONS)]
+        return codes or [code for code, _ in self.SEASONS]
+
+    @property
+    def tag_list(self):
+        return [tag.strip() for tag in self.tags.split(",") if tag.strip()]
+
+    @property
+    def route_link(self):
+        from urllib.parse import quote
+        return self.route_url or f"https://yandex.ru/maps/?rtext=~{quote(self.title)}"
 
     class Meta:
         verbose_name = "Место рядом"
@@ -840,16 +866,45 @@ class NearbyPage(InProgressMixin, Page):
 
     intro = models.CharField("Вступление", max_length=255, blank=True)
     body = RichTextField("Текст", blank=True, features=BODY_FEATURES)
+    facts = models.TextField(
+        "Факты", blank=True,
+        help_text="По строке на карточку: значение | подпись. Например: 44 из 170 | деревень мира в списке ООН.",
+    )
+    day_route = models.TextField(
+        "Маршрут на день", blank=True,
+        help_text="По строке на точку: время | место | одна строка о нём.",
+    )
 
-    content_panels = Page.content_panels + [FieldPanel("intro"), FieldPanel("body")]
+    content_panels = Page.content_panels + [FieldPanel("intro"), FieldPanel("body"), FieldPanel("facts"), FieldPanel("day_route")]
     max_count = 1
 
     class Meta:
         verbose_name = "Страница «Интересное рядом»"
 
+    @staticmethod
+    def _rows(text, size):
+        rows = []
+        for line in (text or "").splitlines():
+            parts = [part.strip() for part in line.split("|")]
+            if parts[0]:
+                rows.append(tuple((parts + [""] * size)[:size]))
+        return rows
+
     def get_context(self, request):
+        from django.utils import timezone
+
         context = super().get_context(request)
-        context["places"] = NearbyPlace.objects.filter(is_published=True)
+        month = timezone.localdate().month
+        season = ["winter", "winter", "spring", "spring", "spring", "summer",
+                  "summer", "summer", "autumn", "autumn", "autumn", "winter"][month - 1]
+        places = list(NearbyPlace.objects.filter(is_published=True))
+        # Сначала то, что хорошо сейчас; остальное ниже с пометкой «лучше …».
+        places.sort(key=lambda place: season not in place.season_codes)
+        for place in places:
+            place.off_season = season not in place.season_codes
+            place.best_label = ", ".join(label.lower() for code, label in NearbyPlace.SEASONS if code in place.season_codes)
+        context.update(places=places, season=season, seasons=NearbyPlace.SEASONS,
+                       place_facts=self._rows(self.facts, 2), route_points=self._rows(self.day_route, 3))
         return context
 
 

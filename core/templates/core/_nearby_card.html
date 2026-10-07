@@ -1,6 +1,6 @@
 {% load content_tags %}
 {% load wagtailcore_tags media_tags nearby_tags %}
-        <li class="place{% if forloop.counter0|divisibleby:2 %} place--dark{% else %} place--olive{% endif %}">
+        <li class="place{% if forloop.counter0|divisibleby:2 %} place--dark{% else %} place--olive{% endif %}{% if place.off_season %} place--off-season{% endif %}"{% if level == "2" %} data-tags="{{ place.season_codes|join:' ' }}" data-reveal{% endif %}>
           <div class="place__head">
             <p class="place__number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</p>
             <{% if level == "2" %}h2{% else %}h3{% endif %} class="place__title"><span class="home-desktop-copy">{{ place.title|nearby_title|linebreaksbr }}</span><span class="home-mobile-copy">{{ place.title|nearby_title|mobile_text }}</span></{% if level == "2" %}h2{% else %}h3{% endif %}>
@@ -13,6 +13,13 @@
             {% endif %}
           </div>
           <div class="place__body">
+            {% if level == "2" %}
+              <ul class="place__chips">
+                {% if place.distance_label %}<li>{{ place.distance_label }}</li>{% endif %}
+                {% for tag in place.tag_list %}<li>{{ tag }}</li>{% endfor %}
+                {% if place.off_season %}<li class="place__chip--season">лучше: {{ place.best_label }}</li>{% endif %}
+              </ul>
+            {% endif %}
             {% if place.description %}
               <p class="place__description">
                 {% if level == "2" and not place.link_url %}
@@ -28,6 +35,7 @@
               «Интересное рядом» — карточка без кнопки ломала бы ряд.
             {% endcomment %}
             <div class="place__actions">
+              {% if level == "2" %}<a class="btn btn--outline place__route" data-directions-link href="{{ place.route_link }}" rel="noopener" target="_blank">Маршрут</a>{% endif %}
               {% if place.link_url %}
                 <a class="btn btn--outline place__more" href="{{ place.link_url }}" rel="noopener" target="_blank">{% cms_text "_nearby_card-59589fe2a549" %}</a>
               {% elif page.nearby_more_page %}

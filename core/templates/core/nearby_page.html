@@ -1,8 +1,15 @@
 {% extends "base.html" %}
-{% load content_tags %}
+{% load content_tags marketing_tags %}
 {% load wagtailcore_tags media_tags layout_tags %}
 
 {% block body_class %}page-nearby{% endblock %}
+
+{% comment %}
+  Интересное рядом (docs/dop-stranicy/12-interesnoe-ryadom.md): повод
+  остаться на вторую ночь. Сначала места, хорошие в текущий сезон; чипы
+  сезонов (Д10), маршрут на день пунктиром, факты (K4).
+{% endcomment %}
+
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
@@ -19,7 +26,11 @@
 {% if places %}
 <section class="section">
   <div class="container">
-    <ul class="cards cards--nearby">
+    <div class="chips nearby__chips" data-chips="season" role="group" aria-label="Сезон">
+      <button type="button" class="filter-chip" data-chip="">Круглый год</button>
+      {% for code, label in seasons %}<button type="button" class="filter-chip" data-chip="{{ code }}">{{ label }}</button>{% endfor %}
+    </div>
+    <ul class="cards cards--nearby" data-chips-for="season">
       {% for place in places %}
         {% include "core/_nearby_card.html" with level="2" %}
       {% endfor %}
@@ -27,4 +38,38 @@
   </div>
 </section>
 {% endif %}
+
+{% if place_facts %}
+<section class="section">
+  <div class="container container--narrow">
+    {% include "includes/fact_cards.html" with facts=place_facts %}
+  </div>
+</section>
+{% endif %}
+
+{% if route_points %}
+<section class="section nearby-route">
+  <div class="container container--narrow">
+    <h2>Маршрут на день</h2>
+    <ol class="route-steps">
+      {% for time, place_name, note in route_points %}
+        <li class="route-steps__item{% if forloop.last %} route-steps__item--end{% endif %}" data-reveal><b>{{ time }} · {{ place_name }}</b>{% if note %}<span>{{ note }}</span>{% endif %}</li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+{% endif %}
+
+{% with s=settings.core.SiteSettings %}
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Остаться на выходные рядом с Поленово</h2>
+    <p>Новые места сначала появляются в нашей рубрике #ИнтересноеРядом.</p>
+    <p class="split__actions nearby__actions">
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="nearby">{% cms_text "booking_cta-5d9d7f118153" %}</button>
+      {% if s.telegram_url %}<a class="btn btn--outline" href="{% marketing_url s.telegram_url 'nearby_page' %}" rel="noopener" target="_blank">Рубрика в Telegram</a>{% endif %}
+    </p>
+  </div>
+</section>
+{% endwith %}
 {% endblock %}

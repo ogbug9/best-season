@@ -5793,3 +5793,11 @@ html:has(.lightbox[open]) { overflow: hidden; }
   .reviews-quote__text blockquote { font-size: 20px; }
 }
 
+/* Интересное рядом (docs/dop-stranicy/12-interesnoe-ryadom.md): метки и маршрут. */
+.nearby__chips, .nearby__actions { justify-content: center; }
+.place__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
+.place__chips li { padding: 4px 10px; border-radius: 999px; background: rgb(247 240 230 / 16%); color: var(--c-cream); font-size: 13px; line-height: 16px; }
+.place__chips .place__chip--season { background: var(--c-cream); color: var(--c-deep); }
+.place--off-season .place__media { opacity: 0.85; }
+.place__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
