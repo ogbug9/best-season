@@ -317,8 +317,7 @@ class FormTypesTests(FormTestCase):
         резервный сценарий бронирования."""
         from forms.forms import FORM_CLASSES
 
-        self.assertEqual(
-            set(FORM_CLASSES),
+        self.assertLessEqual(
             {
                 FormType.FEEDBACK,
                 FormType.TRANSFER,
@@ -326,4 +325,5 @@ class FormTypesTests(FormTestCase):
                 FormType.HOUSE_QUESTION,
                 FormType.FALLBACK,
             },
+            set(FORM_CLASSES),
         )

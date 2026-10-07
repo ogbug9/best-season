@@ -59,6 +59,8 @@ run("manage.py", "seed_content", "--initial-only")
 run("manage.py", "apply_desktop_reference", "--if-not-applied")
 run("manage.py", "import_archive_photos", "--if-not-applied")
 run("manage.py", "initialize_site_content")
+# Превью постов канала для «Рассылки». Без сети команда ничего не трогает.
+run("manage.py", "fetch_telegram_preview", required=False)
 # Исходники архива используются командой импорта, но не отдаются как static.
 # Не дублируем 1.36 GiB фотографий в STATIC_ROOT на каждом старте контейнера.
 # collectstatic — строго до prepare_site_images: та рендерит шаблоны с

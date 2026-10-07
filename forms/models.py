@@ -9,6 +9,10 @@ class FormType(models.TextChoices):
     CERTIFICATE = "certificate", "Подарочный сертификат"
     HOUSE_QUESTION = "house_question", "Вопрос со страницы дома"
     FALLBACK = "fallback", "Резервный сценарий бронирования"
+    # Доп. страницы (docs/dop-stranicy/18, 19)
+    GROUP = "group", "Выезд компании"
+    PARTNER = "partner", "Партнёрство"
+    EVENT = "event", "Запись на событие"
 
 
 class SubmissionStatus(models.TextChoices):

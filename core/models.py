@@ -568,6 +568,32 @@ class ArchivePhotoImport(models.Model):
 
 
 @register_snippet
+class ChannelPost(models.Model):
+    """Превью последних постов канала Telegram для «Рассылки» (docs/dop-stranicy/20).
+
+    Заполняется командой fetch_telegram_preview из публичной страницы t.me/s/…;
+    вручную не редактируется.
+    """
+
+    url = models.URLField(unique=True)
+    published_at = models.DateTimeField()
+    text = models.TextField(blank=True)
+    image_url = models.URLField(blank=True, max_length=500)
+
+    class Meta:
+        ordering = ["-published_at"]
+        verbose_name = "Пост канала"
+        verbose_name_plural = "Посты канала"
+
+    def __str__(self):
+        return self.url
+
+    @property
+    def first_line(self):
+        line = next((part.strip() for part in self.text.splitlines() if part.strip()), "")
+        return line if len(line) <= 140 else line[:139].rstrip() + "…"
+
+
 class InterfaceText(models.Model):
     key = models.CharField(max_length=120, unique=True, editable=False)
     label = models.CharField('Где используется', max_length=255, editable=False)
@@ -647,14 +673,20 @@ class ContentPage(InProgressMixin, Page):
     ]
 
     def get_template(self, request, *args, **kwargs):
+        from core.dop_pages import TEMPLATES
+
         if self.slug == "o-nas":
             return "core/about_page.html"
+        if self.slug in TEMPLATES:
+            return TEMPLATES[self.slug]
         return super().get_template(request, *args, **kwargs)
 
     @property
     def awaiting_copy(self):
         """Текста ещё нет: пусто или служебная пометка из сида — показываем заглушку."""
-        if self.slug == "o-nas" or self.legal_body or self.about_content:
+        from core.dop_pages import TEMPLATES
+
+        if self.slug == "o-nas" or self.slug in TEMPLATES or self.legal_body or self.about_content:
             return False
         text = " ".join(strip_tags(str(self.body or "")).split())
         return not text or "Текст ожидается от заказчика" in text
@@ -663,6 +695,9 @@ class ContentPage(InProgressMixin, Page):
         context = super().get_context(request, *args, **kwargs)
         if self.awaiting_copy:
             context["placeholder_image"] = home_hero_image()
+        from core.dop_pages import context_for
+
+        context.update(context_for(self, request))
         if self.slug == "o-nas":
             if self.about_content:
                 context['about'] = self.about_content[0].value

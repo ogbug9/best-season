@@ -114,3 +114,32 @@ class Wave1PagesTests(TestCase):
         FaqItem.objects.create(question='Можно ли с животными?', answer='<p>Да</p>', topic='pets')
         context = FaqPage(title='FAQ').get_context(RequestFactory().get('/'))
         self.assertEqual(context['topics'], [('pets', 'Животные')])
+
+
+class DopPagesTests(TestCase):
+    def test_telegram_preview_parser(self):
+        from core.management.commands.fetch_telegram_preview import channel_name, parse
+        page = ('<div class="tgme_widget_message_wrap"><div data-post="best_season_bs/127">'
+                '<a class="tgme_widget_message_photo_wrap" style="width:1px;background-image:url(\'https://cdn.example/p.jpg\')"></a>'
+                '<div class="tgme_widget_message_text js-message_text">Мальдивы — ближе,<br/>чем кажется</div>'
+                '<time datetime="2026-06-21T10:00:00+00:00"></time></div>'
+                '<div class="tgme_widget_message_wrap"><div data-post="best_season_bs/1"><time datetime="2024-09-15T10:00:00+00:00"></time></div>')
+        posts = parse(page)
+        self.assertEqual(len(posts), 1)
+        self.assertEqual(posts[0]['url'], 'https://t.me/best_season_bs/127')
+        self.assertEqual(posts[0]['text'], 'Мальдивы — ближе,\nчем кажется')
+        self.assertEqual(posts[0]['image_url'], 'https://cdn.example/p.jpg')
+        self.assertEqual(channel_name('https://t.me/best_season_bs?utm_source=x'), 'best_season_bs')
+        self.assertEqual(channel_name('https://vk.ru/club'), '')
+
+    def test_group_form_keeps_occasion(self):
+        from forms.forms import GroupForm
+        form = GroupForm(data={'name': 'Аня', 'phone': '+7 999 000-00-00', 'topic': 'Выпускной',
+                               'guests': 12, 'consent_given': True})
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertEqual(form.save().topic, 'Выпускной')
+
+    def test_scenarios_have_steps_and_labels(self):
+        from core.dop_pages import SCENARIOS
+        self.assertEqual([s['code'] for s in SCENARIOS], ['couple', 'kids', 'dog', 'company', 'work'])
+        self.assertTrue(all(len(s['steps']) >= 3 for s in SCENARIOS))

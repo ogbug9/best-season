@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags content_tags marketing_tags %}
+{% block body_class %}page-dop page-scenarios{% endblock %}
+
+{% comment %}
+  Чем заняться (docs/dop-stranicy/18-…): готовые выходные, а не список.
+  Чип «С кем едете?» (Д10) показывает один сценарий; шаги — пунктиром.
+  Без JS видны все сценарии подряд.
+{% endcomment %}
+
+{% block content %}
+{% include "core/dop/_head.html" %}
+
+<section class="section">
+  <div class="container">
+    <div class="chips scenarios__chips" data-chips="who" data-chips-default="couple" role="group" aria-label="С кем едете">
+      {% for scenario in scenarios %}<button type="button" class="filter-chip" data-chip="{{ scenario.code }}">{{ scenario.label }}</button>{% endfor %}
+    </div>
+    <div data-chips-for="who">
+      {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+      {% for scenario in scenarios %}
+        <article class="scenario" data-tags="{{ scenario.code }}" aria-labelledby="scenario-{{ scenario.code }}">
+          <h2 class="scenario__title" id="scenario-{{ scenario.code }}">{{ scenario.title }}</h2>
+          <p class="scenario__lead">{{ scenario.lead }}</p>
+          <ol class="scenario__steps">
+            {% for step in scenario.steps %}
+              <li class="scenario__step" data-reveal>
+                <div class="scenario__media">{% if step.image %}{% picture step.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+                  {% if step.service.price %}<span class="card__badge scenario__price">от {{ step.service.price_display }} ₽ {{ step.service.get_price_unit_display|lower }}</span>{% endif %}
+                </div>
+                <p class="scenario__time">{{ step.time }}</p>
+                <h3 class="scenario__step-title">{{ step.title }}</h3>
+                <p class="scenario__text">{{ step.text }}</p>
+                {% if step.service and step.service.price and step.service.is_hourly %}
+                  <button type="button" class="btn btn--outline scenario__add" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Добавить к брони</button>
+                {% elif step.service and telegram %}
+                  <a class="scenario__ask" href="{% marketing_url telegram 'chem_zanyatsya' 'Здравствуйте! Хочу узнать про «'|add:step.title|add:'»' %}" rel="noopener" target="_blank">Спросить про {{ step.title|lower }}</a>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ol>
+          <div class="scenario__house" data-reveal>
+            <p>{{ scenario.house_note }}</p>
+            {% if scenario.house_page %}<a class="btn btn--outline" href="{% pageurl scenario.house_page %}">{{ scenario.house_page.title }}</a>
+            {% elif houses_page %}<a class="btn btn--outline" href="{% pageurl houses_page %}">Выбрать домик</a>{% endif %}
+            <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Забронировать эти выходные</button>
+          </div>
+        </article>
+      {% endfor %}
+      {% endwith %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    <h2 class="center">Если пойдёт дождь</h2>
+    <p class="center">Прогноз с дождём — не «пропавшие выходные», а повод пожить для себя.</p>
+    <ul class="fact-cards rainy-day">
+      {% for title, text in rainy_day %}<li class="fact-cards__item" data-reveal><b class="fact-cards__value">{{ title }}</b><span class="fact-cards__label">{{ text }}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    {% include "includes/video_slot.html" with poster=None title="Здесь будет видео одного дня в «Лучшем сезоне»" note="Снимаем этой осенью" %}
+  </div>
+</section>
+{% endblock %}

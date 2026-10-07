@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags content_tags marketing_tags layout_tags %}
+{% block body_class %}page-dop page-group{% endblock %}
+
+{% comment %}
+  Выезды компаний (docs/dop-stranicy/19-…): весь глэмпинг одной заявкой —
+  тариф «Только свои» из Telegram 26.06.2026. Цену пакета не пишем:
+  заявка с датами ведёт к разговору.
+{% endcomment %}
+
+{% block content %}
+{% include "core/dop/_head.html" %}
+
+<section class="section">
+  <div class="container">
+    <div class="group-offer group-offer--static" data-reveal>
+      {% if group_image %}{% picture group_image preset="hero" alt="" %}{% endif %}
+      <div class="group-offer__body">
+        <span class="group-offer__label">Тариф «Только свои»</span>
+        <b class="group-offer__title">Весь глэмпинг — только для вас</b>
+        <span class="group-offer__text">Лес с трёх сторон, речка, ферма и никого рядом. Только вы и те, с кем хотите разделить этот день.</span>
+        <a class="btn btn--primary group-offer__button" href="#group-form">Узнать свободные даты</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    {% include "includes/fact_cards.html" with facts=group_facts %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Какой у вас повод?</h2>
+    <ul class="occasions">
+      {% for occasion in occasions %}
+        <li class="occasions__item" data-reveal>
+          <a class="occasions__link" href="?occasion={{ occasion.title|urlencode }}#group-form">
+            {% if occasion.image %}{% picture occasion.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+            <span class="occasions__caption"><b>{{ occasion.title }}</b><span>{{ occasion.text }}</span></span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    {% include "includes/video_slot.html" with poster=group_image title="Вечер в полном составе" %}
+    <p class="group-rules">После 23:00 рядом с домиками — потише. Для больших и громких вечеров есть беседка «Корабль»: она стоит вдали от домиков.</p>
+  </div>
+</section>
+
+<section class="section" id="group-form">
+  <div class="container container--narrow">
+    {% include "forms/request_form.html" with form=group_form form_type="group" title="Заявка на весь глэмпинг" lead="Расскажите о датах и компании — ответим со свободными датами и стоимостью." submit_label="Отправить заявку" %}
+    {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+      {% if telegram %}<p class="center">или <a href="{% marketing_url telegram 'vyezdy' 'Здравствуйте! Хотим весь глэмпинг' %}" rel="noopener" target="_blank">напишите в Telegram</a></p>{% endif %}
+    {% endwith %}
+  </div>
+</section>
+
+{% if group_faq %}
+<section class="section">
+  <div class="container">
+    {% include "includes/faq_items.html" with faq=group_faq %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags content_tags marketing_tags territory_tags %}
+{% block body_class %}page-dop page-territory page-activities{% endblock %}
+
+{% comment %}
+  Развлечения (docs/dop-stranicy/18-…): всё, чем заняться на месте.
+  Плитки — те же карточки, что у территории (Д1, Д2); фильтр Д10.
+{% endcomment %}
+
+{% block content %}
+{% include "core/dop/_head.html" %}
+
+<section class="section section--pattern">
+  <div class="container">
+    <div class="chips territory__chips" data-chips="kind" role="group" aria-label="Что показать">
+      <button type="button" class="filter-chip" data-chip="">Всё</button>
+      {% for value, label in filters %}<button type="button" class="filter-chip" data-chip="{{ value }}">{{ label }}</button>{% endfor %}
+    </div>
+    {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+    <ul class="mosaic" data-chips-for="kind">
+      {% for tile in tiles %}
+        <li class="mosaic__item territory-card" tabindex="0" data-tags="{{ tile.tags }}" data-reveal>
+          {% if tile.image %}{% picture tile.image preset="card" alt=tile.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+          {% if tile.service.price %}<span class="card__badge territory-card__price">от {{ tile.service.price_display }} ₽ {{ tile.service.get_price_unit_display|lower }}</span>{% endif %}
+          <div class="mosaic__caption">
+            <h2 class="mosaic__title">{{ tile.title|territory_lines|linebreaksbr }}</h2>
+            <div class="territory-card__details">
+              {% if tile.text|filled %}<p>{{ tile.text }}</p>{% endif %}
+              {% if tile.service.price and tile.service.is_hourly %}
+                <button type="button" class="btn btn--primary territory-card__link" data-booking-open data-entry-point="7" data-entry-page="activities">Добавить к брони</button>
+              {% elif tile.service and telegram %}
+                <a class="btn btn--primary territory-card__link" href="{% marketing_url telegram 'razvlecheniya' 'Здравствуйте! Хочу узнать про «'|add:tile.title|add:'»' %}" rel="noopener" target="_blank">Спросить в Telegram</a>
+              {% endif %}
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    {% endwith %}
+  </div>
+</section>
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Скучно не будет ни в солнце, ни в дождь</h2>
+    <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="activities">{% cms_text "booking_cta-5d9d7f118153" %}</button></p>
+  </div>
+</section>
+{% endblock %}

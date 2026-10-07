@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags content_tags marketing_tags %}
+{% block body_class %}page-dop page-events{% endblock %}
+
+{% comment %}
+  Мероприятия (docs/dop-stranicy/18-…). Ближайших дат пока нет — страница
+  честно говорит «следующее событие готовим», показывает прошедшие
+  праздники и собирает контакты тех, кто хочет узнать первым.
+{% endcomment %}
+
+{% block content %}
+{% include "core/dop/_head.html" %}
+
+<section class="section">
+  <div class="container container--narrow center events-next" data-reveal>
+    <p class="events-next__label">Ближайшие события</p>
+    <h2>Следующее событие мы уже готовим</h2>
+    <p>Анонсы выходят сначала в Telegram-канале — подпишитесь или оставьте контакт, и мы напишем первыми.</p>
+    {% with s=settings.core.SiteSettings %}{% if s.telegram_url %}
+      <p><a class="btn btn--outline" href="{% marketing_url s.telegram_url 'meropriyatiya' %}" rel="noopener" target="_blank">Анонсы в Telegram</a></p>
+    {% endif %}{% endwith %}
+  </div>
+</section>
+
+{% if archive %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Как это было</h2>
+    <ul class="events-archive">
+      {% for event in archive %}
+        <li class="events-archive__item" data-reveal>
+          <div class="events-archive__media">{% if event.image %}{% picture event.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+          <h3>{{ event.title }}</h3>
+          <p>{{ event.text }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<section class="section" id="event-form">
+  <div class="container container--narrow">
+    {% include "forms/request_form.html" with form=event_form form_type="event" title="Узнать о событиях первыми" lead="Напишем, когда откроется запись на ближайший праздник или мастер-класс." submit_label="Хочу узнать первым" %}
+  </div>
+</section>
+{% endblock %}

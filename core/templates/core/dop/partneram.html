@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags media_tags content_tags %}
+{% block body_class %}page-dop page-partners{% endblock %}
+
+{% comment %}
+  Партнёрам (docs/dop-stranicy/19-…): три направления, у каждого «что
+  предлагаем» и «что ждём». Нажатие выбирает направление в форме.
+  Страница не продаёт проживание — кнопки брони здесь нет.
+{% endcomment %}
+
+{% block content %}
+{% include "core/dop/_head.html" %}
+
+<section class="section">
+  <div class="container">
+    <ul class="partners">
+      {% for direction in directions %}
+        <li class="partners__item" data-reveal>
+          <div class="partners__media">{% if direction.image %}{% picture direction.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+          <h2 class="partners__title">{{ direction.title }}</h2>
+          <p>{{ direction.text }}</p>
+          <p class="partners__terms"><b>{{ direction.offer }}</b><br>{{ direction.expect }}</p>
+          <a class="btn btn--outline" href="?direction={{ direction.title|urlencode }}#partner-form">Предложить сотрудничество</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    <div class="video-slot video-slot--empty partners__kit"><div class="video-slot__caption"><b>Медиакит «Лучшего сезона»</b><span>Презентацию с цифрами и фото пришлём по запросу.</span></div></div>
+  </div>
+</section>
+
+<section class="section" id="partner-form">
+  <div class="container container--narrow">
+    {% include "forms/request_form.html" with form=partner_form form_type="partner" title="Предложить сотрудничество" lead="Расскажите о себе и идее — ответим лично." submit_label="Отправить" %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags content_tags marketing_tags %}
+{% block body_class %}page-dop page-diary{% endblock %}
+
+{% comment %}
+  Рассылка → «Дневник Сезона» (docs/dop-stranicy/20-…). Почтовой рассылки
+  нет: живая аудитория в Telegram. Превью постов обновляет команда
+  fetch_telegram_preview; если их нет, страница — просто кнопки подписки.
+{% endcomment %}
+
+{% block content %}
+{% include "core/dop/_head.html" %}
+{% with s=settings.core.SiteSettings %}
+
+<section class="section">
+  <div class="container container--narrow center" data-reveal>
+    <h2>Дневник Сезона</h2>
+    <p>Что у нас происходит: новые постройки, сезонные акции, наши рубрики и места по соседству, куда стоит съездить.</p>
+    <ul class="reviews-rating__tags">{% for tag in channel_tags %}<li>{{ tag }}</li>{% endfor %}</ul>
+  </div>
+</section>
+
+{% if channel_posts %}
+<section class="section">
+  <div class="container">
+    <ul class="diary-posts">
+      {% for post in channel_posts %}
+        <li class="diary-posts__item" data-reveal>
+          <a class="diary-posts__link" href="{{ post.url }}" rel="noopener" target="_blank">
+            {% if post.image_url %}<img class="diary-posts__image" src="{{ post.image_url }}" alt="" loading="lazy" referrerpolicy="no-referrer">{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+            <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"j E Y" }}</time>
+            <span>{{ post.first_line }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Подпишитесь, чтобы не пропустить</h2>
+    <p class="split__actions diary__actions">
+      {% if s.telegram_url %}<a class="btn btn--primary" href="{% marketing_url s.telegram_url 'rassylka' %}" rel="noopener" target="_blank">Подписаться в Telegram</a>{% endif %}
+      {% if s.vk_url %}<a class="btn btn--outline" href="{% marketing_url s.vk_url 'rassylka' %}" rel="noopener" target="_blank">Мы во ВКонтакте</a>{% endif %}
+    </p>
+  </div>
+</section>
+{% endwith %}
+{% endblock %}

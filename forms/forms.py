@@ -232,10 +232,65 @@ class FallbackBookingForm(BaseRequestForm):
         return cleaned
 
 
+GROUP_OCCASIONS = ["День рождения", "Выпускной", "Девичник", "Выезд команды", "Семейный праздник", "Другое"]
+PARTNER_DIRECTIONS = ["Съёмки и блогеры", "Ведущие мастер-классов", "Местные партнёры"]
+
+
+def _choices(values):
+    return [("", "Выберите")] + [(value, value) for value in values]
+
+
+class GroupForm(BaseRequestForm):
+    """Весь глэмпинг для компании — «Выезды компаний». Повод — в теме заявки."""
+
+    form_type = FormType.GROUP
+    topic = forms.ChoiceField(label="Повод", choices=_choices(GROUP_OCCASIONS), required=False)
+
+    class Meta(BaseRequestForm.Meta):
+        fields = ["name", "phone", "email", "date_from", "date_to", "guests", "topic", "message", "consent_given"]
+        widgets = {
+            **BaseRequestForm.Meta.widgets,
+            "date_from": forms.DateInput(attrs={"type": "date"}),
+            "date_to": forms.DateInput(attrs={"type": "date"}),
+            "guests": forms.NumberInput(attrs={"min": 1, "max": 50}),
+        }
+        labels = {
+            **BaseRequestForm.Meta.labels,
+            "date_from": "Заезд",
+            "date_to": "Выезд",
+            "guests": "Сколько гостей",
+            "message": "Что важно: баня, беседка, музыка, дети",
+        }
+
+
+class PartnerForm(BaseRequestForm):
+    """Сотрудничество — «Партнёрам». Направление — в теме заявки."""
+
+    form_type = FormType.PARTNER
+    topic = forms.ChoiceField(label="Направление", choices=_choices(PARTNER_DIRECTIONS), required=False)
+
+    class Meta(BaseRequestForm.Meta):
+        labels = {**BaseRequestForm.Meta.labels, "message": "Расскажите о себе и идее"}
+
+
+class EventForm(BaseRequestForm):
+    """Запись на событие — «Мероприятия». Название события — в скрытой теме."""
+
+    form_type = FormType.EVENT
+
+    class Meta(BaseRequestForm.Meta):
+        fields = ["name", "phone", "email", "guests", "topic", "message", "consent_given"]
+        widgets = {**BaseRequestForm.Meta.widgets, "guests": forms.NumberInput(attrs={"min": 1, "max": 20})}
+        labels = {**BaseRequestForm.Meta.labels, "guests": "Сколько вас", "message": "Вопросы и пожелания"}
+
+
 FORM_CLASSES = {
     FormType.FEEDBACK: FeedbackForm,
     FormType.TRANSFER: TransferForm,
     FormType.CERTIFICATE: CertificateForm,
     FormType.HOUSE_QUESTION: HouseQuestionForm,
     FormType.FALLBACK: FallbackBookingForm,
+    FormType.GROUP: GroupForm,
+    FormType.PARTNER: PartnerForm,
+    FormType.EVENT: EventForm,
 }

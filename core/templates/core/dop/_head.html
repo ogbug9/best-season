@@ -1,0 +1,12 @@
+{% load wagtailcore_tags layout_tags content_tags %}
+{% comment %} Шапка доп. страницы: H1, вступление, плашка «дополняется» и текст редактора, если он заполнен. {% endcomment %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    <h1>{{ page.title|heading_breaks }}</h1>
+    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    {% include "includes/in_progress_note.html" %}
+  </div>
+</section>
+{% if page.body|filled %}
+<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
+{% endif %}

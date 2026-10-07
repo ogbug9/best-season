@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags content_tags %}
+{% block body_class %}page-dop page-rules{% endblock %}
+
+{% comment %}
+  Правила бронирования (docs/dop-stranicy/20-…): шаги, шкала отмены и
+  правила проживания из тех же ответов FAQ — правка в одном месте меняет
+  обе страницы. Цифры шкалы — из FAQ «Какие условия бронирования и отмены?».
+{% endcomment %}
+
+{% block content %}
+{% include "core/dop/_head.html" %}
+
+<section class="section">
+  <div class="container container--narrow">
+    <h2>Как проходит бронь</h2>
+    <ol class="route-steps">
+      {% for title, text in booking_steps %}
+        <li class="route-steps__item{% if forloop.last %} route-steps__item--end{% endif %}" data-reveal><b>{{ title }}</b><span>{{ text }}</span></li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    <h2>Если планы изменятся</h2>
+    <ul class="fact-cards cancel-scale">
+      {% for value, label in cancel_scale %}<li class="fact-cards__item cancel-scale__item cancel-scale__item--{{ forloop.counter }}" data-reveal><b class="fact-cards__value">{{ value }}</b><span class="fact-cards__label">{{ label }}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% if rules_faq %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Правила проживания</h2>
+    {% include "includes/faq_items.html" with faq=rules_faq %}
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container container--narrow center rules-docs">
+    {% for legal in legal_pages %}<a href="{% pageurl legal %}">{{ legal.title }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}
+    <p><button type="button" class="btn btn--outline" data-print>Распечатать правила</button></p>
+  </div>
+</section>
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Всё понятно — можно выбирать даты</h2>
+    <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="rules">{% cms_text "booking_cta-5d9d7f118153" %}</button></p>
+  </div>
+</section>
+{% endblock %}
