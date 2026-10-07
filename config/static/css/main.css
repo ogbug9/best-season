@@ -5831,3 +5831,19 @@ html:has(.lightbox[open]) { overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { .group-offer img, .hours__hint .booking-hint__text { transition: none; } }
 
+/* Территория (docs/dop-stranicy/10-territoriya.md): аэрофото, чипы, цены, соседи. */
+.territory-aerial picture { display: block; overflow: hidden; border-radius: var(--radius-lg); aspect-ratio: 16 / 7; }
+.territory-aerial img { width: 100%; height: 100%; object-fit: cover; }
+.territory__chips, .territory__actions { justify-content: center; }
+.territory-card__price { z-index: 3; font-size: 13px; padding: 4px 10px; top: 12px; inset-inline-end: 12px; }
+.territory-neighbours__text { margin: 0 auto var(--s-5); text-align: center; }
+.territory-neighbours__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.territory-neighbours__item { overflow: hidden; border-radius: 16px; aspect-ratio: 1; }
+.territory-neighbours__item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+@media (hover: hover) and (pointer: fine) { .territory-neighbours__item:hover img { transform: scale(1.04); } }
+@media (max-width: 699px) {
+  .territory-aerial picture { aspect-ratio: 4 / 3; }
+  .territory-neighbours__grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .territory-neighbours__item img { transition: none; } }
+

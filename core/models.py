@@ -402,6 +402,8 @@ class TerritoryItem(models.Model):
                   "оставлены пустыми. Отметьте, чтобы сдвинуть этот блок "
                   "на одну ячейку вправо.",
     )
+    GROUPS = [("kids", "С детьми и животными"), ("warm", "Тепло и пар"), ("water", "Вода и события")]
+    group = models.CharField("Группа на странице «Территория»", max_length=8, choices=GROUPS, blank=True)
     is_published = models.BooleanField("Показывать на сайте", default=True)
     sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
 
@@ -410,6 +412,7 @@ class TerritoryItem(models.Model):
         FieldPanel("image"),
         FieldPanel("description"),
         FieldPanel("link_url"),
+        FieldPanel("group"),
         FieldPanel("spacer_before"),
         FieldPanel("is_published"),
         FieldPanel("sort_order"),
@@ -855,9 +858,32 @@ class TerritoryPage(InProgressMixin, Page):
         # Тот же запасной адрес, что и в блоке на главной: кнопка есть у
         # каждой карточки, даже если своя ссылка не заведена.
         own_url = self.get_url(request) or ""
+        # Страница (docs/dop-stranicy/10-territoriya.md): цена-флажок из услуг
+        # с тем же названием, у сауны — переход на Домик №1.
+        from services.models import Service
+        from wagtail.models import Page
+
+        services = {" ".join(service.name.split()).lower(): service
+                    for service in Service.objects.filter(is_published=True)}
+        house_one = Page.objects.live().filter(slug="domik-1").first()
         for item in items:
             item.details_url = item.link_url or own_url
+            item.details_label = ""
+            service = services.get(" ".join(item.title.split()).lower())
+            item.service = service if service and service.price else None
+            if "сауна" in item.title.lower() and house_one and not item.link_url:
+                item.details_url = house_one.get_url(request)
+                item.details_label = "Домик №1 с сауной"
         context["territory"] = items
+        context["groups"] = [(value, label) for value, label in TerritoryItem.GROUPS
+                             if any(item.group == value for item in items)]
+        context["aerial"] = image_titled("BS About aerial")
+        context["neighbours"] = [image for image in (
+            next((item.image for item in items if "ферма" in item.title.lower()), None),
+            image_titled("BS About pet-snezhka"), image_titled("BS About pet-dymok"), image_titled("BS About diary-ayka"),
+        ) if image]
+        context["animals_answer"] = (FaqItem.objects.filter(is_published=True, question__startswith="Можно ли кормить животных")
+                                     .values_list("answer", flat=True).first())
         return context
 
 

@@ -3,6 +3,13 @@
 {% load wagtailcore_tags media_tags territory_tags layout_tags %}
 
 {% block body_class %}page-territory{% endblock %}
+
+{% comment %}
+  Территория (docs/dop-stranicy/10-territoriya.md), волна 1: аэрофото,
+  вступление, чипы групп (Д10), карточки как на главной (Д1, Д2) с ценой
+  у платного, место под видео, «Наши соседи». Карта точек — волна 2.
+{% endcomment %}
+
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
@@ -12,28 +19,43 @@
   </div>
 </section>
 
+{% if aerial %}
+<section class="section territory-aerial">
+  <div class="container" data-reveal>{% picture aerial preset="hero" alt="Глэмпинг «Лучший сезон» сверху" %}</div>
+</section>
+{% endif %}
+
 {% if page.body|filled %}
-<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
+<section class="section"><div class="container container--narrow prose" data-reveal>{{ page.body|richtext }}</div></section>
 {% endif %}
 
 {% if territory %}
 <section class="section section--pattern">
   <div class="container">
-    <ul class="mosaic">
+    {% if groups %}
+      <div class="chips territory__chips" data-chips="group" role="group" aria-label="Что показать">
+        <button type="button" class="filter-chip" data-chip="">Всё</button>
+        {% for value, label in groups %}<button type="button" class="filter-chip" data-chip="{{ value }}">{{ label }}</button>{% endfor %}
+      </div>
+    {% endif %}
+    <ul class="mosaic" data-chips-for="group">
       {% comment %}
         Карточки те же, что в блоке на главной: состояние «при наведении»
         (затемнение, описание и кнопка) описано классом territory-card,
         на тач-устройствах его включает нажатие — см. site.js.
       {% endcomment %}
       {% for item in territory %}
-        <li class="mosaic__item territory-card{% if item.is_large %} mosaic__item--large{% endif %}" tabindex="0">
+        <li class="mosaic__item territory-card{% if item.is_large %} mosaic__item--large{% endif %}" tabindex="0" data-tags="{{ item.group|default:'other' }}" data-reveal>
           {% picture item.image preset="card" alt=item.title %}
+          {% if item.service %}<span class="card__badge territory-card__price">от {{ item.service.price_display }} ₽ {{ item.service.get_price_unit_display|lower }}</span>{% endif %}
           <div class="mosaic__caption">
             <h2 class="mosaic__title">{{ item.title|territory_lines|linebreaksbr }}</h2>
             <div class="territory-card__details">
               {% if item.description %}<p><span class="home-desktop-copy">{{ item.description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ item.description }}</span></p>{% endif %}
-              {% if item.details_url %}
-                <a class="btn btn--primary territory-card__link" href="{{ item.details_url }}">{% cms_text "territory_page-59589fe2a549" %}</a>
+              {% if item.service %}
+                <button type="button" class="btn btn--primary territory-card__link" data-booking-open data-entry-point="7" data-entry-page="territory">Добавить к брони</button>
+              {% elif item.details_url %}
+                <a class="btn btn--primary territory-card__link" href="{{ item.details_url }}">{% if item.details_label %}{{ item.details_label }}{% else %}{% cms_text "territory_page-59589fe2a549" %}{% endif %}</a>
               {% endif %}
             </div>
           </div>
@@ -43,4 +65,32 @@
   </div>
 </section>
 {% endif %}
+
+<section class="section">
+  <div class="container container--narrow">
+    {% include "includes/video_slot.html" with poster=aerial title="Прогулка по глэмпингу" %}
+  </div>
+</section>
+
+{% if neighbours %}
+<section class="section territory-neighbours">
+  <div class="container">
+    <h2 class="section__title section__title--center">Наши соседи</h2>
+    {% if animals_answer %}<div class="container--narrow prose territory-neighbours__text">{{ animals_answer|richtext }}</div>{% endif %}
+    <ul class="territory-neighbours__grid">
+      {% for image in neighbours %}<li class="territory-neighbours__item" data-reveal>{% picture image preset="card" alt="" %}</li>{% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Всё это рядом с вашим домиком</h2>
+    <p class="split__actions territory__actions">
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="territory">{% cms_text "booking_cta-5d9d7f118153" %}</button>
+      {% slugurl "razmeshchenie" as houses_url %}{% if houses_url %}<a class="btn btn--outline" href="{{ houses_url }}">Смотреть домики</a>{% endif %}
+    </p>
+  </div>
+</section>
 {% endblock %}
