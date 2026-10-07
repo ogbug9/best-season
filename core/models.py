@@ -568,6 +568,43 @@ class ArchivePhotoImport(models.Model):
 
 
 @register_snippet
+class Event(models.Model):
+    """Событие для страницы «Мероприятия» (docs/dop-stranicy/18).
+
+    Ближайшие показываются лентой с записью, прошедшие сами уходят в
+    «Как это было» на следующий день после окончания.
+    """
+
+    title = models.CharField("Название", max_length=120)
+    date = models.DateField("Дата")
+    end_date = models.DateField("Дата окончания", null=True, blank=True, help_text="Для событий на несколько дней.")
+    time_label = models.CharField("Время", max_length=40, blank=True, help_text="Например: 13:00 или весь день.")
+    description = models.TextField("Описание", blank=True)
+    price = models.PositiveIntegerField("Цена, ₽", null=True, blank=True, help_text="Пусто — «стоимость по запросу».")
+    places = models.PositiveSmallIntegerField("Мест", null=True, blank=True)
+    image = models.ForeignKey("wagtailimages.Image", verbose_name="Фото", null=True, blank=True,
+                              on_delete=models.SET_NULL, related_name="+")
+    is_published = models.BooleanField("Показывать на сайте", default=True)
+
+    panels = [
+        FieldPanel("title"), FieldPanel("date"), FieldPanel("end_date"), FieldPanel("time_label"),
+        FieldPanel("description"), FieldPanel("price"), FieldPanel("places"), FieldPanel("image"),
+        FieldPanel("is_published"),
+    ]
+
+    class Meta:
+        ordering = ["date"]
+        verbose_name = "Событие"
+        verbose_name_plural = "Мероприятия"
+
+    def __str__(self):
+        return f"{self.title} ({self.date:%d.%m.%Y})"
+
+    @property
+    def last_day(self):
+        return self.end_date or self.date
+
+
 class ChannelPost(models.Model):
     """Превью последних постов канала Telegram для «Рассылки» (docs/dop-stranicy/20).
 
@@ -594,6 +631,7 @@ class ChannelPost(models.Model):
         return line if len(line) <= 140 else line[:139].rstrip() + "…"
 
 
+@register_snippet
 class InterfaceText(models.Model):
     key = models.CharField(max_length=120, unique=True, editable=False)
     label = models.CharField('Где используется', max_length=255, editable=False)

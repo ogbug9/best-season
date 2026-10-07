@@ -200,9 +200,23 @@ def context_for(page, request):
         from forms.forms import EventForm
         from core.models import _consent_page
 
-        archive = [{"title": title, "text": text, "image": _image(photo)} for title, text, photo in EVENT_ARCHIVE]
-        return {"archive": archive, "event_form": EventForm(auto_id="event_%s", initial={"topic": "Ближайшие события"}),
-                "consent_page": _consent_page()}
+        from django.db.models import Q as _Q
+        from django.utils import timezone
+
+        from core.models import Event
+
+        today = timezone.localdate()
+        published = Event.objects.filter(is_published=True).select_related("image")
+        upcoming = list(published.filter(_Q(end_date__gte=today) | _Q(end_date__isnull=True, date__gte=today)))
+        past = list(published.filter(_Q(end_date__lt=today) | _Q(end_date__isnull=True, date__lt=today)).order_by("-date")[:6])
+        # Прошедшие события из админки идут первыми, затем архив из постов Telegram.
+        archive = [{"title": event.title, "text": event.description, "image": event.image} for event in past]
+        archive += [{"title": title, "text": text, "image": _image(photo)} for title, text, photo in EVENT_ARCHIVE]
+        chosen = next((event for event in upcoming if request and str(event.pk) == request.GET.get("event")), None)
+        topic = f"{chosen.title}, {chosen.date:%d.%m.%Y}" if chosen else "Ближайшие события"
+        return {"upcoming": upcoming, "archive": archive[:8],
+                "event_form": EventForm(auto_id="event_%s", initial={"topic": topic}),
+                "chosen_event": chosen, "consent_page": _consent_page()}
     if slug == "vyezdy-kompaniy":
         from forms.forms import GroupForm
         from core.models import _consent_page

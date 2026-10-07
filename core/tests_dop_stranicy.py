@@ -158,3 +158,26 @@ class ServicePagesTests(TestCase):
         item = FaqItem.objects.create(question='Во сколько заезд?', answer='<p>С 14:00</p>')
         self.assertIn(item, faq_matches('заезд'))
         self.assertEqual(faq_matches('да'), [])
+
+
+class EventsAndSnippetsTests(TestCase):
+    def test_interface_texts_stay_editable_snippets(self):
+        from wagtail.snippets.models import get_snippet_models
+        from core.models import ChannelPost, Event, InterfaceText
+        models = get_snippet_models()
+        self.assertIn(InterfaceText, models)
+        self.assertIn(Event, models)
+        self.assertNotIn(ChannelPost, models)
+
+    def test_events_split_by_last_day(self):
+        import datetime
+        from django.utils import timezone
+        from core.dop_pages import context_for
+        from core.models import ContentPage, Event
+        today = timezone.localdate()
+        Event.objects.create(title='Йога', date=today - datetime.timedelta(days=2), end_date=today)
+        Event.objects.create(title='Новый год', date=today + datetime.timedelta(days=30))
+        Event.objects.create(title='Флористика', date=today - datetime.timedelta(days=5))
+        context = context_for(ContentPage(title='М', slug='meropriyatiya'), RequestFactory().get('/'))
+        self.assertEqual([e.title for e in context['upcoming']], ['Йога', 'Новый год'])
+        self.assertEqual(context['archive'][0]['title'], 'Флористика')

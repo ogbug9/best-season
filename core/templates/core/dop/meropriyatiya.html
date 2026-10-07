@@ -11,6 +11,26 @@
 {% block content %}
 {% include "core/dop/_head.html" %}
 
+{% if upcoming %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Ближайшие события</h2>
+    <ul class="events-list">
+      {% for event in upcoming %}
+        <li class="events-list__item" data-reveal>
+          <p class="events-list__date">{{ event.date|date:"j" }}<span>{{ event.date|date:"E" }}{% if event.end_date and event.end_date != event.date %} — {{ event.end_date|date:"j E" }}{% endif %}</span></p>
+          <div class="events-list__body">
+            <h3>{{ event.title }}</h3>
+            {% if event.description %}<p>{{ event.description }}</p>{% endif %}
+            <p class="events-list__meta">{% if event.time_label %}{{ event.time_label }} · {% endif %}{% if event.price %}{{ event.price }} ₽{% else %}стоимость по запросу{% endif %}{% if event.places %} · мест: {{ event.places }}{% endif %}</p>
+          </div>
+          <a class="btn btn--primary" href="?event={{ event.pk }}#event-form">Записаться</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% else %}
 <section class="section">
   <div class="container container--narrow center events-next" data-reveal>
     <p class="events-next__label">Ближайшие события</p>
@@ -21,6 +41,7 @@
     {% endif %}{% endwith %}
   </div>
 </section>
+{% endif %}
 
 {% if archive %}
 <section class="section">
@@ -41,7 +62,11 @@
 
 <section class="section" id="event-form">
   <div class="container container--narrow">
-    {% include "forms/request_form.html" with form=event_form form_type="event" title="Узнать о событиях первыми" lead="Напишем, когда откроется запись на ближайший праздник или мастер-класс." submit_label="Хочу узнать первым" %}
+    {% if chosen_event %}
+      {% include "forms/request_form.html" with form=event_form form_type="event" title="Запись: "|add:chosen_event.title lead="Оставьте контакт — подтвердим место и расскажем детали." submit_label="Записаться" %}
+    {% else %}
+      {% include "forms/request_form.html" with form=event_form form_type="event" title="Узнать о событиях первыми" lead="Напишем, когда откроется запись на ближайший праздник или мастер-класс." submit_label="Хочу узнать первым" %}
+    {% endif %}
   </div>
 </section>
 {% endblock %}

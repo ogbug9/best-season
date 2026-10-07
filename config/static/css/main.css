@@ -5932,3 +5932,17 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .search-results__pages { display: flex; justify-content: space-between; }
 .error-links a { color: var(--c-terra); }
 
+/* Мероприятия: лента ближайших событий, дата крупно (Etude Noire). */
+.events-list { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.events-list__item { display: grid; grid-template-columns: 120px 1fr auto; align-items: center; gap: 24px; padding: 20px 28px; border-radius: 16px; background: var(--c-white); }
+.events-list__date { margin: 0; font-family: var(--font-heading); font-size: 56px; line-height: 1; color: var(--c-olive); text-align: center; }
+.events-list__date span { display: block; margin-top: 6px; font-family: var(--font-body); font-size: 14px; color: var(--c-dark); }
+.events-list__body h3 { margin: 0 0 6px; color: var(--c-deep); }
+.events-list__body p { margin: 0 0 4px; }
+.events-list__meta { font-size: 14px; color: var(--c-olive); }
+@media (max-width: 699px) {
+  .events-list__item { grid-template-columns: 72px 1fr; padding: 16px; gap: 12px; }
+  .events-list__date { font-size: 40px; }
+  .events-list__item .btn { grid-column: 1 / -1; }
+}
+
