@@ -7,7 +7,7 @@
 {% endcomment %}
 {% if service.includes %}<p class="service-card__includes">{{ service.includes }}</p>{% endif %}
 {% if service.is_hourly and service.price %}
-  <div class="hours" data-hours data-price="{{ service.price }}">
+  <div class="hours" data-hours data-price="{{ service.price|stringformat:'d' }}">
     <button type="button" class="hours__step" data-hours-step="-1" aria-label="Меньше часов">−</button>
     <output class="hours__value" data-hours-value aria-live="polite">1 ч</output>
     <button type="button" class="hours__step" data-hours-step="1" aria-label="Больше часов">+</button>
