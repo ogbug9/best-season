@@ -92,3 +92,13 @@ def video_clip(slot):
     except DatabaseError:
         return None
 
+
+
+@register.inclusion_tag('includes/page_story.html')
+def page_story(key):
+    """Тексты-рассказы страниц без макетов (core/dop_stories.py)."""
+    from core.dop_content import SRC
+    from core.dop_stories import STORIES
+
+    stories = [{**story, 'link': SRC.get(story.get('source'))} for story in STORIES.get(key, [])]
+    return {'stories': stories}

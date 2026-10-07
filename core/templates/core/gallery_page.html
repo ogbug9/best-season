@@ -18,6 +18,7 @@
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
+{% page_story "gallery" %}
 
 {% if page.body|filled %}
 <section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>

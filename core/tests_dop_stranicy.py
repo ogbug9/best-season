@@ -223,3 +223,22 @@ class VideoClipTests(TestCase):
         html = render()
         self.assertIn('<video', html)
         self.assertIn('preload="none"', html)
+
+
+class PageStoryTests(SimpleTestCase):
+    def test_every_story_has_text_and_known_source(self):
+        from core.dop_content import SRC
+        from core.dop_stories import STORIES
+        self.assertGreaterEqual(len(STORIES), 14)
+        for key, stories in STORIES.items():
+            for story in stories:
+                self.assertTrue(story['title'] and story['lead'] and story['paras'], key)
+                if story.get('source'):
+                    self.assertIn(story['source'], SRC, key)
+
+    def test_tag_renders_story(self):
+        html = render_to_string('includes/page_story.html', {'stories': [{
+            'kicker': 'К', 'title': 'Заголовок', 'lead': 'Лид', 'paras': ['Абзац'], 'facts': [('3 км', 'до Поленово')],
+        }]})
+        self.assertIn('story__lead', html)
+        self.assertIn('3 км', html)
