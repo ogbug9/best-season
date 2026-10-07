@@ -22,7 +22,9 @@
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
+{% page_extras "directions" "top" %}
 {% page_story "directions" %}
+{% page_extras "directions" %}
 
 <section class="section directions-page">
   <div class="container container--narrow">
@@ -99,6 +101,7 @@
       </section>
       {% endwith %}
     </div>
+    {% ask_chips "directions" "Остались вопросы о дороге?" %}
   </div>
 </section>
 

@@ -45,6 +45,13 @@
           item.classList.toggle("place--olive", shown % 2 === 1);
         }
         shown += 1;
+        // Показанное по выбору чипа не ждёт прокрутки (reveal.js), иначе
+        // карточки у низа экрана остаются прозрачными.
+        if (!instant && item.hidden) {
+          [item].concat(Array.prototype.slice.call(item.querySelectorAll("[data-reveal]"))).forEach(function (el) {
+            if (el.hasAttribute("data-reveal")) el.classList.add("is-visible");
+          });
+        }
         item.hidden = false;
         item.classList.remove("is-fading");
       } else if (instant) {

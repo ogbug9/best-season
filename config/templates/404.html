@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load content_tags %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags media_tags %}
 
 {% comment %}
   404 входит в карту сайта первой очередью (п. 12.3 ТЗ), целевое действие —
@@ -28,4 +28,21 @@
     {% endif %}
   </div>
 </section>
+{% house_teasers as houses %}
+{% if houses %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Или сразу к домикам</h2>
+    <ul class="house-teasers">
+      {% for house in houses %}
+        <li data-reveal><a class="house-teaser" href="{{ house.url }}">
+          <span class="house-teaser__media">{% if house.hero_image %}{% picture house.hero_image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</span>
+          <b class="house-teaser__title">{{ house.title }}</b>
+          <span class="house-teaser__meta">до {{ house.capacity }} гостей{% if house.price_display %} · от {{ house.price_display }} ₽ за ночь{% endif %}</span>
+        </a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
 {% endblock %}

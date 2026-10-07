@@ -1,0 +1,111 @@
+{% load media_tags content_tags %}
+{% comment %} Дополнительные блоки страницы без макета. Данные и список типов — core/dop_extras.py. {% endcomment %}
+{% for block in blocks %}
+{% if block.type == "hook" %}
+<section class="section x-hook">
+  <div class="container x-hook__grid" data-reveal>
+    <p class="x-hook__kicker">{{ block.kicker }}</p>
+    <p class="x-hook__title">{{ block.title }}</p>
+    <div class="x-hook__side">
+      <p class="x-hook__text">{{ block.text }}</p>
+      {% if block.cta %}<button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="{{ key }}">{% cms_text "booking_cta-5d9d7f118153" %}</button>{% endif %}
+    </div>
+  </div>
+</section>
+
+{% elif block.type == "numbers" %}
+<section class="section x-numbers-section">
+  <div class="container">
+    <dl class="x-numbers">
+      {% for value, label in block.items %}<div class="x-numbers__item" data-reveal><dt>{{ value }}</dt><dd>{{ label }}</dd></div>{% endfor %}
+    </dl>
+  </div>
+</section>
+
+{% elif block.type == "collage" %}
+<section class="section x-collage{% if block.flip %} x-collage--flip{% endif %}">
+  <div class="container x-collage__grid">
+    <div class="x-collage__photos x-collage__photos--{{ block.photos|length }}" aria-hidden="true">
+      {% for image in block.photos %}<div class="x-collage__photo x-collage__photo--{{ forloop.counter }}" data-reveal>{% picture image preset="card" alt="" %}</div>{% endfor %}
+    </div>
+    <div class="x-collage__text" data-reveal>
+      <p class="x-collage__kicker">{{ block.kicker }}</p>
+      <h2 class="x-collage__title">{{ block.title }}</h2>
+      <p>{{ block.text }}</p>
+    </div>
+  </div>
+</section>
+
+{% elif block.type == "marquee" %}
+<div class="x-marquee" aria-label="{{ block.words|join:', ' }}">
+  <div class="x-marquee__track" aria-hidden="true">
+    {% for _ in "12" %}<span class="x-marquee__group">{% for word in block.words %}<span>{{ word }}</span>{% endfor %}</span>{% endfor %}
+  </div>
+</div>
+
+{% elif block.type == "note" %}
+<section class="section x-note-section">
+  <div class="container">
+    <aside class="x-note" data-reveal>
+      <p class="x-note__title">{{ block.title }}</p>
+      <p class="x-note__text">{{ block.text }}</p>
+    </aside>
+  </div>
+</section>
+
+{% elif block.type == "compare" %}
+<section class="section x-compare-section">
+  <div class="container container--narrow">
+    <h2 class="x-compare__title">{{ block.title }}</h2>
+    <ul class="x-compare">
+      {% for city, here in block.rows %}
+        <li class="x-compare__row" data-reveal><s class="x-compare__city">{{ city }}</s><span class="x-compare__arrow" aria-hidden="true"></span><span class="x-compare__here">{{ here }}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% elif block.type == "path" %}
+<section class="section x-path-section">
+  <div class="container">
+    <h2 class="x-path__title">{{ block.title }}</h2>
+    <ol class="x-path">
+      {% for title, text in block.steps %}<li class="x-path__step" data-reveal><b>{{ title }}</b><span>{{ text }}</span></li>{% endfor %}
+    </ol>
+  </div>
+</section>
+
+{% elif block.type == "now" %}
+<section class="section x-now-section">
+  <div class="container">
+    <div class="x-now" data-reveal>
+      <div class="x-now__head">
+        <p class="x-now__kicker"><span class="x-now__dot" aria-hidden="true"></span>Сейчас</p>
+        <h2 class="x-now__month">{{ block.month }}</h2>
+      </div>
+      <ul class="x-now__events">{% for item in block.events %}<li>{{ item }}</li>{% endfor %}</ul>
+      {% if block.in_season %}
+        <div class="x-now__season"><p>В сезоне:</p><ul class="x-now__tags">{% for title in block.in_season %}<li>{{ title }}</li>{% endfor %}</ul></div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% elif block.type == "radius" and block.places %}
+<section class="section x-radius-section">
+  <div class="container">
+    <h2 class="x-radius__title">Сколько ехать от домика</h2>
+    <p class="x-radius__lead">Минуты на машине — по открытым источникам</p>
+    <ol class="x-radius">
+      {% for place in block.places %}
+        <li class="x-radius__place" style="--x: {{ place.left }}%" data-reveal>
+          <b class="x-radius__name">{{ place.title }}</b>
+          <span class="x-radius__bar" aria-hidden="true"></span>
+          <span class="x-radius__time">{{ place.drive }}</span>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+{% endif %}
+{% endfor %}

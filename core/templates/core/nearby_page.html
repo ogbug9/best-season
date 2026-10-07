@@ -18,7 +18,9 @@
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
+{% page_extras "nearby" "top" %}
 {% page_story "nearby" %}
+{% page_extras "nearby" %}
 
 {% if page.body|filled %}
 <section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
@@ -63,6 +65,7 @@
           </dl>
           <p>{{ place.text }}</p>
           <p class="guide-card__tip"><b>Совет:</b> {{ place.tip }}</p>
+          {% if place.route %}<a class="guide-card__route" href="{% marketing_url place.route 'nearby_route' %}" rel="noopener" target="_blank">Маршрут от глэмпинга</a>{% endif %}
           <p class="guide-card__closed" aria-hidden="true">В выбранный день закрыто</p>
           <p class="guide-card__sources">Источник: {% for label, url in place.links %}<a href="{{ url }}" rel="noopener" target="_blank">{{ label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
         </li>
@@ -71,6 +74,8 @@
     <p class="guide__note">Часы и цены — по открытым источникам на октябрь 2026; перед поездкой сверьте на сайте места.</p>
   </div>
 </section>
+
+{% guest_quote "Удобное местоположение" "Гости о соседстве" %}
 
 {% if route_points %}
 <section class="section nearby-route">

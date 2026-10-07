@@ -32,7 +32,7 @@
                 <h3 class="scenario__step-title">{{ step.title }}</h3>
                 <p class="scenario__text">{{ step.text }}</p>
                 {% if step.service and step.service.price and step.service.is_hourly %}
-                  <button type="button" class="btn btn--outline scenario__add" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Добавить к брони</button>
+                  <button type="button" class="btn btn--outline scenario__add" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Забронировать</button>
                 {% elif step.service and telegram %}
                   <a class="scenario__ask" href="{% marketing_url telegram 'chem_zanyatsya' 'Здравствуйте! Хочу узнать про «'|add:step.title|add:'»' %}" rel="noopener" target="_blank">Спросить про {{ step.title|lower }}</a>
                 {% endif %}
@@ -51,6 +51,8 @@
     </div>
   </div>
 </section>
+
+{% guest_quote "слушать тишину и смотреть на лес" %}
 
 {% if second_day %}
 <section class="section">

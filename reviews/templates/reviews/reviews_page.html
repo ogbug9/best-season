@@ -17,7 +17,9 @@
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
+{% page_extras "reviews" "top" %}
 {% page_story "reviews" %}
+{% page_extras "reviews" %}
 
 {% if page.yandex_rating %}
 <section class="section reviews-rating">

@@ -33,7 +33,7 @@
             <div class="territory-card__details">
               {% if tile.detail %}<p>{{ tile.detail.how }} <span class="activities__who">Кому: {{ tile.detail.who }}.</span></p>{% elif tile.text|filled %}<p>{{ tile.text }}</p>{% endif %}
               {% if tile.service.price and tile.service.is_hourly %}
-                <button type="button" class="btn btn--primary territory-card__link" data-booking-open data-entry-point="7" data-entry-page="activities">Добавить к брони</button>
+                <button type="button" class="btn btn--primary territory-card__link" data-booking-open data-entry-point="7" data-entry-page="activities">Забронировать</button>
               {% elif tile.service and telegram %}
                 <a class="btn btn--primary territory-card__link" href="{% marketing_url telegram 'razvlecheniya' 'Здравствуйте! Хочу узнать про «'|add:tile.title|add:'»' %}" rel="noopener" target="_blank">Спросить в Telegram</a>
               {% endif %}
@@ -45,6 +45,8 @@
     {% endwith %}
   </div>
 </section>
+
+{% guest_quote "финской сауны с панорамными окнами" %}
 
 <section class="section section--deep">
   <div class="container container--narrow center">

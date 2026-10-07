@@ -20,7 +20,9 @@
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
+{% page_extras "contacts" "top" %}
 {% page_story "contacts" %}
+{% page_extras "contacts" %}
 
 <section class="section">
   <div class="container">
@@ -33,7 +35,7 @@
       {% endif %}
       {% if s.whatsapp_url %}
         <li data-reveal><a class="contact-tile" href="{% marketing_url s.whatsapp_url 'contacts_page' greeting %}" rel="noopener" target="_blank">
-          <img class="contact-tile__icon" src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true">
+          <img class="contact-tile__icon" src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true">
           <b class="contact-tile__name">WhatsApp<span class="socials__note" aria-hidden="true">*</span></b><span class="contact-tile__hint">Сообщение уже набрано</span></a></li>
       {% endif %}
       {% if s.phone %}
@@ -48,8 +50,15 @@
       {% endif %}
     </ul>
     {% if s.email %}<p class="contact-tiles__email">{% cms_text "contacts_page-9acc3fbe2040" %} <a href="mailto:{{ s.email }}">{{ s.email }}</a></p>{% endif %}
+    <div class="contacts-now" data-reveal>
+      <p class="contacts-now__hours"><span class="contacts-now__dot" aria-hidden="true"></span>На связи каждый день, {{ s.work_hours|default:'10:00 - 22:00' }}</p>
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="contacts">{% cms_text "booking_cta-5d9d7f118153" %}</button>
+    </div>
+    {% ask_chips "contacts" %}
   </div>
 </section>
+
+{% guest_quote "радушной встречей" "Гости о встрече" %}
 
 {% if checkin_answer %}
 <section class="section">

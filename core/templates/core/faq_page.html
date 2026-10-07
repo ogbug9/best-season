@@ -15,6 +15,7 @@
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
+{% page_extras "faq" "top" %}
 
 {% if faq %}
 <section class="section faq-page">
@@ -33,6 +34,7 @@
       {% include "includes/faq_items.html" with faq_filter=True %}
     </div>
     <p class="faq-page__empty" data-chips-empty="topic" hidden>Такого вопроса пока нет — спросите нас, ответим сами.</p>
+    {% ask_chips "faq" "Спросите в один клик" %}
   </div>
 </section>
 {% endif %}
@@ -52,6 +54,13 @@
 </section>
 {% endif %}
 {% endwith %}
+
+<section class="section">
+  <div class="container container--narrow center">
+    <h2>Всё понятно — можно выбирать даты</h2>
+    <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="faq">{% cms_text "booking_cta-5d9d7f118153" %}</button></p>
+  </div>
+</section>
 {% endblock %}
 
 {% block structured_data %}

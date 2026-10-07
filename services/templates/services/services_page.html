@@ -16,7 +16,9 @@
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
+{% page_extras "services" "top" %}
 {% page_story "services" %}
+{% page_extras "services" %}
 
 {% if page.body|filled %}
 <section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>

@@ -102,3 +102,69 @@ def page_story(key):
 
     stories = [{**story, 'link': SRC.get(story.get('source'))} for story in STORIES.get(key, [])]
     return {'stories': stories}
+
+
+@register.inclusion_tag('includes/page_extras.html')
+def page_extras(key, slot='after'):
+    """Дополнительные блоки страницы без макета (core/dop_extras.py)."""
+    from core.dop_extras import blocks_for
+
+    try:
+        return {'blocks': blocks_for(key, slot), 'key': key}
+    except DatabaseError:
+        return {'blocks': [], 'key': key}
+
+
+@register.inclusion_tag('includes/guest_quote.html')
+def guest_quote(phrase, label='Говорят гости'):
+    """Опубликованный отзыв целиком, фраза по теме страницы выделена.
+
+    Нет такого отзыва (сняли с публикации, переписали) — блок не выводится.
+    """
+    from wagtail.models import Page
+    from reviews.models import Review
+
+    try:
+        review = (Review.objects.filter(is_published=True, text__icontains=phrase)
+                  .select_related('house').first())
+    except DatabaseError:
+        review = None
+    if not review:
+        return {'review': None}
+    start = review.text.lower().find(phrase.lower())
+    end = start + len(phrase)
+    reviews_page = Page.objects.live().filter(slug='otzyvy').first()
+    return {'review': review, 'label': label, 'before': review.text[:start],
+            'match': review.text[start:end], 'after': review.text[end:],
+            'reviews_url': reviews_page.url if reviews_page else ''}
+
+
+@register.inclusion_tag('includes/ask_chips.html', takes_context=True)
+def ask_chips(context, key, title='Спросите нас в Telegram'):
+    """Готовые вопросы: нажатие открывает чат с уже набранным текстом."""
+    from core.dop_content import ASK_QUESTIONS
+    from core.models import SiteSettings
+    from core.templatetags.marketing_tags import marketing_url
+
+    request = context.get('request')
+    try:
+        settings = SiteSettings.for_request(request) if request else SiteSettings.objects.first()
+    except DatabaseError:
+        settings = None
+    telegram = settings and (settings.telegram_chat_url or settings.telegram_url)
+    if not telegram:
+        return {'questions': []}
+    questions = [(text, marketing_url(telegram, f'ask_{key}', f'Здравствуйте! {text}'))
+                 for text in ASK_QUESTIONS.get(key, [])]
+    return {'questions': questions, 'title': title}
+
+
+@register.simple_tag
+def house_teasers():
+    """Опубликованные домики для страницы 404: название, фото, цена от."""
+    from houses.models import HousePage
+
+    try:
+        return list(HousePage.objects.live().public().select_related('hero_image').order_by('path')[:4])
+    except DatabaseError:
+        return []

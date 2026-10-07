@@ -18,7 +18,9 @@
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
+{% page_extras "gallery" "top" %}
 {% page_story "gallery" %}
+{% page_extras "gallery" %}
 
 {% if page.body|filled %}
 <section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
@@ -47,6 +49,8 @@
   </div>
 </section>
 {% endif %}
+
+{% guest_quote "шум дождя по крыше" %}
 
 <section class="section">
   <div class="container">
