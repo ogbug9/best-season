@@ -5910,3 +5910,15 @@ html:has(.lightbox[open]) { overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { .scenario__media img, .occasions__link::before { transition: none; } }
 
+/* Галерея (docs/dop-stranicy/14-galereya.md): фильтр, «Утреннее», переход на домик. */
+.gallery-page__motto, .gallery-page__lead { max-width: 640px; margin: 0 auto var(--s-4); text-align: center; }
+.gallery-page__filters .chips, .gallery-page__actions { justify-content: center; }
+.gallery-videos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 0; padding: 0; list-style: none; }
+.gallery-videos .video-slot { aspect-ratio: 4 / 5; }
+.lightbox__counter { margin-left: 8px; opacity: 0.8; }
+.lightbox__link { margin-left: 12px; }
+@media (max-width: 699px) {
+  .gallery-videos { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 78%; overflow-x: auto; scroll-snap-type: x mandatory; }
+  .gallery-videos > li { scroll-snap-align: start; }
+}
+

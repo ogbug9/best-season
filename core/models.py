@@ -1005,6 +1005,27 @@ class GalleryPage(InProgressMixin, Page):
     class Meta:
         verbose_name = "Страница «Галерея»"
 
+    HOUSE_PHOTOS = 6
+
+    def get_context(self, request, *args, **kwargs):
+        """Фото галереи и по шесть фото каждого домика (docs/dop-stranicy/14-galereya.md)."""
+        from houses.models import HousePage
+
+        context = super().get_context(request, *args, **kwargs)
+        items = [{"image": photo.image, "alt": photo.alt, "large": photo.is_large,
+                  "category": photo.category or "territory", "season": photo.season, "house": None}
+                 for photo in self.photos.select_related("image")]
+        for house in HousePage.objects.live().order_by("path"):
+            for item in house.gallery_images.select_related("image")[: self.HOUSE_PHOTOS]:
+                items.append({"image": item.image, "alt": house.title, "large": False,
+                              "category": "houses", "season": "", "house": house})
+        used = {item["category"] for item in items}
+        context["gallery_items"] = items
+        context["gallery_categories"] = [(v, l) for v, l in GalleryPhoto.CATEGORIES if v in used]
+        context["gallery_seasons"] = NearbyPlace.SEASONS
+        context["telegram_url"] = SiteSettings.for_request(request).telegram_url if request else ""
+        return context
+
 
 class GalleryPhoto(Orderable):
     page = ParentalKey(GalleryPage, on_delete=models.CASCADE, related_name="photos")
@@ -1014,8 +1035,11 @@ class GalleryPhoto(Orderable):
     )
     alt = models.CharField("Описание фото", max_length=200, blank=True)
     is_large = models.BooleanField("Крупная плитка", default=False)
+    CATEGORIES = [("houses", "Домики"), ("territory", "Территория"), ("animals", "Животные"), ("around", "Окрестности")]
+    category = models.CharField("Что на фото", max_length=12, choices=CATEGORIES, blank=True)
+    season = models.CharField("Сезон", max_length=8, choices=NearbyPlace.SEASONS, blank=True)
 
-    panels = [FieldPanel("image"), FieldPanel("alt"), FieldPanel("is_large")]
+    panels = [FieldPanel("image"), FieldPanel("alt"), FieldPanel("category"), FieldPanel("season"), FieldPanel("is_large")]
 
     class Meta(Orderable.Meta):
         verbose_name = "Фото"

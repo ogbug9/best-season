@@ -321,22 +321,38 @@
 
   var image = dialog.querySelector("[data-lightbox-image]");
   var caption = dialog.querySelector("[data-lightbox-caption]");
+  // Галерея (docs/dop-stranicy/14-galereya.md): счётчик «3 / 18» и переход
+  // на домик; листаются только фото, не скрытые фильтром.
+  var counter = dialog.querySelector("[data-lightbox-counter]");
+  var link = dialog.querySelector("[data-lightbox-link]");
+  var list = items;
   var current = 0;
   var opener = null;
 
+  function visible() {
+    return items.filter(function (item) { return !item.closest("[hidden]"); });
+  }
+
   function show(index) {
-    current = (index + items.length) % items.length;
-    var item = items[current];
+    current = (index + list.length) % list.length;
+    var item = list[current];
     image.src = item.getAttribute("data-full");
     image.alt = item.getAttribute("data-caption") || "";
     caption.textContent = item.getAttribute("data-caption") || "";
+    if (counter) counter.textContent = list.length > 1 ? (current + 1) + " / " + list.length : "";
+    if (link) {
+      var href = item.getAttribute("data-link");
+      link.hidden = !href;
+      if (href) { link.href = href; link.textContent = item.getAttribute("data-link-label") || ""; }
+    }
   }
 
-  items.forEach(function (item, index) {
+  items.forEach(function (item) {
     item.addEventListener("click", function (event) {
       event.preventDefault();
       opener = item;
-      show(index);
+      list = visible();
+      show(list.indexOf(item));
       if (!dialog.open) dialog.showModal();
     });
   });

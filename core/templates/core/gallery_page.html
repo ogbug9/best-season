@@ -1,6 +1,14 @@
 {% extends "base.html" %}
-{% load content_tags %}
+{% load content_tags marketing_tags %}
 {% load wagtailcore_tags media_tags layout_tags %}
+{% block body_class %}page-gallery{% endblock %}
+
+{% comment %}
+  Галерея (docs/dop-stranicy/14-galereya.md): «у нас нет любимого времени
+  года». Два фильтра (что на фото, сезон; Д10), лайтбокс по видимым фото
+  (Д5), у фото домика — переход на домик. Места под ролики «Утреннее» —
+  заглушки, видео не встраиваем.
+{% endcomment %}
 
 {% block content %}
 <section class="section page-head">
@@ -15,17 +23,60 @@
 <section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
 {% endif %}
 
-{% if page.photos.all %}
+{% if gallery_items %}
 <section class="section">
   <div class="container">
-    <ul class="mosaic mosaic--photos">
-      {% for photo in page.photos.all %}
-        <li class="mosaic__item{% if photo.is_large %} mosaic__item--large{% endif %}">
-          {% picture photo.image preset="gallery" alt=photo.alt %}
+    <p class="gallery-page__motto">У нас нет любимого времени года — каждый сезон по-своему прекрасен.</p>
+    <div class="gallery-page__filters">
+      <div class="chips" data-chips="what" role="group" aria-label="Что на фото">
+        <button type="button" class="filter-chip" data-chip="">Всё</button>
+        {% for value, label in gallery_categories %}<button type="button" class="filter-chip" data-chip="{{ value }}">{{ label }}</button>{% endfor %}
+      </div>
+    </div>
+    <ul class="mosaic mosaic--photos gallery" data-gallery data-chips-for="what">
+      {% for item in gallery_items %}
+        <li class="mosaic__item{% if item.large %} mosaic__item--large{% endif %}" data-tags="{{ item.category }}" data-reveal>
+          <a class="gallery__link" href="{% full_image_url item.image 'jpeg' %}" data-gallery-item data-full="{% full_image_url item.image %}"
+             data-caption="{{ item.alt }}"{% if item.house %} data-link="{% pageurl item.house %}" data-link-label="Смотреть {{ item.house.title }}"{% endif %}>
+            {% picture item.image preset="gallery" alt=item.alt %}
+          </a>
         </li>
       {% endfor %}
     </ul>
   </div>
 </section>
 {% endif %}
+
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Утреннее</h2>
+    <p class="center gallery-page__lead">Короткие ролики о том, как начинается день в «Лучшем сезоне».</p>
+    <ul class="gallery-videos">
+      {% for item in gallery_items|slice:":3" %}
+        <li data-reveal>{% include "includes/video_slot.html" with poster=item.image title="Утреннее" ratio="4x5" %}</li>
+      {% empty %}
+        <li>{% include "includes/video_slot.html" with poster=None title="Здесь будут ролики «Утреннее»" ratio="4x5" %}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Осенние и зимние кадры мы ещё снимаем</h2>
+    <p>Свежие фото появляются сначала в нашем Telegram.</p>
+    <p class="split__actions gallery-page__actions">
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="gallery">{% cms_text "booking_cta-5d9d7f118153" %}</button>
+      {% if telegram_url %}<a class="btn btn--outline" href="{% marketing_url telegram_url 'gallery_page' %}" rel="noopener" target="_blank">Свежие кадры в Telegram</a>{% endif %}
+    </p>
+  </div>
+</section>
+
+<dialog class="lightbox" data-lightbox aria-label="Просмотр фото">
+  <button type="button" class="lightbox__close" data-lightbox-close aria-label="Закрыть">×</button>
+  <button type="button" class="lightbox__nav lightbox__nav--prev" data-lightbox-prev aria-label="Предыдущее фото"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle cx="20" cy="20" r="19.5" fill="none" stroke-width="1"/><polyline class="lightbox__chevron" points="22.5,14 16.5,20 22.5,26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <img class="lightbox__image" data-lightbox-image alt="">
+  <button type="button" class="lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="Следующее фото"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle cx="20" cy="20" r="19.5" fill="none" stroke-width="1"/><polyline class="lightbox__chevron" points="17.5,14 23.5,20 17.5,26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <p class="lightbox__caption"><span data-lightbox-caption></span> <span class="lightbox__counter" data-lightbox-counter></span> <a class="btn btn--primary lightbox__link" data-lightbox-link hidden></a></p>
+</dialog>
 {% endblock %}
