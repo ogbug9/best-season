@@ -5801,3 +5801,33 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .place--off-season .place__media { opacity: 0.85; }
 .place__actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* Услуги (docs/dop-stranicy/11-uslugi.md): «Только свои», счётчик часов, сертификат. */
+.group-offer { position: relative; display: grid; min-height: 360px; overflow: hidden; border-radius: var(--radius-lg); color: var(--c-cream); text-decoration: none; }
+.group-offer picture, .group-offer img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s ease; }
+.group-offer::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(58,60,21,0.88) 0%, rgba(58,60,21,0.55) 55%, rgba(58,60,21,0.15) 100%); }
+.group-offer__body { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 12px; max-width: 520px; padding: 40px; }
+.group-offer__label { font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.85; }
+.group-offer__title { font-family: var(--font-heading); font-weight: 400; font-size: 36px; line-height: 1.15; }
+.group-offer__text { font-size: 16px; line-height: 24px; }
+.site .group-offer:hover, .site .group-offer:focus-visible { color: var(--c-cream); }
+@media (hover: hover) and (pointer: fine) { .group-offer:hover img { transform: scale(1.04); } }
+.service-card__includes, .service-card__ask { margin: 4px 0 0; font-size: 14px; line-height: 18px; color: var(--c-cream); opacity: 0.9; }
+.site .service-card__ask a { color: var(--c-cream); text-decoration: underline; }
+.hours { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 4px 6px 4px 4px; border-radius: 999px; background: rgb(247 240 230 / 18%); color: var(--c-cream); }
+.hours__step { width: 32px; height: 32px; border: 1px solid var(--c-cream); border-radius: 50%; background: transparent; color: var(--c-cream); font: inherit; font-size: 18px; line-height: 1; cursor: pointer; }
+.hours__step:disabled { opacity: 0.4; cursor: default; }
+.hours__value { min-width: 34px; text-align: center; font-weight: 500; }
+.hours__total { font-weight: 600; }
+.hours__hint { position: relative; }
+.hours__hint .booking-hint__toggle { width: 22px; height: 22px; border: 1px solid var(--c-cream); border-radius: 50%; background: transparent; color: var(--c-cream); font-size: 12px; cursor: pointer; }
+.hours__hint .booking-hint__text { position: absolute; z-index: 5; bottom: calc(100% + 8px); right: -8px; width: 220px; padding: 10px 12px; border-radius: 10px; background: var(--c-cream); color: var(--c-dark); font-size: 13px; line-height: 17px; opacity: 0; visibility: hidden; transition: opacity 0.15s, visibility 0.15s; }
+.hours__hint:is(:hover, :focus-within) .booking-hint__text { opacity: 1; visibility: visible; }
+.gift { align-items: start; }
+@media (max-width: 699px) {
+  .group-offer { min-height: 420px; }
+  .group-offer::before { background: linear-gradient(180deg, rgba(58,60,21,0.2) 0%, rgba(58,60,21,0.9) 60%); }
+  .group-offer__body { justify-content: flex-end; padding: 24px 20px; }
+  .group-offer__title { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) { .group-offer img, .hours__hint .booking-hint__text { transition: none; } }
+

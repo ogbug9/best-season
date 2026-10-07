@@ -77,6 +77,11 @@ class Service(models.Model):
                 ids.add(image.pk)
         return images
 
+    includes = models.CharField(
+        "Что входит", max_length=160, blank=True,
+        help_text="Одна строка на странице услуг, например: веники и травяной чай.",
+    )
+
     price_note = models.CharField(
         "Примечание к цене", max_length=120, blank=True,
         help_text="Например: «минимум 2 часа». Точный расчёт — в виджете Контура.",
@@ -98,6 +103,7 @@ class Service(models.Model):
                 FieldPanel("image"),
                 FieldPanel("gallery_images"),
                 FieldPanel("short_description"),
+                FieldPanel("includes"),
                 FieldPanel("description"),
             ],
             heading="Описание",
@@ -148,4 +154,16 @@ class ServicesPage(InProgressMixin, Page):
         # Почасовые объекты Контура выделяются отдельно: их нельзя
         # забронировать иначе как через виджет (см. 03-kontur-widget.md)
         context["hourly"] = context["services"].filter(is_hourly=True)
+        # Блоки страницы услуг (docs/dop-stranicy/11-uslugi.md).
+        from core.models import FaqItem, TerritoryItem, _consent_page
+        from forms.forms import CertificateForm
+        from wagtail.models import Page
+
+        context["group_page"] = Page.objects.live().filter(slug="vyezdy-kompaniy").first()
+        bonfire = TerritoryItem.objects.filter(title="Костровая зона").select_related("image").first()
+        context["group_image"] = bonfire.image if bonfire else None
+        context["gift_answer"] = (FaqItem.objects.filter(is_published=True, question__startswith="Есть ли подарочные сертификаты")
+                                  .values_list("answer", flat=True).first())
+        context["certificate_form"] = CertificateForm(auto_id="services_certificate_%s")
+        context["consent_page"] = _consent_page()
         return context

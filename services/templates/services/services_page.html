@@ -1,7 +1,12 @@
 {% extends "base.html" %}
-{% load content_tags %}
+{% load static content_tags %}
 {% load wagtailcore_tags media_tags layout_tags %}
 {% block body_class %}page-services{% endblock %}
+
+{% comment %}
+  Доп. услуги (docs/dop-stranicy/11-uslugi.md): каждая карточка ведёт к брони
+  или к вопросу в Telegram; «Только свои» — самая крупная бронь — первой.
+{% endcomment %}
 
 {% block content %}
 <section class="section page-head">
@@ -16,6 +21,22 @@
 <section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
 {% endif %}
 
+{% if group_page %}
+<section class="section">
+  <div class="container">
+    <a class="group-offer" href="{% pageurl group_page %}" data-reveal>
+      {% if group_image %}{% picture group_image preset="card" alt="" %}{% endif %}
+      <span class="group-offer__body">
+        <span class="group-offer__label">Тариф «Только свои»</span>
+        <b class="group-offer__title">Весь глэмпинг — только для вашей компании</b>
+        <span class="group-offer__text">Все 4 домика, поляна с костром, беседка «Корабль» и баня. Фермерский завтрак на всю компанию — в подарок.</span>
+        <span class="btn btn--primary group-offer__button">Узнать про выезд</span>
+      </span>
+    </a>
+  </div>
+</section>
+{% endif %}
+
 {% if services %}
 <section class="section">
   <div class="container">
@@ -28,4 +49,28 @@
   </div>
 </section>
 {% endif %}
+
+{% if gift_answer %}
+<section class="section">
+  <div class="container split gift">
+    <div class="split__text" data-reveal>
+      <h2>Подарите выходные</h2>
+      <div class="prose">{{ gift_answer|richtext }}</div>
+    </div>
+    <div class="split__text" data-reveal>
+      {% include "forms/request_form.html" with form=certificate_form form_type="certificate" title="Заказать сертификат" submit_label="Заказать сертификат" %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Добавить услуги можно при бронировании</h2>
+    <p>Баня и беседка выбираются в окне брони вместе с домиком.</p>
+    <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="5" data-entry-page="services">{% cms_text "booking_cta-5d9d7f118153" %}</button></p>
+  </div>
+</section>
 {% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/services.js' %}?v=20261007-hours" defer></script>{% endblock %}

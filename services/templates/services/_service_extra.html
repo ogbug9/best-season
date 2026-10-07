@@ -1,0 +1,21 @@
+{% load content_tags marketing_tags %}
+{% comment %}
+  Только на странице услуг (docs/dop-stranicy/11-uslugi.md): «что входит»,
+  предварительный расчёт часов для почасовых объектов, «цена по запросу»
+  для остальных. Почасовые объекты бронируются только в виджете Контура,
+  поэтому счётчик — оценка, а кнопка карточки открывает окно брони.
+{% endcomment %}
+{% if service.includes %}<p class="service-card__includes">{{ service.includes }}</p>{% endif %}
+{% if service.is_hourly and service.price %}
+  <div class="hours" data-hours data-price="{{ service.price }}">
+    <button type="button" class="hours__step" data-hours-step="-1" aria-label="Меньше часов">−</button>
+    <output class="hours__value" data-hours-value aria-live="polite">1 ч</output>
+    <button type="button" class="hours__step" data-hours-step="1" aria-label="Больше часов">+</button>
+    <span class="hours__total" data-hours-total>{{ service.price_display }} ₽</span>
+    <span class="booking-hint hours__hint" data-booking-hint><button type="button" class="booking-hint__toggle" aria-describedby="hours-hint-{{ service.slug }}" aria-label="Как считается сумма">i</button><span class="booking-hint__text" id="hours-hint-{{ service.slug }}" role="tooltip">Предварительный расчёт. Окончательную сумму подтвердит администратор.</span></span>
+  </div>
+{% elif not service.price %}
+  {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+  <p class="service-card__ask">Цена по запросу{% if telegram %} · <a href="{% marketing_url telegram 'services_page' 'Здравствуйте! Хочу узнать про услугу «'|add:service.name|add:'»' %}" rel="noopener" target="_blank">Спросить в Telegram</a>{% endif %}</p>
+  {% endwith %}
+{% endif %}
