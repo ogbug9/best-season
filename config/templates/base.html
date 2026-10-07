@@ -20,6 +20,8 @@
     {% endcomment %}
     <meta name="description" content="{% block meta_description %}{{ description }}{% endblock %}">
     <link rel="canonical" href="{{ canonical }}">
+    {# Раздел дополняется: страница живая, но в поиск пока не отдаём #}
+    {% if page.in_progress %}<meta name="robots" content="noindex, follow">{% endif %}
 
     {# Open Graph — превью проверяется в Telegram и ВК, п. 10.9 ТЗ #}
     <meta property="og:type" content="website">
@@ -104,6 +106,8 @@
     <script src="{% static 'js/scroll-intent.js' %}?v=20261002-swipe" defer></script>
     <script src="{% static 'js/button-states.js' %}?v=20261002-states" defer></script>
     <script src="{% static 'js/site.js' %}?v=20261006-cards" defer></script>
+    <script src="{% static 'js/reveal.js' %}?v=20261007-motion" defer></script>
+    <script src="{% static 'js/chips.js' %}?v=20261007-motion" defer></script>
     {% comment %} Блок бронирования есть только на странице дома — на
        остальных скрипт выходит сразу, ничего не найдя. {% endcomment %}
     <script src="{% static 'js/calendar.js' %}?v=20260925-calendar" defer></script>

@@ -5,6 +5,8 @@ from wagtail.models import Page
 from wagtail.fields import RichTextField
 from wagtail.snippets.models import register_snippet
 
+from core.models import InProgressMixin
+
 BODY_FEATURES = ["bold", "italic", "link", "ul", "ol"]
 
 
@@ -127,7 +129,7 @@ class Service(models.Model):
         return self.name
 
 
-class ServicesPage(Page):
+class ServicesPage(InProgressMixin, Page):
     """«Услуги и завтраки» / «Доп услуги». Список берётся из справочника,
     тот же, что показывается блоком на главной и на странице дома."""
 

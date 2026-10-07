@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from django import template
 from django.db import DatabaseError
-from django.utils.html import conditional_escape, format_html, format_html_join
+from django.utils.html import conditional_escape, format_html, format_html_join, strip_tags
 from django.utils.safestring import mark_safe
 
 register = template.Library()
@@ -27,6 +27,21 @@ def texts(request):
 
 def value(request, key, default=''):
     return texts(request).get(key, DEFAULTS.get(key, {}).get('text', default))
+
+
+# Служебные пометки сида и админки, которые гость видеть не должен.
+PLACEHOLDER_MARKERS = ('Текст ожидается от заказчика', 'берутся из настроек сайта')
+PLACEHOLDER_VALUES = {'описание', 'уточняется'}
+
+
+@register.filter
+def filled(value):
+    """Пустая строка вместо незаполненного поля или служебной пометки."""
+    text = ' '.join(strip_tags(str(value or '')).split())
+    if (not text or text.lower().rstrip('.') in PLACEHOLDER_VALUES
+            or any(marker in text for marker in PLACEHOLDER_MARKERS)):
+        return ''
+    return value
 
 
 @register.simple_tag(takes_context=True)

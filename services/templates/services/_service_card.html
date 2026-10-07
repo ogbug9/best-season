@@ -15,7 +15,7 @@
     {% if service.price %}{% include "includes/price_flag.html" with amount=service.price_display unit=service.get_price_unit_display %}{% endif %}
   </div>
   <div class="house__overlay">
-    <div class="house__info"><{% if level == "2" %}h2{% else %}h3{% endif %} class="house__title">{{ service.name }}</{% if level == "2" %}h2{% else %}h3{% endif %}>{% if service.short_description %}<p class="house__meta">{{ service.short_description }}</p>{% endif %}</div>
+    <div class="house__info"><{% if level == "2" %}h2{% else %}h3{% endif %} class="house__title">{{ service.name }}</{% if level == "2" %}h2{% else %}h3{% endif %}>{% if service.short_description|filled %}<p class="house__meta">{{ service.short_description }}</p>{% endif %}</div>
     <a class="btn btn--outline house__more" href="{{ details_url }}#{% if service.description or service.price_note %}service-details-{% else %}service-{% endif %}{{ service.slug }}">{% cms_text "_service_card-59589fe2a549" %}</a>
   </div>
   {% if service.is_hourly %}<button type="button" class="btn btn--primary house__book" data-booking-open data-entry-point="5">{% cms_text "_service_card-5d9d7f118153" %}</button>{% endif %}

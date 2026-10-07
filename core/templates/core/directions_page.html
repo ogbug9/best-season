@@ -17,21 +17,23 @@
   <div class="container container--narrow">
     <h1>{{ page.title|heading_breaks }}</h1>
     {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    {% include "includes/in_progress_note.html" %}
   </div>
 </section>
 
 {% comment %} 4.2.1 На автомобиле {% endcomment %}
-{% if page.car_route or page.car_distance %}
+{% with car_distance=page.car_distance|filled car_time=page.car_time|filled car_route=page.car_route|filled %}
+{% if car_route or car_distance %}
 <section class="section">
   <div class="container container--narrow">
     <h2>{% cms_text "directions_page-a88a4debb15d" %}</h2>
-    {% if page.car_distance or page.car_time %}
+    {% if car_distance or car_time %}
       <ul class="facts">
-        {% if page.car_distance %}<li><b>{% cms_text "directions_page-7087612994cd" %}</b> {{ page.car_distance }}</li>{% endif %}
-        {% if page.car_time %}<li><b>{% cms_text "directions_page-26803a9646b8" %}</b> {{ page.car_time }}</li>{% endif %}
+        {% if car_distance %}<li><b>{% cms_text "directions_page-7087612994cd" %}</b> {{ car_distance }}</li>{% endif %}
+        {% if car_time %}<li><b>{% cms_text "directions_page-26803a9646b8" %}</b> {{ car_time }}</li>{% endif %}
       </ul>
     {% endif %}
-    {{ page.car_route|richtext }}
+    {% if car_route %}{{ car_route|richtext }}{% endif %}
     {% if page.yandex_route_url %}
       <p><a class="btn btn--outline" data-directions-link href="{% marketing_url page.yandex_route_url 'directions_page' %}" rel="noopener" target="_blank">
         {% cms_text "directions_page-f7445243bed5" %}
@@ -40,9 +42,10 @@
   </div>
 </section>
 {% endif %}
+{% endwith %}
 
 {% comment %} 4.2.2 Без автомобиля {% endcomment %}
-{% if page.transit_route %}
+{% if page.transit_route|filled %}
 <section class="section section--deep">
   <div class="container container--narrow">
     <h2>{% cms_text "directions_page-1956920f76c5" %}</h2>
@@ -52,15 +55,17 @@
 {% endif %}
 
 {% comment %} 4.2.3 Трансфер {% endcomment %}
-{% if page.transfer_price or page.transfer_note %}
+{% with transfer_price=page.transfer_price|filled transfer_note=page.transfer_note|filled %}
+{% if transfer_price or transfer_note %}
 <section class="section">
   <div class="container container--narrow">
     <h2>{% cms_text "directions_page-915c8675d775" %}</h2>
-    {% if page.transfer_price %}<p class="card__price">{{ page.transfer_price }}</p>{% endif %}
-    {{ page.transfer_note|richtext }}
+    {% if transfer_price %}<p class="card__price">{{ transfer_price }}</p>{% endif %}
+    {% if transfer_note %}{{ transfer_note|richtext }}{% endif %}
   </div>
 </section>
 {% endif %}
+{% endwith %}
 
 {% comment %} 4.2.4 Форма заявки на трансфер {% endcomment %}
 <section class="section">

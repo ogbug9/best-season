@@ -3,9 +3,8 @@
 {% load content_tags %}
 {% load wagtailcore_tags media_tags layout_tags %}
 {% block body_class %}page-contacts{% endblock %}
-{% with s=settings.core.SiteSettings %}
-
 {% block content %}
+{% with s=settings.core.SiteSettings %}
 <section class="section page-head">
   <div class="container container--narrow">
     <h1>{{ page.title|heading_breaks }}</h1>
@@ -33,7 +32,7 @@
         {% if s.vk_url %}<a class="btn btn--outline" href="{% marketing_url s.vk_url 'contacts_page' %}" rel="noopener" target="_blank">{% cms_text "contacts_page-125394ee160a" %}</a>{% endif %}
       </p>
 
-      {% if page.body %}<div class="prose">{{ page.body|richtext }}</div>{% endif %}
+      {% if page.body|filled %}<div class="prose">{{ page.body|richtext }}</div>{% endif %}
 
       <p class="footer__requisites">
         {% if s.legal_name %}{{ s.legal_name }}{% endif %}
@@ -60,6 +59,5 @@
 {% include "forms/request_form.html" with form=feedback_form form_type="feedback" title=cms_include_b0f097f65241 lead="Ответим на почту или в мессенджер." %}
   </div>
 </section>
-{% endblock %}
-
 {% endwith %}
+{% endblock %}

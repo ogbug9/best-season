@@ -1,15 +1,17 @@
 {% extends "base.html" %}
+{% load content_tags %}
 {% load wagtailcore_tags media_tags layout_tags %}
 
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
     <h1>{{ page.title|heading_breaks }}</h1>
-    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    {% include "includes/in_progress_note.html" %}
   </div>
 </section>
 
-{% if page.body %}
+{% if page.body|filled %}
 <section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
 {% endif %}
 

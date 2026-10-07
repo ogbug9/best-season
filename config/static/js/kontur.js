@@ -326,7 +326,10 @@
     state.entryPoint = button.getAttribute("data-entry-point") || "";
     state.opener = button;
 
-    track("booking_widget_open", { entry_point: state.entryPoint });
+    // Имя страницы — отдельным параметром: номер точки входа по ТЗ не меняется
+    // (docs/dop-stranicy/README.md, «Аналитика»).
+    var entryPage = button.getAttribute("data-entry-page");
+    track("booking_widget_open", entryPage ? { entry_point: state.entryPoint, page: entryPage } : { entry_point: state.entryPoint });
 
     // Прокрутку страницы фиксируем: п. 5.2 требует, чтобы при закрытии гость
     // вернулся на то же место. Без этого фон уезжает наверх на мобильных.

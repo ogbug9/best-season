@@ -545,7 +545,25 @@ def home_hero_image():
     return slide.image if slide else None
 
 
-class ContentPage(Page):
+class InProgressMixin(models.Model):
+    """Плашка «Раздел дополняется»: страница живая, но ещё растёт.
+
+    Пока галочка стоит, гость видит плашку со ссылками на мессенджеры,
+    а поисковики не индексируют страницу (docs/dop-stranicy/01-komponenty.md, K1).
+    """
+
+    in_progress = models.BooleanField(
+        "Раздел дополняется", default=False,
+        help_text="Показать плашку «Раздел дополняется» и закрыть страницу от поисковиков, пока она не готова.",
+    )
+
+    settings_panels = Page.settings_panels + [FieldPanel("in_progress")]
+
+    class Meta:
+        abstract = True
+
+
+class ContentPage(InProgressMixin, Page):
     """Простая текстовая страница: «О нас», правовые, «Цены и условия»,
     «Партнёрам». Всё, что не требует особой структуры."""
 
@@ -614,7 +632,7 @@ class ContentPage(Page):
         verbose_name_plural = "Текстовые страницы"
 
 
-class DirectionsPage(Page):
+class DirectionsPage(InProgressMixin, Page):
     """«Как добраться» — п. 4.2 ТЗ.
 
     Страница закрывает главный барьер аудитории и не может быть сокращена
@@ -733,7 +751,7 @@ class ContactsPage(Page):
         return context
 
 
-class TerritoryPage(Page):
+class TerritoryPage(InProgressMixin, Page):
     """«Наша территория». Плитки берутся из справочника TerritoryItem —
     того же, что выводится блоком на главной."""
 
@@ -758,7 +776,7 @@ class TerritoryPage(Page):
         return context
 
 
-class NearbyPage(Page):
+class NearbyPage(InProgressMixin, Page):
     """«Интересное рядом». Карточки из справочника NearbyPlace."""
 
     intro = models.CharField("Вступление", max_length=255, blank=True)
@@ -794,7 +812,7 @@ class FaqPage(Page):
         return context
 
 
-class GalleryPage(Page):
+class GalleryPage(InProgressMixin, Page):
     """Фотогалерея. Отдельный набор фото, не тот, что на главной."""
 
     intro = models.CharField("Вступление", max_length=255, blank=True)

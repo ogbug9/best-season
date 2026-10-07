@@ -9,6 +9,7 @@
   <div class="container container--narrow">
     <h1>{% if legal_pdf %}{{ page.title }}{% else %}{{ page.title|heading_breaks }}{% endif %}</h1>
     {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    {% if not page.awaiting_copy %}{% include "includes/in_progress_note.html" %}{% endif %}
   </div>
 </section>
 

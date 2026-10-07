@@ -1,0 +1,25 @@
+{% load content_tags marketing_tags media_tags %}
+{% comment %}
+  Место под будущее видео (docs/dop-stranicy/01-komponenty.md, K3).
+  Видео не встраиваем: пока ролика нет, показываем заглушку.
+  А — есть poster (фото из уже загруженных), Б — фото нет.
+  {% include "includes/video_slot.html" with poster=image title="Утро на террасе" note="Снимаем этой осенью" %}
+{% endcomment %}
+{% with s=settings.core.SiteSettings %}
+<figure class="video-slot{% if poster %} video-slot--poster{% else %} video-slot--empty{% endif %}{% if ratio == '4x5' %} video-slot--tall{% endif %}">
+  {% if poster %}
+    {% picture poster preset="card" alt="" %}
+    <span class="video-slot__play" aria-hidden="true"></span>
+    <figcaption class="video-slot__caption">
+      <b>Видео «{{ title }}» скоро появится</b>
+      <span>пока — кадр того же места</span>
+    </figcaption>
+  {% else %}
+    <figcaption class="video-slot__caption">
+      <b>{{ title }}</b>
+      {% if note %}<span>{{ note }}</span>{% endif %}
+      {% if s.telegram_url %}<a class="btn btn--outline" href="{% marketing_url s.telegram_url 'video_slot' %}" rel="noopener" target="_blank">Смотреть, как сейчас, в Telegram</a>{% endif %}
+    </figcaption>
+  {% endif %}
+</figure>
+{% endwith %}
