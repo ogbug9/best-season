@@ -1,26 +1,60 @@
 {% extends "base.html" %}
-{% load content_tags %}
+{% load content_tags marketing_tags media_tags houses_tags %}
 {% load wagtailcore_tags layout_tags %}
 
 {% block body_class %}page-reviews{% endblock %}
+
+{% comment %}
+  Отзывы (docs/dop-stranicy/15-otzyvy.md): независимый рейтинг первым,
+  крупная цитата, фильтр по домику (Д10, ?house=domik-1).
+{% endcomment %}
+
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
     <h1>{{ page.title|heading_breaks }}</h1>
-    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
 
-{% if page.body %}
+{% if page.yandex_rating %}
+<section class="section reviews-rating">
+  <div class="container container--narrow center" data-reveal>
+    <p class="reviews-rating__value">{{ page.yandex_rating|floatformat:1 }}</p>
+    <p class="reviews-rating__count">{% if page.yandex_ratings_count %}{{ page.yandex_ratings_count }} оценок{% endif %}{% if page.yandex_ratings_count and page.yandex_reviews_count %} · {% endif %}{% if page.yandex_reviews_count %}{{ page.yandex_reviews_count }} отзывов{% endif %} на Яндекс Картах</p>
+    {% if page.yandex_tag_list %}<ul class="reviews-rating__tags">{% for tag in page.yandex_tag_list %}<li>{{ tag }}</li>{% endfor %}</ul>{% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% if page.body|filled %}
 <section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
+{% endif %}
+
+{% if quote %}
+<section class="section reviews-quote">
+  <div class="container split" data-reveal>
+    <div class="split__media">{% picture quote.image preset="card" alt=quote.author_name %}</div>
+    <figure class="split__text reviews-quote__text">
+      <blockquote><p>{{ quote.text|review_quote }}</p></blockquote>
+      <figcaption>{{ quote.author_name }}{% if quote.house %} · {{ quote.house.title }}{% endif %}</figcaption>
+    </figure>
+  </div>
+</section>
 {% endif %}
 
 {% if reviews %}
 <section class="section">
   <div class="container">
-    <ul class="reviews">
+    {% if review_houses|length > 1 %}
+      <div class="chips reviews__chips" data-chips="house" role="group" aria-label="Отзывы о домике">
+        <button type="button" class="filter-chip" data-chip="">Все</button>
+        {% for house in review_houses %}<button type="button" class="filter-chip" data-chip="{{ house.slug }}">{{ house.title }}</button>{% endfor %}
+      </div>
+    {% endif %}
+    <ul class="reviews" data-chips-for="house">
       {% for review in reviews %}
-        {% include "reviews/_review_card.html" %}
+        {% include "reviews/_review_card.html" with review_filter=True %}
       {% endfor %}
     </ul>
   </div>
@@ -29,5 +63,38 @@
 <section class="section">
   <div class="container container--narrow"><p>{% cms_text "reviews_page-d30ae9e0714b" %}</p></div>
 </section>
+{% endif %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    {% if page.yandex_url %}
+      <p class="split__actions reviews__links">
+        <a class="btn btn--outline" href="{% marketing_url page.yandex_url 'reviews_page' %}" rel="noopener" target="_blank">Все отзывы на Яндекс Картах</a>
+        <a class="btn btn--outline" href="{% marketing_url page.yandex_url 'reviews_page_add' %}" rel="noopener" target="_blank">Оставить отзыв</a>
+      </p>
+    {% endif %}
+    <h2>Приезжайте за своими впечатлениями</h2>
+    <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="reviews">{% cms_text "booking_cta-5d9d7f118153" %}</button></p>
+  </div>
+</section>
+{% endblock %}
+
+{% block structured_data %}
+{% if page.yandex_rating and page.yandex_ratings_count %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LodgingBusiness",
+  "name": "{{ current_site.site_name|default:'Лучший сезон'|escapejs }}",
+  "url": "{{ page.full_url|escapejs }}",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ page.yandex_rating|stringformat:"s" }}",
+    "bestRating": "5",
+    "ratingCount": "{{ page.yandex_ratings_count }}"{% if page.yandex_reviews_count %},
+    "reviewCount": "{{ page.yandex_reviews_count }}"{% endif %}
+  }
+}
+</script>
 {% endif %}
 {% endblock %}

@@ -43,6 +43,21 @@
       });
     });
   });
+  // Ссылка на конкретный ответ (#q-12): администратор присылает её гостю,
+  // ответ раскрывается сам (docs/dop-stranicy/17-faq.md).
+  function openFromHash() {
+    var id = decodeURIComponent(window.location.hash.slice(1));
+    if (!/^q-\d+$/.test(id)) return;
+    var item = document.getElementById(id);
+    if (!item || !item.classList.contains('faq__item')) return;
+    item.hidden = false;
+    item.classList.remove('is-fading');
+    item.closest('.faq').querySelectorAll('.faq__item.is-open').forEach(function (other) { if (other !== item) set(other, false); });
+    if (!item.classList.contains('is-open')) set(item, true);
+    item.scrollIntoView({block: 'start', behavior: reduced.matches ? 'auto' : 'smooth'});
+  }
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
 })();
 
 (function () {

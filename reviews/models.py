@@ -9,6 +9,7 @@ class ReviewSource(models.TextChoices):
     SITE = "site", "Форма на сайте"
     YANDEX = "yandex", "Яндекс.Карты"
     AVITO = "avito", "Авито"
+    VK = "vk", "ВКонтакте"
     OTHER = "other", "Другое"
 
 
@@ -104,13 +105,37 @@ class ReviewsPage(Page):
         "Текст", blank=True, features=["bold", "italic", "link", "ul", "ol"]
     )
 
-    content_panels = Page.content_panels + [FieldPanel("intro"), FieldPanel("body")]
+    # Независимый рейтинг на первом экране (docs/dop-stranicy/15-otzyvy.md).
+    # Цифры переносятся вручную с карточки организации; пусто — блок скрыт.
+    yandex_rating = models.DecimalField("Рейтинг на Яндекс Картах", max_digits=2, decimal_places=1, null=True, blank=True)
+    yandex_ratings_count = models.PositiveIntegerField("Оценок", null=True, blank=True)
+    yandex_reviews_count = models.PositiveIntegerField("Отзывов", null=True, blank=True)
+    yandex_tags = models.CharField("Что хвалят", max_length=160, blank=True, help_text="Через запятую, из сводки Яндекса.")
+    yandex_url = models.URLField("Страница отзывов на Яндекс Картах", blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        FieldPanel("body"),
+        MultiFieldPanel([
+            FieldPanel("yandex_rating"), FieldPanel("yandex_ratings_count"), FieldPanel("yandex_reviews_count"),
+            FieldPanel("yandex_tags"), FieldPanel("yandex_url"),
+        ], heading="Рейтинг на Яндекс Картах"),
+    ]
     max_count = 1
 
     class Meta:
         verbose_name = "Страница «Отзывы»"
 
+    @property
+    def yandex_tag_list(self):
+        return [tag.strip() for tag in self.yandex_tags.split(",") if tag.strip()]
+
     def get_context(self, request):
         context = super().get_context(request)
-        context["reviews"] = Review.objects.filter(is_published=True)
+        reviews = list(Review.objects.filter(is_published=True).select_related("house", "image"))
+        context["reviews"] = reviews
+        # Чипы — только для домиков, о которых есть отзывы, по порядку каталога.
+        houses = {review.house.pk: review.house for review in reviews if review.house}
+        context["review_houses"] = sorted(houses.values(), key=lambda house: house.path)
+        context["quote"] = next((review for review in reviews if review.image), None)
         return context

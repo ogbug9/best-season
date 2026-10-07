@@ -5,81 +5,88 @@
 {% block body_class %}page-directions{% endblock %}
 
 {% comment %}
-  «Как добраться» — п. 4.2 ТЗ. Порядок блоков повторяет пункты требования:
+  «Как добраться» — п. 4.2 ТЗ. Состав блоков повторяет пункты требования:
   маршрут на авто, маршрут без авто, трансфер, форма заявки, карта,
   кнопка возврата к бронированию. По п. 12.3 без этой страницы нельзя
   запускаться, поэтому состав менять только вместе с ТЗ.
+  Подача — docs/dop-stranicy/13-kak-dobratsya.md: факты, вкладки (Д10),
+  шаги электрички пунктиром. Без JS все три вкладки видны подряд.
 {% endcomment %}
 
 {% block content %}
-
+{% with s=settings.core.SiteSettings %}
 <section class="section page-head">
   <div class="container container--narrow">
     <h1>{{ page.title|heading_breaks }}</h1>
-    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
     {% include "includes/in_progress_note.html" %}
   </div>
 </section>
 
-{% comment %} 4.2.1 На автомобиле {% endcomment %}
-{% with car_distance=page.car_distance|filled car_time=page.car_time|filled car_route=page.car_route|filled %}
-{% if car_route or car_distance %}
-<section class="section">
+<section class="section directions">
   <div class="container container--narrow">
-    <h2>{% cms_text "directions_page-a88a4debb15d" %}</h2>
-    {% if car_distance or car_time %}
-      <ul class="facts">
-        {% if car_distance %}<li><b>{% cms_text "directions_page-7087612994cd" %}</b> {{ car_distance }}</li>{% endif %}
-        {% if car_time %}<li><b>{% cms_text "directions_page-26803a9646b8" %}</b> {{ car_time }}</li>{% endif %}
-      </ul>
-    {% endif %}
-    {% if car_route %}{{ car_route|richtext }}{% endif %}
-    {% if page.yandex_route_url %}
-      <p><a class="btn btn--outline" data-directions-link href="{% marketing_url page.yandex_route_url 'directions_page' %}" rel="noopener" target="_blank">
-        {% cms_text "directions_page-f7445243bed5" %}
-      </a></p>
-    {% endif %}
+    {% include "includes/fact_cards.html" with facts=route_facts %}
+
+    <div class="chips directions__tabs" data-chips="route" data-chips-default="car" role="group" aria-label="Как поедете">
+      <button type="button" class="filter-chip" data-chip="car">На машине</button>
+      <button type="button" class="filter-chip" data-chip="train">На электричке</button>
+      <button type="button" class="filter-chip" data-chip="transfer">Трансфер</button>
+    </div>
+
+    <div class="directions__panels" data-chips-for="route">
+      {% comment %} 4.2.1 На автомобиле {% endcomment %}
+      {% with car_route=page.car_route|filled navigator=page.yandex_route_url|default:s.yandex_map_url car_distance=page.car_distance|filled car_time=page.car_time|filled %}
+      <section class="directions__panel" data-tags="car" aria-labelledby="route-car">
+        <h2 id="route-car">{% cms_text "directions_page-a88a4debb15d" %}</h2>
+        {% if s.address %}<p class="directions__address">{{ s.address }}</p>{% endif %}
+        {% if car_distance or car_time %}<p class="directions__meta">{{ car_distance }}{% if car_distance and car_time %} · {% endif %}{{ car_time }}</p>{% endif %}
+        <p class="split__actions">
+          {% if navigator %}<a class="btn btn--primary" data-directions-link href="{% marketing_url navigator 'directions_page' %}" rel="noopener" target="_blank">Открыть в Навигаторе</a>{% endif %}
+          {% if s.address %}<button type="button" class="btn btn--outline" data-copy="{{ s.address }}"><span data-copy-label="Адрес скопирован">Скопировать адрес</span></button>{% endif %}
+        </p>
+        {% if car_route %}<div class="prose">{{ car_route|richtext }}</div>{% endif %}
+      </section>
+      {% endwith %}
+
+      {% comment %} 4.2.2 Без автомобиля {% endcomment %}
+      <section class="directions__panel" data-tags="train" aria-labelledby="route-train">
+        <h2 id="route-train">{% cms_text "directions_page-1956920f76c5" %}</h2>
+        {% if page.train_station %}
+          <ol class="route-steps">
+            <li class="route-steps__item" data-reveal><b>Курский вокзал</b><span>электричка Курского направления</span></li>
+            <li class="route-steps__item" data-reveal><b>Станция {{ page.train_station }}</b><span>{% if page.train_time %}{{ page.train_time }} в пути{% endif %}{% if page.train_time and page.train_price %} · {% endif %}{{ page.train_price }}</span></li>
+            <li class="route-steps__item" data-reveal><b>Такси или наш трансфер</b><span>встретим на станции, если закажете заранее</span></li>
+            <li class="route-steps__item route-steps__item--end" data-reveal><b>«Лучший сезон»</b><span>{{ s.address|default:"село Страхово" }}</span></li>
+          </ol>
+          {% if page.train_schedule_url %}<p><a class="btn btn--outline" href="{{ page.train_schedule_url }}" rel="noopener" target="_blank">Расписание электричек</a></p>{% endif %}
+        {% elif page.transit_route|filled %}
+          <div class="prose">{{ page.transit_route|richtext }}</div>
+        {% endif %}
+      </section>
+
+      {% comment %} 4.2.3 Трансфер и 4.2.4 форма заявки {% endcomment %}
+      {% with transfer_price=page.transfer_price|filled transfer_note=page.transfer_note|filled %}
+      <section class="directions__panel" data-tags="transfer" aria-labelledby="route-transfer">
+        <h2 id="route-transfer">{% cms_text "directions_page-915c8675d775" %}</h2>
+        {% if transfer_price %}<p class="card__price">{{ transfer_price }}</p>{% endif %}
+        {% if transfer_note %}<div class="prose">{{ transfer_note|richtext }}</div>{% endif %}
+        {% cms_text "include-9d1ad5bd0f25" as cms_include_9d1ad5bd0f25 %}
+        {% include "forms/request_form.html" with form=transfer_form form_type="transfer" title=cms_include_9d1ad5bd0f25 lead="Встретим на станции. Оставьте заявку — подберём время и назовём точную стоимость." submit_label="Заказать трансфер" %}
+        <p class="split__actions">
+          {% if s.phone %}<a class="btn btn--outline" href="tel:{{ s.phone }}">{% cms_text "directions_page-0701381c8c21" %}</a>{% endif %}
+          {% firstof s.telegram_chat_url s.telegram_url as telegram %}
+          {% if telegram %}<a class="btn btn--outline" href="{% marketing_url telegram 'directions_page' 'Здравствуйте! Нужен трансфер со станции' %}" rel="noopener" target="_blank">{% cms_text "channel-telegram" %}</a>{% endif %}
+          {% if s.whatsapp_url %}<a class="btn btn--outline" href="{% marketing_url s.whatsapp_url 'directions_page' 'Здравствуйте! Нужен трансфер со станции' %}" rel="noopener" target="_blank">{% cms_text "channel-whatsapp" %}</a>{% endif %}
+        </p>
+      </section>
+      {% endwith %}
+    </div>
   </div>
 </section>
-{% endif %}
-{% endwith %}
 
-{% comment %} 4.2.2 Без автомобиля {% endcomment %}
-{% if page.transit_route|filled %}
-<section class="section section--deep">
-  <div class="container container--narrow">
-    <h2>{% cms_text "directions_page-1956920f76c5" %}</h2>
-    {{ page.transit_route|richtext }}
-  </div>
-</section>
-{% endif %}
-
-{% comment %} 4.2.3 Трансфер {% endcomment %}
-{% with transfer_price=page.transfer_price|filled transfer_note=page.transfer_note|filled %}
-{% if transfer_price or transfer_note %}
 <section class="section">
   <div class="container container--narrow">
-    <h2>{% cms_text "directions_page-915c8675d775" %}</h2>
-    {% if transfer_price %}<p class="card__price">{{ transfer_price }}</p>{% endif %}
-    {% if transfer_note %}{{ transfer_note|richtext }}{% endif %}
-  </div>
-</section>
-{% endif %}
-{% endwith %}
-
-{% comment %} 4.2.4 Форма заявки на трансфер {% endcomment %}
-<section class="section">
-  <div class="container container--narrow">
-    {% cms_text "include-9d1ad5bd0f25" as cms_include_9d1ad5bd0f25 %}
-{% include "forms/request_form.html" with form=transfer_form form_type="transfer" title=cms_include_9d1ad5bd0f25 lead="Оставьте заявку — подберём время и назовём точную стоимость." submit_label="Заказать трансфер" %}
-
-    {% with s=settings.core.SiteSettings %}
-      <p class="split__actions">
-        {% if s.phone %}<a class="btn btn--outline" href="tel:{{ s.phone }}">{% cms_text "directions_page-0701381c8c21" %}</a>{% endif %}
-        {% if s.telegram_url %}<a class="btn btn--outline" href="{% marketing_url s.telegram_url 'directions_page' %}" rel="noopener" target="_blank">{% cms_text "channel-telegram" %}</a>{% endif %}
-        {% if s.whatsapp_url %}<a class="btn btn--outline" href="{% marketing_url s.whatsapp_url 'directions_page' %}" rel="noopener" target="_blank">{% cms_text "channel-whatsapp" %}</a>{% endif %}
-      </p>
-    {% endwith %}
+    {% include "includes/video_slot.html" with poster=None title="Здесь будет видео последнего километра и въезда" note="Чтобы вы узнали поворот без звонка с дороги" %}
   </div>
 </section>
 
@@ -111,11 +118,11 @@
     <h2>{% cms_text "directions_page-eeba4f863379" %}</h2>
     <p>{% cms_text "directions_page-e8d3050844b6" %}</p>
     <p>
-      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="8">
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="8" data-entry-page="directions">
         {% cms_text "directions_page-aa5b7a42a613" %}
       </button>
     </p>
   </div>
 </section>
-
+{% endwith %}
 {% endblock %}

@@ -165,6 +165,11 @@ class SiteSettings(BaseSiteSetting):
     )
 
     telegram_url = models.URLField("Telegram", blank=True)
+    # Канал — для подписки; сообщения гости пишут администратору (07.10).
+    telegram_chat_url = models.URLField(
+        "Telegram для сообщений", blank=True,
+        help_text="Чат администратора, например https://t.me/BestSeason_adm. Пусто — используется ссылка Telegram выше.",
+    )
     whatsapp_url = models.URLField("WhatsApp", blank=True)
     vk_url = models.URLField("ВКонтакте", blank=True)
     tiktok_url = models.URLField("TikTok", blank=True)
@@ -310,6 +315,7 @@ class SiteSettings(BaseSiteSetting):
         MultiFieldPanel(
             [
                 FieldPanel("telegram_url"),
+                FieldPanel("telegram_chat_url"),
                 FieldPanel("whatsapp_url"),
                 FieldPanel("vk_url"),
                 FieldPanel("tiktok_url"),
@@ -467,6 +473,16 @@ class FaqItem(models.Model):
     """
 
     question = models.CharField("Вопрос", max_length=255)
+    TOPICS = [
+        ("booking", "Бронь и оплата"),
+        ("checkin", "Заезд"),
+        ("houses", "Домики"),
+        ("pets", "Животные"),
+        ("road", "Дорога"),
+        ("promo", "Акции"),
+    ]
+    topic = models.CharField("Тема", max_length=16, choices=TOPICS, blank=True,
+                             help_text="Чип-фильтр на странице «Ответы на вопросы».")
     answer = RichTextField(
         "Ответ", features=["bold", "italic", "link", "ul", "ol"]
     )
@@ -479,6 +495,7 @@ class FaqItem(models.Model):
     panels = [
         FieldPanel("question"),
         FieldPanel("answer"),
+        FieldPanel("topic"),
         FieldPanel("show_on_home"),
         FieldPanel("is_published"),
         FieldPanel("sort_order"),
@@ -535,6 +552,12 @@ class InterfaceText(models.Model):
 
     def __str__(self):
         return self.label
+
+
+def image_titled(title):
+    """Изображение из библиотеки по точному названию; None, если его нет."""
+    from wagtail.images import get_image_model
+    return get_image_model().objects.filter(title=title).first()
 
 
 def home_hero_image():
@@ -659,6 +682,13 @@ class DirectionsPage(InProgressMixin, Page):
         help_text="С названиями станций и ориентировочным временем — требование п. 4.2.",
     )
 
+    # Шаги на электричке (docs/dop-stranicy/13-kak-dobratsya.md). Если станция
+    # заполнена, страница показывает шаги, иначе — текст маршрута выше.
+    train_station = models.CharField("Станция", max_length=80, blank=True, help_text="Например: Тарусская.")
+    train_time = models.CharField("Время в пути на электричке", max_length=80, blank=True)
+    train_price = models.CharField("Стоимость электрички", max_length=80, blank=True)
+    train_schedule_url = models.URLField("Ссылка на расписание", blank=True)
+
     # 4.2.3 — трансфер
     transfer_price = models.CharField("Стоимость трансфера", max_length=120, blank=True)
     transfer_note = RichTextField(
@@ -691,6 +721,15 @@ class DirectionsPage(InProgressMixin, Page):
         FieldPanel("transit_route"),
         MultiFieldPanel(
             [
+                FieldPanel("train_station"),
+                FieldPanel("train_time"),
+                FieldPanel("train_price"),
+                FieldPanel("train_schedule_url"),
+            ],
+            heading="Шаги на электричке",
+        ),
+        MultiFieldPanel(
+            [
                 FieldPanel("transfer_price"),
                 FieldPanel("transfer_note"),
             ],
@@ -716,7 +755,23 @@ class DirectionsPage(InProgressMixin, Page):
         context = super().get_context(request)
         context["transfer_form"] = TransferForm()
         context["consent_page"] = _consent_page()
+        context["route_facts"] = self.route_facts()
         return context
+
+    def route_facts(self):
+        """Карточки-факты: крупное значение и подпись (K4). Служебные пометки пропускаются."""
+        from core.templatetags.content_tags import filled
+
+        facts = []
+        distance = filled(self.car_distance)
+        if distance:
+            value, sep, rest = distance.partition(" от ")
+            facts.append((value, f"от {rest}" if sep else "до глэмпинга"))
+        if filled(self.car_time):
+            facts.append((self.car_time, "на машине"))
+        if filled(self.train_price):
+            facts.append((self.train_price, "электричка с Курского вокзала"))
+        return facts
 
 
 class ContactsPage(Page):
@@ -748,6 +803,10 @@ class ContactsPage(Page):
         context = super().get_context(request)
         context["feedback_form"] = FeedbackForm()
         context["consent_page"] = _consent_page()
+        # «Встретим вас лично» — ответ FAQ про заселение, кадр истории с «О нас».
+        context["checkin_answer"] = (FaqItem.objects.filter(is_published=True, question__startswith="Как проходит заселение")
+                                     .values_list("answer", flat=True).first())
+        context["hosts_image"] = image_titled("BS About story-terrace")
         return context
 
 
@@ -809,6 +868,8 @@ class FaqPage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         context["faq"] = FaqItem.objects.filter(is_published=True)
+        used = set(context["faq"].values_list("topic", flat=True))
+        context["topics"] = [(value, label) for value, label in FaqItem.TOPICS if value in used]
         return context
 
 

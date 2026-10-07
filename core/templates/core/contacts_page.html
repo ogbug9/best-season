@@ -1,47 +1,75 @@
 {% extends "base.html" %}
-{% load marketing_tags %}
+{% load static marketing_tags %}
 {% load content_tags %}
 {% load wagtailcore_tags media_tags layout_tags %}
 {% block body_class %}page-contacts{% endblock %}
+
+{% comment %}
+  Контакты (docs/dop-stranicy/16-kontakty.md): связаться одним нажатием.
+  Контакты и реквизиты берутся из настроек сайта, а не дублируются полями
+  страницы: иначе они разойдутся с подвалом, а реквизиты ИП обязаны
+  совпадать (раздел 11 ТЗ). Незаполненная плитка не выводится.
+{% endcomment %}
+
 {% block content %}
-{% with s=settings.core.SiteSettings %}
+{% with s=settings.core.SiteSettings greeting="Здравствуйте! Хочу забронировать домик" %}
 <section class="section page-head">
   <div class="container container--narrow">
     <h1>{{ page.title|heading_breaks }}</h1>
-    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
 
 <section class="section">
+  <div class="container">
+    <ul class="contact-tiles">
+      {% firstof s.telegram_chat_url s.telegram_url as telegram %}
+      {% if telegram %}
+        <li data-reveal><a class="contact-tile" href="{% marketing_url telegram 'contacts_page' greeting %}" rel="noopener" target="_blank">
+          <img class="contact-tile__icon" src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="" aria-hidden="true">
+          <b class="contact-tile__name">Telegram</b><span class="contact-tile__hint">Напишите — ответим в чате</span></a></li>
+      {% endif %}
+      {% if s.whatsapp_url %}
+        <li data-reveal><a class="contact-tile" href="{% marketing_url s.whatsapp_url 'contacts_page' greeting %}" rel="noopener" target="_blank">
+          <img class="contact-tile__icon" src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true">
+          <b class="contact-tile__name">WhatsApp<span class="socials__note" aria-hidden="true">*</span></b><span class="contact-tile__hint">Сообщение уже набрано</span></a></li>
+      {% endif %}
+      {% if s.phone %}
+        <li data-reveal><a class="contact-tile" href="tel:{{ s.phone }}" data-copy="{{ s.phone_display|default:s.phone }}" data-copy-desktop>
+          <span class="contact-tile__icon contact-tile__icon--phone" aria-hidden="true"></span>
+          <b class="contact-tile__name">{{ s.phone_display|default:s.phone }}</b><span class="contact-tile__hint" data-copy-label="Номер скопирован">Позвонить</span></a></li>
+      {% endif %}
+      {% if s.vk_url %}
+        <li data-reveal><a class="contact-tile" href="{% marketing_url s.vk_url 'contacts_page' %}" rel="noopener" target="_blank">
+          <img class="contact-tile__icon" src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="" aria-hidden="true">
+          <b class="contact-tile__name">{% cms_text "contacts_page-125394ee160a" %}</b><span class="contact-tile__hint">Новости и отзывы гостей</span></a></li>
+      {% endif %}
+    </ul>
+    {% if s.email %}<p class="contact-tiles__email">{% cms_text "contacts_page-9acc3fbe2040" %} <a href="mailto:{{ s.email }}">{{ s.email }}</a></p>{% endif %}
+  </div>
+</section>
+
+{% if checkin_answer %}
+<section class="section">
+  <div class="container split contacts-hosts">
+    {% if hosts_image %}<div class="split__media" data-reveal>{% picture hosts_image preset="card" alt="Терраса домика" %}</div>{% endif %}
+    <div class="split__text" data-reveal>
+      <h2>Встретим вас лично</h2>
+      <div class="prose">{{ checkin_answer|richtext }}</div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if s.address or page.map_embed_url %}
+<section class="section">
   <div class="container split">
     <div class="split__text">
-      {% comment %}
-        Контакты и реквизиты берутся из настроек сайта, а не дублируются
-        полями страницы: иначе они разойдутся с подвалом, а реквизиты ИП
-        обязаны совпадать (раздел 11 ТЗ).
-      {% endcomment %}
-      <ul class="facts">
-        {% if s.phone %}<li><b>{% cms_text "contacts_page-353ad7d1834d" %}</b> <a href="tel:{{ s.phone }}">{{ s.phone_display|default:s.phone }}</a></li>{% endif %}
-        {% if s.email %}<li><b>{% cms_text "contacts_page-9acc3fbe2040" %}</b> <a href="mailto:{{ s.email }}">{{ s.email }}</a></li>{% endif %}
-        {% if s.address %}<li><b>{% cms_text "contacts_page-b87e6ba86a55" %}</b> {{ s.address }}</li>{% endif %}
-      </ul>
-
-      <p class="split__actions">
-        {% if s.telegram_url %}<a class="btn btn--outline" href="{% marketing_url s.telegram_url 'contacts_page' %}" rel="noopener" target="_blank">{% cms_text "channel-telegram" %}</a>{% endif %}
-        {% if s.whatsapp_url %}<a class="btn btn--outline" href="{% marketing_url s.whatsapp_url 'contacts_page' %}" rel="noopener" target="_blank">{% cms_text "channel-whatsapp" %}</a>{% endif %}
-        {% if s.vk_url %}<a class="btn btn--outline" href="{% marketing_url s.vk_url 'contacts_page' %}" rel="noopener" target="_blank">{% cms_text "contacts_page-125394ee160a" %}</a>{% endif %}
-      </p>
-
+      <h2>Где мы</h2>
+      {% if s.address %}<p>{{ s.address }}</p>{% endif %}
+      {% if s.directions_page %}<p><a class="btn btn--outline" href="{% pageurl s.directions_page %}">Как добраться</a></p>{% endif %}
       {% if page.body|filled %}<div class="prose">{{ page.body|richtext }}</div>{% endif %}
-
-      <p class="footer__requisites">
-        {% if s.legal_name %}{{ s.legal_name }}{% endif %}
-        {% if s.inn %} {% cms_text "contacts_page-1b6d70106339" %} {{ s.inn }}{% endif %}
-        {% if s.ogrnip %} {% cms_text "contacts_page-f0d20ac2a599" %} {{ s.ogrnip }}{% endif %}
-        {% if s.legal_address %}<br>{{ s.legal_address }}{% endif %}
-      </p>
     </div>
-
     {% if page.map_embed_url %}
       <div class="split__media">
         <div class="map" data-map data-map-src="{{ page.map_embed_url }}">
@@ -52,11 +80,21 @@
     {% endif %}
   </div>
 </section>
+{% endif %}
 
 <section class="section">
   <div class="container container--narrow">
     {% cms_text "include-b0f097f65241" as cms_include_b0f097f65241 %}
-{% include "forms/request_form.html" with form=feedback_form form_type="feedback" title=cms_include_b0f097f65241 lead="Ответим на почту или в мессенджер." %}
+{% include "forms/request_form.html" with form=feedback_form form_type="feedback" title=cms_include_b0f097f65241 lead="Или оставьте сообщение — ответим на почту или в мессенджер." %}
+
+    {% if s.legal_name or s.inn or s.ogrnip or s.legal_address %}
+      <p class="footer__requisites contacts-requisites">
+        {% if s.legal_name %}{{ s.legal_name }}{% endif %}
+        {% if s.inn %} {% cms_text "contacts_page-1b6d70106339" %} {{ s.inn }}{% endif %}
+        {% if s.ogrnip %} {% cms_text "contacts_page-f0d20ac2a599" %} {{ s.ogrnip }}{% endif %}
+        {% if s.legal_address %}<br>{{ s.legal_address }}{% endif %}
+      </p>
+    {% endif %}
   </div>
 </section>
 {% endwith %}

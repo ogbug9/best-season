@@ -8,7 +8,8 @@ PUBLIC_HOSTS = {'t.me', 'telegram.me', 'wa.me', 'api.whatsapp.com', 'vk.com', 'v
 
 
 @register.simple_tag
-def marketing_url(url, placement='site'):
+def marketing_url(url, placement='site', text=''):
+    """UTM для внешних ссылок; text — готовая фраза для чата Telegram/WhatsApp."""
     parts = urlsplit(str(url or ''))
     host = (parts.hostname or '').lower().removeprefix('www.')
     if parts.scheme not in ('http', 'https') or host not in PUBLIC_HOSTS:
@@ -21,7 +22,9 @@ def marketing_url(url, placement='site'):
     # Maps/reviews links only. Do not annotate SDK or payment endpoints.
     if host == 'yandex.ru' and not parts.path.startswith('/maps'):
         return url
-    query = [(k, v) for k, v in pairs if not k.startswith('utm_')]
+    query = [(k, v) for k, v in pairs if not k.startswith('utm_') and not (text and k == 'text')]
+    if text and host in {'t.me', 'telegram.me', 'wa.me', 'api.whatsapp.com'}:
+        query.append(('text', str(text)))
     query += [('utm_source', 'best_season'), ('utm_medium', 'referral'),
               ('utm_campaign', 'outbound'), ('utm_content', str(placement))]
     return urlunsplit(parts._replace(query=urlencode(query)))

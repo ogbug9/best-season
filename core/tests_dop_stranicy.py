@@ -91,3 +91,26 @@ class ComponentTemplatesTests(TestCase):
         html = self.render('includes/video_slot.html', {'poster': None, 'title': 'Утро на террасе', 'note': 'Снимаем осенью'})
         self.assertIn('video-slot--empty', html)
         self.assertNotIn('<video', html)
+
+
+class Wave1LogicTests(SimpleTestCase):
+    def test_marketing_url_adds_chat_text_only_for_messengers(self):
+        from core.templatetags.marketing_tags import marketing_url
+        url = marketing_url('https://wa.me/79650000000', 'contacts_page', 'Хочу забронировать')
+        self.assertIn('text=%D0%A5', url)
+        self.assertIn('utm_content=contacts_page', url)
+        self.assertNotIn('text=', marketing_url('https://vk.ru/club', 'contacts_page', 'Привет'))
+
+    def test_route_facts_skip_seed_marks(self):
+        from core.models import DirectionsPage
+        page = DirectionsPage(car_distance='100 км от Москвы', car_time='уточняется', train_price='от 400 ₽')
+        self.assertEqual(page.route_facts(), [('100 км', 'от Москвы'), ('от 400 ₽', 'электричка с Курского вокзала')])
+
+
+class Wave1PagesTests(TestCase):
+    def test_faq_topics_follow_used_topics(self):
+        from core.models import FaqItem, FaqPage
+        FaqItem.objects.all().delete()
+        FaqItem.objects.create(question='Можно ли с животными?', answer='<p>Да</p>', topic='pets')
+        context = FaqPage(title='FAQ').get_context(RequestFactory().get('/'))
+        self.assertEqual(context['topics'], [('pets', 'Животные')])

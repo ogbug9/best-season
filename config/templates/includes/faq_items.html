@@ -1,7 +1,7 @@
 {% load wagtailcore_tags layout_tags %}
     <div class="faq">
       {% for item in faq %}
-        <div class="faq__item{% if forloop.counter0|divisibleby:2 %} faq__item--dark{% else %} faq__item--olive{% endif %}{% if forloop.first %} is-open{% endif %}">
+        <div class="faq__item{% if forloop.counter0|divisibleby:2 %} faq__item--dark{% else %} faq__item--olive{% endif %}{% if forloop.first %} is-open{% endif %}" id="q-{{ item.pk }}"{% if faq_filter %} data-tags="{{ item.topic|default:'other' }}"{% endif %}>
           <button type="button" class="faq__question" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="faq-answer-{{ forloop.counter }}"><span class="home-desktop-copy">{% if faq_layout %}{{ item.question|layout_lines:faq_layout|linebreaksbr }}{% else %}{{ item.question }}{% endif %}</span><span class="home-mobile-copy">{% if faq_layout %}{{ item.question|faq_mobile_question:faq_layout|linebreaksbr }}{% else %}{{ item.question|faq_mobile_question|linebreaksbr }}{% endif %}</span></button>
           <div class="faq__answer" id="faq-answer-{{ forloop.counter }}"{% if not forloop.first %} hidden{% endif %}>{{ item.answer|richtext|faq_answer_layout:item.question }}</div>
         </div>
