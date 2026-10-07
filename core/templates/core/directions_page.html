@@ -17,9 +17,9 @@
 {% with s=settings.core.SiteSettings %}
 <section class="section page-head">
   <div class="container container--narrow">
+    {% include "includes/in_progress_note.html" %}
     <h1>{{ page.title|heading_breaks }}</h1>
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
-    {% include "includes/in_progress_note.html" %}
   </div>
 </section>
 
@@ -45,6 +45,12 @@
           {% if s.address %}<button type="button" class="btn btn--outline" data-copy="{{ s.address }}"><span data-copy-label="Адрес скопирован">Скопировать адрес</span></button>{% endif %}
         </p>
         {% if car_route %}<div class="prose">{{ car_route|richtext }}</div>{% endif %}
+        <p class="route-from"><span>Построить маршрут из:</span>
+          {% for label, url in route_links %}<a class="filter-chip route-from__link" data-directions-link href="{{ url }}" rel="noopener" target="_blank">{{ label }}</a>{% endfor %}
+        </p>
+        <ul class="road-tips">
+          {% for tip in road_tips %}<li data-reveal>{{ tip }}</li>{% endfor %}
+        </ul>
       </section>
       {% endwith %}
 
@@ -59,6 +65,17 @@
             <li class="route-steps__item route-steps__item--end" data-reveal><b>«Лучший сезон»</b><span>{{ s.address|default:"село Страхово" }}</span></li>
           </ol>
           {% if page.train_schedule_url %}<p><a class="btn btn--outline" href="{{ page.train_schedule_url }}" rel="noopener" target="_blank">Расписание электричек</a></p>{% endif %}
+          <h3 class="train-compare__title">Два способа без машины</h3>
+          <div class="train-compare">
+            {% for option in train_options %}
+              <div class="train-compare__item" data-reveal>
+                <b>{{ option.title }}</b>
+                <p class="train-compare__numbers"><span>{{ option.time }}</span><span>{{ option.price }}</span></p>
+                <p>{{ option.then }}. {{ option.note }}.</p>
+                <p class="guide-card__sources">Источник: {% for label, url in option.links %}<a href="{{ url }}" rel="noopener" target="_blank">{{ label }}</a>{% endfor %}</p>
+              </div>
+            {% endfor %}
+          </div>
         {% elif page.transit_route|filled %}
           <div class="prose">{{ page.transit_route|richtext }}</div>
         {% endif %}
@@ -80,6 +97,18 @@
         </p>
       </section>
       {% endwith %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    <div class="checklist" data-checklist="trip">
+      <div class="checklist__head"><h2>Перед выездом</h2><span class="checklist__count" data-checklist-count></span></div>
+      <p>Отмечайте, что уже собрали, — список запомнится в этом браузере.</p>
+      <ul>
+        {% for key, text in packing %}<li><label><input type="checkbox" value="{{ key }}"> {{ text }}</label></li>{% endfor %}
+      </ul>
     </div>
   </div>
 </section>

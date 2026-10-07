@@ -31,6 +31,25 @@
   </div>
 </section>
 
+<section class="section">
+  <div class="container split rules-calcs">
+    <form class="rules-calc" data-cancel-calc onsubmit="return false" data-reveal>
+      <h3>Сколько вернём при отмене</h3>
+      <label>Дата заезда<input type="date" name="arrival"></label>
+      <label>Дата отмены<input type="date" name="cancel_date"></label>
+      <label>Внесённая предоплата, ₽<input type="number" name="paid" min="0" step="100" placeholder="например, 8000"></label>
+      <output data-cancel-out aria-live="polite"></output>
+    </form>
+    <form class="rules-calc" data-pet-calc onsubmit="return false" data-reveal>
+      <h3>Доплата за питомца</h3>
+      <label>Рост в холке<select name="size"><option value="{{ pet_small_fee|stringformat:'d' }}">до 45 см</option><option value="{{ pet_large_fee|stringformat:'d' }}">выше 45 см</option></select></label>
+      <label>Ночей<input type="number" name="nights" min="1" max="30" value="2"></label>
+      <output data-pet-out aria-live="polite"></output>
+      <p class="guide__note">Укажите питомца при бронировании — подберём домик и обговорим детали.</p>
+    </form>
+  </div>
+</section>
+
 {% if rules_faq %}
 <section class="section">
   <div class="container">

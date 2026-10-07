@@ -52,6 +52,25 @@
   </div>
 </section>
 
+{% if second_day %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Если остаётесь на вторую ночь</h2>
+    <p class="center scenario__lead">Второй день — для соседей: усадьба Поленова, церковь в Бёхово и деревня Конюхова в десяти минутах.</p>
+    <ul class="guide__list guide__list--short">
+      {% for place in second_day %}
+        <li class="guide-card" data-reveal>
+          <h3>{{ place.title }}</h3>
+          <dl class="guide-card__facts"><div><dt>Ехать</dt><dd>{{ place.drive }}</dd></div><div><dt>Когда</dt><dd>{{ place.hours }}</dd></div></dl>
+          <p class="guide-card__tip"><b>Совет:</b> {{ place.tip }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+    {% if nearby_page %}<p class="center"><a class="btn btn--outline" href="{% pageurl nearby_page %}">Весь путеводитель и план дня</a></p>{% endif %}
+  </div>
+</section>
+{% endif %}
+
 <section class="section">
   <div class="container container--narrow">
     <h2 class="center">Если пойдёт дождь</h2>
@@ -59,6 +78,17 @@
     <ul class="fact-cards rainy-day">
       {% for title, text in rainy_day %}<li class="fact-cards__item" data-reveal><b class="fact-cards__value">{{ title }}</b><span class="fact-cards__label">{{ text }}</span></li>{% endfor %}
     </ul>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    <div class="checklist" data-checklist="weekend">
+      <div class="checklist__head"><h2>Что взять на выходные</h2><span class="checklist__count" data-checklist-count></span></div>
+      <ul>
+        {% for key, text in packing %}<li><label><input type="checkbox" value="{{ key }}"> {{ text }}</label></li>{% endfor %}
+      </ul>
+    </div>
   </div>
 </section>
 

@@ -12,6 +12,7 @@
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
+    {% include "includes/in_progress_note.html" %}
     <h1>{{ page.title|heading_breaks }}</h1>
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
@@ -23,6 +24,22 @@
     <p class="reviews-rating__value">{{ page.yandex_rating|floatformat:1 }}</p>
     <p class="reviews-rating__count">{% if page.yandex_ratings_count %}{{ page.yandex_ratings_count }} оценок{% endif %}{% if page.yandex_ratings_count and page.yandex_reviews_count %} · {% endif %}{% if page.yandex_reviews_count %}{{ page.yandex_reviews_count }} отзывов{% endif %} на Яндекс Картах</p>
     {% if page.yandex_tag_list %}<ul class="reviews-rating__tags">{% for tag in page.yandex_tag_list %}<li>{{ tag }}</li>{% endfor %}</ul>{% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% if review_themes %}
+<section class="section">
+  <div class="container container--narrow">
+    <h2 class="center">О чём пишут гости</h2>
+    <ul class="review-themes">
+      {% for theme in review_themes %}
+        <li data-reveal><span class="review-themes__label">{{ theme.label }}</span>
+          <span class="review-themes__bar"><span style="width: {% widthratio theme.count reviews_total 100 %}%"></span></span>
+          <span class="review-themes__count">{{ theme.count }} из {{ reviews_total }}</span></li>
+      {% endfor %}
+    </ul>
+    <p class="center review-themes__note">Посчитано по словам в опубликованных отзывах на этой странице.</p>
   </div>
 </section>
 {% endif %}
@@ -46,10 +63,11 @@
 {% if reviews %}
 <section class="section">
   <div class="container">
-    {% if review_houses|length > 1 %}
+    {% if review_houses|length > 1 or review_themes %}
       <div class="chips reviews__chips" data-chips="house" role="group" aria-label="Отзывы о домике">
         <button type="button" class="filter-chip" data-chip="">Все</button>
         {% for house in review_houses %}<button type="button" class="filter-chip" data-chip="{{ house.slug }}">{{ house.title }}</button>{% endfor %}
+        {% for theme in review_themes %}<button type="button" class="filter-chip filter-chip--soft" data-chip="{{ theme.key }}">{{ theme.label }}</button>{% endfor %}
       </div>
     {% endif %}
     <ul class="reviews" data-chips-for="house">

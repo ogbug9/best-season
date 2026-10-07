@@ -13,9 +13,9 @@
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
+    {% include "includes/in_progress_note.html" %}
     <h1>{{ page.title|heading_breaks }}</h1>
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
-    {% include "includes/in_progress_note.html" %}
   </div>
 </section>
 
@@ -72,10 +72,17 @@
   </div>
 </section>
 
-{% if neighbours %}
+{% if neighbours or neighbour_groups %}
 <section class="section territory-neighbours">
   <div class="container">
     <h2 class="section__title section__title--center">Наши соседи</h2>
+    {% if neighbour_groups %}
+      <div class="neighbour-groups">
+        {% for group, names in neighbour_groups.items %}
+          <div class="neighbour-groups__item" data-reveal><b>{{ group }}</b><ul class="reviews-rating__tags">{% for name in names %}<li>{{ name }}</li>{% endfor %}</ul></div>
+        {% endfor %}
+      </div>
+    {% endif %}
     {% if animals_answer %}<div class="container--narrow prose territory-neighbours__text">{{ animals_answer|richtext }}</div>{% endif %}
     <ul class="territory-neighbours__grid">
       {% for image in neighbours %}<li class="territory-neighbours__item" data-reveal>{% picture image preset="card" alt="" %}</li>{% endfor %}

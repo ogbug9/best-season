@@ -5655,28 +5655,16 @@ html:has(.lightbox[open]) { overflow: hidden; }
   .page-placeholder__actions .btn { width: 100%; }
 }
 
-/* Плашка «Раздел дополняется» (docs/dop-stranicy/01-komponenty.md, K1):
-   цвет карточек-фактов, без движения и без перекрытия контента. */
-.in-progress {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  max-width: 720px;
-  margin: 0 auto var(--s-4);
-  padding: 14px 20px;
-  border-radius: 16px;
-  background: var(--c-blush);
-  color: var(--c-dark);
-  text-align: left;
+/* Пометка «в разработке» (K1): тонкая строка над H1, не меняет сетку шапки. */
+.dev-strip {
+  display: flex; flex-wrap: nowrap; align-items: center; justify-content: center; gap: 8px;
+  width: fit-content; max-width: 100%; margin: 0 auto 14px; padding: 5px 14px;
+  border: 1px solid var(--c-olive-soft); border-radius: 999px;
+  color: var(--c-olive); font-size: 13px; line-height: 18px; text-align: center;
 }
-.in-progress__sprout { flex: none; color: var(--c-olive); margin-top: 1px; }
-.in-progress__text { margin: 0; font-size: 15px; line-height: 22px; }
-.in-progress__text b { font-weight: 500; }
-.in-progress__text a { color: var(--c-terra); }
-@media (max-width: 699px) {
-  .in-progress { padding: 12px 16px; border-radius: 12px; }
-  .in-progress__text { font-size: 13px; line-height: 18px; }
-}
+.dev-strip__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c-terra);  flex: none; }
+.site .dev-strip__link { color: var(--c-terra); text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 699px) { .dev-strip { margin: 0 0 10px; padding: 5px 12px; border-radius: 12px; font-size: 12px; line-height: 16px; text-align: left; } }
 
 /* Д8, Д9 — появление при прокрутке и прорисовка пунктира (js/reveal.js).
    Скрывает только класс reveal-ready: без JS и при reduced-motion всё видно. */
@@ -5948,3 +5936,103 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .video-slot--video { background: var(--c-deep); }
 .video-slot__video { display: block; width: 100%; height: 100%; object-fit: cover; }
 
+/* ---------- Наполнение доп. страниц 07.10: путеводитель, калькуляторы, календарь ---------- */
+.guide__intro { max-width: 640px; margin: 0 auto var(--s-4); }
+.guide__planner { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 20px; margin: 0 auto var(--s-4); max-width: 900px; padding: 16px 20px; border-radius: 16px; background: var(--c-blush); }
+.guide__day { display: inline-flex; align-items: center; gap: 10px; font-weight: 500; color: var(--c-deep); }
+.guide__day select, .weekend-calc select, .weekend-calc input, .rules-calc input, .rules-calc select, .group-calc input {
+  min-height: 44px; padding: 0 14px; border: 1px solid var(--c-olive-soft); border-radius: 12px; background: var(--c-white); color: var(--c-dark); font: inherit; font-size: 15px;
+}
+.guide__plan { flex: 1 1 320px; margin: 0; font-size: 15px; line-height: 21px; }
+.dayplan__warn { color: var(--c-terra); font-weight: 500; }
+.guide__chips { justify-content: center; }
+.guide__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin: 0; padding: 0; list-style: none; }
+.guide__list--short { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-bottom: var(--s-4); }
+.guide-card { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 22px 24px; border-radius: 16px; background: var(--c-white); transition: opacity 0.2s ease, box-shadow 0.2s ease; }
+@media (hover: hover) and (pointer: fine) { .guide-card:hover { box-shadow: 0 6px 24px rgb(58 60 21 / 10%); } }
+.guide-card h3 { margin: 0; font-size: 20px; line-height: 26px; color: var(--c-deep); }
+.guide-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.guide-card__add { flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--c-sand); font-size: 13px; cursor: pointer; }
+.guide-card__facts { display: grid; gap: 6px; margin: 0; font-size: 14px; line-height: 19px; }
+.guide-card__facts div { display: grid; grid-template-columns: 84px 1fr; gap: 8px; }
+.guide-card__facts dt { color: var(--c-olive); }
+.guide-card__facts dd { margin: 0; }
+.guide-card p { margin: 0; font-size: 15px; line-height: 21px; }
+.guide-card__tip { padding: 10px 12px; border-radius: 10px; background: var(--c-cream); }
+.guide-card__tip b { color: var(--c-terra); font-weight: 600; }
+.guide-card__closed { display: none; color: var(--c-terra); font-weight: 500; }
+.guide-card.is-closed { opacity: 0.6; }
+.guide-card.is-closed .guide-card__closed { display: block; }
+.guide-card .guide-card__sources, .guide__note { font-size: 12px; line-height: 16px; color: var(--c-muted); }
+.guide-card__sources a { color: var(--c-muted); }
+.guide__note { margin-top: var(--s-4); text-align: center; }
+.route-from { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: var(--s-4) 0; }
+.route-from > span { margin-right: 4px; font-weight: 500; color: var(--c-deep); }
+.route-from__link { display: inline-flex; align-items: center; text-decoration: none; }
+.road-tips { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.road-tips li { position: relative; padding: 10px 14px 10px 36px; border-radius: 12px; background: var(--c-white); font-size: 15px; line-height: 21px; }
+.road-tips li::before { content: ""; position: absolute; top: 16px; left: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--c-olive); }
+.train-compare__title { margin: var(--s-5) 0 12px; }
+.train-compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.train-compare__item { display: flex; flex-direction: column; gap: 8px; padding: 18px 20px; border-radius: 16px; background: var(--c-white); }
+.train-compare__item b { color: var(--c-deep); }
+.train-compare__item p { margin: 0; font-size: 15px; line-height: 21px; }
+.train-compare__numbers { display: flex; flex-wrap: wrap; gap: 8px; }
+.train-compare__numbers span { padding: 4px 12px; border-radius: 999px; background: var(--c-blush); font-weight: 500; }
+.checklist { padding: 22px 24px; border-radius: 16px; background: var(--c-white); }
+.checklist__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.checklist__head h2 { margin: 0 0 6px; }
+.checklist__count { color: var(--c-olive); font-weight: 500; }
+.checklist ul { display: grid; gap: 4px; margin: 12px 0 0; padding: 0; list-style: none; }
+.checklist label { display: flex; align-items: flex-start; gap: 10px; min-height: 40px; padding: 8px 0; border-bottom: 1px solid var(--c-sand); cursor: pointer; font-size: 15px; line-height: 21px; }
+.checklist input { width: 20px; height: 20px; margin-top: 1px; accent-color: var(--c-olive); flex: none; }
+.checklist label:has(input:checked) { color: var(--c-muted); text-decoration: line-through; }
+.weekend-calc { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 16px; align-items: end; padding: 24px; border-radius: 16px; background: var(--c-white); }
+.weekend-calc label, .rules-calc label, .group-calc label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--c-olive); }
+.weekend-calc__out { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; padding: 14px 16px; border-radius: 12px; background: var(--c-blush); font-size: 15px; }
+.weekend-calc__out b { font-size: 20px; color: var(--c-deep); }
+.weekend-calc__book { grid-column: 1 / -1; justify-self: center; }
+.review-themes { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.review-themes li { display: grid; grid-template-columns: 160px 1fr 70px; align-items: center; gap: 12px; }
+.review-themes__label { font-weight: 500; color: var(--c-deep); }
+.review-themes__bar { height: 10px; border-radius: 999px; background: var(--c-sand); overflow: hidden; }
+.review-themes__bar span { display: block; height: 100%; border-radius: inherit; background: var(--c-olive); }
+.review-themes__count { font-size: 14px; color: var(--c-olive); text-align: right; }
+.review-themes__note { margin-top: 12px; font-size: 12px; color: var(--c-muted); }
+.filter-chip--soft { border-style: dashed; }
+.neighbour-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 0 auto var(--s-5); }
+.neighbour-groups__item { padding: 16px 18px; border-radius: 16px; background: var(--c-white); text-align: center; }
+.neighbour-groups__item .reviews-rating__tags { margin-top: 10px; }
+.activities__month { display: flex; justify-content: center; flex-wrap: wrap; margin: 0 auto var(--s-4); }
+.activities__hint { flex-basis: 100%; text-align: center; font-weight: 400; font-size: 13px; color: var(--c-olive); }
+.activities__who { display: block; margin-top: 4px; opacity: 0.85; }
+.mosaic__item.is-off-season { opacity: 0.35; filter: grayscale(0.6); }
+.season-calendar__months { justify-content: center; }
+.season-calendar__month { padding: 22px 24px; border-radius: 16px; background: var(--c-white); }
+.season-calendar__month h3 { margin: 0 0 10px; color: var(--c-deep); }
+.season-calendar__month ul { margin: 0; padding-left: 20px; }
+.season-calendar__month li { margin-bottom: 6px; }
+.group-calc { display: flex; flex-wrap: wrap; align-items: end; gap: 12px 20px; padding: 20px 24px; border-radius: 16px; background: var(--c-blush); }
+.group-calc output { flex: 1 1 280px; font-size: 16px; line-height: 23px; color: var(--c-deep); }
+.group-plan, .rules-calcs { align-items: start; }
+.rules-calc { display: flex; flex-direction: column; gap: 12px; padding: 22px 24px; border-radius: 16px; background: var(--c-white); }
+.rules-calc h3 { margin: 0; color: var(--c-deep); }
+.rules-calc output { padding: 12px 14px; border-radius: 12px; background: var(--c-blush); font-weight: 500; color: var(--c-deep); }
+.highlights { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.highlights__item a { display: flex; flex-direction: column; gap: 6px; height: 100%; padding: 18px 20px; border-radius: 16px; background: var(--c-white); color: var(--c-dark); text-decoration: none; transition: background-color 0.2s ease; }
+.site .highlights__item a:hover { background: #E5D0C0; color: var(--c-dark); }
+.highlights__item time { font-size: 13px; color: var(--c-olive); }
+.highlights__item b { color: var(--c-deep); font-size: 17px; }
+.highlights__item span { font-size: 15px; line-height: 21px; }
+.rubrics { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.rubrics li { display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 12px 16px; border-radius: 12px; background: var(--c-white); }
+.rubrics b { color: var(--c-terra); }
+@media (max-width: 699px) {
+  .guide__list { grid-template-columns: 1fr; }
+  .guide-card { padding: 18px; }
+  .review-themes li { grid-template-columns: 1fr 60px; }
+  .review-themes__bar { grid-column: 1 / -1; grid-row: 2; }
+  .rubrics li { grid-template-columns: 1fr; gap: 4px; }
+  .weekend-calc { grid-template-columns: 1fr 1fr; padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .guide-card, .highlights__item a { transition: none; } }

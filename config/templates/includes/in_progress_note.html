@@ -1,17 +1,14 @@
 {% load content_tags marketing_tags %}
 {% comment %}
-  Плашка «Раздел дополняется» (docs/dop-stranicy/01-komponenty.md, K1).
-  Ставится под H1; показывается, только когда у страницы стоит галочка.
+  Пометка «в разработке» (docs/dop-stranicy/01-komponenty.md, K1): тонкая
+  строка над заголовком страницы. Показывается, пока у страницы стоит
+  галочка «Раздел дополняется» (вкладка «Настройки» в админке).
 {% endcomment %}
 {% if page.in_progress %}
-{% with s=settings.core.SiteSettings %}
-<aside class="in-progress" aria-label="Раздел дополняется">
-  <svg class="in-progress__sprout" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 21v-8m0 0c0-4 3-7 7-7 0 4-3 7-7 7Zm0-2C12 8 9.5 5.5 5 5.5 5 9.5 7.5 12 12 11Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  <p class="in-progress__text">
-    <b>{% cms_text "in_progress-title" %}</b>
-    {% cms_text "in_progress-text" %}
-    {% if s.telegram_url %}<a href="{% marketing_url s.telegram_url 'in_progress' %}" rel="noopener" target="_blank">{% cms_text "channel-telegram" %}</a>{% endif %}{% if s.telegram_url and s.whatsapp_url %} · {% endif %}{% if s.whatsapp_url %}<a href="{% marketing_url s.whatsapp_url 'in_progress' %}" rel="noopener" target="_blank">{% cms_text "channel-whatsapp" %}</a>{% endif %}
-  </p>
-</aside>
+{% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+<p class="dev-strip" role="note">
+  <span class="dev-strip__dot" aria-hidden="true"></span>
+  <span class="dev-strip__text">{% cms_text "in_progress-title" %}{% if telegram %} <a class="dev-strip__link" href="{% marketing_url telegram 'in_progress' 'Здравствуйте! У меня вопрос по сайту' %}" rel="noopener" target="_blank">{% cms_text "in_progress-text" %}</a>{% endif %}</span>
+</p>
 {% endwith %}
 {% endif %}

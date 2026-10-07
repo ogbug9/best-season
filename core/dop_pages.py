@@ -181,7 +181,11 @@ def context_for(page, request):
                      for time, title, text, photo, service_slug in scenario["steps"]]
             house = Page.objects.live().filter(slug=scenario["house"]).first() if scenario["house"] else None
             scenarios.append({**scenario, "steps": steps, "house_page": house})
-        return {"scenarios": scenarios, "rainy_day": RAINY_DAY,
+        from core import dop_content as dc
+
+        second_day = [place for place in dc.GUIDE if place["key"] in ("polenovo", "behovo", "konyukhov")]
+        return {"scenarios": scenarios, "rainy_day": RAINY_DAY, "packing": dc.PACKING, "second_day": second_day,
+                "nearby_page": Page.objects.live().filter(slug="interesnoe-ryadom").first(),
                 "houses_page": Page.objects.live().filter(slug="razmeshchenie").first()}
     if slug == "razvlecheniya":
         tiles = []
@@ -195,7 +199,17 @@ def context_for(page, request):
             tile["tags"] = next((tags for start, tags in ACTIVITY_TAGS.items() if tile["title"].startswith(start)), "free")
             tile["service"] = next((s for s in services.values()
                                     if " ".join(s.name.split()) == " ".join(tile["title"].split())), None)
-        return {"tiles": tiles, "filters": ACTIVITY_FILTERS}
+        from django.utils import timezone
+
+        from core import dop_content as dc
+
+        for tile in tiles:
+            detail = next((d for start, d in dc.ACTIVITY_DETAILS.items() if tile["title"].startswith(start)), None)
+            tile["detail"] = detail
+            tile["months"] = " ".join(f"m{m}" for m in (detail["months"] if detail else range(1, 13)))
+        month = timezone.localdate().month
+        return {"tiles": tiles, "filters": ACTIVITY_FILTERS, "months": list(enumerate(dc.MONTHS, start=1)),
+                "current_month": month}
     if slug == "meropriyatiya":
         from forms.forms import EventForm
         from core.models import _consent_page
@@ -214,7 +228,11 @@ def context_for(page, request):
         archive += [{"title": title, "text": text, "image": _image(photo)} for title, text, photo in EVENT_ARCHIVE]
         chosen = next((event for event in upcoming if request and str(event.pk) == request.GET.get("event")), None)
         topic = f"{chosen.title}, {chosen.date:%d.%m.%Y}" if chosen else "Ближайшие события"
-        return {"upcoming": upcoming, "archive": archive[:8],
+        from core import dop_content as dc
+
+        calendar = [{"num": n, "name": name, "items": dc.SEASON_CALENDAR[n]} for n, name in enumerate(dc.MONTHS, start=1)]
+        return {"calendar": calendar, "current_month": today.month,
+                "upcoming": upcoming, "archive": archive[:8],
                 "event_form": EventForm(auto_id="event_%s", initial={"topic": topic}),
                 "chosen_event": chosen, "consent_page": _consent_page()}
     if slug == "vyezdy-kompaniy":
@@ -224,7 +242,10 @@ def context_for(page, request):
         occasion = request.GET.get("occasion", "") if request else ""
         occasions = [{"title": title, "text": text, "image": _image(photo)} for title, text, photo in GROUP_OCCASIONS]
         bonfire = TerritoryItem.objects.filter(title="Костровая зона").select_related("image").first()
-        return {"group_facts": GROUP_FACTS, "occasions": occasions, "group_faq": _faq(GROUP_FAQ),
+        from core import dop_content as dc
+
+        return {"group_timeline": dc.GROUP_TIMELINE, "group_checklist": dc.GROUP_CHECKLIST,
+                "group_facts": GROUP_FACTS, "occasions": occasions, "group_faq": _faq(GROUP_FAQ),
                 "group_image": bonfire.image if bonfire else None,
                 "group_form": GroupForm(auto_id="group_%s", initial={"topic": occasion}),
                 "consent_page": _consent_page()}
@@ -235,15 +256,28 @@ def context_for(page, request):
         direction = request.GET.get("direction", "") if request else ""
         directions = [{"title": title, "text": text, "offer": offer, "expect": expect, "image": _image(photo)}
                       for title, text, offer, expect, photo in PARTNER_DIRECTIONS]
-        return {"directions": directions, "partner_form": PartnerForm(auto_id="partner_%s", initial={"topic": direction}),
+        from core import dop_content as dc
+
+        audience = [(value, label, dc.SRC.get(src)) for value, label, src in dc.AUDIENCE]
+        return {"audience": audience, "directions": directions,
+                "partner_form": PartnerForm(auto_id="partner_%s", initial={"topic": direction}),
                 "consent_page": _consent_page()}
     if slug == "pravila-bronirovaniya":
         legal = Page.objects.live().filter(Q(slug="oferta") | Q(slug="politika-konfidencialnosti"))
+        from houses.booking import rates
+
+        fees = rates()
         return {"booking_steps": BOOKING_STEPS, "cancel_scale": CANCEL_SCALE, "rules_faq": _faq(RULES_FAQ),
-                "legal_pages": legal}
+                "legal_pages": legal, "pet_small_fee": fees.pet_small_fee, "pet_large_fee": fees.pet_large_fee}
     if slug == "rassylka":
         from core.models import ChannelPost
 
-        return {"channel_posts": ChannelPost.objects.all()[:3],
-                "channel_tags": ["#ИнтересноеРядом", "#Кинобайт", "Утреннее"]}
+        import datetime
+
+        from core import dop_content as dc
+
+        highlights = [{"date": datetime.date.fromisoformat(d), "title": t, "text": x, "url": u}
+                      for d, t, x, u in dc.CHANNEL_HIGHLIGHTS]
+        return {"channel_posts": ChannelPost.objects.all()[:3], "highlights": highlights,
+                "rubrics": dc.CHANNEL_RUBRICS}
     return {}

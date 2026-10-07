@@ -16,7 +16,6 @@
   <div class="container container--narrow center" data-reveal>
     <h2>Дневник Сезона</h2>
     <p>Что у нас происходит: новые постройки, сезонные акции, наши рубрики и места по соседству, куда стоит съездить.</p>
-    <ul class="reviews-rating__tags">{% for tag in channel_tags %}<li>{{ tag }}</li>{% endfor %}</ul>
   </div>
 </section>
 
@@ -37,6 +36,34 @@
   </div>
 </section>
 {% endif %}
+
+{% if highlights %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Лучшее из канала</h2>
+    <ul class="highlights">
+      {% for post in highlights %}
+        <li class="highlights__item" data-reveal>
+          <a href="{{ post.url }}" rel="noopener" target="_blank">
+            <time datetime="{{ post.date|date:'Y-m-d' }}">{{ post.date|date:"j E Y" }}</time>
+            <b>{{ post.title }}</b>
+            <span>{{ post.text }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container container--narrow">
+    <h2 class="center">Рубрики</h2>
+    <ul class="rubrics">
+      {% for tag, text in rubrics %}<li data-reveal><b>{{ tag }}</b><span>{{ text }}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>
 
 <section class="section section--deep">
   <div class="container container--narrow center">

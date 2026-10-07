@@ -5,17 +5,17 @@
 {% block body_class %}page-nearby{% endblock %}
 
 {% comment %}
-  Интересное рядом (docs/dop-stranicy/12-interesnoe-ryadom.md): повод
-  остаться на вторую ночь. Сначала места, хорошие в текущий сезон; чипы
-  сезонов (Д10), маршрут на день пунктиром, факты (K4).
+  Интересное рядом (docs/dop-stranicy/12-interesnoe-ryadom.md): путеводитель
+  по округе из открытых источников и рубрики #ИнтересноеРядом — часы, цены,
+  советы, источники; фильтр (Д10) и планировщик дня по дню недели.
 {% endcomment %}
 
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
+    {% include "includes/in_progress_note.html" %}
     <h1>{{ page.title|heading_breaks }}</h1>
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
-    {% include "includes/in_progress_note.html" %}
   </div>
 </section>
 
@@ -23,34 +23,58 @@
 <section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
 {% endif %}
 
-{% if places %}
-<section class="section">
-  <div class="container">
-    <div class="chips nearby__chips" data-chips="season" role="group" aria-label="Сезон">
-      <button type="button" class="filter-chip" data-chip="">Круглый год</button>
-      {% for code, label in seasons %}<button type="button" class="filter-chip" data-chip="{{ code }}">{{ label }}</button>{% endfor %}
-    </div>
-    <ul class="cards cards--nearby" data-chips-for="season">
-      {% for place in places %}
-        {% include "core/_nearby_card.html" with level="2" %}
-      {% endfor %}
-    </ul>
-  </div>
-</section>
-{% endif %}
-
 {% if place_facts %}
 <section class="section">
   <div class="container container--narrow">
+    <p class="center guide__intro">Поленов, Конюхов и деревня из списка ООН — в десяти минутах. Ещё дальше — заповедник с зубрами, Серпухов и Таруса Цветаевой и Паустовского.</p>
     {% include "includes/fact_cards.html" with facts=place_facts %}
   </div>
 </section>
 {% endif %}
 
+<section class="section guide" data-dayplan>
+  <div class="container">
+    <h2 class="section__title section__title--center">Путеводитель по округе</h2>
+    <div class="guide__planner">
+      <label class="guide__day">Когда едете?
+        <select data-dayplan-day>
+          <option value="">сегодня</option>
+          {% for name in weekdays %}<option value="{{ forloop.counter0 }}">{{ name }}</option>{% endfor %}
+        </select>
+      </label>
+      <p class="guide__plan" data-dayplan-out aria-live="polite">Отметьте места — соберём день и подскажем, что в этот день закрыто.</p>
+    </div>
+    <div class="chips guide__chips" data-chips="kind" role="group" aria-label="Что показать">
+      <button type="button" class="filter-chip" data-chip="">Всё</button>
+      {% for value, label in guide_kinds %}<button type="button" class="filter-chip" data-chip="{{ value }}">{{ label }}</button>{% endfor %}
+    </div>
+    <ul class="guide__list" data-chips-for="kind">
+      {% for place in guide %}
+        <li class="guide-card" data-tags="{{ place.kind }}" data-guide-card data-reveal>
+          <div class="guide-card__head">
+            <h3>{{ place.title }}</h3>
+            <label class="guide-card__add"><input type="checkbox" data-plan-item data-title="{{ place.title }}" data-days="{{ place.days|join:',' }}" data-minutes="{{ place.minutes }}"> в план дня</label>
+          </div>
+          <dl class="guide-card__facts">
+            <div><dt>Ехать</dt><dd>{{ place.drive }}{% if place.distance and place.distance != place.drive %} · {{ place.distance }}{% endif %}</dd></div>
+            <div><dt>Когда</dt><dd>{{ place.hours }}{% if place.season %} · {{ place.season }}{% endif %}</dd></div>
+            <div><dt>Стоимость</dt><dd>{{ place.price }}</dd></div>
+          </dl>
+          <p>{{ place.text }}</p>
+          <p class="guide-card__tip"><b>Совет:</b> {{ place.tip }}</p>
+          <p class="guide-card__closed" aria-hidden="true">В выбранный день закрыто</p>
+          <p class="guide-card__sources">Источник: {% for label, url in place.links %}<a href="{{ url }}" rel="noopener" target="_blank">{{ label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        </li>
+      {% endfor %}
+    </ul>
+    <p class="guide__note">Часы и цены — по открытым источникам на октябрь 2026; перед поездкой сверьте на сайте места.</p>
+  </div>
+</section>
+
 {% if route_points %}
 <section class="section nearby-route">
   <div class="container container--narrow">
-    <h2>Маршрут на день</h2>
+    <h2>Готовый маршрут на день</h2>
     <ol class="route-steps">
       {% for time, place_name, note in route_points %}
         <li class="route-steps__item{% if forloop.last %} route-steps__item--end{% endif %}" data-reveal><b>{{ time }} · {{ place_name }}</b>{% if note %}<span>{{ note }}</span>{% endif %}</li>
@@ -64,7 +88,7 @@
 <section class="section section--deep">
   <div class="container container--narrow center">
     <h2>Остаться на выходные рядом с Поленово</h2>
-    <p>Новые места сначала появляются в нашей рубрике #ИнтересноеРядом.</p>
+    <p>Одного дня на всё не хватит. Новые места сначала появляются в нашей рубрике #ИнтересноеРядом.</p>
     <p class="split__actions nearby__actions">
       <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="nearby">{% cms_text "booking_cta-5d9d7f118153" %}</button>
       {% if s.telegram_url %}<a class="btn btn--outline" href="{% marketing_url s.telegram_url 'nearby_page' %}" rel="noopener" target="_blank">Рубрика в Telegram</a>{% endif %}

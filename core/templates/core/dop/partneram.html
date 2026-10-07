@@ -12,6 +12,16 @@
 {% include "core/dop/_head.html" %}
 
 <section class="section">
+  <div class="container container--narrow">
+    <h2 class="center">Наша аудитория</h2>
+    <ul class="fact-cards">
+      {% for value, label, source in audience %}<li class="fact-cards__item" data-reveal><b class="fact-cards__value">{{ value }}</b><span class="fact-cards__label">{{ label }}{% if source %} · <a href="{{ source.1 }}" rel="noopener" target="_blank">открыть</a>{% endif %}</span></li>{% endfor %}
+    </ul>
+    <p class="guide__note">Данные на 7 октября 2026. *Instagram принадлежит компании Meta, признанной в России экстремистской.</p>
+  </div>
+</section>
+
+<section class="section">
   <div class="container">
     <ul class="partners">
       {% for direction in directions %}

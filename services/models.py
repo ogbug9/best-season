@@ -165,5 +165,10 @@ class ServicesPage(InProgressMixin, Page):
         context["gift_answer"] = (FaqItem.objects.filter(is_published=True, question__startswith="Есть ли подарочные сертификаты")
                                   .values_list("answer", flat=True).first())
         context["certificate_form"] = CertificateForm(auto_id="services_certificate_%s")
+        from houses.models import HousePage
+
+        context["calc_houses"] = HousePage.objects.live().order_by("path")
+        context["calc_banya"] = context["services"].filter(slug="russkaya-banya").first()
+        context["calc_besedka"] = context["services"].filter(slug="bolshaya-besedka").first()
         context["consent_page"] = _consent_page()
         return context

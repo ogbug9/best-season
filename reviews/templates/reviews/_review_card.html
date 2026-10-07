@@ -1,5 +1,5 @@
 {% load media_tags houses_tags %}
-        <li class="reviews__item"{% if review_filter %} data-tags="{% if review.house %}{{ review.house.slug }}{% else %}none{% endif %}" data-reveal{% endif %}>
+        <li class="reviews__item"{% if review_filter %} data-tags="{% if review.house %}{{ review.house.slug }}{% else %}none{% endif %}{% for key in review.theme_keys %} {{ key }}{% endfor %}" data-reveal{% endif %}>
           {% if review.image %}
             <div class="reviews__media">
               {% picture review.image preset="review" alt=review.author_name %}

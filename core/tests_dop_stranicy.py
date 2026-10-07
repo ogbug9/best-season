@@ -40,8 +40,26 @@ class InProgressNoteTests(TestCase):
         return render_to_string('includes/in_progress_note.html', {'page': SimpleNamespace(in_progress=in_progress)}, request=request)
 
     def test_note_follows_the_flag(self):
-        self.assertIn('class="in-progress"', self.render(True))
-        self.assertNotIn('in-progress', self.render(False))
+        self.assertIn('class="dev-strip"', self.render(True))
+        self.assertNotIn('dev-strip', self.render(False))
+
+
+class DopContentTests(SimpleTestCase):
+    def test_guide_is_consistent(self):
+        from core import dop_content
+        kinds = {key for key, _ in dop_content.GUIDE_KINDS}
+        keys = [place['key'] for place in dop_content.GUIDE]
+        self.assertEqual(len(keys), len(set(keys)))
+        for place in dop_content.guide_with_sources():
+            self.assertTrue(place['key'].isascii(), place['key'])
+            self.assertIn(place['kind'], kinds)
+            self.assertTrue(set(place['days']) <= set(range(7)))
+            for link in place['links']:
+                self.assertTrue(link[1].startswith('https://'))
+
+    def test_calendar_covers_the_year(self):
+        from core import dop_content
+        self.assertEqual(len(dop_content.SEASON_CALENDAR), 12)
 
 
 MEDIA_TMP = tempfile.mkdtemp()

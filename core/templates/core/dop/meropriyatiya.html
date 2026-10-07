@@ -43,6 +43,24 @@
 </section>
 {% endif %}
 
+<section class="section season-calendar">
+  <div class="container container--narrow">
+    <h2 class="section__title section__title--center">Календарь сезона</h2>
+    <p class="center">Что происходит у нас и вокруг в каждом месяце — по постам нашего канала и событиям округи.</p>
+    <div class="chips season-calendar__months" data-chips="month" data-chips-default="m{{ current_month }}" role="group" aria-label="Месяц">
+      {% for month in calendar %}<button type="button" class="filter-chip" data-chip="m{{ month.num }}">{{ month.name|slice:":3" }}</button>{% endfor %}
+    </div>
+    <div data-chips-for="month">
+      {% for month in calendar %}
+        <div class="season-calendar__month" data-tags="m{{ month.num }}">
+          <h3>{{ month.name }}</h3>
+          <ul>{% for item in month.items %}<li>{{ item }}</li>{% endfor %}</ul>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
 {% if archive %}
 <section class="section">
   <div class="container">

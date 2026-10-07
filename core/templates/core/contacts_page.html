@@ -15,6 +15,7 @@
 {% with s=settings.core.SiteSettings greeting="Здравствуйте! Хочу забронировать домик" %}
 <section class="section page-head">
   <div class="container container--narrow">
+    {% include "includes/in_progress_note.html" %}
     <h1>{{ page.title|heading_breaks }}</h1>
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>

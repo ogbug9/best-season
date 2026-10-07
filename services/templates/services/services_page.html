@@ -11,9 +11,9 @@
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
+    {% include "includes/in_progress_note.html" %}
     <h1>{{ page.title|heading_breaks }}</h1>
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
-    {% include "includes/in_progress_note.html" %}
   </div>
 </section>
 
@@ -46,6 +46,26 @@
       {% endfor %}
     </ul>
     {% for service in services %}{% if service.description or service.price_note %}<div class="prose service-details" id="service-details-{{ service.slug }}"><h2>{{ service.name }}</h2>{{ service.description|richtext }}{% if service.price_note %}<p>{{ service.price_note }}</p>{% endif %}</div>{% endif %}{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if calc_houses %}
+<section class="section">
+  <div class="container container--narrow">
+    <h2 class="center">Сколько стоят выходные целиком</h2>
+    <p class="center">Домик по ценам сайта на ваши даты плюс баня и беседка. Точную сумму подтвердит окно брони.</p>
+    <form class="weekend-calc" data-weekend-calc data-banya="{{ calc_banya.price|default:0|stringformat:'d' }}" data-besedka="{{ calc_besedka.price|default:0|stringformat:'d' }}">
+      <label>Домик<select name="house">{% for house in calc_houses %}<option value="{{ house.slug }}">{{ house.title }} — от {{ house.price_display }} ₽</option>{% endfor %}</select></label>
+      <label>Заезд<input type="date" name="date_from"></label>
+      <label>Ночей<select name="nights"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>7</option></select></label>
+      <label>Гостей<select name="adults"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+      <label>Питомцы<select name="pets"><option value="0">нет</option><option value="1">1</option><option value="2">2</option></select></label>
+      {% if calc_banya.price %}<label>Баня, часов<input type="number" name="banya" min="0" max="12" value="0"></label>{% else %}<input type="hidden" name="banya" value="0">{% endif %}
+      {% if calc_besedka.price %}<label>Беседка, часов<input type="number" name="besedka" min="0" max="12" value="0"></label>{% else %}<input type="hidden" name="besedka" value="0">{% endif %}
+      <output class="weekend-calc__out" data-weekend-out aria-live="polite">Выберите даты — посчитаем.</output>
+      <button type="button" class="btn btn--primary weekend-calc__book" data-booking-open data-entry-point="5" data-entry-page="services-calc">Забронировать эти даты</button>
+    </form>
   </div>
 </section>
 {% endif %}

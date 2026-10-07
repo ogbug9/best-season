@@ -893,6 +893,10 @@ class DirectionsPage(InProgressMixin, Page):
         context["transfer_form"] = TransferForm()
         context["consent_page"] = _consent_page()
         context["route_facts"] = self.route_facts()
+        from core import dop_content as dc
+
+        context.update(route_links=dc.route_links(), train_options=[{**o, "links": dc.source_links(o["sources"])} for o in dc.TRAIN_OPTIONS],
+                       road_tips=dc.ROAD_TIPS, packing=dc.PACKING)
         return context
 
     def route_facts(self):
@@ -911,7 +915,7 @@ class DirectionsPage(InProgressMixin, Page):
         return facts
 
 
-class ContactsPage(Page):
+class ContactsPage(InProgressMixin, Page):
     """Контакты. Телефон, почта и реквизиты берутся из настроек сайта,
     чтобы не расходиться с подвалом."""
 
@@ -992,6 +996,9 @@ class TerritoryPage(InProgressMixin, Page):
         ) if image]
         context["animals_answer"] = (FaqItem.objects.filter(is_published=True, question__startswith="Можно ли кормить животных")
                                      .values_list("answer", flat=True).first())
+        from core import dop_content as dc
+
+        context["neighbour_groups"] = dc.NEIGHBOURS
         return context
 
 
@@ -1037,12 +1044,16 @@ class NearbyPage(InProgressMixin, Page):
         for place in places:
             place.off_season = season not in place.season_codes
             place.best_label = ", ".join(label.lower() for code, label in NearbyPlace.SEASONS if code in place.season_codes)
+        from core import dop_content as dc
+
         context.update(places=places, season=season, seasons=NearbyPlace.SEASONS,
-                       place_facts=self._rows(self.facts, 2), route_points=self._rows(self.day_route, 3))
+                       place_facts=self._rows(self.facts, 2), route_points=self._rows(self.day_route, 3),
+                       guide=dc.guide_with_sources(), guide_kinds=dc.GUIDE_KINDS,
+                       weekdays=["пн", "вт", "ср", "чт", "пт", "сб", "вс"])
         return context
 
 
-class FaqPage(Page):
+class FaqPage(InProgressMixin, Page):
     """Страница вопросов. Берёт весь справочник, а не только отмеченное
     для главной."""
 

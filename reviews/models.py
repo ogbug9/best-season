@@ -4,6 +4,8 @@ from wagtail.fields import RichTextField
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
+from core.models import InProgressMixin
+
 
 class ReviewSource(models.TextChoices):
     SITE = "site", "Форма на сайте"
@@ -95,7 +97,7 @@ class Review(models.Model):
         return f"{self.author_name} ({target})"
 
 
-class ReviewsPage(Page):
+class ReviewsPage(InProgressMixin, Page):
     """Страница «Отзывы». Показывает общий пул: и отзывы без привязки
     к дому, и привязанные — по разделу 2 ТЗ публикация только ручная,
     так что сюда попадает лишь проверенное."""
@@ -138,4 +140,19 @@ class ReviewsPage(Page):
         houses = {review.house.pk: review.house for review in reviews if review.house}
         context["review_houses"] = sorted(houses.values(), key=lambda house: house.path)
         context["quote"] = next((review for review in reviews if review.image), None)
+        # О чём пишут гости: темы по словам в текстах опубликованных отзывов.
+        from core.dop_content import REVIEW_THEMES
+
+        themes = []
+        for key, label, stems in REVIEW_THEMES:
+            count = 0
+            for review in reviews:
+                text = review.text.lower()
+                if any(stem in text for stem in stems):
+                    review.theme_keys = getattr(review, "theme_keys", []) + [key]
+                    count += 1
+            if count:
+                themes.append({"key": key, "label": label, "count": count})
+        context["review_themes"] = sorted(themes, key=lambda item: -item["count"])
+        context["reviews_total"] = len(reviews)
         return context

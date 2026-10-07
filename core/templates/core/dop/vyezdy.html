@@ -32,6 +32,32 @@
 </section>
 
 <section class="section">
+  <div class="container container--narrow">
+    <form class="group-calc" data-group-calc onsubmit="return false">
+      <label>Сколько вас будет?<input type="number" name="guests" min="1" max="60" value="10"></label>
+      <output data-group-out aria-live="polite"></output>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split group-plan">
+    <div class="split__text" data-reveal>
+      <h2>Как проходят два дня</h2>
+      <ol class="route-steps">
+        {% for time, text in group_timeline %}<li class="route-steps__item{% if forloop.last %} route-steps__item--end{% endif %}"><b>{{ time }}</b><span>{{ text }}</span></li>{% endfor %}
+      </ol>
+    </div>
+    <div class="split__text" data-reveal>
+      <div class="checklist" data-checklist="group">
+        <div class="checklist__head"><h2>Организатору</h2><span class="checklist__count" data-checklist-count></span></div>
+        <ul>{% for item in group_checklist %}<li><label><input type="checkbox" value="g{{ forloop.counter }}"> {{ item }}</label></li>{% endfor %}</ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
   <div class="container">
     <h2 class="section__title section__title--center">Какой у вас повод?</h2>
     <ul class="occasions">
