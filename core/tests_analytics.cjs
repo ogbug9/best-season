@@ -64,7 +64,7 @@ test('accepted agreement waits for load and idle and inserts one script/init', (
   assert.equal(f.scripts.length,1); assert.equal(f.scripts[0].src,'https://mc.yandex.ru/metrika/tag.js');
   const init=f.queue().filter(args => args[1] === 'init');
   assert.equal(init.length,1); assert.equal(init[0][0],12345678);
-  assert.deepEqual(JSON.parse(JSON.stringify(init[0][2])), {webvisor:true,clickmap:true,trackLinks:true,accurateTrackBounce:true});
+  assert.deepEqual(JSON.parse(JSON.stringify(init[0][2])), {webvisor:true,clickmap:true,trackLinks:true,accurateTrackBounce:true,ecommerce:'dataLayer'});
 });
 test('saved consent loads after idle; empty counter never loads', () => {
   const f=fixture({consent:'accepted'}); f.flush(); assert.equal(f.scripts.length,1);

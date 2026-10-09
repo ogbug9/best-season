@@ -170,11 +170,30 @@
       sum += Number(item.price) || 0;
       if (item.id) ids.push(item.id);
     });
+    // order_price — доход цели в отчётах Метрики; price оставлен для совместимости.
     track(goal, {
       price: sum,
+      order_price: sum,
       currency: "RUB",
       bookings: ids.join(","),
       entry_point: state.entryPoint,
+    });
+    // Электронная коммерция Метрики (init с ecommerce: "dataLayer"): только id и суммы.
+    var products = list.filter(Boolean).map(function (item, index) {
+      return {
+        id: String(item.id || index + 1),
+        name: goal === "hourly_booking_completed" ? "Почасовая услуга" : "Проживание",
+        price: Number(item.price) || 0,
+        quantity: 1,
+      };
+    });
+    if (!products.length) return;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      ecommerce: {
+        currencyCode: "RUB",
+        purchase: { actionField: { id: ids.join(",") || "booking-" + Date.now(), revenue: sum }, products: products },
+      },
     });
   }
 

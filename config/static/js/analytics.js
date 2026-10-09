@@ -37,7 +37,7 @@
     script.async = true;
     script.src = "https://mc.yandex.ru/metrika/tag.js";
     document.head.appendChild(script);
-    window.ym(counter, "init", { webvisor: true, clickmap: true, trackLinks: true, accurateTrackBounce: true });
+    window.ym(counter, "init", { webvisor: true, clickmap: true, trackLinks: true, accurateTrackBounce: true, ecommerce: "dataLayer" });
     pending.forEach(function (event) { send(event.goal, event.params); });
     pending = [];
   }

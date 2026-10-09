@@ -230,9 +230,13 @@ test('booking hooks forward only totals and ids to shared analytics', () => {
   f.hooks.onBooking([booking]); f.hooks.onHourlyBooking([booking]);
   for(const name of ['booking_completed','hourly_booking_completed']) {
     const goal = f.goals.find(e => e.goal === name);
-    assert.deepEqual(JSON.parse(JSON.stringify(goal.params)), {price:12300,currency:'RUB',bookings:'b-1',entry_point:''});
+    assert.deepEqual(JSON.parse(JSON.stringify(goal.params)), {price:12300,order_price:12300,currency:'RUB',bookings:'b-1',entry_point:''});
     assert.equal(JSON.stringify(goal).includes('Private'),false);
   }
+  const purchases = (f.window.dataLayer || []).filter(e => e.ecommerce);
+  assert.equal(purchases.length, 2);
+  assert.deepEqual(JSON.parse(JSON.stringify(purchases[0].ecommerce)), {currencyCode:'RUB',purchase:{actionField:{id:'b-1',revenue:12300},products:[{id:'b-1',name:'Проживание',price:12300,quantity:1}]}});
+  assert.equal(JSON.stringify(purchases).includes('Private'),false);
 });
 
 test('selection reminder uses prepared request values and never passes them to the SDK', () => {
