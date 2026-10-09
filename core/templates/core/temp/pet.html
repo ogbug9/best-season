@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags media_tags content_tags %}
 {% block body_class %}page-dop page-temp page-pet{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-temp">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-temp2">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261009-temp" defer></script>{% endblock %}
 
 {% block content %}
@@ -16,7 +16,7 @@
         <p class="t-passport__label">Паспорт пушистика</p>
         <p class="t-passport__name">{{ pet.name }}</p>
         <ul class="t-tags t-tags--light">{% for trait in pet.traits %}<li>{{ trait }}</li>{% endfor %}</ul>
-        <p class="t-passport__motto">«{{ pet.motto }}»</p>
+        <p class="t-passport__motto">{{ pet.motto }}</p>
         <dl class="t-meters">
           {% for label, level in pet.meters %}
             <div class="t-meter"><dt>{{ label }}</dt><dd><span class="t-meter__bar" style="--level: {{ level }}" role="img" aria-label="{{ level }} из 5"></span></dd></div>

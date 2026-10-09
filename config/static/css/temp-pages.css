@@ -73,7 +73,7 @@
 
 /* ---------- Дневник ---------- */
 .t-chips { justify-content: center; }
-.t-entries { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px; margin: 0; padding: 0; list-style: none; }
+.t-entries { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px; margin: 0; padding: 0; list-style: none; }
 .t-entry--wide { grid-column: span 2; }
 .t-entry__link { display: flex; flex-direction: column; gap: 10px; height: 100%; color: inherit; text-decoration: none; }
 .t-entry__photo { display: block; overflow: hidden; border-radius: 18px; aspect-ratio: 3 / 2; }

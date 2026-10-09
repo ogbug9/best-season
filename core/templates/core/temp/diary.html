@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags media_tags content_tags marketing_tags %}
 {% block body_class %}page-dop page-temp page-diary-index{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-temp">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-temp2">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261009-temp" defer></script>{% endblock %}
 
 {% block content %}
@@ -16,7 +16,7 @@
     </div>
     <ul class="t-entries" data-chips-for="diary">
       {% for entry in entries %}
-        <li class="t-entry{% if forloop.first %} t-entry--wide{% endif %}" data-tags="{{ entry.tag }}" data-reveal>
+        <li class="t-entry" data-tags="{{ entry.tag }}" data-reveal>
           <a class="t-entry__link" href="{{ entry.url|default:'#' }}">
             <span class="t-entry__photo">{% if entry.photo %}{% picture entry.photo preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</span>
             <span class="t-entry__meta">{{ entry.rubric }} · {{ entry.minutes }} мин чтения</span>

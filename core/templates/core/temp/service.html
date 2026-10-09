@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags media_tags content_tags %}
 {% block body_class %}page-dop page-temp page-service-temp page-service-temp--{{ page.slug }}{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-temp">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-temp2">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/services.js' %}?v=20261007-hours" defer></script><script src="{% static 'js/temp-pages.js' %}?v=20261009-temp" defer></script>{% endblock %}
 
 {% block content %}
@@ -11,10 +11,10 @@
 <section class="section t-mosaic-section">
   <div class="container">
     {% if photos %}
-      <ul class="t-mosaic t-mosaic--{{ photos|length }} gallery" data-gallery>
+      <ul class="t-mosaic t-mosaic--{{ photos|length }}" data-gallery>
         {% for image in photos %}
-          <li class="t-mosaic__item gallery__item">
-            <a class="gallery__link" href="{% full_image_url image 'jpeg' %}" data-gallery-item data-full="{% full_image_url image %}" data-caption="{{ page.title }}">
+          <li class="t-mosaic__item">
+            <a class="t-mosaic__link" href="{% full_image_url image 'jpeg' %}" data-gallery-item data-full="{% full_image_url image %}" data-caption="{{ page.title }}">
               {% if forloop.first %}{% picture image preset="mosaic" alt=page.title loading="eager" %}{% else %}{% picture image preset="mosaic" alt=page.title %}{% endif %}
             </a>
           </li>
