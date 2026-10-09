@@ -56,4 +56,40 @@ class TempPagesTests(TestCase):
         self.assertEqual(context["about_diary"][1]["page_url"], "")  # ссылка из CMS важнее
         self.assertEqual(context["about_pets_url"], Page.objects.get(slug="pushistiki").url)
         self.assertEqual(Service(slug="russkaya-banya").page_url, Page.objects.get(slug="banya").url)
-        self.assertEqual(Service(slug="arenda-sapov").page_url, "")
+        self.assertEqual(Service(slug="arenda-velosipedov").page_url, Page.objects.get(slug="velosipedy").url)
+
+
+class MorePagesTests(TestCase):
+    """Волна 2: у каждой страницы свой шаблон и свои игры; игры на прежних страницах."""
+
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_pages", "--create-only", stdout=StringIO(), stderr=StringIO())
+
+    def test_each_page_has_own_template_and_games(self):
+        from core.temp_more import PAGES
+
+        templates = [data["template"] for data in PAGES.values()]
+        self.assertEqual(len(templates), len(set(templates)))
+        for slug, data in PAGES.items():
+            html = self.client.get(Page.objects.get(slug=slug).url).content.decode()
+            self.assertIn("dev-strip", html, slug)
+            self.assertEqual(html.count('data-game="'), len(data.get("play", [])) + (1 if data.get("mixer") else 0), slug)
+
+    def test_play_blocks_on_old_keys(self):
+        from django.template.loader import render_to_string
+        from core.temp_more import PLAY_OLD
+
+        for key, blocks in PLAY_OLD.items():
+            html = render_to_string("includes/page_extras.html", {"blocks": [], "key": key, "slot": "after"})
+            self.assertEqual(html.count('data-game="'), len(blocks), key)
+            self.assertIn("temp-pages.js", html)
+        self.assertNotIn("data-game", render_to_string("includes/page_extras.html", {"blocks": [], "key": "faq", "slot": "after"}))
+
+    def test_tiles_and_services_lead_to_pages(self):
+        from core.temp_pages import tile_page_url
+        from services.models import Service
+
+        self.assertEqual(tile_page_url('Река "Скнижка"'), Page.objects.get(slug="reka").url)
+        self.assertEqual(tile_page_url("Батут и детская площадка"), Page.objects.get(slug="ploshchadka").url)
+        self.assertEqual(Service(slug="arenda-sapov").page_url, Page.objects.get(slug="sapy").url)

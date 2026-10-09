@@ -1,0 +1,46 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags wagtailcore_tags %}
+{% comment %} Отдых с питомцем: калькулятор доплаты по росту в холке, тест «какой путешественник», собачий чек-лист и знакомство с местными котиками. {% endcomment %}
+{% block content %}
+{% include "core/temp/_head.html" with kicker=p.tagline back_url=parent_url back_label="О нас" %}
+
+<section class="section">
+  <div class="container t-two">
+    <div class="t-fee" data-fee data-small="{{ pet_small_fee|stringformat:'d' }}" data-large="{{ pet_large_fee|stringformat:'d' }}" data-reveal>
+      <p class="t-kicker">Калькулятор</p>
+      <h2>Доплата за питомца</h2>
+      <label class="t-fit__label" for="fee-height">Рост в холке: <output data-fee-height>30</output> см</label>
+      <input class="t-fit__range" id="fee-height" type="range" min="10" max="90" value="30" data-fee-range>
+      <div class="t-fee__dog" aria-hidden="true"><span data-fee-dog>🐕</span></div>
+      <p class="t-fee__total"><b data-fee-total>{{ pet_small_fee }} ₽</b> <span>за проживание</span></p>
+      <p class="t-fee__note">До 45 см в холке — {{ pet_small_fee }} ₽, выше — {{ pet_large_fee }} ₽. Предупредите о питомце при бронировании.</p>
+    </div>
+    <div class="t-pet-photo" data-reveal>{% if photos %}{% picture photos.0 preset="card" alt="Отдых с собакой" loading="eager" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+  </div>
+</section>
+
+{% for b in p.play %}{% include "core/temp/play/_block.html" with b=b %}{% endfor %}
+
+<section class="section">
+  <div class="container t-two">
+    {% include "core/temp/more/_pack.html" with items=p.pack title="Собачий чемодан" %}
+    <div class="t-paw-card" data-reveal>
+      <span class="t-paw-card__icon" aria-hidden="true">🐈</span>
+      <div><h2>Местные жители</h2><p>На территории живут котики, ежи, кролики и целая ферма. Наши кошечки настойчивы в вопросе ласк — познакомьте их с вашим хвостом аккуратно.</p>{% if pets_url %}<a class="t-link" href="{{ pets_url }}">Познакомиться с пушистиками →</a>{% endif %}</div>
+    </div>
+  </div>
+</section>
+
+<section class="section"><div class="container container--narrow">{% include "core/temp/more/_faq.html" %}{% if rules_url %}<p class="center"><a class="t-link" href="{{ rules_url }}">Все правила бронирования →</a></p>{% endif %}</div></section>
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Приезжайте всей семьёй</h2>
+    <p>Укажите питомца при бронировании — подберём подходящий вариант и обговорим детали заранее.</p>
+    {% include "core/temp/more/_ask.html" with book=True %}
+  </div>
+</section>
+{% include "core/temp/more/_related.html" with title="Куда сходить вместе" %}
+{% endblock %}

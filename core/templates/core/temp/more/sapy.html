@@ -1,0 +1,67 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags %}
+{% comment %} Сапы: не «услуга с ценой», а приглашение к тишине на воде. Главное — колода «Карточки для воды». {% endcomment %}
+{% block content %}
+<section class="t-water-hero">
+  <div class="t-water-hero__media" aria-hidden="true">{% if photos %}{% picture photos.0 preset="hero" alt="" loading="eager" %}{% endif %}<span class="t-water-hero__ripple"></span><span class="t-water-hero__ripple t-water-hero__ripple--2"></span></div>
+  <div class="container t-water-hero__copy">
+    {% if parent_url %}<a class="t-back t-back--light" href="{{ parent_url }}"><span aria-hidden="true">←</span> Доп услуги</a>{% endif %}
+    {% include "includes/in_progress_note.html" %}
+    <p class="t-kicker">{{ p.tagline }}</p>
+    <h1>{{ page.title }}</h1>
+    <p class="t-water-hero__lead">{{ page.intro }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <dl class="x-numbers">{% for value, label in p.facts %}<div class="x-numbers__item" data-reveal><dt>{{ value }}</dt><dd>{{ label }}</dd></div>{% endfor %}</dl>
+    {% include "core/temp/more/_months.html" with label="Сезон сапов" %}
+  </div>
+</section>
+
+<section class="section t-water">
+  <div class="container t-water__grid">
+    <div class="t-water__text" data-reveal>
+      <p class="t-kicker">Как это работает</p>
+      <h2>Сап — это не спорт. Это пауза</h2>
+      <p>Скнижка спокойная и неширокая: здесь не гонятся за скоростью. Отплывите от берега, перестаньте грести — и через минуту река сама начнёт показывать своих жителей.</p>
+    </div>
+    {% include "core/temp/play/_block.html" with b=p.play.0 bare=True %}
+  </div>
+</section>
+
+{% include "core/temp/play/_block.html" with b=p.play.1 %}
+
+{% if p.sun %}
+<section class="section">
+  <div class="container container--narrow">
+    <div class="t-sun" data-sun data-lat="{{ coords.0|stringformat:'s' }}" data-lon="{{ coords.1|stringformat:'s' }}" data-reveal>
+      <p class="t-kicker">Когда выходить на воду</p>
+      <h2>Сегодня на Скнижке</h2>
+      <div class="t-sun__sky" aria-hidden="true"><span class="t-sun__disc" data-sun-disc></span></div>
+      <dl class="t-sun__times"><div><dt>Рассвет</dt><dd data-sun-rise>—</dd></div><div><dt>Тихая вода</dt><dd data-sun-golden>—</dd></div><div><dt>Закат</dt><dd data-sun-set>—</dd></div></dl>
+      <p class="t-sun__note">Расчёт примерный. Утром и перед закатом вода спокойнее, а птиц больше.</p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container t-two">
+    {% include "core/temp/more/_pack.html" with items=p.pack title="Что взять на воду" %}
+    <div data-reveal><h2>Вопросы</h2>{% include "core/temp/more/_faq.html" %}</div>
+  </div>
+</section>
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Выйти на воду</h2>
+    <p>Сап выдаётся по запросу у администратора — напишите заранее, на какой день планируете.</p>
+    {% include "core/temp/more/_ask.html" with book=True ask_label="Спросить про сап" %}
+  </div>
+</section>
+{% include "core/temp/more/_related.html" with title="После воды" %}
+{% endblock %}

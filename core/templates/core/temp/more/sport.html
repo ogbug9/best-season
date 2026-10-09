@@ -1,0 +1,42 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags %}
+{% comment %} Спортивные игры: «стадион» — разметка поляны, делилка на команды, табло, кубик «во что сыграть». {% endcomment %}
+{% block content %}
+<section class="t-field-hero">
+  <div class="t-field-hero__media" aria-hidden="true">{% if photos %}{% picture photos.0 preset="hero" alt="" loading="eager" %}{% endif %}</div>
+  <div class="container t-field-hero__copy">
+    {% if parent_url %}<a class="t-back t-back--light" href="{{ parent_url }}"><span aria-hidden="true">←</span> Территория</a>{% endif %}
+    {% include "includes/in_progress_note.html" %}
+    <p class="t-kicker">{{ p.tagline }}</p>
+    <h1>{{ page.title }}</h1>
+    <p class="t-water-hero__lead">{{ page.intro }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <ul class="t-sports">{% for icon, title, text in p.sports %}<li data-reveal><span aria-hidden="true">{{ icon }}</span><b>{{ title }}</b><p>{{ text }}</p></li>{% endfor %}</ul>
+    {% include "core/temp/more/_months.html" with label="Сезон игр на поляне" %}
+  </div>
+</section>
+
+<section class="section t-pitch">
+  <div class="container t-two">
+    {% include "core/temp/play/_block.html" with b=p.play.0 bare=True %}
+    {% include "core/temp/play/_block.html" with b=p.play.1 bare=True %}
+  </div>
+</section>
+
+{% include "core/temp/play/_block.html" with b=p.play.2 %}
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Соберите команду — поляна ваша</h2>
+    <p>Хотите поляну только для своих? Можно снять весь глэмпинг целиком.</p>
+    {% include "core/temp/more/_ask.html" with book=True %}
+  </div>
+</section>
+{% include "core/temp/more/_related.html" with title="После игры" %}
+{% endblock %}

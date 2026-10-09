@@ -1,0 +1,54 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags %}
+{% comment %} Велосипеды: главное — «Соберите свою поездку» и маршрут пунктиром. {% endcomment %}
+{% block content %}
+<section class="section t-bike-hero">
+  <div class="container t-bike-hero__grid">
+    <div class="t-bike-hero__copy">
+      {% if parent_url %}<a class="t-back" href="{{ parent_url }}"><span aria-hidden="true">←</span> Доп услуги</a>{% endif %}
+      {% include "includes/in_progress_note.html" %}
+      <p class="t-kicker">{{ p.tagline }}</p>
+      <h1>{{ page.title }}</h1>
+      <p class="section__lead">{{ page.intro }}</p>
+      {% include "core/temp/more/_months.html" with label="Сезон велосипедов" %}
+    </div>
+    <div class="t-bike-hero__photo" data-reveal>{% if photos %}{% picture photos.0 preset="card" alt=page.title loading="eager" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}<span class="t-bike-hero__wheel" aria-hidden="true"></span></div>
+  </div>
+</section>
+
+<section class="section t-mixer-section">
+  <div class="container container--narrow">
+    {% include "core/temp/play/_block.html" with b=p.mixer bare=True %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Как обычно едут</h2>
+    <ol class="t-route">
+      {% for title, text in p.route %}<li class="t-route__stop" data-reveal><span class="t-route__dot" aria-hidden="true"></span><b>{{ title }}</b><span>{{ text }}</span></li>{% endfor %}
+    </ol>
+    <p class="t-route__note">Точный маршрут подскажет администратор: дороги меняются вместе с сезоном.</p>
+  </div>
+</section>
+
+{% for b in p.play %}{% include "core/temp/play/_block.html" with b=b %}{% endfor %}
+
+<section class="section">
+  <div class="container t-two">
+    {% include "core/temp/more/_pack.html" with items=p.pack title="Что взять в седло" %}
+    <div data-reveal><h2>Вопросы</h2>{% include "core/temp/more/_faq.html" %}</div>
+  </div>
+</section>
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Покатаемся?</h2>
+    <p>Велосипед — по запросу. Скажите, сколько вас и есть ли дети.</p>
+    {% include "core/temp/more/_ask.html" with book=True ask_label="Спросить про велосипед" %}
+  </div>
+</section>
+{% include "core/temp/more/_related.html" with title="После поездки" %}
+{% endblock %}

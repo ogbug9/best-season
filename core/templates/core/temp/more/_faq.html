@@ -1,0 +1,7 @@
+{% load wagtailcore_tags %}
+{% if p.faq or faq_items %}
+<div class="t-faq">
+  {% for question, answer in p.faq %}<details class="t-faq__item"{% if forloop.first %} open{% endif %}><summary>{{ question }}</summary><p>{{ answer }}</p></details>{% endfor %}
+  {% for item in faq_items %}<details class="t-faq__item"><summary>{{ item.question }}</summary><div>{{ item.answer|richtext }}</div></details>{% endfor %}
+</div>
+{% endif %}

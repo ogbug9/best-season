@@ -222,3 +222,306 @@
   .t-pager { flex-direction: column; }
   .t-pager__link--next { text-align: left; }
 }
+
+/* =====================================================================
+   Волна 2 (core/temp_more.py): страницы со своим характером и игры.
+   ===================================================================== */
+.t-back--light { color: var(--c-cream); }
+.t-back--light:hover { color: var(--c-peach-strong); }
+.t-two { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+.t-tags--center { justify-content: center; margin: 14px 0; }
+
+/* Полоса месяцев */
+.t-months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin: 22px 0 0; padding: 0; list-style: none; }
+.t-months__m { position: relative; padding: 10px 0 8px; border-radius: 10px; background: var(--c-sand); color: var(--c-muted); font-size: 13px; text-align: center; }
+.t-months__m.is-on { background: var(--c-olive); color: var(--c-cream); }
+.t-months__m.is-now::after { content: "сейчас"; position: absolute; left: 50%; top: 100%; margin-top: 4px; transform: translateX(-50%); color: var(--accent); font-size: 11px; white-space: nowrap; }
+
+/* Общая карточка игры */
+.t-game { position: relative; padding: 32px; border-radius: 30px; background: var(--c-white); box-shadow: 0 18px 40px rgb(58 60 21 / 8%); text-align: center; }
+.t-game__title { margin: 0 0 10px; }
+.t-game__lead { margin: 0 auto 22px; max-width: 520px; }
+.t-game__done { margin: 18px 0 0; color: var(--accent); font-weight: 600; animation: t-pop .5s ease both; }
+.t-game__reset { margin-top: 16px; padding: 0; border: 0; background: none; color: var(--c-olive-dark); font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
+.t-confetti { position: absolute; left: 50%; top: 50%; pointer-events: none; color: var(--hue); font-size: 18px; animation: t-burst 1.2s ease-out forwards; }
+@keyframes t-burst { from { opacity: 1; transform: translate(0, 0) scale(.6); } to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.4) rotate(160deg); } }
+
+/* Бинго */
+.t-bingo { display: grid; gap: 8px; margin: 0 auto; padding: 0; list-style: none; max-width: 520px; }
+.t-bingo--3 { grid-template-columns: repeat(3, 1fr); }
+.t-bingo--4 { grid-template-columns: repeat(4, 1fr); max-width: 600px; }
+.t-bingo__cell { display: grid; place-items: center; width: 100%; min-height: 86px; padding: 10px 8px; border: 1.5px dashed var(--c-olive); border-radius: 16px; background: var(--c-cream); color: var(--c-deep); font: 500 15px/1.2 var(--font-body); cursor: pointer; transition: background .2s, transform .2s; }
+.t-bingo__cell:hover { transform: translateY(-2px); }
+.t-bingo__cell[aria-pressed="true"] { border-style: solid; background: var(--c-olive); color: var(--c-cream); }
+.t-bingo__cell[aria-pressed="true"]::before { content: "✓ "; }
+.t-bingo__cell.is-line { background: var(--accent); border-color: var(--accent); }
+
+/* Кубик */
+.t-dice { display: flex; gap: 22px; align-items: center; justify-content: center; margin-bottom: 20px; text-align: left; }
+.t-dice__cube { display: grid; place-items: center; width: 96px; height: 96px; border-radius: 22px; background: var(--c-deep); color: var(--c-cream); font-size: 70px; line-height: 1; flex: none; }
+.t-dice__cube.is-rolled { animation: t-roll .5s ease; }
+@keyframes t-roll { 0% { transform: rotate(-20deg) scale(.9); } 60% { transform: rotate(8deg) scale(1.08); } 100% { transform: none; } }
+.t-dice__result { display: flex; flex-direction: column; gap: 6px; min-height: 70px; max-width: 320px; }
+.t-dice__result b { color: var(--c-deep); font-size: 22px; line-height: 1.2; }
+.t-dice__options { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; margin: 18px 0 0; padding: 0; list-style: none; color: var(--c-muted); font-size: 13px; }
+.t-game--dice.is-ready .t-dice__options { display: none; }
+
+/* Колода */
+.t-deck { perspective: 900px; margin: 0 auto 20px; max-width: 460px; }
+.t-deck__card { position: relative; display: grid; place-items: center; min-height: 220px; padding: 34px 30px; border-radius: 24px; background: var(--c-deep); color: var(--c-cream); cursor: pointer; box-shadow: 8px 8px 0 var(--c-olive), 16px 16px 0 var(--c-sand); }
+.t-deck__card p { margin: 0; font: 500 24px/1.3 var(--font-body); }
+.t-deck__card.is-flipped { animation: t-flip .5s ease; }
+@keyframes t-flip { from { transform: rotateY(90deg); } to { transform: none; } }
+.t-deck__count { position: absolute; right: 18px; bottom: 14px; font-size: 12px; opacity: .6; }
+
+/* Команды */
+.t-teams { display: grid; gap: 12px; text-align: left; }
+.t-teams__label { font-weight: 600; }
+.t-teams__input { width: 100%; padding: 12px 14px; border: 1px solid var(--c-olive-soft); border-radius: 14px; background: var(--c-cream); font: inherit; resize: vertical; }
+.t-teams__row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; }
+.t-teams__row select { padding: 6px 10px; border-radius: 10px; font: inherit; }
+.t-teams__out { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 6px 0 0; padding: 0; list-style: none; }
+.t-teams__out li { display: flex; flex-direction: column; gap: 4px; padding: 14px; border-radius: 16px; background: var(--c-blush); animation: t-pop .4s ease both; }
+.t-teams__out b { color: var(--c-deep); }
+
+/* Найди пару */
+.t-memory { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 440px; margin: 0 auto; padding: 0; list-style: none; }
+.t-memory__card { position: relative; width: 100%; aspect-ratio: 1; border: 0; border-radius: 16px; background: var(--c-olive); cursor: pointer; }
+.t-memory__card span { position: absolute; inset: 0; display: grid; place-items: center; border-radius: inherit; backface-visibility: hidden; transition: transform .35s ease; }
+.t-memory__back { color: var(--c-cream); font-size: 26px; }
+.t-memory__face { background: var(--c-cream); font-size: 40px; transform: rotateY(180deg); box-shadow: inset 0 0 0 2px var(--c-olive); }
+.t-memory__card.is-open .t-memory__back { transform: rotateY(180deg); }
+.t-memory__card.is-open .t-memory__face { transform: none; }
+.t-memory__card.is-matched .t-memory__face { box-shadow: inset 0 0 0 3px var(--accent); }
+.t-memory__stats { margin: 0 0 14px; font-size: 14px; }
+
+/* Викторина */
+.t-trivia { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; counter-reset: q; text-align: left; }
+.t-trivia__q { padding: 16px 18px; border-radius: 18px; background: var(--c-cream); counter-increment: q; }
+.t-trivia__q > p { margin: 0 0 10px; color: var(--c-deep); font-weight: 600; }
+.t-trivia__q > p::before { content: counter(q) ". "; color: var(--accent); }
+.t-trivia__options { display: flex; flex-wrap: wrap; gap: 8px; }
+.t-trivia__options .is-right { background: var(--c-olive); border-color: var(--c-olive); color: var(--c-cream); }
+.t-trivia__options .is-wrong { background: var(--accent); border-color: var(--accent); color: var(--c-cream); text-decoration: line-through; }
+.t-trivia__q.is-done [data-option] { cursor: default; }
+
+/* Тест А/Б и конструктор */
+.t-quizlet, .t-mixer { display: grid; gap: 6px; justify-items: center; }
+.t-quizlet__result, .t-mixer__out { width: 100%; margin-top: 16px; padding: 20px; border-radius: 20px; background: var(--c-blush); text-align: left; animation: t-pop .5s ease both; }
+.t-quizlet__result b, .t-mixer__out b { display: block; margin-bottom: 6px; color: var(--c-deep); font: 500 26px/1.1 var(--font-heading); }
+.t-quizlet__result p, .t-mixer__out p { margin: 6px 0 0; }
+.t-mixer label:has(input:checked), .t-quizlet label:has(input:checked), .t-gift label:has(input:checked) { background: var(--c-olive); border-color: var(--c-olive); color: var(--c-cream); }
+.t-mixer input, .t-quizlet input, .t-gift fieldset input { position: absolute; opacity: 0; pointer-events: none; }
+.t-mixer label, .t-quizlet label, .t-gift fieldset label { cursor: pointer; }
+
+/* Табло */
+.t-score { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.t-score__team { padding: 20px 12px; border-radius: 20px; background: var(--c-deep); color: var(--c-cream); }
+.t-score__team + .t-score__team { background: var(--c-olive-dark); }
+.t-score__name { margin: 0; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; opacity: .8; }
+.t-score__value { display: block; margin: 6px 0 10px; font: 500 72px/1 var(--font-heading); font-variant-numeric: tabular-nums; }
+.t-score__buttons { display: flex; gap: 10px; justify-content: center; }
+.t-score__buttons button { width: 44px; height: 44px; border: 1px solid var(--c-cream); border-radius: 50%; background: transparent; color: var(--c-cream); font-size: 22px; cursor: pointer; }
+
+/* Дыхание */
+.t-breath { position: relative; display: grid; place-items: center; height: 260px; margin-bottom: 18px; }
+.t-breath__circle { position: absolute; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgb(132 127 87 / 55%), rgb(132 127 87 / 10%)); transition: transform 4s ease-in-out; }
+.t-breath.is-in .t-breath__circle { transform: scale(1.9); transition-duration: 4s; }
+.t-breath.is-out .t-breath__circle { transform: scale(1); transition-duration: 6s; }
+.t-breath__label { position: relative; margin: 0; color: var(--c-deep); font: 500 26px/1 var(--font-heading); }
+.t-breath__time { position: absolute; bottom: 0; margin: 0; color: var(--c-olive-dark); font-variant-numeric: tabular-nums; }
+
+/* ---------- Сапы и река: вода ---------- */
+.t-water-hero, .t-field-hero { position: relative; min-height: 620px; display: flex; align-items: flex-end; overflow: hidden; color: var(--c-cream); isolation: isolate; }
+.t-water-hero__media, .t-field-hero__media { position: absolute; inset: 0; z-index: -1; }
+.t-water-hero__media :is(picture, img), .t-field-hero__media :is(picture, img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+.t-water-hero__media::after, .t-field-hero__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(0 0 0 / 20%) 0%, rgb(20 24 10 / 75%) 100%); }
+.t-water-hero__copy, .t-field-hero__copy { padding-block: 160px 70px; }
+.t-water-hero h1, .t-field-hero h1, .t-heat-hero h1, .t-night-hero h1 { color: var(--c-cream); }
+.t-water-hero .t-kicker, .t-field-hero .t-kicker, .t-heat-hero .t-kicker, .t-night-hero .t-kicker { color: var(--c-peach-strong); }
+.t-water-hero__lead { max-width: 560px; font-size: 20px; line-height: 1.4; }
+.t-water-hero__ripple { position: absolute; z-index: 1; left: 62%; bottom: 18%; width: 140px; height: 40px; border: 2px solid rgb(247 240 230 / 55%); border-radius: 50%; animation: t-ripple 4s ease-out infinite; }
+.t-water-hero__ripple--2 { animation-delay: 2s; }
+@keyframes t-ripple { from { opacity: .9; transform: scale(.3); } to { opacity: 0; transform: scale(3.2); } }
+.t-water { background: linear-gradient(180deg, transparent, rgb(132 127 87 / 14%) 30%, rgb(132 127 87 / 14%) 70%, transparent); }
+.t-water__grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 40px; align-items: center; }
+.t-water__text p { font-size: 18px; line-height: 1.55; }
+.t-river-photo { position: relative; overflow: hidden; border-radius: 30px; max-height: 560px; }
+.t-river-photo :is(picture, img) { display: block; width: 100%; max-height: 560px; object-fit: cover; }
+.t-river-photo__wave { position: absolute; left: 0; right: 0; bottom: 0; height: 60px; background: radial-gradient(60px 22px at 30px 0, transparent 98%, var(--bg) 100%) 0 0 / 60px 60px repeat-x; animation: t-wave 6s linear infinite; }
+@keyframes t-wave { to { background-position: 60px 0; } }
+.t-year { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 14px; margin: 0; padding: 4px 0 18px; list-style: none; overflow-x: auto; scroll-snap-type: x mandatory; }
+.t-year__m { display: flex; flex-direction: column; gap: 8px; min-height: 170px; padding: 20px; border-radius: 22px; background: var(--c-blush); scroll-snap-align: start; }
+.t-year__m b { color: var(--c-olive-dark); font: 500 24px/1 var(--font-heading); }
+.t-year__m.is-now { background: var(--c-olive); color: var(--c-cream); }
+.t-year__m.is-now b { color: var(--c-cream); }
+
+/* ---------- Велосипеды ---------- */
+.t-bike-hero__grid, .t-kids-hero__grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; }
+.t-bike-hero__photo, .t-kids-hero__photo, .t-pet-photo { position: relative; overflow: hidden; border-radius: 30px; aspect-ratio: 4 / 5; }
+.t-bike-hero__photo :is(picture, img, .ph), .t-kids-hero__photo :is(picture, img, .ph), .t-pet-photo :is(picture, img, .ph) { display: block; width: 100%; height: 100%; object-fit: cover; }
+.t-bike-hero__wheel { position: absolute; right: -40px; bottom: -40px; width: 160px; height: 160px; border: 6px dashed rgb(247 240 230 / 80%); border-radius: 50%; animation: t-spin 12s linear infinite; }
+@keyframes t-spin { to { transform: rotate(360deg); } }
+.t-mixer-section .t-game { background: var(--c-olive-dark); color: var(--c-cream); }
+.t-mixer-section .t-game__title, .t-mixer-section legend { color: var(--c-cream); }
+.t-mixer-section .t-kicker { color: var(--c-peach-strong); }
+.t-mixer-section .filter-chip { background: rgb(247 240 230 / 12%); border-color: rgb(247 240 230 / 40%); color: var(--c-cream); }
+.t-mixer-section label:has(input:checked) { background: var(--c-cream); border-color: var(--c-cream); color: var(--c-deep); }
+.t-mixer-section .t-mixer__out { background: var(--c-cream); color: var(--c-dark); }
+.t-route { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 0; padding: 0; list-style: none; }
+.t-route::before { content: ""; position: absolute; left: 6%; right: 6%; top: 11px; border-top: 3px dotted var(--accent); }
+.t-route__stop { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.t-route__dot { width: 24px; height: 24px; border: 4px solid var(--bg); border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.t-route__stop b { color: var(--c-deep); font-size: 18px; }
+.t-route__stop span:last-child { font-size: 15px; }
+.t-route__note { margin: 18px 0 0; color: var(--c-olive-dark); font-size: 14px; text-align: center; }
+
+/* ---------- Мастер-классы ---------- */
+.t-easels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin: 0; padding: 0; list-style: none; }
+.t-easel { display: flex; flex-direction: column; gap: 10px; padding: 34px 26px 30px; border-radius: 160px 160px 24px 24px; text-align: center; }
+.t-easel--1 { background: var(--c-blush); }
+.t-easel--2 { background: var(--c-sand); }
+.t-easel--3 { background: rgb(132 127 87 / 22%); }
+.t-easel__icon { font-size: 56px; line-height: 1; }
+.t-easel h2 { margin: 0; font-size: 30px; }
+.t-easel p { margin: 0; }
+.t-easel__note { color: var(--c-olive-dark); font-style: italic; }
+.t-polaroids { display: flex; justify-content: center; padding: 20px 0; }
+.t-polaroid { width: min(300px, 32%); margin: 0 -14px; padding: 12px 12px 40px; background: var(--c-white); box-shadow: 0 16px 34px rgb(58 60 21 / 16%); }
+.t-polaroid--1 { rotate: -5deg; }
+.t-polaroid--2 { rotate: 3deg; translate: 0 -16px; z-index: 1; }
+.t-polaroid--3 { rotate: -2deg; }
+.t-polaroid :is(picture, img) { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.t-polaroid figcaption { margin-top: 10px; color: var(--c-olive-dark); font: italic 300 18px/1 var(--font-body); text-align: center; }
+
+/* ---------- Сауна ---------- */
+.t-heat-hero { padding-block: 150px 70px; background: radial-gradient(circle at 80% 30%, #7F401E 0%, #3A2A1A 45%, #1E1A12 100%); color: var(--c-cream); }
+.t-heat-hero__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.t-heat-hero__lead { max-width: 480px; margin-bottom: 24px; font-size: 20px; line-height: 1.4; }
+.t-heat-hero__photo { position: relative; overflow: hidden; border-radius: 30px; aspect-ratio: 4 / 3; }
+.t-heat-hero__photo :is(picture, img, .ph) { display: block; width: 100%; height: 100%; object-fit: cover; }
+.t-heat-hero__steam { position: absolute; inset: auto 0 0; height: 70%; background: linear-gradient(0deg, rgb(255 255 255 / 0%), rgb(255 255 255 / 22%), rgb(255 255 255 / 0%)); filter: blur(18px); animation: t-steam 7s ease-in-out infinite; }
+@keyframes t-steam { 0%, 100% { transform: translateY(20%); opacity: .3; } 50% { transform: translateY(-20%); opacity: .8; } }
+.t-versus { width: 100%; margin-top: 20px; border-collapse: separate; border-spacing: 0 8px; }
+.t-versus th, .t-versus td { padding: 14px 16px; text-align: left; }
+.t-versus thead th { color: var(--c-olive-dark); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
+.t-versus tbody th { width: 22%; color: var(--c-olive-dark); font-weight: 500; }
+.t-versus tbody td { background: var(--c-white); }
+.t-versus tbody td:nth-child(2) { border-radius: 16px 0 0 16px; background: #F3DCCB; color: var(--c-deep); font-weight: 600; }
+.t-versus tbody td:last-child { border-radius: 0 16px 16px 0; }
+.t-evening { display: grid; margin: 18px 0 0; padding: 0; list-style: none; }
+.t-evening li { display: grid; grid-template-columns: 90px 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px dashed var(--c-olive-soft); }
+.t-evening time { color: var(--accent); font: 500 26px/1 var(--font-heading); }
+
+/* ---------- Ферма ---------- */
+.t-zoo { display: grid; grid-template-columns: repeat(9, 1fr); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.t-zoo__card { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px 6px; border-radius: 20px; background: var(--c-white); box-shadow: 0 10px 24px rgb(58 60 21 / 8%); }
+.t-zoo__card span { font-size: 42px; line-height: 1; animation: t-bob 3s ease-in-out infinite; animation-delay: calc(var(--i) * .2s); }
+.t-zoo__card b { color: var(--c-deep); font-size: 14px; }
+@keyframes t-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+/* ---------- Костёр: ночь ---------- */
+.t-night main { background: #17180E; color: #E9E1D2; }
+.t-night main h2 { color: var(--c-cream); }
+.t-night-hero { position: relative; overflow: hidden; padding-block: 170px 90px; background: radial-gradient(ellipse at 50% 100%, #5A2A10 0%, #1C1B10 55%, #0E0F08 100%); color: var(--c-cream); }
+.t-night-hero__lead { font-size: 20px; line-height: 1.4; }
+.t-stars { position: absolute; inset: 0; background-image: radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 70% 20%, #fff, transparent), radial-gradient(1.5px 1.5px at 40% 60%, #fff, transparent), radial-gradient(1px 1px at 85% 55%, #fff, transparent), radial-gradient(1px 1px at 10% 75%, #fff, transparent), radial-gradient(1.5px 1.5px at 60% 40%, #fff, transparent), radial-gradient(1px 1px at 30% 10%, #fff, transparent), radial-gradient(1px 1px at 90% 85%, #fff, transparent); opacity: .7; animation: t-twinkle 5s ease-in-out infinite alternate; }
+@keyframes t-twinkle { to { opacity: .25; } }
+.t-night-hero__copy { position: relative; }
+.t-fire { position: relative; display: block; width: 70px; height: 90px; margin: 30px auto 0; }
+.t-fire i { position: absolute; bottom: 0; left: 50%; width: 46px; height: 70px; margin-left: -23px; border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%; background: radial-gradient(circle at 50% 80%, #FFE08A, #F2994A 45%, #9B5026 75%, transparent 76%); filter: blur(1px); animation: t-flame 1.2s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+.t-fire i:nth-child(2) { width: 30px; height: 52px; margin-left: -30px; animation-duration: .9s; opacity: .8; }
+.t-fire i:nth-child(3) { width: 30px; height: 46px; margin-left: 0; animation-duration: 1.1s; opacity: .7; }
+@keyframes t-flame { from { transform: scaleY(1) skewX(-3deg); } to { transform: scaleY(1.15) skewX(4deg); } }
+.t-night-section .t-game { background: #26271A; color: #E9E1D2; box-shadow: none; }
+.t-night-section .t-game__title { color: var(--c-cream); }
+.t-night-section .t-deck__card { background: #F7F0E6; color: var(--c-deep); box-shadow: 8px 8px 0 #9B5026, 16px 16px 0 #3A3C15; }
+.t-night-section .t-dice__cube { background: #9B5026; }
+.t-night-section .t-dice__result b { color: var(--c-cream); }
+.t-night-section .t-pack { background: #26271A; color: #E9E1D2; box-shadow: none; }
+.t-night-section .t-pack__list li + li { border-color: rgb(247 240 230 / 12%); }
+.t-night-photo { position: relative; overflow: hidden; border-radius: 30px; }
+.t-night-photo :is(picture, img) { display: block; width: 100%; max-height: 520px; object-fit: cover; filter: brightness(.8); }
+.t-night-photo p { position: absolute; left: 24px; right: 24px; bottom: 20px; margin: 0; color: var(--c-cream); font-size: 20px; text-shadow: 0 2px 10px rgb(0 0 0 / 60%); }
+.t-night-rule { color: #C9BFA9; font-style: italic; }
+
+/* ---------- Детская площадка ---------- */
+.t-kids-hero h1 { color: var(--accent); }
+.t-bounce { position: absolute; left: 50%; top: 14%; color: var(--c-peach-strong); font-size: 34px; animation: t-jump 1.4s cubic-bezier(.3, 0, .3, 1) infinite; }
+@keyframes t-jump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-60px); } }
+.t-map-section .t-game { background: #F1E3C8; background-image: radial-gradient(circle at 10% 20%, rgb(155 80 38 / 10%) 0 40px, transparent 41px), radial-gradient(circle at 90% 80%, rgb(132 127 87 / 14%) 0 60px, transparent 61px); border: 2px dashed var(--accent); }
+.t-map-section .t-bingo__cell { background: rgb(255 255 255 / 60%); border-color: var(--accent); }
+
+/* ---------- Спорт ---------- */
+.t-sports { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 0; padding: 0; list-style: none; }
+.t-sports li { display: flex; flex-direction: column; gap: 8px; padding: 26px; border-radius: 24px; background: var(--c-white); }
+.t-sports span { font-size: 44px; line-height: 1; }
+.t-sports b { color: var(--c-deep); font-size: 22px; }
+.t-sports p { margin: 0; }
+.t-pitch { background: #6F7A3E; background-image: linear-gradient(90deg, transparent calc(50% - 1px), rgb(255 255 255 / 45%) calc(50% - 1px), rgb(255 255 255 / 45%) calc(50% + 1px), transparent calc(50% + 1px)), radial-gradient(circle at 50% 50%, transparent 89px, rgb(255 255 255 / 45%) 90px, rgb(255 255 255 / 45%) 92px, transparent 93px); }
+
+/* ---------- Сертификат ---------- */
+.t-gift { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.t-gift__form { display: grid; gap: 8px; }
+.t-gift__field { justify-content: flex-start; }
+.t-gift__field legend { text-align: left; }
+.t-gift__input { display: grid; gap: 6px; color: var(--c-deep); font-weight: 600; }
+.t-gift__input :is(input, textarea) { padding: 12px 14px; border: 1px solid var(--c-olive-soft); border-radius: 14px; background: var(--c-white); font: 400 16px/1.3 var(--font-body); }
+.t-gift__hint { margin: 6px 0 10px; color: var(--c-olive-dark); font-size: 14px; }
+.t-gift__preview { position: sticky; top: 120px; }
+.t-card { position: relative; display: flex; flex-direction: column; gap: 10px; min-height: 380px; padding: 36px 32px; overflow: hidden; border-radius: 26px; color: var(--c-cream); box-shadow: 0 30px 60px rgb(58 60 21 / 25%); transition: background .4s; }
+.t-card--forest { background: radial-gradient(circle at 85% 15%, #9AA06A, transparent 40%), linear-gradient(140deg, #3A3C15, #6F7A3E); }
+.t-card--river { background: radial-gradient(circle at 15% 85%, #A9C2C7, transparent 45%), linear-gradient(160deg, #2F4A52, #6E8E8F); }
+.t-card--night { background: radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 70% 20%, #fff, transparent), radial-gradient(1.5px 1.5px at 80% 60%, #fff, transparent), linear-gradient(170deg, #0E0F08, #3A2A1A 80%, #9B5026); }
+.t-card__brand { margin: 0; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; opacity: .85; }
+.t-card__occasion { margin: 18px 0 0; font: 500 40px/1 var(--font-heading); }
+.t-card__to { margin: 0; font-size: 20px; }
+.t-card__gift { margin: 14px 0 0; font-size: 18px; }
+.t-card__gift b { display: block; font-size: 26px; }
+.t-card__wish { margin: auto 0 0; font-style: italic; font-weight: 300; }
+.t-card__from { margin: 0; text-align: right; }
+.t-card__stamp { position: absolute; top: 26px; right: -38px; padding: 6px 48px; background: var(--c-cream); color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; rotate: 35deg; }
+
+/* ---------- С питомцем ---------- */
+.t-fee { padding: 32px; border-radius: 30px; background: var(--c-blush); text-align: center; }
+.t-fee h2 { margin: 0 0 16px; }
+.t-fee__dog { display: grid; place-items: end center; height: 120px; }
+.t-fee__dog span { line-height: 1; transition: font-size .15s; }
+.t-fee__total { margin: 10px 0 6px; }
+.t-fee__total b { color: var(--c-deep); font: 500 48px/1 var(--font-heading); }
+.t-fee__note { margin: 0; font-size: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .t-water-hero__ripple, .t-river-photo__wave, .t-bike-hero__wheel, .t-heat-hero__steam, .t-stars, .t-fire i, .t-bounce, .t-zoo__card span, .t-confetti { animation: none; }
+}
+@media (max-width: 899px) {
+  .t-two, .t-water__grid, .t-bike-hero__grid, .t-kids-hero__grid, .t-heat-hero__grid, .t-gift { grid-template-columns: 1fr; }
+  .t-easels, .t-sports { grid-template-columns: 1fr; }
+  .t-zoo { grid-template-columns: repeat(3, 1fr); }
+  .t-route { grid-template-columns: 1fr 1fr; row-gap: 26px; }
+  .t-route::before { display: none; }
+  .t-gift__preview { position: static; order: -1; }
+  .t-bike-hero__photo, .t-kids-hero__photo, .t-pet-photo { aspect-ratio: 4 / 3; }
+}
+@media (max-width: 599px) {
+  .t-game { padding: 24px 16px; }
+  .t-months { grid-template-columns: repeat(6, 1fr); row-gap: 22px; }
+  .t-bingo__cell { min-height: 72px; font-size: 13px; }
+  .t-bingo--4 .t-bingo__cell { min-height: 64px; padding: 6px 4px; font-size: 11px; }
+  .t-dice { flex-direction: column; text-align: center; }
+  .t-deck__card p { font-size: 19px; }
+  .t-water-hero, .t-field-hero { min-height: 520px; }
+  .t-water-hero__copy, .t-field-hero__copy { padding-block: 130px 40px; }
+  .t-heat-hero, .t-night-hero { padding-block: 130px 50px; }
+  .t-score__value { font-size: 54px; }
+  .t-polaroid { width: 40%; margin: 0 -10px; padding: 6px 6px 24px; }
+  .t-polaroid figcaption { font-size: 13px; }
+  .t-versus th, .t-versus td { padding: 10px 8px; font-size: 14px; }
+  .t-evening li { grid-template-columns: 70px 1fr; }
+  .t-card { min-height: 320px; padding: 28px 22px; }
+  .t-card__occasion { font-size: 30px; }
+}
+
+/* Плашка «в разработке» на тёмных шапках волны 2 */
+:is(.t-water-hero, .t-field-hero, .t-heat-hero, .t-night-hero) .dev-strip { margin: 0 0 14px; background: rgb(247 240 230 / 92%); border-color: transparent; color: var(--c-deep); }
+.t-night-hero .dev-strip { margin-inline: auto; }

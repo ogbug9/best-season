@@ -1,0 +1,107 @@
+{% comment %}
+  Игровой блок (core/temp_more.py, типы см. там). b — данные блока, bare — без обёртки секции.
+  Без JS блок остаётся читаемым: списки и варианты видны, просто не нажимаются.
+{% endcomment %}
+{% if not bare %}<section class="section t-play t-play--{{ b.type }}"><div class="container container--narrow">{% endif %}
+<div class="t-game t-game--{{ b.type }}" data-game="{{ b.type }}" data-game-key="{{ b.key }}">
+  <p class="t-kicker">{% if b.type == "bingo" %}Игра{% elif b.type == "dice" %}Кубик{% elif b.type == "cards" %}Колода{% elif b.type == "teams" %}Инструмент{% elif b.type == "memory" %}Игра на память{% elif b.type == "trivia" %}Викторина{% elif b.type == "quiz" %}Тест{% elif b.type == "mixer" %}Конструктор{% elif b.type == "score" %}Табло{% elif b.type == "breath" %}Пауза{% endif %}</p>
+  <h2 class="t-game__title">{{ b.title }}</h2>
+  {% if b.lead %}<p class="t-game__lead">{{ b.lead }}</p>{% endif %}
+
+  {% if b.type == "bingo" %}
+    <ul class="t-bingo t-bingo--{{ b.size|default:3 }}" data-bingo data-size="{{ b.size|default:3 }}">
+      {% for cell in b.cells %}<li><button type="button" class="t-bingo__cell" aria-pressed="false">{{ cell }}</button></li>{% endfor %}
+    </ul>
+    <p class="t-game__done" data-game-done hidden aria-live="polite">{{ b.done }}</p>
+    <button type="button" class="t-game__reset" data-game-reset>Начать заново</button>
+
+  {% elif b.type == "dice" %}
+    <div class="t-dice" data-dice>
+      <span class="t-dice__cube" data-dice-cube aria-hidden="true">⚄</span>
+      <div class="t-dice__result" aria-live="polite"><b data-dice-title>Бросьте кубик</b><span data-dice-text></span></div>
+    </div>
+    <button type="button" class="btn btn--primary" data-dice-roll>{{ b.button|default:"Бросить кубик" }}</button>
+    <ol class="t-dice__options" data-dice-options>{% for title, text in b.options %}<li data-title="{{ title }}" data-text="{{ text }}">{{ title }}</li>{% endfor %}</ol>
+
+  {% elif b.type == "cards" %}
+    <div class="t-deck" data-deck>
+      <div class="t-deck__card" data-deck-card><p data-deck-text>Нажмите, чтобы вытянуть первую карточку</p><span class="t-deck__count" data-deck-count></span></div>
+    </div>
+    <button type="button" class="btn btn--primary" data-deck-next>{{ b.button|default:"Вытянуть карточку" }}</button>
+    <template data-deck-source>{% for card in b.cards %}<p>{{ card }}</p>{% endfor %}</template>
+
+  {% elif b.type == "teams" %}
+    <div class="t-teams" data-teams>
+      <label class="t-teams__label" for="teams-{{ b.key }}">Имена через запятую</label>
+      <textarea id="teams-{{ b.key }}" class="t-teams__input" rows="3" data-teams-input placeholder="Аня, Боря, Вика, Гоша, Даша, Егор"></textarea>
+      <div class="t-teams__row">
+        <label>Команд: <select data-teams-count><option>2</option><option>3</option><option>4</option></select></label>
+        <button type="button" class="btn btn--primary" data-teams-go>Разделить</button>
+      </div>
+      <ol class="t-teams__out" data-teams-out aria-live="polite"></ol>
+    </div>
+
+  {% elif b.type == "memory" %}
+    <p class="t-memory__stats" aria-live="polite">Ходов: <b data-memory-moves>0</b> · Пар: <b data-memory-pairs>0</b> из {{ b.items|length }}</p>
+    <ul class="t-memory" data-memory data-items="{{ b.items|join:',' }}"></ul>
+    <p class="t-game__done" data-game-done hidden aria-live="polite">Все пары найдены! Теперь — знакомиться вживую.</p>
+    <button type="button" class="t-game__reset" data-game-reset>Перемешать</button>
+
+  {% elif b.type == "trivia" %}
+    <ol class="t-trivia" data-trivia>
+      {% for question, options, answer in b.questions %}
+        <li class="t-trivia__q" data-answer="{{ answer }}">
+          <p>{{ question }}</p>
+          <div class="t-trivia__options">{% for option in options %}<button type="button" class="filter-chip" data-option="{{ forloop.counter0 }}">{{ option }}</button>{% endfor %}</div>
+        </li>
+      {% endfor %}
+    </ol>
+    <p class="t-game__done" data-trivia-score hidden aria-live="polite"></p>
+
+  {% elif b.type == "quiz" %}
+    <form class="t-quizlet" data-quizlet>
+      {% for question, a, b2 in b.questions %}
+        <fieldset class="t-quiz__q"><legend>{{ question }}</legend>
+          <label class="filter-chip"><input type="radio" name="{{ b.key }}{{ forloop.counter }}" value="0" required> {{ a }}</label>
+          <label class="filter-chip"><input type="radio" name="{{ b.key }}{{ forloop.counter }}" value="1"> {{ b2 }}</label>
+        </fieldset>
+      {% endfor %}
+      <button type="submit" class="btn btn--primary">Узнать</button>
+      {% for title, text, url in b.results %}
+        <div class="t-quizlet__result" data-quiz-result="{{ forloop.counter0 }}" hidden aria-live="polite"><b>{{ title }}</b><p>{{ text }}</p>{% if url %}<a class="t-link" href="{{ url }}">Подробнее →</a>{% endif %}</div>
+      {% endfor %}
+    </form>
+
+  {% elif b.type == "mixer" %}
+    <form class="t-mixer" data-mixer>
+      {% for label, options in b.groups %}
+        <fieldset class="t-quiz__q"><legend>{{ label }}</legend>
+          {% for value, text in options %}<label class="filter-chip"><input type="radio" name="{{ b.key }}{{ forloop.parentloop.counter }}" value="{{ text }}"{% if forloop.first %} checked{% endif %}> {{ value }}</label>{% endfor %}
+        </fieldset>
+      {% endfor %}
+      <button type="submit" class="btn btn--primary">{{ b.button|default:"Собрать" }}</button>
+      <div class="t-mixer__out" data-mixer-out hidden aria-live="polite"></div>
+    </form>
+
+  {% elif b.type == "score" %}
+    <div class="t-score" data-score>
+      {% for team in b.teams %}
+        <div class="t-score__team">
+          <p class="t-score__name">{{ team }}</p>
+          <output class="t-score__value" data-score-value>0</output>
+          <div class="t-score__buttons"><button type="button" data-score-step="-1" aria-label="Минус очко, {{ team }}">−</button><button type="button" data-score-step="1" aria-label="Плюс очко, {{ team }}">+</button></div>
+        </div>
+      {% endfor %}
+    </div>
+    <button type="button" class="t-game__reset" data-game-reset>Обнулить</button>
+
+  {% elif b.type == "breath" %}
+    <div class="t-breath" data-breath data-minutes="{{ b.minutes|default:3 }}">
+      <span class="t-breath__circle" data-breath-circle aria-hidden="true"></span>
+      <p class="t-breath__label" data-breath-label aria-live="polite">Готовы?</p>
+      <p class="t-breath__time" data-breath-time>{{ b.minutes|default:3 }}:00</p>
+    </div>
+    <button type="button" class="btn btn--primary" data-breath-go>Начать</button>
+  {% endif %}
+</div>
+{% if not bare %}</div></section>{% endif %}

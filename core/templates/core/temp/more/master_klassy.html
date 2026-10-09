@@ -1,0 +1,58 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags %}
+{% comment %} Мастер-классы: три ремесла как «мольберты», кубик вдохновения, календарь сезона, приглашение мастерам. {% endcomment %}
+{% block content %}
+{% include "core/temp/_head.html" with kicker=p.tagline back_url=parent_url back_label="Доп услуги" %}
+
+<section class="section">
+  <div class="container">
+    <ul class="t-easels">
+      {% for title, icon, text, note in p.crafts %}
+        <li class="t-easel t-easel--{{ forloop.counter }}" data-reveal>
+          <span class="t-easel__icon" aria-hidden="true">{{ icon }}</span>
+          <h2>{{ title }}</h2><p>{{ text }}</p><p class="t-easel__note">{{ note }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% if photos %}
+<section class="section">
+  <div class="container"><div class="t-polaroids">{% for image in photos|slice:":3" %}<figure class="t-polaroid t-polaroid--{{ forloop.counter }}" data-reveal>{% picture image preset="card" alt="" %}<figcaption>{% cycle "летом" "по праздникам" "для всех" %}</figcaption></figure>{% endfor %}</div></div>
+</section>
+{% endif %}
+
+{% for b in p.play %}{% include "core/temp/play/_block.html" with b=b %}{% endfor %}
+
+<section class="section">
+  <div class="container container--narrow">
+    <h2 class="center">Когда бывают</h2>
+    {% include "core/temp/more/_months.html" with label="Месяцы мастер-классов" %}
+    <p class="t-route__note">Летний сезон и праздники. Даты — в нашем Telegram-канале.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">{% include "core/temp/more/_faq.html" %}</div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    <div class="t-paw-card" data-reveal>
+      <span class="t-paw-card__icon" aria-hidden="true">🤝</span>
+      <div><h2>Вы мастер?</h2><p>Мы ищем тех, кто делится, а не продаёт: художников, флористов, преподавателей йоги, соседей с ремеслом.</p>{% if partners_url %}<a class="t-link" href="{{ partners_url }}">Страница «Партнёрам» →</a>{% endif %}</div>
+    </div>
+  </div>
+</section>
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Узнать о ближайшем мастер-классе</h2>
+    {% include "core/temp/more/_ask.html" with book=False ask_label="Написать в Telegram" %}
+  </div>
+</section>
+{% include "core/temp/more/_related.html" %}
+{% endblock %}

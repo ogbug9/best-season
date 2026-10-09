@@ -1,0 +1,51 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags wagtailcore_tags %}
+{% comment %} Контактная ферма: яркая и игровая. Жители-эмодзи, «Найди пару», викторина, правила знакомства. {% endcomment %}
+{% block content %}
+{% include "core/temp/_head.html" with kicker=p.tagline back_url=parent_url back_label="Территория" %}
+
+<section class="section">
+  <div class="container">
+    <ul class="t-zoo">
+      {% for icon, name in p.animals %}<li class="t-zoo__card" data-reveal style="--i: {{ forloop.counter0 }}"><span aria-hidden="true">{{ icon }}</span><b>{{ name }}</b></li>{% endfor %}
+    </ul>
+    <p class="t-route__note center">Бесплатно для гостей · круглый год</p>
+  </div>
+</section>
+
+{% if photos %}
+<section class="section">
+  <div class="container"><div class="t-polaroids">{% for image in photos|slice:":3" %}<figure class="t-polaroid t-polaroid--{{ forloop.counter }}" data-reveal>{% picture image preset="card" alt="" %}<figcaption>{% cycle "Амбар" "утро на ферме" "Айка" %}</figcaption></figure>{% endfor %}</div></div>
+</section>
+{% endif %}
+
+{% include "core/temp/play/_block.html" with b=p.play.0 %}
+
+{% for item in faq_items %}
+<section class="section x-note-section">
+  <div class="container"><aside class="x-note" data-reveal><p class="x-note__title">Главное правило фермы</p><div class="x-note__text">{{ item.answer|richtext }}</div></aside></div>
+</section>
+{% endfor %}
+
+<section class="section">
+  <div class="container container--narrow center">
+    <p class="t-kicker">С фермы — к столу</p>
+    <h2>Вместо доставки</h2>
+    <ul class="t-tags t-tags--center">{% for item in p.from_farm %}<li>{{ item }}</li>{% endfor %}</ul>
+    <p>Спросите при заселении, что есть сегодня, — выберете продукты к завтраку.</p>
+  </div>
+</section>
+
+{% include "core/temp/play/_block.html" with b=p.play.1 %}
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Приезжайте знакомиться</h2>
+    <p>Ферма открыта для всех гостей глэмпинга, с детьми и без.</p>
+    {% include "core/temp/more/_ask.html" with book=True %}
+  </div>
+</section>
+{% include "core/temp/more/_related.html" %}
+{% endblock %}

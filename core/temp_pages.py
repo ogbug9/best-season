@@ -169,6 +169,11 @@ TREE = [
     *[(DIARY_INDEX, entry["slug"], entry["title"], entry["lead"]) for entry in DIARY],
     *[("uslugi", slug, SERVICE_TITLES[slug], "") for slug in SERVICES],
 ]
+# Волна 2: страницы со своим характером (core/temp_more.py).
+from core.temp_more import PAGES as MORE, PLAY_OLD  # noqa: E402
+
+TEMPLATES.update({slug: data["template"] for slug, data in MORE.items()})
+TREE += [(data["parent"], slug, data["title"], data["intro"]) for slug, data in MORE.items()]
 SLUGS = {slug for _, slug, _, _ in TREE}
 
 
@@ -262,7 +267,84 @@ def context(page, request):
                 "others": [_service_card(s) for s in SERVICES if s != slug], "coords": COORDS,
                 "services_url": _url("uslugi"),
                 "ask_url": _telegram(request, f"service_{slug}", f"Здравствуйте! Хочу узнать про «{SERVICE_TITLES[slug]}»")}
+    if slug in MORE:
+        return _more_context(slug, request)
     return {}
+
+
+def _photos(sources):
+    from core.dop_pages import _image
+    from services.models import Service
+
+    photos = []
+    for kind, value in sources:
+        if kind == "service":
+            service = Service.objects.filter(slug=value).first()
+            images = list(service.card_slides) if service else []
+        else:
+            images = [_image((kind, value))]
+        photos += [image for image in images if image and image not in photos]
+    return photos
+
+
+def _related(slugs):
+    from core.dop_pages import _image
+
+    cards = []
+    for slug in slugs:
+        data = MORE.get(slug) or SERVICES.get(slug)
+        if not data:
+            continue
+        title = data.get("title") or SERVICE_TITLES.get(slug, "")
+        photos = _photos(data["photos"]) if "photos" in data else [_service_card(slug)["photo"]]
+        cards.append({"slug": slug, "title": title, "url": _url(slug), "photo": photos[0] if photos else None})
+    return cards
+
+
+def _more_context(slug, request):
+    from core.dop_pages import _faq
+    from services.models import Service
+
+    data = MORE[slug]
+    service = Service.objects.filter(slug=data["service"], is_published=True).first() if data.get("service") else None
+    context = {"p": data, "service": service, "photos": _photos(data["photos"])[:5], "coords": COORDS,
+               "others": _related(data.get("related", [])), "parent_url": _url(data["parent"]),
+               "faq_items": _faq(data["faq_starts"]) if data.get("faq_starts") else [],
+               "ask_url": _telegram(request, f"page_{slug}", f"Здравствуйте! Вопрос про «{data['title']}»"),
+               "months": [(n, name[:3], n in data.get("months", [])) for n, name in enumerate(
+                   ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь",
+                    "Октябрь", "Ноябрь", "Декабрь"], start=1)]}
+    full = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+    context["year"] = [(month, full[month - 1], text) for month, text in data.get("year", [])]
+    if slug == "finskaya-sauna":
+        context["house_url"] = _url("domik-1")
+        context["banya_url"] = _url("banya")
+    if slug == "s-pitomcem":
+        from houses.booking import rates
+
+        fees = rates()
+        context.update(pet_small_fee=fees.pet_small_fee, pet_large_fee=fees.pet_large_fee,
+                       pets_url=_url(PETS_INDEX), rules_url=_url("pravila-bronirovaniya"))
+    if slug == "podarochnyj-sertifikat":
+        context["gift_base"] = _telegram(request, "gift", "")
+    if slug == "master-klassy":
+        context["partners_url"] = _url("partneram")
+    context["play"] = [_play_block(block) for block in data.get("play", [])]
+    return context
+
+
+def _play_block(block):
+    """Готовит игровой блок: ссылки результатов теста по слагам."""
+    block = dict(block)
+    if block.get("results"):
+        block["results"] = [(title, text, _url(target) if target else "") for title, text, target in block["results"]]
+    if block["type"] == "trivia":
+        block["questions"] = [(q, options, answer) for q, options, answer in block["questions"]]
+    return block
+
+
+def play_for(key):
+    return [_play_block(block) for block in PLAY_OLD.get(key, [])]
 
 
 # Общие блоки (core/dop_extras.py) и рассказы (core/dop_stories.py) новых страниц.
@@ -360,6 +442,16 @@ STORIES = {
 
 # Справочник услуг → страница услуги (кнопка «Подробнее» карточек).
 SERVICE_PAGES = {data["service"]: slug for slug, data in SERVICES.items() if data["service"]}
+SERVICE_PAGES.update({data["service"]: slug for slug, data in MORE.items() if data.get("service")})
+# Плитки «Территории» (начало названия) → страница.
+TILE_PAGES = {"Русская баня": "banya", "Большая беседка": "bolshaya-besedka", "Фотосессии": "fotosessii",
+              "Финская сауна": "finskaya-sauna", "Мастер-классы": "master-klassy",
+              **{data["tile"]: slug for slug, data in MORE.items() if data.get("tile")}}
+
+
+def tile_page_url(title):
+    slug = next((slug for start, slug in TILE_PAGES.items() if title.startswith(start)), None)
+    return _url(slug) if slug else ""
 DIARY_CROPS = {"diary-holidays": "novyj-god", "diary-ayka": "ayka", "diary-car": "zheltoe-chudo"}
 
 

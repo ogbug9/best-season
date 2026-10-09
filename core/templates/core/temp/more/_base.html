@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% load static %}
+{% comment %} Волна 2 временных страниц (core/temp_more.py): у каждой своя раскладка, здесь только подключения. {% endcomment %}
+{% block body_class %}page-dop page-temp page-more page-more--{{ page.slug }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-play">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261009-play" defer></script>{% endblock %}

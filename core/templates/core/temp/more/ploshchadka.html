@@ -1,0 +1,47 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags %}
+{% comment %} Детская площадка: страница для детей — «карта сокровищ» с квестом, «угадай, кто говорит», игры без гаджетов. {% endcomment %}
+{% block content %}
+<section class="section t-kids-hero">
+  <div class="container t-kids-hero__grid">
+    <div>
+      {% if parent_url %}<a class="t-back" href="{{ parent_url }}"><span aria-hidden="true">←</span> Территория</a>{% endif %}
+      {% include "includes/in_progress_note.html" %}
+      <p class="t-kicker">{{ p.tagline }}</p>
+      <h1>{{ page.title }}</h1>
+      <p class="section__lead">{{ page.intro }}</p>
+      {% include "core/temp/more/_months.html" with label="Сезон батута" %}
+    </div>
+    <div class="t-kids-hero__photo" data-reveal>{% if photos %}{% picture photos.0 preset="card" alt=page.title loading="eager" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}<span class="t-bounce" aria-hidden="true">●</span></div>
+  </div>
+</section>
+
+<section class="section t-map-section">
+  <div class="container container--narrow">
+    {% include "core/temp/play/_block.html" with b=p.play.0 bare=True %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container t-two">
+    {% include "core/temp/play/_block.html" with b=p.play.1 bare=True %}
+    {% include "core/temp/play/_block.html" with b=p.play.2 bare=True %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    <aside class="x-note" data-reveal><p class="x-note__title">Для родителей</p><p class="x-note__text">Батут работает с мая по сентябрь. Ферма — круглый год, а животных кормим только вместе с хозяевами: при заселении расскажем, чем их угостить.</p></aside>
+  </div>
+</section>
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Выходные, после которых дети засыпают сами</h2>
+    {% include "core/temp/more/_ask.html" with book=True %}
+  </div>
+</section>
+{% include "core/temp/more/_related.html" with title="Ещё для маленьких" %}
+{% endblock %}

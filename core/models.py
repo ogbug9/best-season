@@ -981,12 +981,16 @@ class TerritoryPage(InProgressMixin, Page):
         services = {" ".join(service.name.split()).lower(): service
                     for service in Service.objects.filter(is_published=True)}
         house_one = Page.objects.live().filter(slug="domik-1").first()
+        from core.temp_pages import tile_page_url
+
         for item in items:
-            item.details_url = item.link_url or own_url
+            # 09.10: у плитки есть своя временная страница — ведём туда, если в CMS нет ссылки.
+            page_url = "" if item.link_url else tile_page_url(item.title)
+            item.details_url = item.link_url or page_url or own_url
             item.details_label = ""
             service = services.get(" ".join(item.title.split()).lower())
             item.service = service if service and service.price else None
-            if "сауна" in item.title.lower() and house_one and not item.link_url:
+            if "сауна" in item.title.lower() and house_one and not item.link_url and not page_url:
                 item.details_url = house_one.get_url(request)
                 item.details_label = "Домик №1 с сауной"
         context["territory"] = items

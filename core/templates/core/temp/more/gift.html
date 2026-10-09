@@ -1,0 +1,54 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags wagtailcore_tags %}
+{% comment %} Подарочный сертификат: конструктор открытки с живым превью и заявкой в Telegram. Ничего не оплачивается на сайте. {% endcomment %}
+{% block content %}
+{% include "core/temp/_head.html" with kicker=p.tagline back_url=parent_url back_label="О нас" %}
+
+<section class="section">
+  <div class="container t-gift" data-gift data-base="{{ gift_base }}">
+    <form class="t-gift__form" data-gift-form>
+      <fieldset class="t-quiz__q t-gift__field"><legend>Повод</legend>
+        {% for occasion in p.occasions %}<label class="filter-chip"><input type="radio" name="occasion" value="{{ occasion }}"{% if forloop.first %} checked{% endif %}> {{ occasion }}</label>{% endfor %}
+      </fieldset>
+      <fieldset class="t-quiz__q t-gift__field"><legend>Что дарим</legend>
+        {% for title, note in p.gifts %}<label class="filter-chip"><input type="radio" name="gift" value="{{ title }}" data-note="{{ note }}"{% if forloop.first %} checked{% endif %}> {{ title }}</label>{% endfor %}
+      </fieldset>
+      <fieldset class="t-quiz__q t-gift__field"><legend>Открытка</legend>
+        {% for code, title in p.themes %}<label class="filter-chip"><input type="radio" name="theme" value="{{ code }}"{% if forloop.first %} checked{% endif %}> {{ title }}</label>{% endfor %}
+      </fieldset>
+      <label class="t-gift__input">Кому <input type="text" name="to" maxlength="40" placeholder="Маше"></label>
+      <label class="t-gift__input">От кого <input type="text" name="from" maxlength="40" placeholder="от Саши"></label>
+      <label class="t-gift__input">Пожелание <textarea name="wish" rows="3" maxlength="160" placeholder="Пусть это будут самые медленные выходные года"></textarea></label>
+      <p class="t-gift__hint">Это черновик открытки: мы оформим сертификат в электронном или бумажном виде. На сайте ничего не оплачивается.</p>
+      {% if gift_base %}<a class="btn btn--primary" href="{{ gift_base }}" data-gift-send rel="noopener" target="_blank">Заказать в Telegram</a>{% endif %}
+    </form>
+    <div class="t-gift__preview" aria-live="polite">
+      <div class="t-card t-card--forest" data-gift-card>
+        <p class="t-card__brand">Лучший сезон</p>
+        <p class="t-card__occasion" data-gift-out="occasion">День рождения</p>
+        <p class="t-card__to" data-gift-out="to">Для вас</p>
+        <p class="t-card__gift"><b data-gift-out="gift">Ночь в домике</b> <span data-gift-out="note">от 6 000 ₽</span></p>
+        <p class="t-card__wish" data-gift-out="wish">Время — самый ценный подарок.</p>
+        <p class="t-card__from" data-gift-out="from"></p>
+        <span class="t-card__stamp" aria-hidden="true">сертификат</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <ol class="t-route">
+      <li class="t-route__stop" data-reveal><span class="t-route__dot" aria-hidden="true"></span><b>Соберите открытку</b><span>повод, подарок и пожелание</span></li>
+      <li class="t-route__stop" data-reveal><span class="t-route__dot" aria-hidden="true"></span><b>Напишите нам</b><span>кнопка отправит черновик в Telegram</span></li>
+      <li class="t-route__stop" data-reveal><span class="t-route__dot" aria-hidden="true"></span><b>Получите сертификат</b><span>электронный или бумажный</span></li>
+      <li class="t-route__stop" data-reveal><span class="t-route__dot" aria-hidden="true"></span><b>Подарите время</b><span>сертификатом можно оплатить проживание</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section"><div class="container container--narrow">{% include "core/temp/more/_faq.html" %}</div></section>
+
+{% page_extras page.slug %}
+{% include "core/temp/more/_related.html" with title="Что ещё можно подарить" %}
+{% endblock %}

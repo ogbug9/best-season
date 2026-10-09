@@ -1,0 +1,52 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags %}
+{% comment %} Костровая зона: ночная страница. Звёзды, свечение огня, колода «Карточки для разговоров» как главное. {% endcomment %}
+{% block body_class %}page-dop page-temp page-more page-more--koster t-night{% endblock %}
+{% block content %}
+<section class="t-night-hero">
+  <span class="t-stars" aria-hidden="true"></span>
+  <div class="container container--narrow center t-night-hero__copy">
+    {% if parent_url %}<a class="t-back t-back--light" href="{{ parent_url }}"><span aria-hidden="true">←</span> Территория</a>{% endif %}
+    {% include "includes/in_progress_note.html" %}
+    <p class="t-kicker">{{ p.tagline }}</p>
+    <h1>{{ page.title }}</h1>
+    <p class="t-night-hero__lead">{{ page.intro }}</p>
+    <span class="t-fire" aria-hidden="true"><i></i><i></i><i></i></span>
+  </div>
+</section>
+
+<section class="section t-night-section">
+  <div class="container container--narrow">
+    {% include "core/temp/play/_block.html" with b=p.play.0 bare=True %}
+  </div>
+</section>
+
+{% if photos %}
+<section class="section t-night-section">
+  <div class="container"><div class="t-night-photo" data-reveal>{% picture photos.0 preset="hero" alt=page.title %}<p>{{ p.sky }}</p></div></div>
+</section>
+{% endif %}
+
+<section class="section t-night-section">
+  <div class="container t-two">
+    {% include "core/temp/play/_block.html" with b=p.play.1 bare=True %}
+    {% include "core/temp/more/_pack.html" with items=p.pack title="Что взять к огню" %}
+  </div>
+</section>
+
+<section class="section t-night-section">
+  <div class="container container--narrow center">
+    <p class="t-night-rule">После 23:00 у домиков — потише. Громкую часть вечера лучше перенести в беседку «Корабль»: она стоит в стороне и никому не мешает.</p>
+  </div>
+</section>
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Вечер у огня начинается с брони</h2>
+    {% include "core/temp/more/_ask.html" with book=True %}
+  </div>
+</section>
+{% include "core/temp/more/_related.html" with title="Тем же вечером" %}
+{% endblock %}

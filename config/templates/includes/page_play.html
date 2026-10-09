@@ -1,0 +1,7 @@
+{% load static %}
+{% comment %} Игры на прежних страницах без макета (core/temp_more.PLAY_OLD): свои стили и скрипт подключаются только здесь. {% endcomment %}
+{% if blocks %}
+<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-play">
+{% for b in blocks %}{% include "core/temp/play/_block.html" with b=b %}{% endfor %}
+<script src="{% static 'js/temp-pages.js' %}?v=20261009-play" defer></script>
+{% endif %}

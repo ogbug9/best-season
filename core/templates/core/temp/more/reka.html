@@ -1,0 +1,40 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags %}
+{% comment %} Река Скнижка: год у воды лентой по месяцам и «Три минуты у воды» — дыхательный таймер. {% endcomment %}
+{% block content %}
+{% include "core/temp/_head.html" with kicker=p.tagline back_url=parent_url back_label="Территория" %}
+
+{% if photos %}
+<section class="section">
+  <div class="container"><div class="t-river-photo" data-reveal>{% picture photos.0 preset="hero" alt=page.title loading="eager" %}<span class="t-river-photo__wave" aria-hidden="true"></span></div></div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Год у реки</h2>
+    <ol class="t-year" data-year>
+      {% for month, name, text in year %}<li class="t-year__m" data-month="{{ month }}" data-reveal><b>{{ name }}</b><span>{{ text }}</span></li>{% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section t-water">
+  <div class="container container--narrow">
+    {% include "core/temp/play/_block.html" with b=p.play.0 bare=True %}
+  </div>
+</section>
+
+{% include "core/temp/play/_block.html" with b=p.play.1 %}
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Проснуться у реки</h2>
+    <p>Дом-лофт №3 — с камином и видом на реку.</p>
+    {% include "core/temp/more/_ask.html" with book=True %}
+  </div>
+</section>
+{% include "core/temp/more/_related.html" with title="У воды и рядом" %}
+{% endblock %}

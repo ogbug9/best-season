@@ -1,0 +1,51 @@
+{% extends "core/temp/more/_base.html" %}
+{% load media_tags content_tags %}
+{% comment %} Финская сауна: тёплая тёмная страница, «сауна против бани», тест и вечер по часам. Ведёт в Домик №1. {% endcomment %}
+{% block content %}
+<section class="t-heat-hero">
+  <div class="container t-heat-hero__grid">
+    <div>
+      {% if parent_url %}<a class="t-back t-back--light" href="{{ parent_url }}"><span aria-hidden="true">←</span> Доп услуги</a>{% endif %}
+      {% include "includes/in_progress_note.html" %}
+      <p class="t-kicker">{{ p.tagline }}</p>
+      <h1>{{ page.title }}</h1>
+      <p class="t-heat-hero__lead">{{ page.intro }}</p>
+      {% if house_url %}<a class="btn btn--primary" href="{{ house_url }}">Домик №1 с сауной</a>{% endif %}
+    </div>
+    <div class="t-heat-hero__photo" data-reveal>{% if photos %}{% picture photos.0 preset="card" alt=page.title loading="eager" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}<span class="t-heat-hero__steam" aria-hidden="true"></span></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    <h2 class="center">Сауна или баня</h2>
+    <table class="t-versus">
+      <thead><tr><th></th><th>Финская сауна</th><th>{% if banya_url %}<a href="{{ banya_url }}">Русская баня</a>{% else %}Русская баня{% endif %}</th></tr></thead>
+      <tbody>{% for label, sauna, banya in p.versus %}<tr data-reveal><th scope="row">{{ label }}</th><td>{{ sauna }}</td><td>{{ banya }}</td></tr>{% endfor %}</tbody>
+    </table>
+  </div>
+</section>
+
+{% for b in p.play %}{% include "core/temp/play/_block.html" with b=b %}{% endfor %}
+
+<section class="section">
+  <div class="container container--narrow">
+    <h2 class="center">Вечер без часов</h2>
+    <p class="center t-route__note">Ну, почти без часов — вот как он может пройти.</p>
+    <ol class="t-evening">{% for time, text in p.evening %}<li data-reveal><time>{{ time }}</time><span>{{ text }}</span></li>{% endfor %}</ol>
+  </div>
+</section>
+
+<section class="section"><div class="container container--narrow">{% include "core/temp/more/_faq.html" %}</div></section>
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Сауна приходит вместе с Домиком №1</h2>
+    <p>Забронируйте Домик №1 — и сауна ваша на всё время проживания.</p>
+    {% include "core/temp/more/_ask.html" with book=True %}
+  </div>
+</section>
+{% include "core/temp/more/_related.html" %}
+{% endblock %}

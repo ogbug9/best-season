@@ -1,0 +1,6 @@
+<div class="t-pack" data-reveal>
+  <h2>{{ title|default:"Что взять" }}</h2>
+  <ul class="t-pack__list" data-pack="{{ page.slug }}">
+    {% for item in items %}<li><label><input type="checkbox" value="{{ forloop.counter }}"> <span>{{ item }}</span></label></li>{% endfor %}
+  </ul>
+</div>

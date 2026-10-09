@@ -1,0 +1,4 @@
+{% comment %} Полоса сезона: 12 месяцев, активные подсвечены, текущий отмечен скриптом. {% endcomment %}
+<ol class="t-months" data-months aria-label="{{ label|default:'Сезон' }}">
+  {% for num, short, on in months %}<li class="t-months__m{% if on %} is-on{% endif %}" data-month="{{ num }}"><span>{{ short }}</span></li>{% endfor %}
+</ol>

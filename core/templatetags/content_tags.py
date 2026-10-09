@@ -110,9 +110,17 @@ def page_extras(key, slot='after'):
     from core.dop_extras import blocks_for
 
     try:
-        return {'blocks': blocks_for(key, slot), 'key': key}
+        return {'blocks': blocks_for(key, slot), 'key': key, 'slot': slot}
     except DatabaseError:
-        return {'blocks': [], 'key': key}
+        return {'blocks': [], 'key': key, 'slot': slot}
+
+
+@register.inclusion_tag('includes/page_play.html')
+def page_play(key):
+    """Игры 09.10 на прежних страницах без макета (core/temp_more.PLAY_OLD)."""
+    from core.temp_pages import play_for
+
+    return {'blocks': play_for(key)}
 
 
 @register.inclusion_tag('includes/guest_quote.html')

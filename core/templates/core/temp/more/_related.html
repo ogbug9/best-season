@@ -1,0 +1,15 @@
+{% load media_tags %}
+{% if others %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">{{ title|default:"Ещё рядом" }}</h2>
+    <ul class="t-others">
+      {% for other in others %}
+        <li class="t-other" data-reveal><a href="{{ other.url|default:'#' }}">
+          <span class="t-other__photo">{% if other.photo %}{% picture other.photo preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</span>
+          <b>{{ other.title }}</b></a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
