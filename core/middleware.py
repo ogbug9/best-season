@@ -1,4 +1,19 @@
+from django.conf import settings
+from django.http import HttpResponsePermanentRedirect
+
 UTM_FIELDS = ('utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term')
+
+
+class CanonicalHostMiddleware:
+    """301 с www и демо-домена на боевой одним прыжком, сразу на https."""
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        canonical = settings.CANONICAL_HOST
+        if canonical and request.get_host().split(':')[0].lower() != canonical:
+            return HttpResponsePermanentRedirect(f'https://{canonical}{request.get_full_path()}')
+        return self.get_response(request)
 
 
 class CampaignMiddleware:

@@ -1283,3 +1283,8 @@
 - FAQ: добавлен конец-призыв «Можно выбирать даты» (точка входа 7).
 
 Не менял, ждёт решения: условия отмены (FAQ 100/50/0 против тарифа «3 суток + 50%»); «Здесь будет видео…» (заглушки `video_slot`, тест `video-slot--empty`); «Добавить к брони» на «Территории» и «Развлечениях» (Контур не предвыбирает услугу); цифры аудитории 227/206/87/5,0/67 вписаны вручную. Проверить: `manage.py test core.tests_dop_stranicy`.
+
+## 09.10.2026 — запуск: домен, заявки, Метрика (только невидимые правки)
+- Метрика: init с `ecommerce: "dataLayer"` (как код из кабинета, счётчик 113533611); `booking_completed`/`hourly_booking_completed` шлют `order_price` и объект `purchase` в dataLayer — только id и суммы. Node 48/48.
+- Домен: `CANONICAL_HOST` (переменная Amvera) — если задана, www и демо получают 301 на `https://<CANONICAL_HOST>` одним прыжком; пусто — поведение прежнее. Тест core.tests_canonical_host.
+- Amvera 09.10: `best-season.online` в приложении не привязан (только демо) — причина 503. Нужно в reg.ru: A @ → 81.26.184.189 (сейчас 158.160.116.199), TXT _amvera → sfnvsd24-best-season, CNAME www → edge.msk0.amvera.tech, TXT _amvera.www → sfnvsd24-best-season; затем «Создать доменное имя» (HTTPS, свой домен) для обоих.

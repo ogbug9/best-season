@@ -22,6 +22,9 @@ BASE_DIR = PROJECT_DIR.parent
 # Ничего секретного не хранится в коде/репозитории (см. договор, раздел 12).
 SECRET_KEY = config("SECRET_KEY", default="dev-insecure-secret-key-change-me")
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1,localhost", cast=Csv())
+# Боевой домен. Если задан, любой другой разрешённый хост (www, демо Amvera)
+# получает 301 на https://CANONICAL_HOST с тем же путём. Пусто — без переадресации.
+CANONICAL_HOST = config("CANONICAL_HOST", default="")
 
 
 # Quick-start development settings - unsuitable for production
@@ -67,6 +70,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "core.middleware.CanonicalHostMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     # HTML страниц — 100+ КБ, прокси Amvera его не сжимает. Статику
