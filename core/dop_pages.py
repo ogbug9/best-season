@@ -16,6 +16,11 @@ TEMPLATES = {
     "rassylka": "core/dop/rassylka.html",
 }
 
+# 09.10: временные страницы питомцев, дневника и услуг (core/temp_pages.py).
+from core.temp_pages import TEMPLATES as _TEMP_TEMPLATES  # noqa: E402
+
+TEMPLATES.update(_TEMP_TEMPLATES)
+
 # Сценарии «Чем заняться». Шаг: (время, заголовок, строка, фото, слаг услуги).
 # Фото: ("image", точное название) или ("territory", начало названия плитки).
 SCENARIOS = [
@@ -171,6 +176,10 @@ def context_for(page, request):
     from core.models import TerritoryItem
     from services.models import Service
 
+    from core import temp_pages
+
+    if page.slug in temp_pages.SLUGS:
+        return temp_pages.context(page, request)
     slug = page.slug
     services = {service.slug: service for service in Service.objects.filter(is_published=True)}
     if slug == "chem-zanyatsya":

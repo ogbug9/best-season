@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags media_tags content_tags %}
+{% block body_class %}page-dop page-temp page-pets{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-temp">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261009-temp" defer></script>{% endblock %}
+
+{% block content %}
+{% include "core/temp/_head.html" with kicker="Ищут дом" %}
+{% page_extras page.slug "top" %}
+
+<section class="section">
+  <div class="container">
+    <ul class="t-pets">
+      {% for pet in pets %}
+        <li class="t-pet t-pet--{{ pet.tone }}" data-reveal>
+          <h2 class="t-pet__name">{{ pet.name }}</h2>
+          <div class="t-pet__photo">{% if pet.photo %}{% picture pet.photo preset="card" alt=pet.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+          <p class="t-pet__traits">{{ pet.traits|join:" × " }}</p>
+          <p class="t-pet__motto">{{ pet.motto }}</p>
+          {% if pet.url %}<a class="btn btn--outline t-pet__more" href="{{ pet.url }}">Познакомиться</a>{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section t-quiz-section">
+  <div class="container container--narrow">
+    <form class="t-quiz" data-quiz>
+      <p class="t-kicker">Тест на 10 секунд</p>
+      <h2 class="t-quiz__title">Кто вы из пушистиков?</h2>
+      {% for question, a, b in quiz %}
+        <fieldset class="t-quiz__q">
+          <legend>{{ question }}</legend>
+          <label class="filter-chip"><input type="radio" name="q{{ forloop.counter }}" value="0" required> {{ a }}</label>
+          <label class="filter-chip"><input type="radio" name="q{{ forloop.counter }}" value="1"> {{ b }}</label>
+        </fieldset>
+      {% endfor %}
+      <button type="submit" class="btn btn--primary">Узнать</button>
+      {% for pet in pets %}
+        <p class="t-quiz__result" data-quiz-result="{{ forloop.counter0 }}" hidden aria-live="polite">
+          Вы — <b>{{ pet.name }}</b>! {{ pet.traits|join:", "|lower }}.{% if pet.url %} <a href="{{ pet.url }}">Познакомиться с {{ pet.ins }} →</a>{% endif %}
+        </p>
+      {% endfor %}
+    </form>
+  </div>
+</section>
+
+{% page_story page.slug %}
+
+<section class="section t-neighbours-section">
+  <div class="container">
+    <div class="t-split">
+      <div class="t-split__media" data-reveal>{% if farm_photo %}{% picture farm_photo preset="card" alt="Контактная ферма" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+      <div class="t-split__text" data-reveal>
+        <p class="t-kicker">Соседи</p>
+        <h2>Кого ещё вы встретите</h2>
+        {% for group, names in neighbours.items %}
+          <div class="t-neighbours__group"><p>{{ group }}</p><ul class="t-tags">{% for name in names %}<li>{{ name }}</li>{% endfor %}</ul></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% for item in feeding_faq %}
+<section class="section x-note-section">
+  <div class="container">
+    <aside class="x-note" data-reveal>
+      <p class="x-note__title">{{ item.question }}</p>
+      <div class="x-note__text">{{ item.answer|richtext }}</div>
+    </aside>
+  </div>
+</section>
+{% endfor %}
+
+<section class="section">
+  <div class="container container--narrow">
+    <div class="t-paw-card" data-reveal>
+      <span class="t-paw-card__icon" aria-hidden="true">🐾</span>
+      <div>
+        <h2>Ваш питомец тоже может приехать</h2>
+        <p>Мы с огромной любовью относимся к четвероногим путешественникам. Доплата — {{ pet_small_fee }} ₽ (в холке до 45 см) или {{ pet_large_fee }} ₽ (выше). Предупредите при бронировании.</p>
+        {% if rules_url %}<a class="t-link" href="{{ rules_url }}">Правила бронирования →</a>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Хотите забрать котика домой?</h2>
+    <p>Напишите нам — расскажем о характере, привычках и договоримся о встрече.</p>
+    <p class="split__actions">
+      {% if ask_url %}<a class="btn btn--primary" href="{{ ask_url }}" rel="noopener" target="_blank">Написать в Telegram</a>{% endif %}
+      <button type="button" class="btn btn--outline" data-booking-open data-entry-point="7" data-entry-page="{{ page.slug }}">{% cms_text "booking_cta-5d9d7f118153" %}</button>
+    </p>
+  </div>
+</section>
+{% endblock %}

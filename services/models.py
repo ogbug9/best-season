@@ -60,6 +60,13 @@ class Service(models.Model):
                 return item.image
         return None
 
+    @cached_property
+    def page_url(self):
+        """Отдельная страница услуги (баня, беседка, фотосессии), если заведена."""
+        from core.temp_pages import service_page_url
+
+        return service_page_url(self.slug)
+
     @property
     def price_display(self):
         """Цена с неразрывным пробелом в разряде тысяч — как в макете."""

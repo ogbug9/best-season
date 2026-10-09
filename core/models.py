@@ -778,6 +778,9 @@ class ContentPage(InProgressMixin, Page):
                                about_pets=context['about']['pets'], about_diary=context['about']['diary'])
             # 06.10: пока нет ролика, первый экран берёт первый кадр первого экрана главной.
             context["about_hero_image"] = home_hero_image()
+            from core.temp_pages import link_about
+
+            link_about(context)
             context["about_contacts"] = Page.objects.live().descendant_of(self).filter(slug="kontakty").first()
             contacts = context["about_contacts"]
             # Reuse the CMS map from Contacts, or the approved organisation

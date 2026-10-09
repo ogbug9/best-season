@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags media_tags content_tags %}
+{% block body_class %}page-dop page-temp page-pet{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-temp">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261009-temp" defer></script>{% endblock %}
+
+{% block content %}
+{% include "core/temp/_head.html" with kicker="Ищет дом" back_url=pets_url back_label="Все пушистики" %}
+{% page_extras page.slug "top" %}
+
+<section class="section">
+  <div class="container">
+    <div class="t-passport t-passport--{{ pet.tone }}">
+      <div class="t-passport__photo" data-reveal>{% if pet.photo %}{% picture pet.photo preset="about" alt=pet.name loading="eager" %}{% else %}<span class="ph ph--tall" aria-hidden="true"></span>{% endif %}</div>
+      <div class="t-passport__card" data-reveal>
+        <p class="t-passport__label">Паспорт пушистика</p>
+        <p class="t-passport__name">{{ pet.name }}</p>
+        <ul class="t-tags t-tags--light">{% for trait in pet.traits %}<li>{{ trait }}</li>{% endfor %}</ul>
+        <p class="t-passport__motto">«{{ pet.motto }}»</p>
+        <dl class="t-meters">
+          {% for label, level in pet.meters %}
+            <div class="t-meter"><dt>{{ label }}</dt><dd><span class="t-meter__bar" style="--level: {{ level }}" role="img" aria-label="{{ level }} из 5"></span></dd></div>
+          {% endfor %}
+        </dl>
+        <p class="t-passport__note">Шкала — на глазок команды, а не ветеринарная карта.</p>
+        <div class="t-pat" data-pat data-pat-key="{{ pet.slug }}">
+          <button type="button" class="btn btn--primary t-pat__btn" data-pat-btn>Погладить {{ pet.acc }}</button>
+          <output class="t-pat__count" data-pat-count aria-live="polite"></output>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow t-story">
+    {% for para in pet.story %}<p{% if forloop.first %} class="t-dropcap"{% endif %} data-reveal>{{ para }}</p>{% endfor %}
+    <div class="t-likes" data-reveal>
+      <p class="t-kicker">Обожает</p>
+      <ul class="t-tags">{% for like in pet.likes %}<li>{{ like }}</li>{% endfor %}</ul>
+    </div>
+  </div>
+</section>
+
+{% page_story page.slug %}
+
+<section class="section x-path-section">
+  <div class="container">
+    <h2 class="x-path__title">Как забрать {{ pet.acc }} домой</h2>
+    <ol class="x-path">
+      {% for title, text in pet_steps %}<li class="x-path__step" data-reveal><b>{{ title }}</b><span>{{ text }}</span></li>{% endfor %}
+    </ol>
+  </div>
+</section>
+
+{% page_extras page.slug %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Познакомимся?</h2>
+    <p>Расскажем о характере и привычках, ответим на вопросы и договоримся о встрече.</p>
+    <p class="split__actions">
+      {% if ask_url %}<a class="btn btn--primary" href="{{ ask_url }}" rel="noopener" target="_blank">Написать в Telegram</a>{% endif %}
+      <button type="button" class="btn btn--outline" data-share data-share-title="{{ pet.name }} ищет дом">Поделиться</button>
+    </p>
+  </div>
+</section>
+
+{% if others %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Ещё ищут дом</h2>
+    <ul class="t-pets t-pets--small">
+      {% for other in others %}
+        <li class="t-pet t-pet--{{ other.tone }}" data-reveal>
+          <h3 class="t-pet__name">{{ other.name }}</h3>
+          <div class="t-pet__photo">{% if other.photo %}{% picture other.photo preset="card" alt=other.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+          <p class="t-pet__traits">{{ other.traits|join:" × " }}</p>
+          {% if other.url %}<a class="btn btn--outline t-pet__more" href="{{ other.url }}">Познакомиться</a>{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

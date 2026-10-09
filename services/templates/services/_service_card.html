@@ -16,7 +16,7 @@
   </div>
   <div class="house__overlay">
     <div class="house__info"><{% if level == "2" %}h2{% else %}h3{% endif %} class="house__title">{{ service.name }}</{% if level == "2" %}h2{% else %}h3{% endif %}>{% if service.short_description|filled %}<p class="house__meta">{{ service.short_description }}</p>{% endif %}{% if level == "2" %}{% include "services/_service_extra.html" %}{% endif %}</div>
-    <a class="btn btn--outline house__more" href="{{ details_url }}#{% if service.description or service.price_note %}service-details-{% else %}service-{% endif %}{{ service.slug }}">{% cms_text "_service_card-59589fe2a549" %}</a>
+    <a class="btn btn--outline house__more" href="{% if service.page_url %}{{ service.page_url }}{% else %}{{ details_url }}#{% if service.description or service.price_note %}service-details-{% else %}service-{% endif %}{{ service.slug }}{% endif %}">{% cms_text "_service_card-59589fe2a549" %}</a>
   </div>
   {% if service.is_hourly %}<button type="button" class="btn btn--primary house__book" data-booking-open data-entry-point="5">{% cms_text "_service_card-5d9d7f118153" %}</button>{% endif %}
 </li>

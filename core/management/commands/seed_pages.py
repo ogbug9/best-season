@@ -242,6 +242,12 @@ LEGAL = [
 # к заказчику, молча выкидывать страницу нельзя.
 NOT_IN_MENU = {"kak-dobratsya"}
 
+# 09.10: временные страницы (питомцы, дневник, баня, беседки, фотосессии) —
+# по ссылкам со страниц, в шапку не выводятся. Данные — core/temp_pages.py.
+from core.temp_pages import SLUGS as TEMP_SLUGS, TREE as TEMP_TREE  # noqa: E402
+
+NOT_IN_MENU = NOT_IN_MENU | TEMP_SLUGS
+
 # Порядок пунктов в шапке — точно как в макете. Ключ None означает верхний
 # уровень, остальные ключи — слаги разделов с выпадающими списками.
 MENU_ORDER = {
@@ -308,6 +314,7 @@ class Command(BaseCommand):
             for node in TREE:
                 self.create_node(home, node)
             self.create_legal(home)
+            self.create_temp()
             if not self.create_only:
                 self.seed_legal_settings(site)
                 self.hide_duplicates()
@@ -528,6 +535,16 @@ class Command(BaseCommand):
         if page.get_parent().pk != parent.pk and not self.dry:
             page.move(parent, pos="last-child")
             self.stdout.write(f"  перенесена: {page.title} → «{parent.title}»")
+
+    def create_temp(self):
+        """Временные страницы с плашкой «Раздел дополняется»; родитель — по слагу."""
+        model = get_model("core.ContentPage")
+        for parent_slug, slug, title, intro in TEMP_TREE:
+            parent = Page.objects.filter(slug=parent_slug).first()
+            if parent is None:
+                self.stderr.write(f"Нет раздела «{parent_slug}» для /{slug}/, пропускаю")
+                continue
+            self.ensure(parent, model, slug, title, {"intro": intro, "in_progress": True}, in_menu=False)
 
     def create_legal(self, home):
         model = get_model("core.ContentPage")

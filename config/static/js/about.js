@@ -2,6 +2,16 @@
   'use strict';
   var small = window.matchMedia('(max-width: 699px)');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // Hero video: при «уменьшить движение» стоит на заставке.
+  var heroVideo = document.querySelector('[data-about-video]');
+  function syncVideo() {
+    if (!heroVideo) return;
+    if (reduced.matches) { heroVideo.pause(); return; }
+    var play = heroVideo.play();
+    if (play && play.catch) play.catch(function () {});
+  }
+  syncVideo();
+  reduced.addEventListener('change', syncVideo);
   // The 1.4 MB desktop artwork is fetched only where it is shown (≥700 px), never on phones.
   var art = document.querySelector('[data-about-art]');
   var wide = window.matchMedia('(min-width: 700px)');

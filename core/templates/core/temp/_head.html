@@ -1,0 +1,14 @@
+{% load wagtailcore_tags layout_tags content_tags %}
+{% comment %} Шапка временной страницы (core/temp_pages.py): «назад», плашка «дополняется», кикер, H1, вступление. {% endcomment %}
+<section class="section page-head t-head">
+  <div class="container container--narrow">
+    {% if back_url %}<a class="t-back" href="{{ back_url }}"><span aria-hidden="true">←</span> {{ back_label }}</a>{% endif %}
+    {% include "includes/in_progress_note.html" %}
+    {% if kicker %}<p class="t-kicker">{{ kicker }}</p>{% endif %}
+    <h1>{{ page.title|heading_breaks }}</h1>
+    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+{% if page.body|filled %}
+<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
+{% endif %}

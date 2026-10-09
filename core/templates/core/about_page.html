@@ -3,8 +3,8 @@
 {% load content_tags %}
 {% load static wagtailcore_tags layout_tags media_tags %}
 {% block body_class %}page-about{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261006-hero">{% endblock %}
-{% block extra_js %}<script src="{% static 'js/vendor/swiper-12.0.3.min.js' %}" defer></script><script src="{% static 'js/about.js' %}?v=20261006-final" defer></script>{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261009-video">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/vendor/swiper-12.0.3.min.js' %}" defer></script><script src="{% static 'js/about.js' %}?v=20261009-video" defer></script>{% endblock %}
 {% block page_background %}
 <div class="about-background" aria-hidden="true" data-about-art="{% static 'img/about/about-art-desktop.svg' %}">
 {% include 'core/includes/about-art-mobile.svg' %}
@@ -12,7 +12,8 @@
 {% endblock %}
 {% block content %}
 <section class="about-hero">
-  {% if about_hero_image %}<div class="about-hero__media" aria-hidden="true">{% picture about_hero_image preset="hero" alt="" loading="eager" mobile_preset="hero_mobile" %}</div>{% endif %}
+  {% comment %} 09.10: фон первого экрана — ролик команды (IMG_0641, сжат в H.264 без звука). {% endcomment %}
+  <div class="about-hero__media" aria-hidden="true"><video class="about-hero__video" autoplay muted loop playsinline preload="auto" poster="{% static 'video/about-hero-poster.webp' %}" data-about-video><source src="{% static 'video/about-hero-mobile.mp4' %}" type="video/mp4" media="(max-width: 899px)"><source src="{% static 'video/about-hero.mp4' %}" type="video/mp4"></video></div>
   <div class="container"><h1>{{ about.hero_title|linebreaksbr }}</h1><p>{{ about.hero_text|about_hero_copy }}</p></div>
 </section>
 <section class="about-history container" aria-label="История Лучшего сезона">
@@ -47,13 +48,13 @@
 <section class="container about-section about-pets" aria-labelledby="pets-title">
   <h2 id="pets-title" class="section__title">{{ about.pets_title|linebreaksbr }}</h2>
   <p class="about-section__lead"><span class="about-lead__desktop">{{ about.pets_text|linebreaksbr }}</span><span class="about-lead__mobile">{{ about.pets_text|about_mobile_paragraphs:'pets' }}</span></p>
-  <div class="about-pets__grid">{% for pet in about_pets %}<article class="about-pet{% if forloop.last %} about-pet--olive{% endif %}"><h3>{{ pet.name }}</h3>{% include 'core/includes/about_photo.html' with photo=pet %}<p>{{ pet.copy|linebreaksbr }}</p><details class="about-pet__details"><summary class="btn btn--outline">{% cms_text "about_page-6ed487146e23" %}</summary><div><p>{{ pet.details }}</p>{% if about_contacts %}<a href="{% pageurl about_contacts %}">{% cms_text "about_page-c1f51c3d5260" %}</a>{% endif %}</div></details></article>{% endfor %}</div>
-  <p class="about-section__action">{% if about_contacts %}<a class="btn btn--outline" href="{% pageurl about_contacts %}">{% cms_text "about_page-8b1c29b112a0" %} <span aria-hidden="true">→</span></a>{% endif %}</p>
+  <div class="about-pets__grid">{% for pet in about_pets %}<article class="about-pet{% if forloop.last %} about-pet--olive{% endif %}"><h3>{{ pet.name }}</h3>{% include 'core/includes/about_photo.html' with photo=pet %}<p>{{ pet.copy|linebreaksbr }}</p>{% if pet.page_url %}<div class="about-pet__details"><a class="btn btn--outline" href="{{ pet.page_url }}">{% cms_text "about_page-6ed487146e23" %}</a></div>{% else %}<details class="about-pet__details"><summary class="btn btn--outline">{% cms_text "about_page-6ed487146e23" %}</summary><div><p>{{ pet.details }}</p>{% if about_contacts %}<a href="{% pageurl about_contacts %}">{% cms_text "about_page-c1f51c3d5260" %}</a>{% endif %}</div></details>{% endif %}</article>{% endfor %}</div>
+  <p class="about-section__action">{% if about_pets_url %}<a class="btn btn--outline" href="{{ about_pets_url }}">{% cms_text "about_page-8b1c29b112a0" %} <span aria-hidden="true">→</span></a>{% elif about_contacts %}<a class="btn btn--outline" href="{% pageurl about_contacts %}">{% cms_text "about_page-8b1c29b112a0" %} <span aria-hidden="true">→</span></a>{% endif %}</p>
 </section>
 <section class="container about-section about-diary" aria-labelledby="diary-title">
   <h2 id="diary-title" class="section__title">{{ about.diary_title|linebreaksbr }}</h2><p class="about-section__lead"><span class="about-lead__desktop">{{ about.diary_text|linebreaksbr }}</span><span class="about-lead__mobile">{{ about.diary_text|about_mobile_paragraphs:'diary' }}</span></p>
-  <div class="about-carousel" data-about-carousel><ol class="about-track" tabindex="0" aria-label="Дневник Сезона" data-about-track>{% for item in about_diary %}<li class="about-entry">{% if item.url %}<a href="{% marketing_url item.url 'about_diary' %}" target="_blank" rel="noopener">{% endif %}{% include 'core/includes/about_photo.html' with photo=item %}<h3>{{ item.title|linebreaksbr }}</h3>{% if item.url %}</a>{% endif %}</li>{% endfor %}</ol><div class="about-dots" data-about-dots hidden aria-label="Выбор записи дневника"></div></div>
-  <p class="about-section__action">{% if settings.core.SiteSettings.vk_url %}<a class="btn btn--outline" href="{% marketing_url settings.core.SiteSettings.vk_url 'about_page' %}" target="_blank" rel="noopener">{% cms_text "about_page-bd8ca31e7f18" %} <span aria-hidden="true">→</span></a>{% elif about_contacts %}<a class="btn btn--outline" href="{% pageurl about_contacts %}">{% cms_text "about_page-bd8ca31e7f18" %} <span aria-hidden="true">→</span></a>{% endif %}</p>
+  <div class="about-carousel" data-about-carousel><ol class="about-track" tabindex="0" aria-label="Дневник Сезона" data-about-track>{% for item in about_diary %}<li class="about-entry">{% if item.url %}<a href="{% marketing_url item.url 'about_diary' %}" target="_blank" rel="noopener">{% elif item.page_url %}<a href="{{ item.page_url }}">{% endif %}{% include 'core/includes/about_photo.html' with photo=item %}<h3>{{ item.title|linebreaksbr }}</h3>{% if item.url or item.page_url %}</a>{% endif %}</li>{% endfor %}</ol><div class="about-dots" data-about-dots hidden aria-label="Выбор записи дневника"></div></div>
+  <p class="about-section__action">{% if about_diary_url %}<a class="btn btn--outline" href="{{ about_diary_url }}">{% cms_text "about_page-bd8ca31e7f18" %} <span aria-hidden="true">→</span></a>{% elif settings.core.SiteSettings.vk_url %}<a class="btn btn--outline" href="{% marketing_url settings.core.SiteSettings.vk_url 'about_page' %}" target="_blank" rel="noopener">{% cms_text "about_page-bd8ca31e7f18" %} <span aria-hidden="true">→</span></a>{% elif about_contacts %}<a class="btn btn--outline" href="{% pageurl about_contacts %}">{% cms_text "about_page-bd8ca31e7f18" %} <span aria-hidden="true">→</span></a>{% endif %}</p>
 </section>
 <section class="container about-section about-map" aria-labelledby="map-title"><h2 id="map-title" class="section__title">{{ about.map_title|linebreaksbr }}</h2><p class="about-section__lead"><span class="about-lead__desktop">{{ about.map_text|linebreaksbr }}</span><span class="about-lead__mobile">{{ about.map_text|about_mobile_paragraphs:'map' }}</span></p><div class="about-map__placeholder"><iframe class="about-map__frame" src="{{ about_map_embed_url }}" title="Лучший сезон на Яндекс.Картах" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></section>
 </div>

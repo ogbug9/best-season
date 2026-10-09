@@ -1,0 +1,13 @@
+{% load marketing_tags %}
+{% with s=settings.core.SiteSettings %}
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Подпишитесь, чтобы не пропустить</h2>
+    <p>Новые истории, сезонные акции и жизнь фермы — сначала в наших каналах.</p>
+    <p class="split__actions diary__actions">
+      {% if s.telegram_url %}<a class="btn btn--primary" href="{% marketing_url s.telegram_url 'dnevnik' %}" rel="noopener" target="_blank">Подписаться в Telegram</a>{% endif %}
+      {% if s.vk_url %}<a class="btn btn--outline" href="{% marketing_url s.vk_url 'dnevnik' %}" rel="noopener" target="_blank">Мы во ВКонтакте</a>{% endif %}
+    </p>
+  </div>
+</section>
+{% endwith %}

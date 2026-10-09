@@ -188,3 +188,9 @@ def blocks_for(key, slot="after"):
             block.update(_radius_block())
         blocks.append(block)
     return blocks
+
+
+# 09.10: блоки временных страниц (питомцы, дневник, услуги) — core/temp_pages.py.
+from core.temp_pages import EXTRAS as _TEMP_EXTRAS  # noqa: E402
+
+EXTRAS.update(_TEMP_EXTRAS)

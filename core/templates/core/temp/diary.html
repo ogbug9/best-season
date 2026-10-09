@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags media_tags content_tags marketing_tags %}
+{% block body_class %}page-dop page-temp page-diary-index{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-temp">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261009-temp" defer></script>{% endblock %}
+
+{% block content %}
+{% include "core/temp/_head.html" with kicker="Новости и истории" %}
+{% page_extras page.slug "top" %}
+
+<section class="section">
+  <div class="container">
+    <div class="chips t-chips" data-chips="diary" role="group" aria-label="Рубрика">
+      <button type="button" class="filter-chip" data-chip="">Все</button>
+      {% for code, label in filters %}<button type="button" class="filter-chip" data-chip="{{ code }}">{{ label }}</button>{% endfor %}
+    </div>
+    <ul class="t-entries" data-chips-for="diary">
+      {% for entry in entries %}
+        <li class="t-entry{% if forloop.first %} t-entry--wide{% endif %}" data-tags="{{ entry.tag }}" data-reveal>
+          <a class="t-entry__link" href="{{ entry.url|default:'#' }}">
+            <span class="t-entry__photo">{% if entry.photo %}{% picture entry.photo preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</span>
+            <span class="t-entry__meta">{{ entry.rubric }} · {{ entry.minutes }} мин чтения</span>
+            <span class="t-entry__title">{{ entry.title }}</span>
+            <span class="t-entry__lead">{{ entry.lead }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <p data-chips-empty="diary" hidden>В этой рубрике пока пусто — скоро напишем.</p>
+  </div>
+</section>
+
+{% page_story page.slug %}
+
+{% if channel_posts %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Свежее в канале</h2>
+    <ul class="diary-posts">
+      {% for post in channel_posts %}
+        <li class="diary-posts__item" data-reveal>
+          <a class="diary-posts__link" href="{{ post.url }}" rel="noopener" target="_blank">
+            {% if post.image_url %}<img class="diary-posts__image" src="{{ post.image_url }}" alt="" loading="lazy" referrerpolicy="no-referrer">{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+            <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"j E Y" }}</time>
+            <span>{{ post.first_line }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{% if highlights %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Лучшее из канала</h2>
+    <ul class="highlights">
+      {% for post in highlights %}
+        <li class="highlights__item" data-reveal>
+          <a href="{{ post.url }}" rel="noopener" target="_blank">
+            <time datetime="{{ post.date|date:'Y-m-d' }}">{{ post.date|date:"j E Y" }}</time>
+            <b>{{ post.title }}</b>
+            <span>{{ post.text }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container container--narrow">
+    <h2 class="center">Рубрики</h2>
+    <ul class="rubrics">
+      {% for tag, text in rubrics %}<li data-reveal><b>{{ tag }}</b><span>{{ text }}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% page_extras page.slug %}
+
+{% include "core/temp/_subscribe.html" %}
+{% endblock %}

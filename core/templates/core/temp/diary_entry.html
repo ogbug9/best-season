@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags media_tags content_tags layout_tags %}
+{% block body_class %}page-dop page-temp page-diary-entry{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261009-temp">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261009-temp" defer></script>{% endblock %}
+
+{% block content %}
+<div class="t-progress" aria-hidden="true"><span data-read-progress></span></div>
+<article class="t-article">
+  <section class="section page-head t-head">
+    <div class="container container--narrow">
+      {% if diary_url %}<a class="t-back" href="{{ diary_url }}"><span aria-hidden="true">←</span> Дневник Сезона</a>{% endif %}
+      {% include "includes/in_progress_note.html" %}
+      <p class="t-kicker">{{ entry.rubric }} · {{ entry.minutes }} мин чтения</p>
+      <h1>{{ page.title|heading_breaks }}</h1>
+      <p class="section__lead">{{ entry.lead }}</p>
+    </div>
+  </section>
+
+  {% if entry.photo %}
+  <div class="container t-article__cover" data-reveal>{% picture entry.photo preset="about" alt=page.title loading="eager" %}</div>
+  {% endif %}
+
+  {% page_extras page.slug "top" %}
+
+  <section class="section">
+    <div class="container container--narrow t-story">
+      {% for para in entry.paras %}<p{% if forloop.first %} class="t-dropcap"{% endif %} data-reveal>{{ para }}</p>{% if forloop.first and entry.quote %}<blockquote class="t-pullquote" data-reveal>{{ entry.quote }}</blockquote>{% endif %}{% endfor %}
+      {% if page.body|filled %}<div class="prose">{{ page.body|richtext }}</div>{% endif %}
+    </div>
+  </section>
+
+  {% if entry.countdown %}
+  <section class="section">
+    <div class="container container--narrow">
+      <div class="t-countdown" data-countdown data-reveal>
+        <p class="t-kicker">До Нового года</p>
+        <p class="t-countdown__value"><b data-countdown-days>—</b> <span data-countdown-label>дней</span></p>
+        <p class="t-countdown__hint">Новогодние даты разбирают первыми.</p>
+        <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="{{ page.slug }}">{% cms_text "booking_cta-5d9d7f118153" %}</button>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="section x-numbers-section">
+    <div class="container">
+      <dl class="x-numbers">
+        {% for value, label in entry.facts %}<div class="x-numbers__item" data-reveal><dt>{{ value }}</dt><dd>{{ label }}</dd></div>{% endfor %}
+      </dl>
+    </div>
+  </section>
+
+  {% if entry.review_phrase %}{% guest_quote entry.review_phrase %}{% endif %}
+  {% page_story page.slug %}
+  {% page_extras page.slug %}
+
+  <div class="container container--narrow t-article__tools">
+    <button type="button" class="btn btn--outline" data-share data-share-title="{{ page.title }}">Поделиться</button>
+    <nav class="t-pager" aria-label="Другие записи">
+      {% if prev %}<a class="t-pager__link" href="{{ prev.url }}"><span>← Раньше</span>{{ prev.title }}</a>{% endif %}
+      {% if next %}<a class="t-pager__link t-pager__link--next" href="{{ next.url }}"><span>Дальше →</span>{{ next.title }}</a>{% endif %}
+    </nav>
+  </div>
+</article>
+
+{% if others %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Ещё из дневника</h2>
+    <ul class="t-entries">
+      {% for other in others %}
+        <li class="t-entry" data-reveal>
+          <a class="t-entry__link" href="{{ other.url|default:'#' }}">
+            <span class="t-entry__photo">{% if other.photo %}{% picture other.photo preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</span>
+            <span class="t-entry__meta">{{ other.rubric }} · {{ other.minutes }} мин чтения</span>
+            <span class="t-entry__title">{{ other.title }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{% include "core/temp/_subscribe.html" %}
+{% endblock %}

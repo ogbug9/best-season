@@ -218,3 +218,9 @@ STORIES = {
         },
     ],
 }
+
+
+# 09.10: рассказы временных страниц — core/temp_pages.py.
+from core.temp_pages import STORIES as _TEMP_STORIES  # noqa: E402
+
+STORIES.update(_TEMP_STORIES)
