@@ -525,3 +525,7 @@
 /* Плашка «в разработке» на тёмных шапках волны 2 */
 :is(.t-water-hero, .t-field-hero, .t-heat-hero, .t-night-hero) .dev-strip { margin: 0 0 14px; background: rgb(247 240 230 / 92%); border-color: transparent; color: var(--c-deep); }
 .t-night-hero .dev-strip { margin-inline: auto; }
+
+/* 20.10: контраст ≥ 4,5 у мелких подписей (в т. ч. на персиковых карточках). */
+.t-kicker, .t-facts__label, .t-easel__note { color: #5F5B3E; }
+.t-night main .t-kicker { color: var(--c-peach-strong); }

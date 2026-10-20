@@ -1158,12 +1158,20 @@ class DiaryIndexPage(InProgressMixin, Page):
         from django.core.paginator import Paginator
 
         context = super().get_context(request, *args, **kwargs)
+        from django.core.paginator import InvalidPage
+        from django.http import Http404
+        from core.templatetags.media_tags import rendition_plan
+
         paginator = Paginator(self.entries(), self.PER_PAGE)
-        if request.GET.get("page") == "all":
+        # prepare_site_images рендерит индекс без ?page — пусть видит все карточки.
+        if request.GET.get("page") == "all" or rendition_plan.get() is not None:
             context.update(entries=paginator.object_list, paginator=paginator, show_all=True,
                            page_numbers=paginator.page_range)
             return context
-        page_obj = paginator.get_page(request.GET.get("page"))
+        try:
+            page_obj = paginator.page(request.GET.get("page") or 1)
+        except InvalidPage:
+            raise Http404("Нет такой страницы дневника")
         context.update(entries=page_obj.object_list, page_obj=page_obj, paginator=paginator,
                        page_numbers=list(paginator.get_elided_page_range(page_obj.number, on_each_side=2, on_ends=1)))
         return context
@@ -1215,7 +1223,11 @@ class DiaryEntryPage(Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         diary = self.get_parent().specific
-        context.update(diary=diary, others=diary.entries().exclude(pk=self.pk)[:3])
+        entries = list(diary.entries())
+        index = next((i for i, entry in enumerate(entries) if entry.pk == self.pk), None)
+        context.update(diary=diary, others=diary.entries().exclude(pk=self.pk)[:3],
+                       newer=entries[index - 1] if index else None,
+                       older=entries[index + 1] if index is not None and index + 1 < len(entries) else None)
         return context
 
     class Meta:

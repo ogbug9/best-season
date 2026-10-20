@@ -51,8 +51,37 @@ class DiaryTests(TestCase):
         self.assertIn('href="?page=2"', first)
         second = self.client.get(self.index.url + "?page=2").content.decode()
         self.assertEqual(second.count('class="diary-card"'), 2)
+        self.assertIn('/o-nas/dnevnik/?page=2">', second)
         everything = self.client.get(self.index.url + "?page=all").content.decode()
         self.assertEqual(everything.count('class="diary-card"'), 11)
+
+    def test_bad_page_numbers_are_404(self):
+        for value in ("abc", "0", "999"):
+            self.assertEqual(self.client.get(self.index.url, {"page": value}).status_code, 404, value)
+
+    def test_rendition_plan_sees_cards_beyond_first_page(self):
+        from django.test import RequestFactory
+        from core.templatetags.media_tags import rendition_plan
+
+        for n in range(10):
+            self.add_entry(f"plan-{n}", datetime.date(2020, 1, n + 1))
+        token = rendition_plan.set(set())
+        try:
+            context = self.index.get_context(RequestFactory().get(self.index.url))
+        finally:
+            rendition_plan.reset(token)
+        self.assertEqual(len(context["entries"]), 13)
+
+    def test_entry_without_cover_renders(self):
+        page = self.add_entry("bez-foto", datetime.date(2020, 1, 1))
+        response = self.client.get(page.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('"@type": "Article"', response.content.decode())
+
+    def test_bind_short_words_escapes(self):
+        from core.templatetags.layout_tags import bind_short_words
+
+        self.assertEqual(str(bind_short_words('Мы <b> & "я"')), 'Мы&nbsp;&lt;b&gt; &amp; &quot;я&quot;')
 
     def test_entry_page_seo_and_breadcrumbs(self):
         page = DiaryEntryPage.objects.get(slug="ayka")

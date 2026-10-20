@@ -2,8 +2,9 @@
 {% load static wagtailcore_tags %}
 {% comment %} «Дневник Сезона» — макет News (1440×2313), 20.10. Мобильная версия — по образцу блока «Дневник» на «О нас». {% endcomment %}
 {% block body_class %}page-diary page-diary-index{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/diary.css' %}?v=20261020-diary">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/diary.css' %}?v=20261020-b">{% endblock %}
 
+{% block canonical %}{{ canonical }}{% if page_obj and page_obj.number > 1 %}?page={{ page_obj.number }}{% elif show_all %}?page=all{% endif %}{% endblock %}
 {% block content %}
 <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-dnevnik-top.svg' %}"><img class="home-bg__layer home-bg__layer--diary-top" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1440" height="275" alt="" decoding="async"></picture></div>
 <section class="diary-index">

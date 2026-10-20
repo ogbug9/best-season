@@ -27,11 +27,11 @@
       <h2>Сап — это не спорт. Это пауза</h2>
       <p>Скнижка спокойная и неширокая: здесь не гонятся за скоростью. Отплывите от берега, перестаньте грести — и через минуту река сама начнёт показывать своих жителей.</p>
     </div>
-    {% include "core/temp/play/_block.html" with b=p.play.0 bare=True %}
+    {% include "core/temp/play/_block.html" with b=play.0 bare=True %}
   </div>
 </section>
 
-{% include "core/temp/play/_block.html" with b=p.play.1 %}
+{% include "core/temp/play/_block.html" with b=play.1 %}
 
 {% if p.sun %}
 <section class="section">

@@ -58,6 +58,9 @@ class ContentSafetyTests(TestCase):
                 plan = prepare.call_args[0][0]
                 self.assertIn((image.pk, 'width-360|format-webp'), plan)
                 self.assertIn((image.pk, 'fill-640x1387|format-webp|webpquality-82'), plan)
+                # 20.10: просмотрщик и превью соцсетей готовятся сразу после замены файла.
+                self.assertIn((image.pk, 'max-2048x2048|format-webp|webpquality-82'), plan)
+                self.assertIn((image.pk, 'fill-1200x630|format-jpeg|jpegquality-85'), plan)
 
     def test_initialization_keeps_editor_content_drafts_and_consent_version(self):
         site = Site.objects.first()

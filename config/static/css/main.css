@@ -6254,3 +6254,19 @@ html:has(.lightbox[open]) { overflow: hidden; }
   .story__body .story__lead { font-size: 18px; line-height: 27px; }
   .story__facts dt { font-size: 20px; line-height: 24px; }
 }
+
+/* 20.10: контраст ≥ 4,5 у мелкого текста на страницах без макета
+   (оливковый #847F57 по палитре — только для крупного текста). */
+.dev-strip { color: #6A6545; }
+.story__body .story__source, .guide-card .guide-card__sources, .guide__note { color: #6E6E6E; }
+.events-next__label, .activities__hint { color: #6A6545; }
+
+/* 20.10: горизонтальная прокрутка на планшетах (аудит 700–1024). */
+.x-numbers__item { min-width: 0; }
+@media (min-width: 700px) and (max-width: 1279px) { .x-numbers dt { font-size: 40px; line-height: 46px; white-space: normal; overflow-wrap: anywhere; } }
+.scenario__steps { overflow-x: clip; }
+@media (min-width: 700px) and (max-width: 899px) {
+  .cookie-text { flex: 1 1 auto; width: auto; min-width: 0; }
+}
+.fact-cards__item { min-width: 0; }
+.fact-cards__value { overflow-wrap: anywhere; }

@@ -17,7 +17,10 @@ from wagtail.admin import messages
 @hooks.register('after_publish_page')
 def prepare_published_images(request, page):
     from core.management.commands.prepare_site_images import page_plan, prepare
-    failures = prepare(page_plan([page]))
+    pages = [page]
+    if page.specific_class.__name__ == "DiaryEntryPage":
+        pages.append(page.get_parent())  # карточка записи живёт на индексе дневника
+    failures = prepare(page_plan(pages))
     if failures:
         messages.warning(request, f'Не подготовлено вариантов фото: {failures}. Исходники сохранены; обратитесь к администратору.')
 

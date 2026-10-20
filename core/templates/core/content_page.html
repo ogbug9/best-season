@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load content_tags %}
 {% load static wagtailcore_tags media_tags legal_docs layout_tags %}
-{% block extra_css %}{% legal_pdf_url page.slug as legal_pdf %}{% if legal_pdf %}<link rel="stylesheet" href="{% static 'css/legal.css' %}">{% endif %}{% endblock %}
+{% block extra_css %}{% legal_pdf_url page.slug as legal_pdf %}{% if legal_pdf %}<link rel="stylesheet" href="{% static 'css/legal.css' %}?v=20261020">{% endif %}{% endblock %}
 
 {% block content %}
 {% legal_pdf_url page.slug as legal_pdf %}

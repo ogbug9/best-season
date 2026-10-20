@@ -25,7 +25,7 @@
 
   {% elif b.type == "cards" %}
     <div class="t-deck" data-deck>
-      <div class="t-deck__card" data-deck-card><p data-deck-text>Нажмите, чтобы вытянуть первую карточку</p><span class="t-deck__count" data-deck-count></span></div>
+      <div class="t-deck__card" data-deck-card aria-live="polite"><p data-deck-text>Нажмите, чтобы вытянуть первую карточку</p><span class="t-deck__count" data-deck-count></span></div>
     </div>
     <button type="button" class="btn btn--primary" data-deck-next>{{ b.button|default:"Вытянуть карточку" }}</button>
     <template data-deck-source>{% for card in b.cards %}<p>{{ card }}</p>{% endfor %}</template>

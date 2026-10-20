@@ -8,6 +8,13 @@ const base = (process.argv[2] || 'http://localhost:8010').replace(/\/$/, '');
 let failed = 0;
 const report = (pass, text) => { if (!pass) failed++; console.log(`${pass ? 'PASS' : 'FAIL'} ${text}`); };
 
+// Live site right after deploy can drop a request: retry navigation twice.
+async function go(page, url) {
+  for (let attempt = 0; ; attempt++) {
+    try { return await page.goto(url, {waitUntil: 'domcontentloaded', timeout: 90000}); } catch (error) { if (attempt >= 2) throw error; await page.waitForTimeout(3000); }
+  }
+}
+
 async function launch() {
   try { return await chromium.launch(); } catch (_) { return chromium.launch({channel: 'msedge'}); }
 }
@@ -23,8 +30,8 @@ async function launch() {
     await ctx.addInitScript(() => { try { localStorage.setItem('bs-cookie-consent-v1', 'dismissed'); } catch (_) {} });
     const page = await ctx.newPage();
     for (const path of paths) {
-      await page.goto(base + path, {waitUntil: 'load'});
-      await page.waitForTimeout(300);
+      await go(page, base + path);
+      await page.waitForTimeout(1000);
       const state = await page.evaluate(() => ({
         items: document.querySelectorAll('.faq__item, details.t-faq__item').length,
         expanded: document.querySelectorAll('.faq__question[aria-expanded="true"]').length,
@@ -37,14 +44,14 @@ async function launch() {
       report(!state.expanded && !state.open && !state.visible && !state.details, `${width} ${path} ${JSON.stringify(state)}`);
     }
     // Click still opens with aria-expanded, and #q-N opens its answer.
-    await page.goto(`${base}/o-nas/voprosy/`, {waitUntil: 'load'});
+    await go(page, `${base}/o-nas/voprosy/`);
     const button = page.locator('.faq__question').first();
     await button.click();
     await page.waitForTimeout(400);
     report(await button.getAttribute('aria-expanded') === 'true'
       && await page.locator('.faq__answer').first().isVisible(), `${width} click opens first answer`);
     const id = await page.locator('.faq__item').nth(2).getAttribute('id');
-    await page.goto(`${base}/o-nas/voprosy/#${id}`, {waitUntil: 'load'});
+    await go(page, `${base}/o-nas/voprosy/#${id}`);
     await page.waitForTimeout(400);
     report(await page.locator(`#${id} .faq__question`).getAttribute('aria-expanded') === 'true'
       && await page.locator('.faq__item.is-open').count() === 1, `${width} #${id} opens only its answer`);

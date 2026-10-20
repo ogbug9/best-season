@@ -22,12 +22,12 @@
 
 <section class="section t-pitch">
   <div class="container t-two">
-    {% include "core/temp/play/_block.html" with b=p.play.0 bare=True %}
-    {% include "core/temp/play/_block.html" with b=p.play.1 bare=True %}
+    {% include "core/temp/play/_block.html" with b=play.0 bare=True %}
+    {% include "core/temp/play/_block.html" with b=play.1 bare=True %}
   </div>
 </section>
 
-{% include "core/temp/play/_block.html" with b=p.play.2 %}
+{% include "core/temp/play/_block.html" with b=play.2 %}
 
 {% page_extras page.slug %}
 

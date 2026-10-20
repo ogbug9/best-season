@@ -93,3 +93,21 @@ class MorePagesTests(TestCase):
         self.assertEqual(tile_page_url('Река "Скнижка"'), Page.objects.get(slug="reka").url)
         self.assertEqual(tile_page_url("Батут и детская площадка"), Page.objects.get(slug="ploshchadka").url)
         self.assertEqual(Service(slug="arenda-sapov").page_url, Page.objects.get(slug="sapy").url)
+
+
+class PlayLinksTests(TestCase):
+    """20.10: результаты тестов вели на «banya»/«domik-1» относительно страницы (404)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_pages", "--create-only", stdout=StringIO(), stderr=StringIO())
+
+    def test_no_bare_slug_links(self):
+        import re
+
+        from core.temp_more import PAGES
+
+        for slug in PAGES:
+            html = self.client.get(Page.objects.get(slug=slug).url).content.decode()
+            bare = re.findall(r'href="([a-z0-9-]+)"', html)
+            self.assertEqual(bare, [], slug)
