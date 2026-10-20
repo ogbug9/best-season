@@ -159,7 +159,7 @@
     <h2 class="center">Частые вопросы</h2>
     <div class="t-faq">
       {% for question, answer in svc.faq %}
-        <details class="t-faq__item"{% if forloop.first %} open{% endif %}><summary>{{ question }}</summary><p>{{ answer }}</p></details>
+        <details class="t-faq__item"><summary>{{ question }}</summary><p>{{ answer }}</p></details>
       {% endfor %}
     </div>
   </div>

@@ -40,3 +40,27 @@ class FaqLayoutTests(SimpleTestCase):
         self.assertIn('сезонные<br class="br-mob">затеи,', rendered)
         self.assertEqual(rendered.count('br-mob'), 2)
         self.assertIn('Описание редактора', str(about_mobile_paragraphs('Описание редактора', 'diary')))
+
+
+class FaqClosedOnLoadTests(SimpleTestCase):
+    """20.10 (Софья 17.10): при открытии страницы все вопросы закрыты."""
+
+    def test_faq_items_render_closed(self):
+        import re
+
+        from django.template.loader import render_to_string
+        from core.models import FaqItem
+
+        faq = [FaqItem(pk=n, question=f"Вопрос {n}?", answer=f"<p>Ответ {n}.</p>") for n in (1, 2, 3)]
+        html = render_to_string("includes/faq_items.html", {"faq": faq})
+        self.assertEqual(html.count('aria-expanded="false"'), 3)
+        self.assertNotIn('aria-expanded="true"', html)
+        self.assertNotIn("is-open", html)
+        self.assertEqual(len(re.findall(r'class="faq__answer"[^>]*hidden', html)), 3)
+
+    def test_details_faq_render_closed(self):
+        from django.template.loader import render_to_string
+
+        html = render_to_string("core/temp/more/_faq.html", {"p": {"faq": [("Вопрос?", "Ответ."), ("Ещё?", "Да.")]}})
+        self.assertEqual(html.count("<details"), 2)
+        self.assertNotIn(" open", html)
