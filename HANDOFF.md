@@ -1,5 +1,23 @@
 # Состояние проекта BS
 
+## 20.10.2026 — Н1 FAQ закрыт, Н2 «Дневник Сезона» по макету News
+
+- Н1 (cb39c43): FAQ на всех страницах закрыт при загрузке — `includes/faq_items.html` без is-open/aria-expanded="true" у первого, `<details>` временных страниц без open. Клик и якорь `#q-N` прежние. Тест `core.tests_faq_layout.FaqClosedOnLoadTests`, приёмка `design/check_faq_closed.cjs` (все страницы sitemap, 1440/390; локально 16 страниц с FAQ — PASS).
+- Н2 (a5f2846): дневник на своих типах `DiaryIndexPage`/`DiaryEntryPage` (миграция core 0039). `core/diary_seed.py` из seed_pages один раз переносит временные ContentPage (адреса, seo_title/description сохраняются; повторно не трогает). Индекс — макет News.svg 1440 (замеры геометрии, ±1 px), фон шапки `fon-dnevnik-top.svg` вырезан из макета, подвал — общий слой как на «Акциях». Мобильная — по «Дневнику» на «О нас» (33/42, 13/16, фото 350/210 r18, 21/28). Запись — без макета: крошки, «картинка — текст», блоки абзац/подзаголовок/фото/цитата, «Ещё в дневнике». og:image `fill-1200x630|format-jpeg` (тег og_rendition, готовит prepare_site_images), JSON-LD Article, og:type article (блок в base.html).
+- Отличия от макета: «Читать» 80 % вместо 50 % (контраст 4,7 вместо 2,4); в карточках нет даты и лида (в макете их нет, в ТЗ есть); 3-я запись «японском» (в макете «июньском»); счётчик минут, факты и отсчёт до НГ из старых временных страниц не перенесены.
+- Проверки: Django 195/195, node calendar+kontur 36/36, check, makemigrations --check, check_diary.cjs PASS (320–1920, h1, alt, контраст, SEO), check_spec 90/6 — 6 прежних в «О нас» главной.
+
+## 17.10.2026 — ночной автономный режим Claude Code (вне кода BS)
+
+- Агенты уровня пользователя `~/.claude/agents/night-lead.md` (тимлид-оркестратор), `night-builder.md` (исполнитель), `night-critic.md` (ревью/QA/продукт, без правок). Скрипт `~/.claude/night/night.ps1` гоняет `claude -p --agent night-lead` итерациями до лимита токенов; состояние — `.night/` в проекте (TASK, INBOX, PLAN, STATUS, DECISIONS, REPORT), работа в ветке `night/<дата>`, без push. Общие вкусы владельца — `~/.claude/night/PREFERENCES.md`. Код BS не менялся.
+- Запуск одной командой: `Desktop\OGB\night.cmd "что сделать"` → новая папка проекта в OGB (имя из задачи или `-Name`), продолжение — `night -Project <папка>`. Агенты сами определяют тип (сайт, веб-приложение, 2D/3D-игра, десктоп, утилита) и стек по установленному (Node 22, Python 3.11, Java; Godot/.NET нет); игры проверяются режимом `--smoke` со скриншотом, сайты — скриншотами Playwright.
+
+## 14.10.2026 — инструменты Claude Code (вне кода BS)
+
+- Собран `C:\Users\}I{YK\Desktop\claude-kit` (плагин + шаблон проекта по курсу claude-code-pro-course; локальный git, без push). Код BS не менялся.
+- Тесты hooks: `node tests/hooks.test.js` → 36/36, `claude plugin validate` пройден.
+- Плагин ставится на уровень пользователя командами из README kit'а. Эффект в сессиях BS (блок правки закоммиченных миграций и `.env*`, контекст ветки в начале сессии) появляется только после установки и проверки `/hooks` в новой сессии.
+
 ## 09.10.2026 — волна 2: 11 страниц со своим характером и игры на старых доп. страницах
 
 - `core/temp_more.py` (данные), шаблоны `core/templates/core/temp/more/*.html` — у каждой страницы своя раскладка, общие только мелочи (`_months`, `_pack`, `_faq`, `_related`, `_ask`). Игровые блоки — `core/temp/play/_block.html` (bingo, dice, cards, teams, memory, trivia, quiz, mixer, score, breath), логика в `temp-pages.js` (защита от двойного запуска), стили — конец `temp-pages.css`.
