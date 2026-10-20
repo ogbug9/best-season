@@ -6270,3 +6270,8 @@ html:has(.lightbox[open]) { overflow: hidden; }
 }
 .fact-cards__item { min-width: 0; }
 .fact-cards__value { overflow-wrap: anywhere; }
+/* Сноска «*» у WhatsApp на «Контактах» — у названия, а не у края страницы (давала прокрутку 3 px). */
+.contact-tile .socials__note { position: static; display: inline; margin-left: 2px; }
+/* «Выезды компаний»: на 900–1279 колонка 572 px + чек-лист не влезали (прокрутка 48 px). */
+.group-plan > * { min-width: 0; }
+@media (min-width: 900px) and (max-width: 1279px) { .split.group-plan { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }

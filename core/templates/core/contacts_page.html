@@ -34,8 +34,9 @@
           <b class="contact-tile__name">Telegram</b><span class="contact-tile__hint">Напишите — ответим в чате</span></a></li>
       {% endif %}
       {% if s.whatsapp_url %}
+        {% comment %} Имена файлов иконок перепутаны: social-tiktok.png — это WhatsApp (как в шапке и подвале). {% endcomment %}
         <li data-reveal><a class="contact-tile" href="{% marketing_url s.whatsapp_url 'contacts_page' greeting %}" rel="noopener" target="_blank">
-          <img class="contact-tile__icon" src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true">
+          <img class="contact-tile__icon" src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true">
           <b class="contact-tile__name">WhatsApp<span class="socials__note" aria-hidden="true">*</span></b><span class="contact-tile__hint">Сообщение уже набрано</span></a></li>
       {% endif %}
       {% if s.phone %}

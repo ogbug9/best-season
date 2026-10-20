@@ -421,7 +421,12 @@ class HousePage(Page):
         и они пересеклись, берётся заведённое первым — разбирать
         приоритеты редактору не нужно, достаточно порядка в списке.
         """
-        for rule in self.price_rules.all():
+        # Календарь спрашивает цену каждого дня (77 запросов на странице дома) —
+        # правила читаем один раз на экземпляр.
+        rules = self.__dict__.get("_price_rules_list")
+        if rules is None:
+            rules = self.__dict__["_price_rules_list"] = list(self.price_rules.all())
+        for rule in rules:
             if rule.date_from <= day <= rule.date_to:
                 return rule.price_per_night
         return self.price_per_night or self.price_from or 0
