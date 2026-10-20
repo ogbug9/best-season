@@ -1,0 +1,115 @@
+/* «Дневник Сезона» (20.10). Десктоп — макет News.svg (1440×2313), замеры по
+   геометрии экспорта: карточки 400×240 r20 с шагом 420 по x и 402 по y,
+   заголовок Etude Noire 500 90, подзаголовок 20/24, названия 600 24/29,
+   «Читать» 20 px + шеврон 9×12, пагинация 44 px с шагом 14.
+   Мобильная версия — как блок «Дневник» на «О нас» (about.css, max-width 699). */
+
+.diary-index { padding: 202px 0 105px; }
+.diary-index__title { margin: 0; color: #847F57; font: 500 90px/95px var(--font-heading); text-align: center; }
+.diary-index__lead { max-width: 760px; margin: 21px auto 40px; color: #494949; font: 400 20px/24px var(--font-body); text-align: center; }
+.diary-index__empty { text-align: center; }
+
+.diary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 400px)); justify-content: center; gap: 40px 20px; margin: 0; padding: 0; list-style: none; }
+.diary-card { min-width: 0; }
+.diary-card__link { display: block; color: inherit; text-decoration: none; }
+.diary-card__photo { display: block; height: 240px; overflow: hidden; border-radius: 20px; background: #E5D0C0; }
+.diary-card__photo picture { display: block; height: 100%; }
+.diary-card__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, 50% 50%); transition: transform .4s ease; }
+.diary-card__title { margin: 20px 0 0; color: #847F57; font: 600 24px/29px var(--font-body); text-align: left; text-wrap: pretty; }
+/* В макете #494949 с прозрачностью 50 % (контраст 2,4:1). Для п. «контраст ≥ 4,5» — 80 % (4,7:1). */
+.diary-card__more { display: inline-flex; align-items: center; gap: 14px; margin-top: 20px; color: rgb(73 73 73 / 80%); font: 400 20px/24px var(--font-body); }
+.diary-card__link:focus-visible { outline: 2px solid #9B5026; outline-offset: 4px; border-radius: 20px; }
+@media (hover: hover) and (pointer: fine) {
+  .diary-card__link:hover .diary-card__photo img { transform: scale(1.03); }
+  .diary-card__link:hover .diary-card__more { color: #9B5026; }
+}
+
+.diary-pages { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 57px; }
+.diary-pages__step, .diary-pages__num { box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; height: 44px; border: 1px solid #9B5026; border-radius: 22px; color: #494949; font: 400 20px/24px var(--font-body); text-decoration: none; }
+.diary-pages__step { padding: 0 25px; }
+.diary-pages__num { width: 44px; }
+.diary-pages .is-current { background: #9B5026; color: #F7F0E6; }
+.diary-pages [aria-disabled="true"] { border-color: rgb(73 73 73 / 50%); color: rgb(73 73 73 / 50%); }
+.diary-pages__gap { align-self: center; color: #494949; }
+@media (hover: hover) and (pointer: fine) {
+  a.diary-pages__step:hover, a.diary-pages__num:hover { background: #E5D0C0; }
+}
+:is(.diary-pages__step, .diary-pages__num):focus-visible { outline: 2px solid #9B5026; outline-offset: 3px; }
+
+/* Запись: «картинка — текст». */
+.diary-article { padding-bottom: 80px; }  /* верх — общий отступ под шапку (main > :first-child) */
+.diary-crumbs ol { display: flex; flex-wrap: wrap; gap: 4px 0; margin: 0 0 24px; padding: 0; list-style: none; color: #494949; font: 400 16px/20px var(--font-body); }
+.diary-crumbs li + li::before { content: '/'; margin: 0 8px; opacity: .6; }
+.diary-crumbs a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.diary-crumbs [aria-current] { color: #494949; }
+.diary-article__title { max-width: 1000px; margin: 0; color: #847F57; font: 600 40px/48px var(--font-body); }
+.diary-article__date { display: block; margin-top: 12px; color: #494949; font: 400 18px/22px var(--font-body); }
+.diary-article__layout { display: grid; grid-template-columns: minmax(0, 620px) minmax(0, 1fr); gap: 60px; align-items: start; margin-top: 40px; }
+.diary-article__media { position: sticky; top: 140px; overflow: hidden; border-radius: 20px; }
+.diary-article__media img { display: block; width: 100%; height: auto; }
+.diary-article__text { color: #494949; font: 400 18px/27px var(--font-body); }
+.diary-article__lead { margin: 0 0 24px; font-weight: 500; font-size: 20px; line-height: 28px; }
+.diary-text p, .diary-text ul, .diary-text ol { margin: 0 0 18px; }
+.diary-text a { color: #9B5026; }
+.diary-article__subtitle { margin: 32px 0 14px; color: #847F57; font: 600 24px/29px var(--font-body); }
+.diary-article__quote { margin: 28px 0; padding: 4px 0 4px 24px; border-left: 3px solid #9B5026; color: #494949; font: 500 22px/30px var(--font-body); }
+.diary-article__quote p { margin: 0; }
+.diary-article__figure { margin: 28px 0; }
+.diary-article__figure img { display: block; width: 100%; height: auto; border-radius: 20px; }
+.diary-article__figure figcaption { margin-top: 8px; font-size: 16px; line-height: 20px; }
+.diary-article__back { margin: 36px 0 0; }
+.diary-article__back span { margin-right: 8px; }
+.diary-more { padding: 0 0 120px; }
+.diary-more__title { margin: 0 0 40px; color: #847F57; font: 500 56px/64px var(--font-heading); text-align: center; }
+
+/* Фон: контуры шапки из макета и общий слой подвала, как на «Акциях». */
+@media (min-width: 900px) {
+  body.page-diary #main { position: relative; isolation: isolate; overflow: clip; }
+  .page-diary .footer { position: relative; isolation: isolate; overflow: clip; }
+  .page-diary .home-bg { display: block; position: absolute; inset: 0; pointer-events: none; user-select: none; }
+  .page-diary .home-bg__layer { position: absolute; z-index: -1; left: calc(50% - 720px + var(--x)); top: var(--y); width: var(--w); height: var(--h); max-width: none; }
+  .page-diary .home-bg__layer--diary-top { --x: 0px; --y: 0px; --w: 1440px; --h: 275px; }
+  .page-diary .home-bg__layer--footer { --x: 221px; --y: 310.53px; --w: 2069px; --h: 1853px; }
+}
+
+@media (min-width: 700px) and (max-width: 1279px) {
+  .diary-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .diary-card__photo { height: auto; aspect-ratio: 5 / 3; }
+  .diary-index__title { font-size: 72px; line-height: 80px; }
+}
+@media (min-width: 700px) and (max-width: 999px) {
+  .diary-index__title { font-size: 64px; line-height: 70px; }
+  .diary-article__layout { grid-template-columns: 1fr; gap: 32px; }
+  .diary-article__media { position: static; }
+}
+
+/* Мобильная версия — по «Дневнику» на «О нас»: заголовок 33/42 и лид 13/16 слева,
+   фото 350/210 r18, название 21/28 через 16. */
+@media (max-width: 699px) {
+  .diary-index { padding: 112px 0 72px; }  /* как H1 «Акций» на 390 */
+  .diary-index__title { font-size: 33px; line-height: 42px; text-align: left; }
+  .diary-index__lead { margin: 8px 0 24px; font-size: 13px; line-height: 16px; text-align: left; }
+  .diary-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .diary-card__photo { height: auto; aspect-ratio: 350 / 210; border-radius: 18px; }
+  .diary-card__title { margin-top: 16px; font-size: 21px; line-height: 28px; }
+  .diary-card__more { gap: 10px; margin-top: 10px; font-size: 14px; line-height: 17px; }
+  .diary-card__more svg { width: 7px; height: 10px; }
+  .diary-pages { gap: 8px; margin-top: 40px; }
+  .diary-pages__step, .diary-pages__num { height: 36px; font-size: 14px; line-height: 17px; }
+  .diary-pages__step { padding: 0 14px; }
+  .diary-pages__num { width: 36px; }
+  .diary-article { padding-bottom: 56px; }
+  .diary-crumbs ol { margin-bottom: 16px; font-size: 12px; line-height: 16px; }
+  .diary-crumbs li + li::before { margin: 0 6px; }
+  .diary-article__title { font-size: 24px; line-height: 29px; }
+  .diary-article__date { margin-top: 8px; font-size: 14px; line-height: 17px; }
+  .diary-article__layout { grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 20px; }
+  .diary-article__media { position: static; border-radius: 18px; }
+  .diary-article__text { font-size: 14px; line-height: 20px; }
+  .diary-article__lead { margin-bottom: 16px; font-size: 16px; line-height: 22px; }
+  .diary-text p, .diary-text ul, .diary-text ol { margin-bottom: 14px; }
+  .diary-article__subtitle { margin: 24px 0 10px; font-size: 20px; line-height: 24px; }
+  .diary-article__quote { margin: 20px 0; padding-left: 16px; font-size: 17px; line-height: 23px; }
+  .diary-more { padding-bottom: 72px; }
+  .diary-more__title { margin-bottom: 24px; font-size: 33px; line-height: 42px; text-align: left; }
+}

@@ -315,6 +315,9 @@ class Command(BaseCommand):
                 self.create_node(home, node)
             self.create_legal(home)
             self.create_temp()
+            from core.diary_seed import ensure_diary
+
+            self.created += ensure_diary(self.stdout.write)
             if not self.create_only:
                 self.seed_legal_settings(site)
                 self.hide_duplicates()

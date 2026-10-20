@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags %}
+{% comment %} «Дневник Сезона» — макет News (1440×2313), 20.10. Мобильная версия — по образцу блока «Дневник» на «О нас». {% endcomment %}
+{% block body_class %}page-diary page-diary-index{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/diary.css' %}?v=20261020-diary">{% endblock %}
+
+{% block content %}
+<div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-dnevnik-top.svg' %}"><img class="home-bg__layer home-bg__layer--diary-top" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1440" height="275" alt="" decoding="async"></picture></div>
+<section class="diary-index">
+  <div class="container">
+    {% include "includes/in_progress_note.html" %}
+    <h1 class="diary-index__title">{{ page.title }}</h1>
+    {% if page.intro %}<p class="diary-index__lead">{{ page.intro }}</p>{% endif %}
+    {% if entries %}
+      <ul class="diary-grid">
+        {% for entry in entries %}{% if forloop.first %}{% include "core/includes/diary_card.html" with loading="eager" %}{% else %}{% include "core/includes/diary_card.html" %}{% endif %}{% endfor %}
+      </ul>
+      {% if paginator.num_pages > 1 %}
+        <nav class="diary-pages" aria-label="Страницы дневника">
+          {% if page_obj and page_obj.has_previous %}<a class="diary-pages__step" href="?page={{ page_obj.previous_page_number }}" rel="prev">Назад</a>{% else %}<span class="diary-pages__step" aria-disabled="true">Назад</span>{% endif %}
+          {% for number in page_numbers %}
+            {% if number == paginator.ELLIPSIS %}<span class="diary-pages__gap" aria-hidden="true">…</span>
+            {% elif page_obj and number == page_obj.number %}<span class="diary-pages__num is-current" aria-current="page">{{ number }}</span>
+            {% else %}<a class="diary-pages__num" href="{% if number == 1 %}{% pageurl page %}{% else %}?page={{ number }}{% endif %}" aria-label="Страница {{ number }}">{{ number }}</a>{% endif %}
+          {% endfor %}
+          {% if page_obj and page_obj.has_next %}<a class="diary-pages__step" href="?page={{ page_obj.next_page_number }}" rel="next">Вперед</a>{% else %}<span class="diary-pages__step" aria-disabled="true">Вперед</span>{% endif %}
+          {% if show_all %}<span class="diary-pages__step is-current" aria-current="page">Все</span>{% else %}<a class="diary-pages__step" href="?page=all">Все</a>{% endif %}
+        </nav>
+      {% endif %}
+    {% else %}
+      <p class="diary-index__empty">Скоро здесь появятся первые записи.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -460,3 +460,12 @@ def social_image(page, site):
         if slide:
             return slide.image
     return None
+
+
+@register.filter
+def bind_short_words(value):
+    """Короткие предлоги и союзы не висят в конце строки: «бронирование / на Новый год» (макет News)."""
+    import re
+    from django.utils.html import conditional_escape
+    text = conditional_escape(value or '')
+    return mark_safe(re.sub(r'(?<![\w-])([А-Яа-яЁёA-Za-z]{1,2}) (?=\S)', lambda m: m.group(1) + '&nbsp;', str(text)))

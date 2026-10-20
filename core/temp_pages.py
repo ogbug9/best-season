@@ -156,17 +156,16 @@ SERVICE_TITLES = {"banya": "Русская баня", "bolshaya-besedka": "Бо�
 # Глэмпинг (Страхово, Заокский район) — для расчёта «золотого часа».
 COORDS = (54.736, 37.388)
 
-TEMPLATES = {PETS_INDEX: "core/temp/pets.html", DIARY_INDEX: "core/temp/diary.html",
+# Дневник с 20.10 — свои типы страниц (DiaryIndexPage/DiaryEntryPage, core/diary_seed.py).
+DIARY_SLUGS = {DIARY_INDEX, *(entry["slug"] for entry in DIARY)}
+TEMPLATES = {PETS_INDEX: "core/temp/pets.html",
              **{slug: "core/temp/pet.html" for slug in PETS},
-             **{entry["slug"]: "core/temp/diary_entry.html" for entry in DIARY},
              **{slug: "core/temp/service.html" for slug in SERVICES}}
 
 # Дерево для seed_pages: (родитель, слаг, заголовок, вступление).
 TREE = [
     ("o-nas", PETS_INDEX, "Наши пушистики", "Котики глэмпинга, которые ищут дом, и все, кого вы встретите на ферме."),
     *[(PETS_INDEX, slug, pet["name"], " × ".join(pet["traits"])) for slug, pet in PETS.items()],
-    ("o-nas", DIARY_INDEX, "Дневник Сезона", "Что у нас происходит: новые постройки, сезонные акции, наши рубрики и места по соседству."),
-    *[(DIARY_INDEX, entry["slug"], entry["title"], entry["lead"]) for entry in DIARY],
     *[("uslugi", slug, SERVICE_TITLES[slug], "") for slug in SERVICES],
 ]
 # Волна 2: страницы со своим характером (core/temp_more.py).
@@ -238,23 +237,6 @@ def context(page, request):
         others = [_pet(s) for s in PETS if s != slug]
         return {"pet": pet, "others": others, "pet_steps": PET_STEPS, "pets_url": _url(PETS_INDEX),
                 "ask_url": _telegram(request, f"pet_{slug}", f"Здравствуйте! Хочу познакомиться: {pet['name']}")}
-    if slug == DIARY_INDEX:
-        from core import dop_content as dc
-        from core.models import ChannelPost
-
-        import datetime
-
-        highlights = [{"date": datetime.date.fromisoformat(d), "title": t, "text": x, "url": u}
-                      for d, t, x, u in dc.CHANNEL_HIGHLIGHTS]
-        return {"entries": [_entry(e) for e in DIARY], "filters": DIARY_FILTERS, "rubrics": dc.CHANNEL_RUBRICS,
-                "highlights": highlights, "channel_posts": ChannelPost.objects.all()[:3]}
-    entry = next((e for e in DIARY if e["slug"] == slug), None)
-    if entry:
-        index = DIARY.index(entry)
-        return {"entry": _entry(entry), "others": [_entry(e) for e in DIARY if e is not entry],
-                "prev": _entry(DIARY[index - 1]) if index else None,
-                "next": _entry(DIARY[index + 1]) if index + 1 < len(DIARY) else None,
-                "diary_url": _url(DIARY_INDEX)}
     if slug in SERVICES:
         data = SERVICES[slug]
         card = _service_card(slug)
@@ -467,7 +449,7 @@ def link_about(context):
     """
     from wagtail.models import Page
 
-    urls = {page.slug: page.url for page in Page.objects.live().filter(slug__in=SLUGS)}
+    urls = {page.slug: page.url for page in Page.objects.live().filter(slug__in=SLUGS | DIARY_SLUGS)}
     by_name = {pet["name"]: slug for slug, pet in PETS.items()}
     for pet in context.get("about_pets") or []:
         slug = by_name.get(pet.get("name")) or (pet.get("crop") or "").removeprefix("pet-")

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags media_tags seo_tags layout_tags %}
+{% comment %} Запись «Дневника Сезона», схема «картинка — текст» (ориентир eurokappa). Макета страницы нет — стиль карточек и заголовков из макета News. {% endcomment %}
+{% block body_class %}page-diary page-diary-entry{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/diary.css' %}?v=20261020-diary">{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_image %}{% og_rendition page.cover as og %}{% if og %}{% absolute_media_url og.url as og_url %}<meta property="og:image" content="{{ og_url }}"><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:image" content="{{ og_url }}">{% elif page.cover %}{% absolute_media_url page.cover.file.url as og_url %}<meta property="og:image" content="{{ og_url }}"><meta name="twitter:image" content="{{ og_url }}">{% endif %}{% endblock %}
+{% block structured_data %}{% og_rendition page.cover as og %}{% if og %}{% absolute_media_url og.url as og_url %}{% article_schema og_url %}{% else %}{% article_schema %}{% endif %}{% endblock %}
+
+{% block content %}
+<article class="diary-article">
+  <div class="container">
+    <nav class="diary-crumbs" aria-label="Хлебные крошки">
+      <ol>
+        {% for crumb in page.get_ancestors %}{% if crumb.depth > 1 %}<li><a href="{% pageurl crumb %}">{% if crumb.depth == 2 %}Главная{% else %}{{ crumb.title }}{% endif %}</a></li>{% endif %}{% endfor %}
+        <li aria-current="page">{{ page.title }}</li>
+      </ol>
+    </nav>
+    <h1 class="diary-article__title">{{ page.title|bind_short_words }}</h1>
+    <time class="diary-article__date" datetime="{{ page.date|date:'Y-m-d' }}">{{ page.date|date:"j E Y" }}</time>
+    <div class="diary-article__layout">
+      <div class="diary-article__media">{% if page.cover %}{% picture page.cover preset="diary_cover" alt=page.cover_alt_text loading="eager" %}{% endif %}</div>
+      <div class="diary-article__text">
+        <p class="diary-article__lead">{{ page.lead }}</p>
+        {% for block in page.body %}{% include_block block %}{% endfor %}
+        <p class="diary-article__back"><a class="diary-pages__step" href="{% pageurl diary %}"><span aria-hidden="true">←</span> Все записи дневника</a></p>
+      </div>
+    </div>
+  </div>
+</article>
+{% if others %}
+<section class="diary-more" aria-labelledby="diary-more-title">
+  <div class="container">
+    <h2 id="diary-more-title" class="diary-more__title">Ещё в дневнике</h2>
+    <ul class="diary-grid">{% for entry in others %}{% include "core/includes/diary_card.html" with tag="h3" %}{% endfor %}</ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

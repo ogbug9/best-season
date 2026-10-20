@@ -6,7 +6,7 @@ from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Orderable, Page
 from wagtail.snippets.models import register_snippet
-from .content_blocks import AboutContentBlock, LEGAL_BLOCKS
+from .content_blocks import AboutContentBlock, DIARY_BLOCKS, LEGAL_BLOCKS
 
 # Ограниченный набор форматирования: п. 8 ТЗ — редактор не должен иметь
 # возможности сломать вёрстку произвольной разметкой.
@@ -1135,3 +1135,89 @@ class GalleryPhoto(Orderable):
     class Meta(Orderable.Meta):
         verbose_name = "Фото"
         verbose_name_plural = "Фотографии"
+
+
+class DiaryIndexPage(InProgressMixin, Page):
+    """«Дневник Сезона» (/o-nas/dnevnik/) — индекс записей по макету News (20.10)."""
+
+    PER_PAGE = 9
+
+    intro = models.TextField("Подзаголовок", blank=True)
+
+    content_panels = Page.content_panels + [FieldPanel("intro")]
+    parent_page_types = ["core.ContentPage"]
+    subpage_types = ["core.DiaryEntryPage"]
+    max_count = 1
+    template = "core/diary_index_page.html"
+
+    def entries(self):
+        return (DiaryEntryPage.objects.live().public().child_of(self)
+                .select_related("cover").order_by("-date", "path"))
+
+    def get_context(self, request, *args, **kwargs):
+        from django.core.paginator import Paginator
+
+        context = super().get_context(request, *args, **kwargs)
+        paginator = Paginator(self.entries(), self.PER_PAGE)
+        if request.GET.get("page") == "all":
+            context.update(entries=paginator.object_list, paginator=paginator, show_all=True,
+                           page_numbers=paginator.page_range)
+            return context
+        page_obj = paginator.get_page(request.GET.get("page"))
+        context.update(entries=page_obj.object_list, page_obj=page_obj, paginator=paginator,
+                       page_numbers=list(paginator.get_elided_page_range(page_obj.number, on_each_side=2, on_ends=1)))
+        return context
+
+    class Meta:
+        verbose_name = "Дневник Сезона"
+        verbose_name_plural = "Дневник Сезона"
+
+
+class DiaryEntryPage(Page):
+    """Запись «Дневника Сезона»: дата, обложка, лид, тело из разрешённых блоков."""
+
+    date = models.DateField("Дата публикации", help_text="По ней записи сортируются в дневнике: новые сверху.")
+    cover = models.ForeignKey(
+        "wagtailimages.Image", verbose_name="Обложка", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="+",
+        help_text="Фото в карточке дневника и в начале записи; из него же превью для соцсетей 1200×630.",
+    )
+    cover_alt = models.CharField("Описание обложки (alt)", max_length=200, blank=True,
+                                 help_text="Что на фото. Пусто — подставится заголовок записи.")
+    lead = models.TextField("Лид", max_length=400, help_text="Одно-два предложения под заголовком.")
+    body = StreamField(DIARY_BLOCKS, blank=True, use_json_field=True, verbose_name="Текст записи")
+
+    content_panels = Page.content_panels + [
+        FieldPanel("date"),
+        FieldPanel("cover"),
+        FieldPanel("cover_alt"),
+        FieldPanel("lead"),
+        FieldPanel("body"),
+    ]
+    parent_page_types = ["core.DiaryIndexPage"]
+    subpage_types = []
+    template = "core/diary_entry_page.html"
+
+    @property
+    def hero_image(self):
+        """Для общего тега social_image и подготовки превью."""
+        return self.cover
+
+    @property
+    def cover_alt_text(self):
+        return self.cover_alt or self.title
+
+    @property
+    def intro(self):
+        """Запасное описание страницы (layout_tags.page_description) — лид."""
+        return self.lead
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        diary = self.get_parent().specific
+        context.update(diary=diary, others=diary.entries().exclude(pk=self.pk)[:3])
+        return context
+
+    class Meta:
+        verbose_name = "Запись дневника"
+        verbose_name_plural = "Записи дневника"

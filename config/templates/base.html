@@ -22,7 +22,7 @@
     <link rel="canonical" href="{{ canonical }}">
 
     {# Open Graph — превью проверяется в Telegram и ВК, п. 10.9 ТЗ #}
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     <meta property="og:locale" content="ru_RU">
     <meta property="og:site_name" content="{{ current_site.site_name }}">
     <meta property="og:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}">

@@ -44,6 +44,9 @@ PRESETS = {
     "promo_mobile": (None, (360, 480, 768), "100vw"),
     "gallery": (4 / 3, (480, 768, 1024, 1440), "(min-width: 900px) 800px, 100vw"),
     "square":  (1, (240, 360, 480), "(min-width: 600px) 240px, 40vw"),
+    # «Дневник Сезона» (макет News): карточка 400×240, на телефоне — во всю ширину.
+    "diary_card": (5 / 3, (400, 800), "(min-width: 1000px) 400px, (min-width: 700px) 50vw, 100vw"),
+    "diary_cover": (None, (480, 768, 1024, 1440), "(min-width: 1000px) 620px, 100vw"),
     "about": (None, (360, 480, 768, 1024, 1440), "(min-width: 900px) 700px, 100vw"),
 }
 

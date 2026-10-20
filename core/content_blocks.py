@@ -66,3 +66,28 @@ LEGAL_BLOCKS = [
     ('list', blocks.ListBlock(blocks.TextBlock(), label='Список (исходная нумерация/маркеры)')),
     ('table', TableBlock(label='Таблица', table_options={'renderer': 'text'})),
 ]
+
+
+# «Дневник Сезона» (20.10): закрытый набор блоков статьи — п. 8 ТЗ,
+# редактор не может вставить произвольную разметку и сломать вёрстку.
+class DiaryImageBlock(blocks.StructBlock):
+    image = ImageChooserBlock(label="Фото")
+    alt = blocks.CharBlock(label="Описание фото (alt)", max_length=200,
+                           help_text="Что на фото — для незрячих гостей и поисковиков.")
+    caption = blocks.CharBlock(label="Подпись под фото", max_length=200, required=False)
+
+    class Meta:
+        icon = "image"
+        label = "Фото"
+        template = "core/blocks/diary_image.html"
+
+
+DIARY_BLOCKS = [
+    ("paragraph", blocks.RichTextBlock(features=["bold", "italic", "link", "ul", "ol"], label="Абзац",
+                                       template="core/blocks/diary_paragraph.html")),
+    ("heading", blocks.CharBlock(max_length=120, label="Подзаголовок", form_classname="title",
+                                 template="core/blocks/diary_heading.html")),
+    ("image", DiaryImageBlock()),
+    ("quote", blocks.CharBlock(max_length=300, label="Цитата", icon="openquote",
+                               template="core/blocks/diary_quote.html")),
+]

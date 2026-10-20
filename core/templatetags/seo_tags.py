@@ -61,3 +61,43 @@ def accommodation_schema(context):
     data['amenityFeature'] = [{'@type': 'LocationFeatureSpecification', 'name': item.name, 'value': True}
                             for item in page.amenities.all()]
     return script(data)
+
+
+# Превью для соцсетей: JPEG 1200×630 (20.10, «Дневник Сезона»).
+OG_SPEC = 'fill-1200x630|format-jpeg|jpegquality-85'
+
+
+@register.simple_tag
+def og_rendition(image):
+    """Готовый вариант 1200×630; в проде создаётся prepare_site_images, а не запросом гостя."""
+    from django.conf import settings
+    from core.templatetags.media_tags import rendition_plan
+
+    if not image:
+        return None
+    plan = rendition_plan.get()
+    if plan is not None:
+        plan.add((image.pk, OG_SPEC))
+        return None
+    rendition = image.renditions.filter(filter_spec=OG_SPEC).first()
+    if rendition is None and getattr(settings, 'GENERATE_IMAGE_RENDITIONS_ON_REQUEST', False):
+        try:
+            rendition = image.get_rendition(OG_SPEC)
+        except Exception:
+            return None
+    return rendition
+
+
+@register.simple_tag(takes_context=True)
+def article_schema(context, image_url=''):
+    page, site = context['page'], context.get('current_site')
+    publisher = {'@type': 'Organization', 'name': site.site_name if site else 'Лучший Сезон'}
+    data = {'@context': 'https://schema.org', '@type': 'Article', 'headline': page.title,
+            'description': page.search_description or page.lead,
+            'datePublished': page.date.isoformat(), 'author': publisher, 'publisher': publisher,
+            'mainEntityOfPage': canonical_url(context)}
+    if page.last_published_at:
+        data['dateModified'] = page.last_published_at.isoformat()
+    if image_url:
+        data['image'] = [image_url]
+    return script(data)
