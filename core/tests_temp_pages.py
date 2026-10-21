@@ -111,3 +111,26 @@ class PlayLinksTests(TestCase):
             html = self.client.get(Page.objects.get(slug=slug).url).content.decode()
             bare = re.findall(r'href="([a-z0-9-]+)"', html)
             self.assertEqual(bare, [], slug)
+
+
+class ServicePhotoTests(TestCase):
+    """21.10: фото малой беседки (кадр Софьи) заводится один раз и выводится на странице."""
+
+    def test_small_gazebo_gets_photo_once(self):
+        import shutil
+        import tempfile
+
+        from django.test import override_settings
+
+        from core.models import image_titled
+        from core.temp_pages import ensure_service_photos
+
+        media = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, media, ignore_errors=True)
+        with override_settings(MEDIA_ROOT=media):
+            call_command("seed_pages", "--create-only", stdout=StringIO(), stderr=StringIO())
+            self.assertIsNotNone(image_titled("BS service malaya-besedka"))
+            self.assertEqual(ensure_service_photos(log=lambda *_: None), 0)
+            html = self.client.get(Page.objects.get(slug="malaya-besedka").url).content.decode()
+            self.assertNotIn("t-mosaic--empty", html)
+            self.assertIn("malaya-besedka", html)
