@@ -26,7 +26,7 @@
       {% for post in channel_posts %}
         <li class="diary-posts__item" data-reveal>
           <a class="diary-posts__link" href="{{ post.url }}" rel="noopener" target="_blank">
-            {% if post.image_url %}<img class="diary-posts__image" src="{{ post.image_url }}" alt="" loading="lazy" referrerpolicy="no-referrer">{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+            {% if post.local_image_url %}<img class="diary-posts__image" src="{{ post.local_image_url }}" alt="" loading="lazy" referrerpolicy="no-referrer">{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
             <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"j E Y" }}</time>
             <span>{{ post.first_line }}</span>
           </a>
