@@ -75,7 +75,10 @@ function audit() {
   report(types.includes('Article') && types.includes('BreadcrumbList'), `${entry} JSON-LD ${types.join(',')}`);
   report(meta('og:type') === 'article' && meta('description').length > 30, `${entry} og:type/description`);
   const og = meta('og:image');
-  report(/\.jpe?g$/i.test(og) && meta('og:image:width') === '1200' && meta('og:image:height') === '630', `${entry} og:image ${og}`);
+  // Wagtail не увеличивает исходник: при фото меньше 1200 px превью меньше, но в той же пропорции 1200:630.
+  const w = Number(meta('og:image:width')), h = Number(meta('og:image:height'));
+  report(/\.jpe?g$/i.test(og) && w >= 600 && Math.abs(w / h - 1200 / 630) < 0.02, `${entry} og:image ${w}×${h} ${og}`);
+  if (w && w < 1200) console.log(`NOTE ${entry}: исходник обложки меньше 1200 px — превью ${w}×${h}`);
   const index = await (await fetch(`${base}/o-nas/dnevnik/`)).text();
   const title = s => (s.match(/<title>([^<]*)<\/title>/) || [])[1];
   report(title(index) !== title(html), `titles differ: «${title(index)}» / «${title(html)}»`);

@@ -218,7 +218,7 @@ class HomePage(Page):
             # Порядок — как в дереве страниц админки: редактор перетаскивает
             # дома мышью и ожидает увидеть тот же порядок на главной.
             # Сортировка по названию давала «Второй, Первый, Третий».
-            HousePage.objects.live().order_by("path")[:4]
+            HousePage.objects.live().select_related("hero_image").order_by("path")[:4]
         )
         context["houses_index"] = HouseIndexPage.objects.live().first()
         context["services"] = Service.objects.filter(is_published=True)[:6]

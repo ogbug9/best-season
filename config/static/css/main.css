@@ -6283,3 +6283,5 @@ html:has(.lightbox[open]) { overflow: hidden; }
     padding-block: 4px; margin-block: -4px;
   }
 }
+/* Иконка TikTok — файл 38×41 в рамке 40×40: не растягивать (PageSpeed «неверные пропорции»). */
+.socials__item img { object-fit: contain; }
