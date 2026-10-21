@@ -6275,3 +6275,11 @@ html:has(.lightbox[open]) { overflow: hidden; }
 /* «Выезды компаний»: на 900–1279 колонка 572 px + чек-лист не влезали (прокрутка 48 px). */
 .group-plan > * { min-width: 0; }
 @media (min-width: 900px) and (max-width: 1279px) { .split.group-plan { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+/* 20.10: зона нажатия строчных ссылок на телефоне ≥ 24 px (WCAG 2.5.8),
+   видимый размер и раскладка прежние — отступ компенсируется. */
+@media (max-width: 699px) {
+  :is(.footer :is(li, p) > a:not(.socials__item), .house__link, .dev-strip__link, .t-back, .t-game__reset, .guest-quote__more, .footer__phone, summary.button--type-b) {
+    padding-block: 4px; margin-block: -4px;
+  }
+}

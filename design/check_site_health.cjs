@@ -55,6 +55,7 @@ async function go(page, url) {
         noAlt: [...document.querySelectorAll('img')].filter(img => !img.hasAttribute('alt')).map(img => img.currentSrc || img.src).slice(0, 3),
         broken: [...document.querySelectorAll('img')].filter(img => img.complete && img.naturalWidth === 0 && (img.currentSrc || img.src) && !(img.currentSrc || img.src).startsWith('data:') && img.offsetParent !== null).map(img => img.currentSrc || img.src).slice(0, 5),
         links: [...document.querySelectorAll('a[href]')].map(a => a.href),
+        junk: (document.body.innerText.match(/Текст ожидается|Lorem ipsum|TODO|\{\{|\{%|None|undefined|NaN/g) || []).slice(0, 5),
         low: (() => {
           // Text contrast against the nearest opaque background (≥ 4.5, large ≥ 3).
           const parse = c => { const m = (c.match(/[\d.]+/g) || [0, 0, 0, 0]).map(Number); return {rgb: m.slice(0, 3), a: m.length > 3 ? m[3] : 1}; };
@@ -94,6 +95,7 @@ async function go(page, url) {
       if (r.noAlt.length) add(width, path, 'alt', r.noAlt.join(' '));
       if (r.broken.length) add(width, path, 'image', r.broken.join(' '));
       if (r.low.length) add(width, path, 'contrast', r.low.join(' | '));
+      if (r.junk.length) add(width, path, 'junk', r.junk.join(' '));
       r.links.filter(href => href.startsWith(origin)).forEach(href => links.add(href.split('#')[0]));
     }
     await ctx.close();
