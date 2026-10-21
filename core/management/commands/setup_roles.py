@@ -47,10 +47,24 @@ SNIPPET_PERMISSIONS = [
     # Удобства — общий справочник для всех домов. Добавлять новые можно,
     # удалять нет: удаление вычистило бы пункт «Что входит» сразу у всех домов.
     ("core", "amenity", ["add", "change", "view"]),
+    # Группа удобств защищена PROTECT от удаления, пока в ней есть удобства
+    # (Amenity.group), поэтому, как и у самих удобств, удаление не выдаётся.
+    ("core", "amenitygroup", ["add", "change", "view"]),
+    # Самостоятельные карточки и вопросы: их удаление не затрагивает
+    # другие данные (номера считаются по порядку вывода).
+    ("core", "faqitem", ["add", "change", "delete", "view"]),
+    ("core", "territoryitem", ["add", "change", "delete", "view"]),
+    ("core", "nearbyplace", ["add", "change", "delete", "view"]),
+    ("core", "event", ["add", "change", "delete", "view"]),
+    ("core", "videoclip", ["add", "change", "delete", "view"]),
     # Заявки: смотреть и менять статус. Удаление недоступно — заявка
     # с согласием на обработку ПД должна оставаться в системе (раздел 11 ТЗ).
     ("forms", "formsubmission", ["change", "view"]),
 ]
+
+# Контакты и соцсети — отдельная прокси-настройка (п. 8.1 ТЗ); полные
+# «Настройки сайта» с hotelId и Метрикой остаются закрытыми (п. 3.4 ТЗ).
+SETTINGS_PERMISSIONS = [("core", "change_contactsettings")]
 
 # Явно НЕ выдаётся редактору (перечислено, чтобы при правках роли
 # случайно не добавили): настройки сайта, пользователи и группы,
@@ -121,6 +135,10 @@ class Command(BaseCommand):
                     continue
                 group.permissions.add(perm)
                 granted.append(codename)
+
+        for app_label, codename in SETTINGS_PERMISSIONS:
+            group.permissions.add(self._perm(app_label, codename))
+            granted.append(codename)
 
         # Страховка: если в список выше когда-нибудь просочится запрещённое право.
         leaked = [c for c in granted if c in DENIED_CODENAMES]
