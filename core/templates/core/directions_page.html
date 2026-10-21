@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load marketing_tags %}
+{% load content_tags %}
+{% load wagtailcore_tags media_tags layout_tags %}
+{% block body_class %}page-directions{% endblock %}
+
+{% comment %}
+  «Как добраться» — п. 4.2 ТЗ. Состав блоков повторяет пункты требования:
+  маршрут на авто, маршрут без авто, трансфер, форма заявки, карта,
+  кнопка возврата к бронированию. По п. 12.3 без этой страницы нельзя
+  запускаться, поэтому состав менять только вместе с ТЗ.
+  Подача — docs/dop-stranicy/13-kak-dobratsya.md: факты, вкладки (Д10),
+  шаги электрички пунктиром. Без JS все три вкладки видны подряд.
+{% endcomment %}
+
+{% block content %}
+{% with s=settings.core.SiteSettings %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    {% include "includes/in_progress_note.html" %}
+    <h1>{{ page.title|heading_breaks }}</h1>
+    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+{% page_extras "directions" "top" %}
+{% page_story "directions" %}
+{% page_extras "directions" %}
+
+<section class="section directions-page">
+  <div class="container container--narrow">
+    {% include "includes/fact_cards.html" with facts=route_facts %}
+
+    <div class="chips directions__tabs" data-chips="route" data-chips-default="car" role="group" aria-label="Как поедете">
+      <button type="button" class="filter-chip" data-chip="car">На машине</button>
+      <button type="button" class="filter-chip" data-chip="train">На электричке</button>
+      <button type="button" class="filter-chip" data-chip="transfer">Трансфер</button>
+    </div>
+
+    <div class="directions__panels" data-chips-for="route">
+      {% comment %} 4.2.1 На автомобиле {% endcomment %}
+      {% with car_route=page.car_route|filled navigator=page.yandex_route_url|default:s.yandex_map_url car_distance=page.car_distance|filled car_time=page.car_time|filled %}
+      <section class="directions__panel" data-tags="car" aria-labelledby="route-car">
+        <h2 id="route-car">{% cms_text "directions_page-a88a4debb15d" %}</h2>
+        {% if s.address %}<p class="directions__address">{{ s.address }}</p>{% endif %}
+        {% if car_distance or car_time %}<p class="directions__meta">{{ car_distance }}{% if car_distance and car_time %} · {% endif %}{{ car_time }}</p>{% endif %}
+        <p class="split__actions">
+          {% if navigator %}<a class="btn btn--primary" data-directions-link href="{% marketing_url navigator 'directions_page' %}" rel="noopener" target="_blank">Открыть в Навигаторе</a>{% endif %}
+          {% if s.address %}<button type="button" class="btn btn--outline" data-copy="{{ s.address }}"><span data-copy-label="Адрес скопирован">Скопировать адрес</span></button>{% endif %}
+        </p>
+        {% if car_route %}<div class="prose">{{ car_route|richtext }}</div>{% endif %}
+        <p class="route-from"><span>Построить маршрут из:</span>
+          {% for label, url in route_links %}<a class="filter-chip route-from__link" data-directions-link href="{{ url }}" rel="noopener" target="_blank">{{ label }}</a>{% endfor %}
+        </p>
+        <ul class="road-tips">
+          {% for tip in road_tips %}<li data-reveal>{{ tip }}</li>{% endfor %}
+        </ul>
+      </section>
+      {% endwith %}
+
+      {% comment %} 4.2.2 Без автомобиля {% endcomment %}
+      <section class="directions__panel" data-tags="train" aria-labelledby="route-train">
+        <h2 id="route-train">{% cms_text "directions_page-1956920f76c5" %}</h2>
+        {% if page.train_station %}
+          <ol class="route-steps">
+            <li class="route-steps__item" data-reveal><b>Курский вокзал</b><span>электричка Курского направления</span></li>
+            <li class="route-steps__item" data-reveal><b>Станция {{ page.train_station }}</b><span>{% if page.train_time %}{{ page.train_time }} в пути{% endif %}{% if page.train_time and page.train_price %} · {% endif %}{{ page.train_price }}</span></li>
+            <li class="route-steps__item" data-reveal><b>Такси или наш трансфер</b><span>встретим на станции, если закажете заранее</span></li>
+            <li class="route-steps__item route-steps__item--end" data-reveal><b>«Лучший сезон»</b><span>{{ s.address|default:"село Страхово" }}</span></li>
+          </ol>
+          {% if page.train_schedule_url %}<p><a class="btn btn--outline" href="{{ page.train_schedule_url }}" rel="noopener" target="_blank">Расписание электричек</a></p>{% endif %}
+          <h3 class="train-compare__title">Два способа без машины</h3>
+          <div class="train-compare">
+            {% for option in train_options %}
+              <div class="train-compare__item" data-reveal>
+                <b>{{ option.title }}</b>
+                <p class="train-compare__numbers"><span>{{ option.time }}</span><span>{{ option.price }}</span></p>
+                <p>{{ option.then }}. {{ option.note }}.</p>
+                <p class="guide-card__sources">Источник: {% for label, url in option.links %}<a href="{{ url }}" rel="noopener" target="_blank">{{ label }}</a>{% endfor %}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% elif page.transit_route|filled %}
+          <div class="prose">{{ page.transit_route|richtext }}</div>
+        {% endif %}
+      </section>
+
+      {% comment %} 4.2.3 Трансфер и 4.2.4 форма заявки {% endcomment %}
+      {% with transfer_price=page.transfer_price|filled transfer_note=page.transfer_note|filled %}
+      <section class="directions__panel" data-tags="transfer" aria-labelledby="route-transfer">
+        <h2 id="route-transfer">{% cms_text "directions_page-915c8675d775" %}</h2>
+        {% if transfer_price %}<p class="card__price">{{ transfer_price }}</p>{% endif %}
+        {% if transfer_note %}<div class="prose">{{ transfer_note|richtext }}</div>{% endif %}
+        {% cms_text "include-9d1ad5bd0f25" as cms_include_9d1ad5bd0f25 %}
+        {% include "forms/request_form.html" with form=transfer_form form_type="transfer" title=cms_include_9d1ad5bd0f25 lead="Встретим на станции. Оставьте заявку — подберём время и назовём точную стоимость." submit_label="Заказать трансфер" %}
+        <p class="split__actions">
+          {% if s.phone %}<a class="btn btn--outline" href="tel:{{ s.phone }}">{% cms_text "directions_page-0701381c8c21" %}</a>{% endif %}
+          {% firstof s.telegram_chat_url s.telegram_url as telegram %}
+          {% if telegram %}<a class="btn btn--outline" href="{% marketing_url telegram 'directions_page' 'Здравствуйте! Нужен трансфер со станции' %}" rel="noopener" target="_blank">{% cms_text "channel-telegram" %}</a>{% endif %}
+          {% if s.whatsapp_url %}<a class="btn btn--outline" href="{% marketing_url s.whatsapp_url 'directions_page' 'Здравствуйте! Нужен трансфер со станции' %}" rel="noopener" target="_blank">{% cms_text "channel-whatsapp" %}</a>{% endif %}
+        </p>
+      </section>
+      {% endwith %}
+    </div>
+    {% ask_chips "directions" "Остались вопросы о дороге?" %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    <div class="checklist" data-checklist="trip">
+      <div class="checklist__head"><h2>Перед выездом</h2><span class="checklist__count" data-checklist-count></span></div>
+      <p>Отмечайте, что уже собрали, — список запомнится в этом браузере.</p>
+      <ul>
+        {% for key, text in packing %}<li><label><input type="checkbox" value="{{ key }}"> {{ text }}</label></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    {% include "includes/video_slot.html" with slot="directions-road" poster=None title="Здесь будет видео последнего километра и въезда" note="Чтобы вы узнали поворот без звонка с дороги" %}
+  </div>
+</section>
+
+{% comment %}
+  4.2.5 Карта. Загружается по клику, а не сразу: iframe Яндекс.Карт тянет
+  чужие скрипты, портит замер скорости (п. 1.2) и отдаёт IP посетителя
+  стороннему сервису ещё до его согласия (раздел 11).
+{% endcomment %}
+{% if page.map_embed_url %}
+<section class="section">
+  <div class="container">
+    <h2>{% cms_text "directions_page-10320d936a2e" %}</h2>
+    <div class="map" data-map data-map-src="{{ page.map_embed_url }}">
+      {% if page.map_image %}
+        {% picture page.map_image preset="gallery" alt="Карта проезда" %}
+      {% endif %}
+      <button type="button" class="btn btn--primary map__button" data-map-load>
+        {% cms_text "directions_page-90457f42f688" %}
+      </button>
+      <p class="map__note">{% cms_text "directions_page-ee5c15bb3870" %}</p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 4.2.6 Кнопка возврата к бронированию {% endcomment %}
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>{% cms_text "directions_page-eeba4f863379" %}</h2>
+    <p>{% cms_text "directions_page-e8d3050844b6" %}</p>
+    <p>
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="8" data-entry-page="directions">
+        {% cms_text "directions_page-aa5b7a42a613" %}
+      </button>
+    </p>
+  </div>
+</section>
+{% endwith %}
+{% endblock %}

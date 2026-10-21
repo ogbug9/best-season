@@ -1,0 +1,21 @@
+{% load content_tags %}
+{% load houses_tags %}
+{% comment %}
+  Строка счётчика гостей: название, минус/значение/плюс, подпись снизу.
+  Ждёт key, label, value, min, max и note.
+{% endcomment %}
+<div class="guests__row" data-counter="{{ key }}" data-min="{{ min }}" data-max="{{ max }}">
+  <div class="guests__line">
+    <span class="guests__label" id="guests-{{ key }}">{{ label }}</span>
+    <span class="guests__control">
+      <button type="button" class="guests__step" data-step="-1"
+              aria-label="Убрать: {{ label|lower }}">−</button>
+      <output class="guests__value" data-value for="guests-{{ key }}">{{ value }}</output>
+      <button type="button" class="guests__step" data-step="1"
+              aria-label="Добавить: {{ label|lower }}">+</button>
+    </span>
+  </div>
+  {% if key == "children" %}<p class="guests__note">{% cms_text "_guest_counter-2c5eb60c160a" %} {{ age }} {% cms_text "_guest_counter-bbc1298c9097" %}</p>{% elif note %}
+    {% with parts=note|guest_note_parts %}<p class="guests__note">{{ parts.0 }}<span class="guests__note-end">{{ parts.1 }}{% if details %} <span class="guests__hint"><button type="button" class="guests__hint-toggle" aria-label="Условия доплаты: {{ label|lower }}" aria-describedby="guests-hint-{{ key }}">i</button><span class="guests__hint-text" id="guests-hint-{{ key }}" role="tooltip">{{ details }}</span></span>{% endif %}</span></p>{% endwith %}
+  {% endif %}
+</div>

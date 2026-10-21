@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static content_tags %}
+{% load wagtailcore_tags media_tags layout_tags %}
+{% block body_class %}page-services{% endblock %}
+
+{% comment %}
+  Доп. услуги (docs/dop-stranicy/11-uslugi.md): каждая карточка ведёт к брони
+  или к вопросу в Telegram; «Только свои» — самая крупная бронь — первой.
+{% endcomment %}
+
+{% block content %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    {% include "includes/in_progress_note.html" %}
+    <h1>{{ page.title|heading_breaks }}</h1>
+    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+{% page_extras "services" "top" %}
+{% page_story "services" %}
+{% page_extras "services" %}
+
+{% if page.body|filled %}
+<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
+{% endif %}
+
+{% if group_page %}
+<section class="section">
+  <div class="container">
+    <a class="group-offer" href="{% pageurl group_page %}" data-reveal>
+      {% if group_image %}{% picture group_image preset="card" alt="" %}{% endif %}
+      <span class="group-offer__body">
+        <span class="group-offer__label">Тариф «Только свои»</span>
+        <b class="group-offer__title">Весь глэмпинг — только для вашей компании</b>
+        <span class="group-offer__text">Все 4 домика, поляна с костром, беседка «Корабль» и баня. Фермерский завтрак на всю компанию — в подарок.</span>
+        <span class="btn btn--primary group-offer__button">Узнать про выезд</span>
+      </span>
+    </a>
+  </div>
+</section>
+{% endif %}
+
+{% if services %}
+<section class="section">
+  <div class="container">
+    <ul class="cards cards--services">
+      {% for service in services %}
+        {% include "services/_service_card.html" with details_url=page.url level="2" %}
+      {% endfor %}
+    </ul>
+    {% for service in services %}{% if service.description or service.price_note %}<div class="prose service-details" id="service-details-{{ service.slug }}"><h2>{{ service.name }}</h2>{{ service.description|richtext }}{% if service.price_note %}<p>{{ service.price_note }}</p>{% endif %}</div>{% endif %}{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if calc_houses %}
+<section class="section">
+  <div class="container container--narrow">
+    <h2 class="center">Сколько стоят выходные целиком</h2>
+    <p class="center">Домик по ценам сайта на ваши даты плюс баня и беседка. Точную сумму подтвердит окно брони.</p>
+    <form class="weekend-calc" data-weekend-calc data-banya="{{ calc_banya.price|default:0|stringformat:'d' }}" data-besedka="{{ calc_besedka.price|default:0|stringformat:'d' }}">
+      <label>Домик<select name="house">{% for house in calc_houses %}<option value="{{ house.slug }}">{{ house.title }} — от {{ house.price_display }} ₽</option>{% endfor %}</select></label>
+      <label>Заезд<input type="date" name="date_from"></label>
+      <label>Ночей<select name="nights"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>7</option></select></label>
+      <label>Гостей<select name="adults"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+      <label>Питомцы<select name="pets"><option value="0">нет</option><option value="1">1</option><option value="2">2</option></select></label>
+      {% if calc_banya.price %}<label>Баня, часов<input type="number" name="banya" min="0" max="12" value="0"></label>{% else %}<input type="hidden" name="banya" value="0">{% endif %}
+      {% if calc_besedka.price %}<label>Беседка, часов<input type="number" name="besedka" min="0" max="12" value="0"></label>{% else %}<input type="hidden" name="besedka" value="0">{% endif %}
+      <output class="weekend-calc__out" data-weekend-out aria-live="polite">Выберите даты — посчитаем.</output>
+      <button type="button" class="btn btn--primary weekend-calc__book" data-booking-open data-entry-point="5" data-entry-page="services-calc">Забронировать эти даты</button>
+    </form>
+  </div>
+</section>
+{% endif %}
+
+{% if gift_answer %}
+<section class="section">
+  <div class="container split gift">
+    <div class="split__text" data-reveal>
+      <h2>Подарите выходные</h2>
+      <div class="prose">{{ gift_answer|richtext }}</div>
+    </div>
+    <div class="split__text" data-reveal>
+      {% include "forms/request_form.html" with form=certificate_form form_type="certificate" title="Заказать сертификат" submit_label="Заказать сертификат" %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>Добавить услуги можно при бронировании</h2>
+    <p>Баня и беседка выбираются в окне брони вместе с домиком.</p>
+    <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="5" data-entry-page="services">{% cms_text "booking_cta-5d9d7f118153" %}</button></p>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/services.js' %}?v=20261007-hours" defer></script>{% endblock %}

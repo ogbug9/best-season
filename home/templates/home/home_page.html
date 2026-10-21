@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% load marketing_tags %}
+{% load content_tags %}
+{% load static wagtailcore_tags media_tags territory_tags nearby_tags layout_tags %}
+
+{% comment %}
+  Главная. Порядок блоков — по макету Figma, канвас SITE DESKTOP
+  (разбор состава — в 04-makety-figma.md).
+  Кнопка бронирования на первом экране — точка входа №2 из таблицы п. 5.1 ТЗ.
+{% endcomment %}
+
+{% block body_class %}page-home{% endblock %}
+
+
+
+
+{% block extra_css %}
+  {% comment %}
+    Предзагрузка первого кадра героя. Это элемент LCP, а он предмет
+    приёмки (п. 1.2 ТЗ, ≤2,5 с). Без preload браузер находит картинку
+    только после разбора CSS, и замер уходит к границе нормы.
+    Мобильный вариант готовится до запуска сервера; на десктопе
+    сохраняется предзагрузка исходного фото.
+  {% endcomment %}
+  {% with first=page.slides.first %}
+    {% if first %}
+      <link rel="preload" as="image" href="{{ first.image.file.url }}" media="(min-width: 700px)" fetchpriority="high">
+      {% mobile_srcset first.image as mobile_first_srcset %}
+      {% if mobile_first_srcset %}
+        <link rel="preload" as="image" imagesrcset="{{ mobile_first_srcset }}" imagesizes="100vw" type="image/webp" media="(max-width: 699px)" fetchpriority="high">
+      {% else %}
+        <link rel="preload" as="image" href="{{ first.image.file.url }}" media="(max-width: 699px)" fetchpriority="high">
+      {% endif %}
+    {% endif %}
+  {% endwith %}
+{% endblock %}
+
+{% block content %}
+
+{% comment %} 1. Первый экран {% endcomment %}
+<section class="hero">
+  <div class="hero__media" aria-hidden="true" data-count="{{ page.slides.count }}">
+    {% for slide in page.slides.all %}
+      <div class="hero__slide" style="--i: {{ forloop.counter0 }}">
+        {% if forloop.first %}
+          {% picture slide.image preset="hero" alt=slide.alt loading="eager" mobile_preset="hero_mobile" %}
+        {% else %}
+          {% picture slide.image preset="hero" alt=slide.alt mobile_preset="hero_mobile" %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="container hero__inner">
+    <h1 class="hero__title">{{ page.hero_title|default:page.title|brand_title }}</h1>
+    {% if page.hero_subtitle %}<p class="hero__subtitle"><span class="home-desktop-copy">{{ page.hero_subtitle|linebreaksbr }}</span><span class="home-mobile-copy">{{ page.hero_subtitle|mobile_hero|linebreaksbr }}</span></p>{% endif %}
+
+    {% if page.hero_links.all %}
+      <ul class="hero__links">
+        {% for link in page.hero_links.all %}
+          {% if link.link_page %}
+            <li><a class="hero__link" href="{% pageurl link.link_page %}">{{ link.label }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% comment %}
+      Точка входа №2 из таблицы п. 5.1 ТЗ. По макету это полоса поиска,
+      технически — одна кнопка: виджет Контура не принимает даты при
+      инициализации (см. 03-kontur-widget.md). Настоящие поля были бы
+      ловушкой — гость заполнил бы их, а в окно бронирования они бы
+      не попали, и он вводил бы даты второй раз.
+    {% endcomment %}
+    <button type="button" class="searchbar{% if not settings.core.SiteSettings.booking_show_search_fields %} searchbar--cta-only{% endif %}" data-booking-open data-entry-point="2">
+      {% comment %}
+        Иконки календаря и гостя — файлы дизайнера, те же, что в каталоге:
+        рисуются маской и берут цвет подписи.
+      {% endcomment %}
+      <span class="searchbar__field">
+        <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
+        <span class="searchbar__date-desktop">{% cms_text "home_page-ed598bbf587b" %}</span><span class="searchbar__date-mobile">{% cms_text "home_page-7d95dbee2098" %}</span>
+      </span>
+      <span class="searchbar__field">
+        <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
+        {% cms_text "home_page-ac73830877c9" %}
+      </span>
+      <span class="searchbar__field">
+        <span class="searchbar__icon searchbar__icon--guest" aria-hidden="true"></span>
+        {% cms_text "home_page-ff2a49a5c38f" %}
+      </span>
+      <span class="searchbar__cta btn btn--primary">{% cms_text "home_page-aa5b7a42a613" %}</span>
+    </button>
+
+    {% comment %}
+      Второй кнопки на первом экране в макете нет — там только полоса
+      поиска. Ссылка на каталог домов остаётся в меню и в блоке «О нас».
+    {% endcomment %}
+  </div>
+</section>
+
+<div class="home-after-hero">
+{# Фон главной: слои из Desktop Main.svg, каждый привязан к своей секции — см. main.css «Фон главной». #}
+<div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-about.svg' %}"><img class="home-bg__layer home-bg__layer--about" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2124" height="1827" alt="" loading="lazy" decoding="async"></picture></div>
+
+{% comment %} 2. О ферме — фото слева, текст справа {% endcomment %}
+{% if page.about_text or page.about_title %}
+{% comment %}
+  По макету фото уходит в левый край экрана, а текст лежит на кремовой
+  панели со скруглённым верхним левым углом. Поэтому здесь не контейнер,
+  а раскладка во всю ширину: контейнерные поля тут только у текста.
+{% endcomment %}
+<section class="about">
+  <div class="about__media">
+    <div class="home-background" aria-hidden="true">
+      <picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/bg-1.png' %}"><img class="home-background__image home-background__image--1" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2120" height="2152" alt="" loading="lazy"></picture>
+    </div>
+    {% if page.about_image %}
+      {% picture page.about_mobile_image preset="mosaic" sizes="100vw" css_class="about__mobile-image" picture_class="about__mobile-image" alt="" %}
+      {% picture page.about_image preset="mosaic" alt=page.about_title %}
+    {% else %}
+      <span class="ph" aria-hidden="true"></span>
+    {% endif %}
+  </div>
+  <div class="about__panel">
+    <div class="about__text">
+      {% if page.about_title %}<h2 class="section__title">{{ page.about_title }}</h2>{% endif %}
+      {{ page.about_text|richtext|layout_richtext:"about" }}
+      <p class="split__actions">
+        <button type="button" class="btn btn--primary" data-booking-open data-entry-point="2">{% cms_text "home_page-aa5b7a42a613" %}</button>
+        {% if page.about_page %}
+          <a class="btn btn--outline home-about-more" href="{% pageurl page.about_page %}">{% cms_text "home_page-59589fe2a549" %}</a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 3. Блок-цитата {% endcomment %}
+{% if page.quote_text %}
+{% comment %}
+  Цитата: в макете абзацы идут лесенкой с нарастающим отступом, кавычки
+  стоят до первого и после последнего, фото уходит в правый край экрана.
+  Каждый абзац отделяется пустой строкой в поле — так редактор управляет
+  разбивкой, не трогая вёрстку (п. 8 ТЗ).
+{% endcomment %}
+<section class="quote">
+  <div class="quote__body">
+    <blockquote class="quote__text">
+      <span class="quote__mark quote__mark--open" aria-hidden="true">&bdquo;</span>
+      {% for para in page.quote_paragraphs %}
+        <p class="quote__para" style="--step: {{ forloop.counter0 }}"><span class="home-desktop-copy">{{ para|layout_lines:"quote_desktop"|linebreaksbr }}</span><span class="home-mobile-copy">{{ para|mobile_quote|layout_lines:"quote_mobile"|linebreaksbr }}</span></p>
+      {% endfor %}
+      <span class="quote__mark quote__mark--close" aria-hidden="true">&ldquo;</span>
+      {% if page.quote_author %}<cite>{{ page.quote_author }}</cite>{% endif %}
+    </blockquote>
+  </div>
+  <div class="quote__media">
+    {% if page.quote_image %}
+      {% picture page.quote_mobile_image preset="mosaic" sizes="100vw" css_class="quote__mobile-image" picture_class="quote__mobile-image" alt="" %}
+      {% picture page.quote_image preset="mosaic" alt=page.quote_author %}
+    {% else %}
+      <span class="ph" aria-hidden="true"></span>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 4. Слоган {% endcomment %}
+{% if page.slogan %}
+<section class="slogan">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-slogan.svg' %}"><img class="home-bg__layer home-bg__layer--slogan" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1186" height="1332" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="container">
+    <div class="slogan__frame">
+      <p>{{ page.slogan|slogan_lines|linebreaksbr }}</p>
+      {% comment %}
+        Сердце — файл дизайнера, 50×50 с наклоном 13.25°. Декор, поэтому
+        просто картинка без подписи для читалок.
+      {% endcomment %}
+      <img class="slogan__heart" src="{% static 'img/heart.png' %}" width="50" height="50" alt="" aria-hidden="true">
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 5. Наши домики — сетка карточек {% endcomment %}
+{% if houses %}
+<section class="section" id="houses">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-houses.svg' %}"><img class="home-bg__layer home-bg__layer--houses" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1186" height="1333" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="container">
+    <h2 class="section__title section__title--center">{% cms_text "home_page-0dafa11ce08d" %}</h2>
+    <ul class="cards cards--houses">
+      {% for house in houses %}
+        {% include "houses/_house_card.html" with house=house entry="3" %}
+      {% endfor %}
+    </ul>
+    {% comment %} Кнопки «Все домики» в макете нет: под карточками сразу {% endcomment %}
+    {% comment %} следующая секция. Проверено по выгрузке Desktop Main. {% endcomment %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 6. Наша территория — мозаика плиток {% endcomment %}
+{% if territory %}
+<section class="section section--pattern">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-territory.svg' %}"><img class="home-bg__layer home-bg__layer--territory" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1714" height="2584" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="container">
+    <ul class="mosaic">
+      {% comment %}
+        Заголовок стоит ВНУТРИ мозаики и занимает три ячейки первого
+        ряда — так в макете: секция «Наша территория» ровно 1240×1240,
+        то есть четыре ряда плиток по 295 с зазорами 20, и заголовок
+        живёт в этом же квадрате, а не над ним.
+      {% endcomment %}
+      <li class="mosaic__head">
+        <h2 class="section__title">{% cms_text "home_page-5f07fab5a183" %}</h2>
+        {% if page.territory_lead %}<p class="section__lead">{{ page.territory_lead }}</p>{% endif %}
+      </li>
+      {% for item in territory %}
+        {% if item.spacer_before %}
+          {% comment %}
+            Пустая ячейка из макета: держит разрыв в сетке.
+            Обычный пустой <li>, без role и без aria-hidden. И то и
+            другое убирает элемент из дерева доступности, после чего
+            проверка справедливо ругается, что в <ul> лежит не пункт
+            списка. Пустой пункт читалка просто пропустит.
+          {% endcomment %}
+          <li class="mosaic__item mosaic__item--empty"></li>
+        {% endif %}
+        <li class="mosaic__item territory-card{% if item.title == 'Большая беседка' %} territory-card--pavilion{% elif item.title == 'Спортивные игры' %} territory-card--sports{% elif item.title == 'Финская сауна' %} territory-card--sauna{% elif item.title == 'Река "Скнижка"' %} territory-card--river{% elif item.title == 'Мастер-классы' %} territory-card--workshops{% endif %}" tabindex="0">
+          {% if item.image %}
+            {% picture item.image preset="mosaic" alt=item.title %}
+          {% else %}
+            <span class="ph" aria-hidden="true"></span>
+          {% endif %}
+          <div class="mosaic__caption">
+            <h3>{{ item.title|territory_lines|linebreaksbr }}</h3>
+            <div class="territory-card__details">
+              {% if item.description %}<p><span class="home-desktop-copy">{{ item.description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ item.description }}</span></p>{% endif %}
+              {% if item.details_url %}
+                <a class="btn btn--primary territory-card__link" href="{{ item.details_url }}">{% cms_text "home_page-59589fe2a549" %}</a>
+              {% endif %}
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+      {% if page.territory_more_page %}
+        <li class="mosaic__item mosaic__item--more">
+          <a class="mosaic__more" href="{% pageurl page.territory_more_page %}">
+            <span class="mosaic__more-label"><span class="home-desktop-copy">{{ page.territory_more_label|territory_lines|linebreaksbr }}</span><span class="home-mobile-copy">{% cms_text "home_page-41b97f8e0eff" %}</span></span>
+            <span class="mosaic__more-arrow" aria-hidden="true"></span>
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 7. Интересное рядом — три карточки с номерами {% endcomment %}
+{% if nearby %}
+<section class="section home-nearby">
+  <div class="container">
+    <h2 class="section__title section__title--center"><span class="home-desktop-copy">{% cms_text "home_page-82c3bd246f5a" %}</span><span class="home-mobile-copy">{% cms_text "home_page-da6258d9e1d3" %}<br>{% cms_text "home_page-51ee4ce808e8" %}</span></h2>
+    <ul class="cards cards--nearby">
+      {% for place in nearby %}
+        {% comment %}
+          Карточки чередуются: тёмная, оливковая, тёмная — так в макете.
+          Чередование считается по индексу, а не задаётся руками, иначе
+          при добавлении четвёртого места ряд сломался бы.
+        {% endcomment %}
+        {% include "core/_nearby_card.html" %}
+      {% endfor %}
+    </ul>
+    {% if page.nearby_more_page %}
+      <p class="center"><a class="btn btn--ghost nearby-more" href="{% pageurl page.nearby_more_page %}">{{ page.nearby_more_label }} <span class="nearby-more__arrow" aria-hidden="true"></span></a></p>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %}
+  10. Фотогалерея. Блок показывается и без загруженных фото — на их месте
+  стоят заглушки. Иначе секция из макета просто исчезала бы со страницы,
+  пока заказчик не пришлёт оригиналы (п. 9.1 ТЗ).
+{% endcomment %}
+{% if page.gallery_title %}
+{# Единственная секция главной во всю ширину фрейма — так в макете. #}
+{# Поэтому .container здесь намеренно нет, текст стоит внутри мозаики. #}
+<section class="section section--gallery">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-gallery.svg' %}"><img class="home-bg__layer home-bg__layer--gallery" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1165" height="1152" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="photo-mosaic">
+    <ul class="photo-mosaic__tiles">
+      {% for item in page.gallery_images.all %}
+        <li class="photo-mosaic__item"{% if 'Овца' in item.alt or 'Бараш' in item.alt %} data-mobile-gallery-first{% endif %}>
+          {% picture item.image preset="mosaic" alt=item.alt %}
+        </li>
+      {% empty %}
+        {% for i in "123456789" %}
+          <li class="photo-mosaic__item">
+            <span class="ph" aria-hidden="true"></span>
+          </li>
+        {% endfor %}
+      {% endfor %}
+    </ul>
+    <div class="photo-mosaic__text">
+      <h2 class="section__title">{{ page.gallery_title }}</h2>
+      {% if page.gallery_text %}<p class="section__lead"><span class="home-desktop-copy">{{ page.gallery_text|gallery_lines|linebreaksbr }}</span><span class="home-mobile-copy">{{ page.gallery_text|mobile_gallery|layout_lines:"gallery_mobile"|linebreaksbr }}</span></p>{% endif %}
+      {% if page.gallery_page %}
+        <p><a class="btn btn--outline" href="{% pageurl page.gallery_page %}">{% cms_text "home_page-59589fe2a549" %}</a></p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% comment %} 11. Как добраться — короткий блок {% endcomment %}
+{% if page.directions_teaser %}
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>{{ page.directions_title }}</h2>
+    <p>{{ page.directions_teaser }}</p>
+    {% if page.directions_page %}
+      <p><a class="btn btn--primary" href="{% pageurl page.directions_page %}">{% cms_text "home_page-0539128d2cc8" %}</a></p>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %}
+  13. Ответы на вопросы. Аккордеон на <details>, без JavaScript:
+  тег раскрывается сам, работает с клавиатуры и читалками экрана,
+  и не тянет вес на страницу — скорость на мобильных предмет приёмки (п. 1.2).
+{% endcomment %}
+{% if faq %}
+<div class="home-faq-background-anchor">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-faq-left.svg' %}"><img class="home-bg__layer home-bg__layer--faq-left" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1554" height="1618" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-faq-right.svg' %}"><img class="home-bg__layer home-bg__layer--faq-right" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1279" height="1274" alt="" loading="lazy" decoding="async"></picture></div>
+{% include "includes/faq_section.html" %}
+{% endif %}
+
+<section class="section yandex-reviews" id="yandex-reviews" aria-labelledby="yandex-reviews-title">
+  <div class="container yandex-reviews__layout">
+    <div class="yandex-reviews__intro">
+      <h2 class="section__title yandex-reviews__title" id="yandex-reviews-title">{% cms_text "home_page-349a3904b3e5" %}</h2>
+      <p class="yandex-reviews__text">{% cms_text "home_page-315c321e11cf" %}</p>
+      <a class="btn btn--outline yandex-reviews__link"
+         href="{% marketing_url 'https://yandex.ru/maps/org/luchshiy_sezon/3306085141/reviews/' 'home_page' %}"
+         target="_blank" rel="noopener noreferrer">{% cms_text "home_page-59bc888ec6a6" %}</a>
+    </div>
+    <div class="yandex-reviews__shell">
+      <div class="yandex-reviews__widget">
+      <iframe class="yandex-reviews__frame"
+              src="https://yandex.ru/maps-reviews-widget/3306085141?comments"
+              title="Отзывы о «Лучшем сезоне» на Яндекс Картах"
+              width="560" height="640" loading="lazy"></iframe>
+      <a class="yandex-reviews__attribution"
+         href="{% marketing_url 'https://yandex.ru/maps/org/luchshiy_sezon/3306085141/' 'home_page' %}"
+         target="_blank" rel="noopener noreferrer">{% cms_text "home_page-1cd77dd774fe" %}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if faq %}
+</div>
+{% endif %}
+</div>
+
+{% endblock %}

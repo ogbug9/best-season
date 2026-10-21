@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load content_tags %}
+{% load static wagtailcore_tags media_tags nearby_tags territory_tags layout_tags %}
+
+{% comment %}
+  Каталог домов. Карточка повторяет карточку главной (п. 9.2 ТЗ — единый
+  визуальный язык), но здесь показывается полный набор характеристик:
+  на главной блок обрезан до четырёх домов и служит витриной.
+{% endcomment %}
+
+{% block body_class %}page-houses{% endblock %}
+
+{% block content %}
+
+<section class="section section--pattern houses-catalog">
+  {# Фон «Размещения» — те же рисунки, что на главной; координаты в main.css #}
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-about.svg' %}"><img class="home-bg__layer home-bg__layer--catalog" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2124" height="1827" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="container houses-catalog__inner">
+    <div class="houses-catalog__head">
+      {% comment %}
+        Заголовок и текст берутся из страницы, а не зашиты в шаблон:
+        по п. 8 ТЗ содержимое правит редактор в админке. Текст макета
+        доставляется наполнением (seed_content); стандартные переносы
+        Desktop/Mobile задаёт layout_richtext, авторский текст сохраняется.
+      {% endcomment %}
+      <h1 class="section__title section__title--center">{{ page.heading|default:page.title }}</h1>
+      {% if page.intro %}
+        <div class="houses-catalog__intro">{{ page.intro|richtext|layout_richtext:"intro" }}</div>
+      {% endif %}
+    </div>
+
+    {% comment %}
+      Точка входа №1 из таблицы п. 5.1 ТЗ. Визуально это поля поиска,
+      технически — одна кнопка: виджет Контура не принимает даты при
+      инициализации (см. 03-kontur-widget.md), настоящие инпуты были бы
+      ловушкой — гость заполнил бы их, а в модалку они бы не попали.
+      Иконки в макете есть: два вектора 16×18 у дат и 12×16 у гостей.
+    {% endcomment %}
+    <button type="button" class="searchbar houses-search{% if not settings.core.SiteSettings.booking_show_search_fields %} searchbar--cta-only{% endif %}" data-booking-open data-entry-point="1">
+      <span class="searchbar__field">
+        <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
+        <span class="home-desktop-copy">{% cms_text "house_index_page-ed598bbf587b" %}</span><span class="home-mobile-copy">{% cms_text "house_index_page-26a3ae77bfaa" %}</span>
+      </span>
+      <span class="searchbar__field">
+        <span class="searchbar__icon searchbar__icon--date" aria-hidden="true"></span>
+        {% cms_text "house_index_page-ac73830877c9" %}
+      </span>
+      <span class="searchbar__field">
+        <span class="searchbar__icon searchbar__icon--guest" aria-hidden="true"></span>
+        {% cms_text "house_index_page-ff2a49a5c38f" %}
+      </span>
+      <span class="searchbar__cta btn btn--primary">{% cms_text "house_index_page-aa5b7a42a613" %}</span>
+    </button>
+
+    <ul class="cards cards--houses">
+      {% for house in houses %}
+        {% include "houses/_house_card.html" with house=house entry="1" level="2" %}
+      {% empty %}
+        <li><p>{% cms_text "house_index_page-583ce108eb43" %}</p></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% comment %}
+  Доп услуги — вторая половина раздела «Размещение» по п. 9.2.2 ТЗ:
+  домики и доп услуги показываются одной страницей. Почасовые объекты
+  (баня, беседка) бронируются только через отдельный виджет
+  hourlyObjectsList (см. 03-kontur-widget.md), он подключается в Фазе 7 —
+  здесь только витринное описание.
+{% endcomment %}
+{% include "houses/_mobile_services.html" %}
+{% if hourly_services or tile_services %}
+<section class="section houses-services">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-slogan.svg' %}"><img class="home-bg__layer home-bg__layer--services" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1186" height="1332" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="container houses-services__inner">
+    <div class="houses-catalog__head houses-catalog__head--services">
+      <h2 class="section__title section__title--center">{% cms_text "house_index_page-159ce14c6926" %}</h2>
+      <p>{{ page.services_intro_display|linebreaksbr }}</p>
+    </div>
+
+    {% comment %}
+      Почасовые объекты (баня, беседка) идут крупными карточками 610×500 —
+      той же формы, что домики. Забронировать их можно только через
+      отдельный виджет hourlyObjectsList (см. 03-kontur-widget.md),
+      он подключается в Фазе 7.
+    {% endcomment %}
+    {% if hourly_services %}
+      <ul class="cards cards--services">
+        {% for service in hourly_services %}
+          {% include "services/_service_card.html" with details_url="/territoriya/uslugi/" %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% comment %} Ряд плиток 295×295: только название на фотографии {% endcomment %}
+    {% if tile_services %}
+      <ul class="cards cards--service-tiles">
+        {% for service in tile_services %}
+          <li class="service-tile territory-card" id="service-{{ service.slug }}" tabindex="0">
+            {% if service.display_image %}{% picture service.display_image preset="mosaic" alt=service.name %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+            <div class="mosaic__caption">
+              <h3 class="service-tile__title">{{ service.name|linebreaksbr }}</h3>
+              <div class="territory-card__details">
+                {% if service.tile_description %}<p><span class="home-desktop-copy">{{ service.tile_description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ service.tile_description }}</span></p>{% endif %}
+                {% if service.tile_details_url %}<a class="btn btn--primary territory-card__link" href="{{ service.tile_details_url }}">{% cms_text "_service_card-59589fe2a549" %}</a>{% endif %}
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %}
+  Ответы на вопросы — тот же аккордеон, что на главной. Отступ сверху
+  такой же, как между рядом домиков и заголовком «Доп услуги»: 80.
+{% endcomment %}
+{% if faq %}
+<section class="section houses-faq">
+  <div class="container">
+    <h2 class="section__title section__title--center"><span class="home-desktop-copy">{% cms_text "house_index_page-aec7a4625e64" %}</span><span class="home-mobile-copy">{% cms_text "house_index_page-e3fa138ad417" %}<br>{% cms_text "house_index_page-cb6e474f34f1" %}</span></h2>
+    {% include "includes/faq_items.html" with faq_layout="catalog_faq" %}
+  </div>
+</section>
+{% endif %}
+
+{# Точка входа в бронирование в конце каталога — таблица п. 5.1 ТЗ #}
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <h2>{% cms_text "house_index_page-1b96fb9abe3e" %}</h2>
+    <p>{% cms_text "house_index_page-e4d2c144d765" %}</p>
+    {% include "includes/booking_cta.html" with entry_point="5" %}
+  </div>
+</section>
+
+{% endblock %}

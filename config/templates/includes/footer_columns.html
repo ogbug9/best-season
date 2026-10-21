@@ -1,0 +1,38 @@
+{% load content_tags %}
+{% load wagtailcore_tags %}
+{% comment %}
+  Колонки подвала. Собираются из дерева страниц, но группировка своя:
+  в макете подвал устроен не так, как шапка — «Акции» стоят внутри
+  «Размещения», а «Интересное рядом» внутри «Территории». Поэтому список
+  разделов задаётся в контексте (core/context_processors.py), а не берётся
+  напрямую из меню. Страницы, которых ещё нет, просто не выводятся —
+  подвал не ломается.
+{% endcomment %}
+
+<nav class="footer__columns" aria-label="Разделы сайта">
+  {% for column in footer_columns %}
+    <div class="footer__column">
+      <p class="footer__column-title">{{ column.title }}</p>
+      {% if column.links %}
+        <ul>
+          {% for link in column.links %}
+            <li>{% if link.booking %}<button type="button" class="btn btn--ghost footer__booking-link" data-booking-open data-entry-point="1">{{ link.title }}</button>{% else %}<a href="{{ link.url }}">{{ link.title }}</a>{% endif %}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+    </div>
+  {% endfor %}
+  {% for column in footer_columns %}
+      {% if column.legal %}
+      <div class="footer__documents">
+        <p class="footer__column-title">{% cms_text "footer_columns-011d8814fe39" %}</p>
+        <ul class="footer__legal-links">
+          {% for link in column.legal %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+  {% endfor %}
+</nav>

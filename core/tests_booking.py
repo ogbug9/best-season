@@ -1,0 +1,274 @@
+"""Проверки интеграции виджета Контур.Отеля — раздел 5 ТЗ.
+
+Часть требований раздела проверяется только вживую, когда придёт hotelId.
+Здесь закрыто то, что можно проверить кодом и что смотрят на приёмке:
+отложенная загрузка, резервный сценарий, уведомление о сбое, отсутствие
+персональных данных в аналитике.
+"""
+
+from pathlib import Path
+import json
+import re
+from unittest.mock import patch
+
+from django.core.cache import cache
+from django.test import TestCase
+from django.urls import reverse
+from wagtail.models import Site
+
+from core.models import SiteSettings
+
+JS = (Path(__file__).resolve().parent.parent / "config/static/js/kontur.js").read_text(
+    encoding="utf-8"
+)
+
+
+class BookingModalTests(TestCase):
+    """П. 5.2 ТЗ: модальное окно поверх страницы, виджет грузится по действию."""
+
+    def setUp(self):
+        cache.clear()
+        self.home = Site.objects.first().root_page.url
+
+    def test_modal_is_on_every_page(self):
+        body = self.client.get(self.home).content.decode()
+        self.assertIn("data-booking-modal", body)
+        self.assertEqual(
+            body.count("data-booking-modal"),
+            1,
+            "Виджет инициализируется один раз на страницу — окно должно быть одно",
+        )
+
+    def test_widget_script_is_not_loaded_upfront(self):
+        """Скрипты Контура не должны влиять на замер скорости (п. 5.2, п. 1.2):
+        до нажатия кнопки их на странице нет вообще."""
+        body = self.client.get(self.home).content.decode()
+        self.assertNotIn("bookonline24.ru", body)
+
+    def test_hotel_id_comes_from_site_settings(self):
+        settings_obj = SiteSettings.for_site(Site.objects.first())
+        settings_obj.kontur_hotel_id = "hotel-from-admin"
+        settings_obj.save()
+        body = self.client.get(self.home).content.decode()
+        payload = re.search(r'<script id="booking-config"[^>]*>(.*?)</script>', body, re.S)
+        self.assertEqual(json.loads(payload.group(1))["hotelId"], "hotel-from-admin")
+        self.assertIn('data-booking-retry', body)
+        self.assertIn('data-kontur-type="roomsList"', body)
+        self.assertIn('data-kontur-type="hourlyObjectsList"', body)
+        self.assertIn('data-kontur-type="availabilityCalendar"', body)
+
+    def test_modal_has_no_forbidden_global_selectors(self):
+        """Контур снимает поддержку при глобальных `* {}` и `div {}`
+        (см. 03-kontur-widget.md) — ресет остаётся скоупленным."""
+        css = (
+            Path(__file__).resolve().parent.parent / "config/static/css/main.css"
+        ).read_text(encoding="utf-8")
+        for line in css.splitlines():
+            stripped = line.strip()
+            self.assertFalse(stripped.startswith("* {"), "Глобальный сброс запрещён")
+            self.assertFalse(stripped.startswith("div {"), "Голый div запрещён")
+
+    def test_search_fields_flag_restores_home_and_catalog_without_changing_entry_points(self):
+        from home.models import HomePage
+        from houses.models import HouseIndexPage
+        site = Site.objects.first()
+        home = HomePage(title='Flag home', slug='flag-home')
+        site.root_page.add_child(instance=home)
+        home.save_revision().publish()
+        catalog = HouseIndexPage(title='Flag catalog', slug='flag-catalog')
+        home.add_child(instance=catalog)
+        catalog.save_revision().publish()
+        site.root_page = home
+        site.save()
+        settings_obj = SiteSettings.for_site(site)
+        for enabled in (False, True, False):
+            settings_obj.booking_show_search_fields = enabled
+            settings_obj.save()
+            cache.clear()
+            for url, entry in ((home.url, '2'), (catalog.url, '1')):
+                with self.subTest(enabled=enabled, entry=entry):
+                    html = self.client.get(url).content.decode()
+                    button = re.search(r'<button[^>]*class="searchbar[^>]*data-entry-point="' + entry + r'"[^>]*>', html)
+                    self.assertIsNotNone(button)
+                    self.assertEqual('searchbar--cta-only' in button.group(), not enabled)
+
+
+class FallbackTests(TestCase):
+    """П. 5.6 ТЗ: резервный блок обязателен в первой очереди и проверяется
+    принудительной блокировкой домена виджета."""
+
+    def setUp(self):
+        cache.clear()
+        self.home = Site.objects.first().root_page.url
+
+    def test_fallback_markup_does_not_depend_on_kontur(self):
+        """Разметка резервного блока приходит с сервера. Если домен Контура
+        заблокирован — а именно так проверяют на приёмке (п. 5.6.5), — блок
+        всё равно на месте, скрипту остаётся только показать его."""
+        body = self.client.get(self.home).content.decode()
+        self.assertIn("data-booking-fallback", body)
+        self.assertIn('action="/zayavka/fallback/"', body)
+
+    def test_fallback_has_required_parts(self):
+        """П. 5.6.2: объяснение, форма с именем, телефоном, датами и
+        комментарием, кнопки Telegram и WhatsApp."""
+        site = Site.objects.first()
+        settings_obj = SiteSettings.for_site(site)
+        settings_obj.telegram_url = "https://t.me/bestseason"
+        settings_obj.whatsapp_url = "https://wa.me/79990001122"
+        settings_obj.save()
+
+        body = self.client.get(self.home).content.decode()
+        for needle in ('name="name"', 'name="phone"', 'name="date_from"',
+                       'name="date_to"', 'name="message"'):
+            self.assertIn(needle, body, f"В резервной форме нет поля {needle}")
+        self.assertIn("https://t.me/bestseason", body)
+        self.assertIn("https://wa.me/79990001122", body)
+
+    def test_timeout_is_five_seconds(self):
+        """П. 5.6.1: резервный блок показывается, если виджет не поднялся
+        за 5 секунд."""
+        self.assertIn("TIMEOUT_MS = 5000", JS)
+
+    def test_missing_hotel_id_goes_straight_to_fallback(self):
+        """Пока заказчик не прислал hotelId, ждать нечего: гость сразу
+        получает форму заявки, а не пять секунд пустого окна."""
+        self.assertIn("hotel_id_missing", JS)
+        body = self.client.get(self.home).content.decode()
+        self.assertIn('"hotelId": ""', body)
+
+
+class WidgetErrorTests(TestCase):
+    """П. 5.6.4: сбой логируется, владельцу приходит уведомление в Telegram."""
+
+    def setUp(self):
+        cache.clear()
+
+    @patch("forms.notifications.send_service_message")
+    def test_failure_notifies_owner(self, mocked):
+        response = self.client.post(
+            reverse("forms:widget_error"),
+            {"reason": "script_load_failed", "page": "/", "entry_point": "2"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(mocked.called)
+        self.assertIn("script_load_failed", mocked.call_args[0][0])
+
+    @patch("forms.notifications.send_service_message")
+    def test_owner_is_not_spammed(self, mocked):
+        """Если Контур лежит, о сбое сообщит каждый посетитель. Владельцу
+        нужно одно сообщение, а не сотня одинаковых."""
+        url = reverse("forms:widget_error")
+        for _ in range(10):
+            self.client.post(url, {"reason": "timeout_5s", "page": "/"})
+        self.assertEqual(mocked.call_count, 1)
+
+    def test_endpoint_never_fails_the_guest(self):
+        """Это служебный сигнал: гость в этот момент уже видит форму заявки,
+        и никакая неполадка здесь не должна до него дойти."""
+        response = self.client.post(reverse("forms:widget_error"), {})
+        self.assertEqual(response.status_code, 200)
+
+
+class AnalyticsTests(TestCase):
+    """П. 5.5 ТЗ: видно, с какой кнопки открыт виджет. Раздел 11 ТЗ и
+    раздел 12 договора: персональные данные в чужую аналитику не уходят."""
+
+    def test_entry_point_is_tracked(self):
+        self.assertIn("booking_widget_open", JS)
+        self.assertIn("entry_point", JS)
+
+    def test_personal_data_is_not_sent_to_analytics(self):
+        """Хук onBooking отдаёт ФИО, телефон и почту гостя. В цель уходят
+        только сумма и идентификатор брони."""
+        for field in ("customer", "fio", "phone", "email"):
+            self.assertNotIn(
+                field,
+                JS,
+                f"Поле {field} из хука Контура не должно попадать в аналитику",
+            )
+
+    def test_fallback_submit_is_a_separate_goal(self):
+        """П. 5.6.3: отправка резервной формы — отдельная цель."""
+        analytics = (Path(__file__).resolve().parent.parent / "config/static/js/analytics.js").read_text(encoding="utf-8")
+        self.assertIn("booking_fallback_submitted", analytics)
+        self.assertNotIn('addEventListener("submit"', JS)
+
+    def test_metrika_config_only_with_counter(self):
+        settings_obj = SiteSettings.for_site(Site.objects.first())
+        home = Site.objects.first().root_page.url
+        settings_obj.yandex_metrika_id = ""
+        settings_obj.save()
+        self.assertNotContains(self.client.get(home), 'id="metrika-id"')
+        settings_obj.yandex_metrika_id = "12345678"
+        settings_obj.save()
+        body = self.client.get(home).content.decode()
+        config = re.search(r'<script id="metrika-id"[^>]*>(.*?)</script>', body, re.S)
+        self.assertEqual(json.loads(config.group(1)), "12345678")
+        self.assertNotIn('src="https://mc.yandex.ru', body)
+
+    def test_success_type_is_allowlisted(self):
+        from forms.models import FormType
+        home = Site.objects.first().root_page.url
+        for kind in FormType.values:
+            session = self.client.session
+            session['bs_form_success'] = {'type': kind, 'path': home}
+            session.save()
+            self.assertContains(self.client.get(home, {"form": "ok", "ft": kind}), f'data-form-success="{kind}"')
+            self.assertNotContains(self.client.get(home, {"form": "ok", "ft": kind}), 'data-form-success')
+        for query in ({"form": "ok", "ft": "unknown"}, {"form": "error", "ft": "fallback"}, {"ft": "fallback"}):
+            self.assertNotContains(self.client.get(home, query), "data-form-success")
+
+    def test_reply_time_and_empty_default(self):
+        settings_obj = SiteSettings.for_site(Site.objects.first())
+        home = Site.objects.first().root_page.url
+        session = self.client.session
+        session['bs_form_success'] = {'type': 'fallback', 'path': home}
+        session.save()
+        self.assertContains(self.client.get(home, {"form": "ok", "ft": "fallback"}), "Свяжемся с вами в ближайшее время.")
+        settings_obj.form_reply_time = "в течение рабочего дня"
+        settings_obj.save()
+        session = self.client.session
+        session['bs_form_success'] = {'type': 'fallback', 'path': home}
+        session.save()
+        body = self.client.get(home, {"form": "ok", "ft": "fallback"}).content.decode()
+        self.assertEqual(body.count("Ответим в течение рабочего дня."), 2)
+        self.assertNotIn("Свяжемся с вами в ближайшее время.", body)
+
+    def test_hourly_section_can_be_hidden(self):
+        settings_obj = SiteSettings.for_site(Site.objects.first())
+        settings_obj.booking_show_hourly = False
+        settings_obj.save()
+        body = self.client.get(Site.objects.first().root_page.url).content.decode()
+        self.assertNotIn("BookingHourlyWidget", body)
+        self.assertNotIn("Баня и беседки", body)
+        self.assertIn("BookingRoomsWidget", body)
+
+
+class RegressionTests(TestCase):
+    """Ошибки, найденные проверкой в браузере. Тесты держат их закрытыми."""
+
+    def test_scroll_is_restored_without_focus_jump(self):
+        """Браузер подкручивает страницу к элементу, получающему фокус.
+        Без preventScroll гость после закрытия окна улетал в начало
+        страницы вместо места, где нажал кнопку (п. 5.2 ТЗ)."""
+        self.assertIn("preventScroll", JS)
+
+    def test_invisible_sticky_button_is_not_clickable(self):
+        """Одной прозрачности мало: невидимая липкая кнопка продолжала
+        ловить нажатия и попадать в обход по Tab."""
+        css = (
+            Path(__file__).resolve().parent.parent / "config/static/css/main.css"
+        ).read_text(encoding="utf-8")
+        block = css.split(".sticky-cta {")[1].split("}")[0]
+        self.assertIn("visibility: hidden", block)
+        self.assertIn("pointer-events: none", block)
+
+    def test_sticky_button_appears_on_short_pages(self):
+        """Если первый экран выше, чем экран плюс вся доступная прокрутка,
+        наблюдатель не сработает никогда — и точка входа №6 таблицы п. 5.1
+        пропала бы на коротких страницах."""
+        site_js = (
+            Path(__file__).resolve().parent.parent / "config/static/js/site.js"
+        ).read_text(encoding="utf-8")
+        self.assertIn("heroCannotLeaveView", site_js)

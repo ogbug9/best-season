@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static marketing_tags %}
+{% load content_tags %}
+{% load wagtailcore_tags media_tags layout_tags %}
+{% block body_class %}page-contacts{% endblock %}
+
+{% comment %}
+  Контакты (docs/dop-stranicy/16-kontakty.md): связаться одним нажатием.
+  Контакты и реквизиты берутся из настроек сайта, а не дублируются полями
+  страницы: иначе они разойдутся с подвалом, а реквизиты ИП обязаны
+  совпадать (раздел 11 ТЗ). Незаполненная плитка не выводится.
+{% endcomment %}
+
+{% block content %}
+{% with s=settings.core.SiteSettings greeting="Здравствуйте! Хочу забронировать домик" %}
+<section class="section page-head">
+  <div class="container container--narrow">
+    {% include "includes/in_progress_note.html" %}
+    <h1>{{ page.title|heading_breaks }}</h1>
+    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+{% page_extras "contacts" "top" %}
+{% page_story "contacts" %}
+{% page_extras "contacts" %}
+
+<section class="section">
+  <div class="container">
+    <ul class="contact-tiles">
+      {% firstof s.telegram_chat_url s.telegram_url as telegram %}
+      {% if telegram %}
+        <li data-reveal><a class="contact-tile" href="{% marketing_url telegram 'contacts_page' greeting %}" rel="noopener" target="_blank">
+          <img class="contact-tile__icon" src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="" aria-hidden="true">
+          <b class="contact-tile__name">Telegram</b><span class="contact-tile__hint">Напишите — ответим в чате</span></a></li>
+      {% endif %}
+      {% if s.whatsapp_url %}
+        {% comment %} Имена файлов иконок перепутаны: social-tiktok.png — это WhatsApp (как в шапке и подвале). {% endcomment %}
+        <li data-reveal><a class="contact-tile" href="{% marketing_url s.whatsapp_url 'contacts_page' greeting %}" rel="noopener" target="_blank">
+          <img class="contact-tile__icon" src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true">
+          <b class="contact-tile__name">WhatsApp<span class="socials__note" aria-hidden="true">*</span></b><span class="contact-tile__hint">Сообщение уже набрано</span></a></li>
+      {% endif %}
+      {% if s.phone %}
+        <li data-reveal><a class="contact-tile" href="tel:{{ s.phone }}" data-copy="{{ s.phone_display|default:s.phone }}" data-copy-desktop>
+          <span class="contact-tile__icon contact-tile__icon--phone" aria-hidden="true"></span>
+          <b class="contact-tile__name">{{ s.phone_display|default:s.phone }}</b><span class="contact-tile__hint" data-copy-label="Номер скопирован">Позвонить</span></a></li>
+      {% endif %}
+      {% if s.vk_url %}
+        <li data-reveal><a class="contact-tile" href="{% marketing_url s.vk_url 'contacts_page' %}" rel="noopener" target="_blank">
+          <img class="contact-tile__icon" src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="" aria-hidden="true">
+          <b class="contact-tile__name">{% cms_text "contacts_page-125394ee160a" %}</b><span class="contact-tile__hint">Новости и отзывы гостей</span></a></li>
+      {% endif %}
+    </ul>
+    {% if s.email %}<p class="contact-tiles__email">{% cms_text "contacts_page-9acc3fbe2040" %} <a href="mailto:{{ s.email }}">{{ s.email }}</a></p>{% endif %}
+    <div class="contacts-now" data-reveal>
+      <p class="contacts-now__hours"><span class="contacts-now__dot" aria-hidden="true"></span>На связи каждый день, {{ s.work_hours|default:'10:00 - 22:00' }}</p>
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="contacts">{% cms_text "booking_cta-5d9d7f118153" %}</button>
+    </div>
+    {% ask_chips "contacts" %}
+  </div>
+</section>
+
+{% guest_quote "радушной встречей" "Гости о встрече" %}
+
+{% if checkin_answer %}
+<section class="section">
+  <div class="container split contacts-hosts">
+    {% if hosts_image %}<div class="split__media" data-reveal>{% picture hosts_image preset="card" alt="Терраса домика" %}</div>{% endif %}
+    <div class="split__text" data-reveal>
+      <h2>Встретим вас лично</h2>
+      <div class="prose">{{ checkin_answer|richtext }}</div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if s.address or page.map_embed_url %}
+<section class="section">
+  <div class="container split">
+    <div class="split__text">
+      <h2>Где мы</h2>
+      {% if s.address %}<p>{{ s.address }}</p>{% endif %}
+      {% if s.directions_page %}<p><a class="btn btn--outline" href="{% pageurl s.directions_page %}">Как добраться</a></p>{% endif %}
+      {% if page.body|filled %}<div class="prose">{{ page.body|richtext }}</div>{% endif %}
+    </div>
+    {% if page.map_embed_url %}
+      <div class="split__media">
+        <div class="map" data-map data-map-src="{{ page.map_embed_url }}">
+          {% if page.map_image %}{% picture page.map_image preset="gallery" alt="Карта проезда" %}{% endif %}
+          <button type="button" class="btn btn--primary map__button" data-map-load>{% cms_text "contacts_page-90457f42f688" %}</button>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container container--narrow">
+    {% cms_text "include-b0f097f65241" as cms_include_b0f097f65241 %}
+{% include "forms/request_form.html" with form=feedback_form form_type="feedback" title=cms_include_b0f097f65241 lead="Или оставьте сообщение — ответим на почту или в мессенджер." %}
+
+    {% if s.legal_name or s.inn or s.ogrnip or s.legal_address %}
+      <p class="footer__requisites contacts-requisites">
+        {% if s.legal_name %}{{ s.legal_name }}{% endif %}
+        {% if s.inn %} {% cms_text "contacts_page-1b6d70106339" %} {{ s.inn }}{% endif %}
+        {% if s.ogrnip %} {% cms_text "contacts_page-f0d20ac2a599" %} {{ s.ogrnip }}{% endif %}
+        {% if s.legal_address %}<br>{{ s.legal_address }}{% endif %}
+      </p>
+    {% endif %}
+  </div>
+</section>
+{% endwith %}
+{% endblock %}

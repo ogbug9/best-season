@@ -1,0 +1,8 @@
+{% load wagtailcore_tags media_tags layout_tags %}
+<li class="diary-card">
+  <a class="diary-card__link" href="{% pageurl entry %}">
+    <span class="diary-card__photo">{% if entry.cover %}{% picture entry.cover preset="diary_card" alt=entry.cover_alt_text loading=loading|default:"lazy" %}{% endif %}</span>
+    <{{ tag|default:"h2" }} class="diary-card__title">{{ entry.title|bind_short_words }}</{{ tag|default:"h2" }}>
+    <span class="diary-card__more">Читать <svg width="9" height="12" viewBox="0 0 9 12" aria-hidden="true" focusable="false"><path d="M1.28 .16 8.78 5.61a.48.48 0 0 1 0 .78L1.28 11.84a.9.9 0 0 1-1.06 0 .48.48 0 0 1 0-.77L7.19 6 .22.93a.48.48 0 0 1 0-.77.9.9 0 0 1 1.06 0Z" fill="currentColor"/></svg></span>
+  </a>
+</li>

@@ -1,0 +1,10 @@
+{% comment %}Готовые вопросы в Telegram (тег ask_chips).{% endcomment %}
+{% if questions %}
+<div class="ask-chips" data-reveal>
+  <p class="ask-chips__title">{{ title }}</p>
+  <ul class="ask-chips__list">
+    {% for text, url in questions %}<li><a class="ask-chips__chip" href="{{ url }}" rel="noopener" target="_blank">{{ text }}</a></li>{% endfor %}
+  </ul>
+  <p class="ask-chips__hint">Нажмите — вопрос уже будет набран в чате</p>
+</div>
+{% endif %}

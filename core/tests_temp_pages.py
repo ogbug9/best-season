@@ -1,0 +1,113 @@
+"""Временные страницы 09.10.2026: seed_pages их заводит, они открываются и не попадают в меню."""
+from io import StringIO
+
+from django.core.management import call_command
+from django.test import TestCase
+from wagtail.models import Page
+
+from core.models import ContentPage
+from core.temp_pages import SLUGS, TREE
+
+
+class TempPagesTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_pages", "--create-only", stdout=StringIO(), stderr=StringIO())
+
+    def test_pages_are_created_hidden_and_in_progress(self):
+        for parent_slug, slug, _, _ in TREE:
+            page = ContentPage.objects.get(slug=slug)
+            self.assertEqual(page.get_parent().slug, parent_slug)
+            self.assertFalse(page.show_in_menus, slug)
+            self.assertTrue(page.in_progress, slug)
+
+    def test_pages_render(self):
+        for slug in SLUGS:
+            page = Page.objects.get(slug=slug)
+            response = self.client.get(page.url)
+            self.assertEqual(response.status_code, 200, slug)
+            html = response.content.decode()
+            self.assertIn("dev-strip", html, slug)
+            self.assertIn("temp-pages.css", html, slug)
+
+    def test_pet_and_service_specifics(self):
+        snezhka = self.client.get(Page.objects.get(slug="snezhka").url).content.decode()
+        self.assertIn("Погладить Снежку", snezhka)
+        self.assertIn("Дымок", snezhka)  # «Ещё ищут дом»
+        besedka = self.client.get(Page.objects.get(slug="bolshaya-besedka").url).content.decode()
+        self.assertIn('data-capacity="50"', besedka)
+        photo = self.client.get(Page.objects.get(slug="fotosessii").url).content.decode()
+        self.assertIn('data-lat="54.736"', photo)
+
+    def test_rerun_creates_nothing(self):
+        out = StringIO()
+        call_command("seed_pages", "--create-only", stdout=out, stderr=StringIO())
+        self.assertIn("создано 0", out.getvalue())
+
+    def test_about_and_service_cards_link_to_new_pages(self):
+        from core.temp_pages import link_about
+        from services.models import Service
+
+        context = {"about_pets": [{"name": "Снежка", "crop": "pet-snezhka"}],
+                   "about_diary": [{"crop": "diary-ayka", "url": ""}, {"crop": "diary-car", "url": "https://t.me/x"}]}
+        link_about(context)
+        self.assertEqual(context["about_pets"][0]["page_url"], Page.objects.get(slug="snezhka").url)
+        self.assertEqual(context["about_diary"][0]["page_url"], Page.objects.get(slug="ayka").url)
+        self.assertEqual(context["about_diary"][1]["page_url"], "")  # ссылка из CMS важнее
+        self.assertEqual(context["about_pets_url"], Page.objects.get(slug="pushistiki").url)
+        self.assertEqual(Service(slug="russkaya-banya").page_url, Page.objects.get(slug="banya").url)
+        self.assertEqual(Service(slug="arenda-velosipedov").page_url, Page.objects.get(slug="velosipedy").url)
+
+
+class MorePagesTests(TestCase):
+    """Волна 2: у каждой страницы свой шаблон и свои игры; игры на прежних страницах."""
+
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_pages", "--create-only", stdout=StringIO(), stderr=StringIO())
+
+    def test_each_page_has_own_template_and_games(self):
+        from core.temp_more import PAGES
+
+        templates = [data["template"] for data in PAGES.values()]
+        self.assertEqual(len(templates), len(set(templates)))
+        for slug, data in PAGES.items():
+            html = self.client.get(Page.objects.get(slug=slug).url).content.decode()
+            self.assertIn("dev-strip", html, slug)
+            self.assertEqual(html.count('data-game="'), len(data.get("play", [])) + (1 if data.get("mixer") else 0), slug)
+
+    def test_play_blocks_on_old_keys(self):
+        from django.template.loader import render_to_string
+        from core.temp_more import PLAY_OLD
+
+        for key, blocks in PLAY_OLD.items():
+            html = render_to_string("includes/page_extras.html", {"blocks": [], "key": key, "slot": "after"})
+            self.assertEqual(html.count('data-game="'), len(blocks), key)
+            self.assertIn("temp-pages.js", html)
+        self.assertNotIn("data-game", render_to_string("includes/page_extras.html", {"blocks": [], "key": "faq", "slot": "after"}))
+
+    def test_tiles_and_services_lead_to_pages(self):
+        from core.temp_pages import tile_page_url
+        from services.models import Service
+
+        self.assertEqual(tile_page_url('Река "Скнижка"'), Page.objects.get(slug="reka").url)
+        self.assertEqual(tile_page_url("Батут и детская площадка"), Page.objects.get(slug="ploshchadka").url)
+        self.assertEqual(Service(slug="arenda-sapov").page_url, Page.objects.get(slug="sapy").url)
+
+
+class PlayLinksTests(TestCase):
+    """20.10: результаты тестов вели на «banya»/«domik-1» относительно страницы (404)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_pages", "--create-only", stdout=StringIO(), stderr=StringIO())
+
+    def test_no_bare_slug_links(self):
+        import re
+
+        from core.temp_more import PAGES
+
+        for slug in PAGES:
+            html = self.client.get(Page.objects.get(slug=slug).url).content.decode()
+            bare = re.findall(r'href="([a-z0-9-]+)"', html)
+            self.assertEqual(bare, [], slug)

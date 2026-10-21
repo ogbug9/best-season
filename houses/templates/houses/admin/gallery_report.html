@@ -1,0 +1,46 @@
+{% extends "wagtailadmin/base.html" %}
+{% block titletag %}Галереи домов{% endblock %}
+
+{% block content %}
+  {% include "wagtailadmin/shared/header.html" with title="Галереи домов" icon="image" %}
+
+  <div class="nice-padding">
+    <p>
+      По п. 4.1.2 ТЗ на каждый дом нужно не меньше {{ minimum }} фото в галерее.
+      Публикацию это не блокирует, но к приёмке недобор должен быть закрыт.
+    </p>
+
+    {% if total_missing %}
+      <p><b>Всего не хватает фото: {{ total_missing }}</b></p>
+    {% else %}
+      <p><b>Все галереи добраны.</b></p>
+    {% endif %}
+
+    <table class="listing">
+      <thead>
+        <tr>
+          <th>Дом</th>
+          <th>Фото</th>
+          <th>Не хватает</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+          <tr>
+            <td><a href="{{ row.edit_url }}">{{ row.house.title }}</a></td>
+            <td>{{ row.count }} из {{ minimum }}</td>
+            <td>
+              {% if row.ok %}
+                норма
+              {% else %}
+                не хватает {{ row.missing }}
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3">Страниц домов пока нет.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

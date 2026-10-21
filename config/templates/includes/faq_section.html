@@ -1,0 +1,15 @@
+{% load content_tags %}
+{% load wagtailcore_tags %}
+{% if faq %}
+<section class="section">
+  {% comment %}
+    Контейнер обычной ширины: в узком (760px) заголовок в 90px по макету
+    разбивался на две строки, а в макете он в одну.
+  {% endcomment %}
+  <div class="container">
+    <h2 class="section__title section__title--center"><span class="home-desktop-copy">{% cms_text "faq_section-aec7a4625e64" %}</span><span class="home-mobile-copy">{% cms_text "faq_section-e3fa138ad417" %}<br>{% cms_text "faq_section-cb6e474f34f1" %}</span></h2>
+    {% include "includes/faq_items.html" %}
+  </div>
+</section>
+{% endif %}
+

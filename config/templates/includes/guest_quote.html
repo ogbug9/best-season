@@ -1,0 +1,19 @@
+{% comment %}
+  Цитата гостя (тег guest_quote): настоящий опубликованный отзыв целиком,
+  фраза по теме страницы подсвечена. Без отзыва блок не выводится.
+{% endcomment %}
+{% if review %}
+<section class="section guest-quote-section">
+  <div class="container">
+    <figure class="guest-quote" data-reveal>
+      <span class="guest-quote__mark" aria-hidden="true">«</span>
+      <p class="guest-quote__label">{{ label }}</p>
+      <blockquote class="guest-quote__text"><p>{{ before }}<mark>{{ match }}</mark>{{ after }}</p></blockquote>
+      <figcaption class="guest-quote__by">
+        <b>{{ review.author_name }}</b>{% if review.house %} · <a href="{{ review.house.url }}">{{ review.house.title }}</a>{% endif %}
+        {% if reviews_url %}<a class="guest-quote__more" href="{{ reviews_url }}">Все отзывы</a>{% endif %}
+      </figcaption>
+    </figure>
+  </div>
+</section>
+{% endif %}

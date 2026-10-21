@@ -1,0 +1,120 @@
+{% load content_tags %}
+{% load static wagtailcore_tags wagtailuserbar layout_tags seo_tags %}
+{% wagtail_site as current_site %}
+{% page_description page current_site as description %}
+{% social_image page current_site as fallback_og_image %}
+{% canonical_url as canonical %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="only light">
+
+    <title>{% block title %}{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}{% endblock %}{% block title_suffix %}{% if current_site and current_site.site_name %} — {{ current_site.site_name }}{% endif %}{% endblock %}</title>
+
+    {% comment %}
+      Описание страницы. Если редактор его не заполнил, подставляется
+      запасной текст — без meta description страница теряет баллы
+      в проверке SEO, а уникальные описания требует п. 10.6 ТЗ.
+    {% endcomment %}
+    <meta name="description" content="{% block meta_description %}{{ description }}{% endblock %}">
+    <link rel="canonical" href="{% block canonical %}{{ canonical }}{% endblock %}">
+
+    {# Open Graph — превью проверяется в Telegram и ВК, п. 10.9 ТЗ #}
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:site_name" content="{{ current_site.site_name }}">
+    <meta property="og:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}">
+    <meta property="og:description" content="{{ description }}">
+    <meta property="og:url" content="{{ canonical }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}">
+    <meta name="twitter:description" content="{{ description }}">
+    {% block og_image %}{% if fallback_og_image %}{% absolute_media_url fallback_og_image.file.url as og_url %}<meta property="og:image" content="{{ og_url }}"><meta name="twitter:image" content="{{ og_url }}">{% endif %}{% endblock %}
+
+    <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+
+    {% comment %} Предзагрузка кириллических поднаборов: на русской странице грузятся
+       именно они, и без preload текст успевает мигнуть системным шрифтом. {% endcomment %}
+    <link rel="preload" href="{% static 'fonts/montserrat-400-cyrillic.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{% static 'fonts/etude-noire-500-cyrillic.woff2' %}" as="font" type="font/woff2" crossorigin>
+
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}?v=20261001-corrections">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=20261021-tap">
+    <link rel="stylesheet" href="{% static 'css/home-mobile.css' %}?v=20261006-final" media="(max-width: 699px)">
+    <link rel="stylesheet" href="{% static 'css/pages-mobile.css' %}?v=20261005-backgrounds" media="(max-width: 699px)">
+    <link rel="stylesheet" href="{% static 'css/kontur-booking.css' %}?v=20261005-booking-layout-vpn">
+    {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/buttons.css' %}?v=20261006-final">
+
+    {# Микроразметка организации — п. 10.5 ТЗ #}
+    {% organization_schema %}
+    {% breadcrumbs_schema %}
+    {% block structured_data %}{% endblock %}
+</head>
+
+<body class="site {% block body_class %}{% endblock %}" {% block body_attributes %}{% endblock %}{% if form_success_type %} data-form-success="{{ form_success_type }}"{% endif %}>
+    {% block page_background %}{% endblock %}
+    {% wagtailuserbar %}
+
+    <a class="skip-link" href="#main">{% cms_text "base-f35ba214e95d" %}</a>
+
+    {% include "includes/header.html" %}
+
+    <div class="page-content">
+    <main id="main">
+        {% if form_success_type %}<p class="container form__note form__note--ok" role="status">{% cms_text "base-0cd618b74e9c" %} {% if settings.core.SiteSettings.form_reply_time %}{% cms_text "base-b3462448b4a0" %} {{ settings.core.SiteSettings.form_reply_time }}.{% else %}{% cms_text "base-0e5ac608bbfd" %}{% endif %}</p>{% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include "includes/footer.html" %}
+    </div>
+
+    {% comment %}
+      Точка входа №6 из таблицы п. 5.1 ТЗ: липкая кнопка на мобильном,
+      появляется после прокрутки первого экрана, контекст текущей страницы.
+    {% endcomment %}
+    <button type="button" class="btn btn--primary sticky-cta"
+            data-sticky-cta data-booking-open data-entry-point="6">
+      {% cms_text "base-5d9d7f118153" %}
+    </button>
+
+    {% include "includes/booking_modal.html" %}
+
+    <aside class="cookie-banner" data-cookie-banner hidden aria-label="Уведомление о cookie">
+      <span class="cookie-icon" aria-hidden="true">
+        <svg viewBox="0 0 36 36" width="36" height="36" fill="none" focusable="false">
+          <circle cx="18" cy="18" r="18" fill="#FFE5BF"/>
+          <path d="M25.8 16.2a4.5 4.5 0 0 1-5.1-5.1 9 9 0 1 0 5.1 5.1Z" fill="#D9984A"/>
+          <circle cx="14" cy="13.8" r="1.1" fill="#9B5026"/><circle cx="11.8" cy="20" r="1.2" fill="#9B5026"/>
+          <circle cx="18.7" cy="23.5" r="1" fill="#9B5026"/><circle cx="18.2" cy="17" r=".9" fill="#9B5026"/>
+        </svg>
+      </span>
+      <p class="cookie-text">{{ settings.core.SiteSettings.cookie_text|default:"Мы используем сторонние файлы cookie для обеспечения наилучшего пользовательского опыта и аналитики производительности." }}</p>
+      <div class="cookie-actions">
+        <button type="button" class="btn btn--primary cookie-accept" data-cookie-accept>{% cms_text "base-d0c0ee65c67e" %}</button>
+        <button type="button" class="cookie-close" data-cookie-close aria-label="Закрыть без согласия">×</button>
+      </div>
+    </aside>
+
+    {% include "includes/metrika.html" %}
+    {{ analytics_config|json_script:"analytics-config" }}
+    <script src="{% static 'js/analytics.js' %}?v=20261001-booking-k1" defer></script>
+    <script src="{% static 'js/scroll-intent.js' %}?v=20261002-swipe" defer></script>
+    <script src="{% static 'js/button-states.js' %}?v=20261002-states" defer></script>
+    <script src="{% static 'js/site.js' %}?v=20261007-gallery" defer></script>
+    <script src="{% static 'js/reveal.js' %}?v=20261007-motion" defer></script>
+    <script src="{% static 'js/chips.js' %}?v=20261007-photo-fit" defer></script>
+    <script src="{% static 'js/copy.js' %}?v=20261007-copy" defer></script>
+    <script src="{% static 'js/dop.js' %}?v=20261007-widgets" defer></script>
+    {% comment %} Блок бронирования есть только на странице дома — на
+       остальных скрипт выходит сразу, ничего не найдя. {% endcomment %}
+    <script src="{% static 'js/calendar.js' %}?v=20260925-calendar" defer></script>
+    <script src="{% static 'js/booking-layers.js' %}?v=20261002-fix" defer></script>
+    <script src="{% static 'js/kontur.js' %}?v=20261002-default" defer></script>
+    <script src="{% static 'js/kontur-style.js' %}?v=20261005-booking-layout-vpn" defer></script>
+    <script src="{% static 'js/home-mobile.js' %}?v=20261006-footer" defer></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

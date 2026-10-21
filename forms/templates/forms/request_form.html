@@ -1,0 +1,88 @@
+{% load content_tags %}
+{% load wagtailcore_tags %}
+{% with s=settings.core.SiteSettings %}
+
+{% comment %}
+  Форма заявки. Подключается так:
+    {% cms_text "include-9d1ad5bd0f25" as cms_include_9d1ad5bd0f25 %}
+{% include "forms/request_form.html" with form=transfer_form form_type="transfer" title=cms_include_9d1ad5bd0f25 %}
+
+  Поля берутся из класса формы, поэтому шаблон один на все пять форм
+  раздела 7 ТЗ. Отправка обычным POST — без JavaScript форма тоже работает,
+  это важно для доступности и для резервного сценария п. 5.6.
+{% endcomment %}
+
+<form class="form" method="post" action="{% url 'forms:submit' form_type %}" data-request-form{% if form_success_type and form_success_type == form_type %} data-confirmed-success{% endif %} novalidate>
+  {% csrf_token %}
+
+  {% if title %}<h2 class="form__title">{{ title }}</h2>{% endif %}
+  {% if lead %}<p>{{ lead }}</p>{% endif %}
+
+  {% comment %} Куда вернуть гостя и что записать в источник заявки {% endcomment %}
+  <input type="hidden" name="source_url" value="{{ back_to|default:request.path }}">
+  <input type="hidden" name="utm_source" value="{{ request.bs_utm.utm_source|default:'' }}">
+  <input type="hidden" name="utm_medium" value="{{ request.bs_utm.utm_medium|default:'' }}">
+  <input type="hidden" name="utm_campaign" value="{{ request.bs_utm.utm_campaign|default:'' }}">
+  <input type="hidden" name="utm_content" value="{{ request.bs_utm.utm_content|default:'' }}">
+  <input type="hidden" name="utm_term" value="{{ request.bs_utm.utm_term|default:'' }}">
+
+  {% if form_success_type == form_type %}
+    <p class="form__note form__note--ok" role="status">
+      {% cms_text "request_form-0cd618b74e9c" %} {% if s.form_reply_time %}{% cms_text "request_form-b3462448b4a0" %} {{ s.form_reply_time }}.{% else %}{% cms_text "request_form-0e5ac608bbfd" %}{% endif %}
+    </p>
+  {% elif request.GET.form == "error" %}
+    <p class="form__note form__note--error" role="alert">
+      {% cms_text "request_form-def50857df02" %}
+    </p>
+  {% elif request.GET.form == "rate" %}
+    <p class="form__note form__note--error" role="alert">
+      {% cms_text "request_form-638a41496ab9" %}
+    </p>
+  {% endif %}
+
+  {% if form.non_field_errors %}
+    <p class="form__note form__note--error" role="alert">{{ form.non_field_errors|join:" " }}</p>
+  {% endif %}
+
+  <div class="form__grid">
+    {% for field in form %}
+      {% if field.name == "website" %}
+        {% comment %} Ловушка для ботов. Скрыта стилями, а не type=hidden:
+          боты обычно пропускают hidden, но заполняют видимые в разметке поля. {% endcomment %}
+        <div class="form__trap-wrap" aria-hidden="true">{{ field }}</div>
+      {% elif field.name == "consent_given" %}
+        <div class="form__field form__field--wide form__consent">
+          <label class="form__checkbox">
+            {{ field }}
+            <span>
+              {% cms_text "request_form-f47a0fe77ed2" %}
+              {% if consent_page %}
+                {% cms_text "request_form-c02b77578811" %} <a href="{% pageurl consent_page %}">{% cms_text "request_form-649bda914d2f" %}</a>
+              {% endif %}
+            </span>
+          </label>
+          {% if field.errors %}<p class="form__error">{{ field.errors|join:" " }}</p>{% endif %}
+        </div>
+      {% elif field.field.widget.input_type == "hidden" %}
+        {{ field }}
+        {% if field.errors %}<p class="form__error" role="alert">{{ field.label }}: {{ field.errors|join:" " }}</p>{% endif %}
+      {% else %}
+        <div class="form__field{% if field.name == 'message' %} form__field--wide{% endif %}">
+          <label class="form__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<p class="form__error">{{ field.errors|join:" " }}</p>{% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <p class="form__actions">
+    <button type="submit" class="btn btn--primary">{{ submit_label|default:"Отправить заявку" }}</button>
+  </p>
+
+  {% if s.consent_text %}
+    <div class="form__legal">{{ s.consent_text|richtext }}</div>
+  {% endif %}
+</form>
+
+{% endwith %}

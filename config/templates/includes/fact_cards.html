@@ -1,0 +1,13 @@
+{% comment %}
+  Карточки-факты (docs/dop-stranicy/01-komponenty.md, K4): крупное значение
+  и подпись. facts — список пар (значение, подпись), пустые значения
+  не выводятся.
+  {% include "includes/fact_cards.html" with facts=directions_facts %}
+{% endcomment %}
+{% if facts %}
+<ul class="fact-cards">
+  {% for value, label in facts %}{% if value %}
+    <li class="fact-cards__item" data-reveal><b class="fact-cards__value">{{ value }}</b><span class="fact-cards__label">{{ label }}</span></li>
+  {% endif %}{% endfor %}
+</ul>
+{% endif %}

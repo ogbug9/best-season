@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load content_tags %}
+{% load static wagtailcore_tags media_tags legal_docs layout_tags %}
+{% block extra_css %}{% legal_pdf_url page.slug as legal_pdf %}{% if legal_pdf %}<link rel="stylesheet" href="{% static 'css/legal.css' %}?v=20261020">{% endif %}{% endblock %}
+
+{% block content %}
+{% legal_pdf_url page.slug as legal_pdf %}
+<section class="section page-head{% if legal_pdf %} legal-page-head{% endif %}">
+  <div class="container container--narrow">
+    {% include "includes/in_progress_note.html" %}
+    <h1>{% if legal_pdf %}{{ page.title }}{% else %}{{ page.title|heading_breaks }}{% endif %}</h1>
+    {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+
+{% if page.hero_image %}
+<section class="section">
+  <div class="container">{% picture page.hero_image preset="hero" alt=page.title %}</div>
+</section>
+{% endif %}
+
+{% legal_pdf_url page.slug as legal_pdf %}
+{% if legal_pdf %}
+<section class="section">
+  <div class="container container--narrow prose legal-document">
+    <p><a href="{{ legal_pdf }}" download>{% cms_text "content_page-a859d91f587f" %}</a></p>
+    {% if page.legal_body %}
+      {% for block in page.legal_body %}
+        {% if block.block_type == 'heading' %}<h2>{{ block.value }}</h2>
+        {% elif block.block_type == 'paragraph' %}<p>{{ block.value|urlize }}</p>
+        {% elif block.block_type == 'list' %}<ul class="legal-list">{% for item in block.value %}<li>{{ item|urlize }}</li>{% endfor %}</ul>
+        {% elif block.block_type == 'table' %}{% legal_table block.value %}{% endif %}
+      {% endfor %}
+    {% elif page.body %}{{ page.body|richtext }}{% endif %}
+  </div>
+</section>
+{% elif page.awaiting_copy %}
+{% comment %} 06.10: временная заглушка, пока в CMS нет текста раздела. {% endcomment %}
+<section class="section page-placeholder">
+  <div class="container">
+    <div class="page-placeholder__card">
+      {% if placeholder_image %}<div class="page-placeholder__media" aria-hidden="true">{% picture placeholder_image preset="hero" alt="" mobile_preset="hero_mobile" %}</div>{% endif %}
+      <p class="page-placeholder__text">Раздел наполняется — скоро здесь появится подробная информация.</p>
+      <div class="page-placeholder__actions">
+        <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7">{% cms_text "content_page-aa5b7a42a613" %}</button>
+        <a class="btn btn--outline page-placeholder__home" href="/">На главную</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% elif page.body %}
+<section class="section">
+  <div class="container container--narrow prose">{{ page.body|richtext }}</div>
+</section>
+{% endif %}
+
+{% if page.show_booking_cta and not page.awaiting_copy %}
+<section class="section section--deep">
+  <div class="container container--narrow center">
+    <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7">
+      {% cms_text "content_page-aa5b7a42a613" %}
+    </button>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

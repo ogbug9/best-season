@@ -1,0 +1,296 @@
+"""Формы сайта — раздел 7 ТЗ.
+
+Все четыре формы первой очереди плюс резервный сценарий п. 5.6 построены
+на одном базовом классе: состав полей минимальный по разделу 11 ТЗ
+(имя, телефон, email, даты, текст), защита от ботов одинаковая.
+
+Капчи нет намеренно — п. 7 ТЗ предписывает honeypot и ограничение частоты
+вместо неё. Капча отпугивает живых гостей и режет конверсию, а бороться
+здесь нужно с примитивными ботами, которые заполняют все поля подряд.
+"""
+
+import re
+
+from django import forms
+from django.utils import timezone
+
+from .models import FormSubmission, FormType
+
+
+class BaseRequestForm(forms.ModelForm):
+    """Общая часть всех форм: контакты, согласие и ловушка для ботов."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from core.templatetags.content_tags import texts, DEFAULTS
+        labels = texts(None)
+        for name, field in self.fields.items():
+            key = f'form-{self.form_type}-{name}'
+            field.label = labels.get(key, DEFAULTS.get(key, {}).get('text', field.label))
+
+    # Ловушка. Поле спрятано от человека стилями и меткой aria-hidden,
+    # но бот, заполняющий всё подряд, его заполнит — такую заявку отвергаем.
+    website = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form__trap",
+                "tabindex": "-1",
+                "autocomplete": "off",
+                "aria-hidden": "true",
+            }
+        ),
+        label="Не заполняйте это поле",
+    )
+
+    consent_given = forms.BooleanField(
+        required=True,
+        # Без предзаполнения — прямое требование раздела 11 ТЗ:
+        # согласие должно быть активным действием гостя.
+        initial=False,
+        label="Согласен на обработку персональных данных",
+        error_messages={"required": "Без согласия мы не можем принять заявку."},
+    )
+
+    class Meta:
+        model = FormSubmission
+        fields = ["name", "phone", "email", "message", "topic", "consent_given"]
+        widgets = {
+            "name": forms.TextInput(attrs={"autocomplete": "name", "required": True}),
+            "phone": forms.TextInput(attrs={"autocomplete": "tel", "inputmode": "tel"}),
+            "email": forms.EmailInput(attrs={"autocomplete": "email"}),
+            "message": forms.Textarea(attrs={"rows": 4}),
+            "topic": forms.HiddenInput(),
+        }
+        labels = {
+            "name": "Как вас зовут",
+            "phone": "Телефон",
+            "email": "Электронная почта",
+            "message": "Сообщение",
+        }
+
+    form_type = FormType.FEEDBACK
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone", "").strip()
+        if phone and (not re.fullmatch(r"\+?[0-9 ()-]+", phone) or not 10 <= len(re.sub(r"\D", "", phone)) <= 15):
+            raise forms.ValidationError("Введите телефон: от 10 до 15 цифр, можно использовать +, пробелы, скобки и дефисы.")
+        return phone
+
+    def clean_website(self):
+        """Ловушка сработала — значит перед нами бот."""
+        if self.cleaned_data.get("website"):
+            raise forms.ValidationError("Заявка не принята.")
+        return ""
+
+    def clean(self):
+        cleaned = super().clean()
+        # Хотя бы один способ связи обязателен, иначе заявку не обработать
+        if not cleaned.get("phone") and not cleaned.get("email"):
+            raise forms.ValidationError(
+                "Оставьте телефон или почту — иначе мы не сможем ответить."
+            )
+        return cleaned
+
+    def save(self, commit=True, request=None, consent_version=""):
+        submission = super().save(commit=False)
+        submission.form_type = self.form_type
+        submission.consent_at = timezone.now()
+        submission.consent_version = consent_version
+
+        if request is not None:
+            submission.source_url = request.POST.get("source_url", "")[:500]
+            for key in ("utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"):
+                saved = getattr(request, 'bs_utm', {}).get(key, '')
+                setattr(submission, key, (request.POST.get(key) or saved)[:120])
+
+        if commit:
+            submission.save()
+        return submission
+
+
+class FeedbackForm(BaseRequestForm):
+    """Обратная связь — общая форма."""
+
+    form_type = FormType.FEEDBACK
+
+
+class TransferForm(BaseRequestForm):
+    """Заявка на трансфер — п. 4.2.4 ТЗ, живёт на «Как добраться»."""
+
+    form_type = FormType.TRANSFER
+
+    class Meta(BaseRequestForm.Meta):
+        fields = ["name", "phone", "email", "date_from", "guests", "message", "consent_given"]
+        widgets = {
+            **BaseRequestForm.Meta.widgets,
+            "date_from": forms.DateInput(attrs={"type": "date"}),
+            "guests": forms.NumberInput(attrs={"min": 1, "max": 20}),
+        }
+        labels = {
+            **BaseRequestForm.Meta.labels,
+            "date_from": "Дата приезда",
+            "guests": "Сколько гостей",
+            "message": "Откуда забрать и другие детали",
+        }
+
+
+class CertificateForm(BaseRequestForm):
+    """Подарочный сертификат."""
+
+    form_type = FormType.CERTIFICATE
+
+    class Meta(BaseRequestForm.Meta):
+        labels = {
+            **BaseRequestForm.Meta.labels,
+            "message": "Пожелания к сертификату",
+        }
+
+
+class HouseQuestionForm(BaseRequestForm):
+    """Вопрос со страницы дома. Дом подставляется скрытым полем,
+    чтобы владелец сразу видел, о каком доме речь."""
+
+    form_type = FormType.HOUSE_QUESTION
+
+    class Meta(BaseRequestForm.Meta):
+        fields = ["name", "phone", "email", "house", "message", "consent_given"]
+        widgets = {**BaseRequestForm.Meta.widgets, "house": forms.HiddenInput()}
+        labels = {**BaseRequestForm.Meta.labels, "message": "Ваш вопрос"}
+
+
+class FallbackBookingForm(BaseRequestForm):
+    """Резервный сценарий бронирования — п. 5.6 ТЗ.
+
+    Показывается, если виджет Контура не загрузился за 5 секунд или вернул
+    ошибку. Обязателен в первой очереди и проверяется на приёмке блокировкой
+    домена виджета, поэтому форма должна работать полностью автономно.
+    """
+
+    form_type = FormType.FALLBACK
+    guests = forms.IntegerField(label="Гостей", min_value=1, max_value=20, required=False)
+    children = forms.IntegerField(label="Детей (входят в число гостей)", min_value=0, max_value=20, required=False)
+    pets = forms.IntegerField(label="Питомцев", min_value=0, max_value=20, required=False)
+
+    def save(self, commit=True, **kwargs):
+        submission = super().save(commit=False, **kwargs)
+        details = []
+        for name, label in (("children", "Детей"), ("pets", "Питомцев")):
+            value = self.cleaned_data.get(name)
+            if value is not None:
+                details.append(f"{label}: {value}")
+        submission.message = "\n".join(filter(None, [submission.message, *details]))
+        if commit:
+            submission.save()
+        return submission
+
+    class Meta(BaseRequestForm.Meta):
+        fields = [
+            "name", "phone", "email", "house",
+            "date_from", "date_to", "guests", "children", "pets", "message", "consent_given",
+        ]
+        widgets = {
+            **BaseRequestForm.Meta.widgets,
+            "house": forms.HiddenInput(),
+            "date_from": forms.DateInput(attrs={"type": "date"}),
+            "date_to": forms.DateInput(attrs={"type": "date"}),
+            "guests": forms.NumberInput(attrs={"min": 1, "max": 20}),
+        }
+        labels = {
+            **BaseRequestForm.Meta.labels,
+            "date_from": "Заезд",
+            "date_to": "Выезд",
+            "guests": "Гостей",
+            "message": "Пожелания",
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        start, end = cleaned.get("date_from"), cleaned.get("date_to")
+        guests, children, pets = (cleaned.get(key) for key in ("guests", "children", "pets"))
+        house = cleaned.get("house")
+        for field in ("date_from", "date_to"):
+            if cleaned.get(field) and cleaned[field] < timezone.localdate():
+                self.add_error(field, "Дата не может быть в прошлом.")
+        if end and not start:
+            self.add_error("date_from", "Укажите дату заезда.")
+        if start and end and (end - start).days > 60:
+            self.add_error("date_to", "Максимальный срок — 60 ночей.")
+        if children and (not guests or children >= guests):
+            self.add_error("children", "В числе гостей должен быть хотя бы один взрослый.")
+        if house:
+            if guests and guests > house.capacity:
+                self.add_error("guests", f"В домике размещается до {house.capacity} гостей.")
+            if guests and guests - (children or 0) > house.max_adults:
+                self.add_error("guests", "Превышено допустимое число взрослых.")
+            if children and children > house.max_children:
+                self.add_error("children", "Превышено допустимое число детей.")
+            if pets and pets > house.max_pets:
+                self.add_error("pets", "Превышено допустимое число питомцев.")
+        if start and end and end <= start:
+            self.add_error("date_to", "Дата выезда должна быть позже заезда.")
+        return cleaned
+
+
+GROUP_OCCASIONS = ["День рождения", "Выпускной", "Девичник", "Выезд команды", "Семейный праздник", "Другое"]
+PARTNER_DIRECTIONS = ["Съёмки и блогеры", "Ведущие мастер-классов", "Местные партнёры"]
+
+
+def _choices(values):
+    return [("", "Выберите")] + [(value, value) for value in values]
+
+
+class GroupForm(BaseRequestForm):
+    """Весь глэмпинг для компании — «Выезды компаний». Повод — в теме заявки."""
+
+    form_type = FormType.GROUP
+    topic = forms.ChoiceField(label="Повод", choices=_choices(GROUP_OCCASIONS), required=False)
+
+    class Meta(BaseRequestForm.Meta):
+        fields = ["name", "phone", "email", "date_from", "date_to", "guests", "topic", "message", "consent_given"]
+        widgets = {
+            **BaseRequestForm.Meta.widgets,
+            "date_from": forms.DateInput(attrs={"type": "date"}),
+            "date_to": forms.DateInput(attrs={"type": "date"}),
+            "guests": forms.NumberInput(attrs={"min": 1, "max": 50}),
+        }
+        labels = {
+            **BaseRequestForm.Meta.labels,
+            "date_from": "Заезд",
+            "date_to": "Выезд",
+            "guests": "Сколько гостей",
+            "message": "Что важно: баня, беседка, музыка, дети",
+        }
+
+
+class PartnerForm(BaseRequestForm):
+    """Сотрудничество — «Партнёрам». Направление — в теме заявки."""
+
+    form_type = FormType.PARTNER
+    topic = forms.ChoiceField(label="Направление", choices=_choices(PARTNER_DIRECTIONS), required=False)
+
+    class Meta(BaseRequestForm.Meta):
+        labels = {**BaseRequestForm.Meta.labels, "message": "Расскажите о себе и идее"}
+
+
+class EventForm(BaseRequestForm):
+    """Запись на событие — «Мероприятия». Название события — в скрытой теме."""
+
+    form_type = FormType.EVENT
+
+    class Meta(BaseRequestForm.Meta):
+        fields = ["name", "phone", "email", "guests", "topic", "message", "consent_given"]
+        widgets = {**BaseRequestForm.Meta.widgets, "guests": forms.NumberInput(attrs={"min": 1, "max": 20})}
+        labels = {**BaseRequestForm.Meta.labels, "guests": "Сколько вас", "message": "Вопросы и пожелания"}
+
+
+FORM_CLASSES = {
+    FormType.FEEDBACK: FeedbackForm,
+    FormType.TRANSFER: TransferForm,
+    FormType.CERTIFICATE: CertificateForm,
+    FormType.HOUSE_QUESTION: HouseQuestionForm,
+    FormType.FALLBACK: FallbackBookingForm,
+    FormType.GROUP: GroupForm,
+    FormType.PARTNER: PartnerForm,
+    FormType.EVENT: EventForm,
+}

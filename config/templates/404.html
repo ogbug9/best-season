@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load content_tags %}
+{% load wagtailcore_tags media_tags %}
+
+{% comment %}
+  404 входит в карту сайта первой очередью (п. 12.3 ТЗ), целевое действие —
+  возврат на главную или к домам.
+{% endcomment %}
+
+{% block title %}{% cms_text "404-af9d33066ad6" %}{% endblock %}
+{% block meta_description %}{% cms_text "404-32cf86312d82" %}{% endblock %}
+
+{% block content %}
+<section class="section page-head">
+  <div class="container container--narrow center">
+    <p class="error-code" aria-hidden="true">404</p>
+    <h1>{% cms_text "404-e2e0cfa630aa" %}</h1>
+    <p class="section__lead">{% cms_text "404-55f0d4e3d0ae" %}</p>
+    <p class="split__actions" style="justify-content: center;">
+      <a class="btn btn--primary" href="/">{% cms_text "404-ad94907f6423" %}</a>
+      <button type="button" class="btn btn--outline" data-booking-open data-entry-point="1">{% cms_text "404-aa5b7a42a613" %}</button>
+    </p>
+    {% slugurl "razmeshchenie" as houses_url %}{% slugurl "akcii" as promo_url %}{% slugurl "kak-dobratsya" as road_url %}
+    {% if houses_url or promo_url or road_url %}
+      <p class="error-links">Может быть, вы искали:
+        {% if houses_url %}<a href="{{ houses_url }}">домики</a>{% endif %}{% if houses_url and promo_url %} · {% endif %}{% if promo_url %}<a href="{{ promo_url }}">акции</a>{% endif %}{% if road_url %}{% if houses_url or promo_url %} · {% endif %}<a href="{{ road_url }}">как добраться</a>{% endif %}
+      </p>
+    {% endif %}
+  </div>
+</section>
+{% house_teasers as houses %}
+{% if houses %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Или сразу к домикам</h2>
+    <ul class="house-teasers">
+      {% for house in houses %}
+        <li data-reveal><a class="house-teaser" href="{{ house.url }}">
+          <span class="house-teaser__media">{% if house.hero_image %}{% picture house.hero_image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</span>
+          <b class="house-teaser__title">{{ house.title }}</b>
+          <span class="house-teaser__meta">до {{ house.capacity }} гостей{% if house.price_display %} · от {{ house.price_display }} ₽ за ночь{% endif %}</span>
+        </a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

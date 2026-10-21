@@ -1,0 +1,22 @@
+{% comment %} Рассказ страницы: заголовок и факты слева, текст справа. Данные — core/dop_stories.py. {% endcomment %}
+{% for story in stories %}
+<section class="section story{% if forloop.counter|divisibleby:2 %} story--alt{% endif %}">
+  <div class="container story__grid">
+    <div class="story__aside" data-reveal>
+      <p class="story__kicker">{{ story.kicker }}</p>
+      <h2 class="story__title">{{ story.title }}</h2>
+      {% if story.facts %}
+        <dl class="story__facts">
+          {% for number, label in story.facts %}<div><dt>{{ number }}</dt><dd>{{ label }}</dd></div>{% endfor %}
+        </dl>
+      {% endif %}
+    </div>
+    <div class="story__body" data-reveal>
+      <p class="story__lead">{{ story.lead }}</p>
+      {% for para in story.paras %}<p>{{ para }}</p>{% endfor %}
+      {% if story.quote %}<blockquote class="story__quote"><p>{{ story.quote.0 }}</p><cite>{{ story.quote.1 }}</cite></blockquote>{% endif %}
+      {% if story.link %}<p class="story__source">Источник: <a href="{{ story.link.1 }}" rel="noopener" target="_blank">{{ story.link.0 }}</a></p>{% endif %}
+    </div>
+  </div>
+</section>
+{% endfor %}

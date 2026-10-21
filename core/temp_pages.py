@@ -1,0 +1,460 @@
+"""Временные страницы 09.10.2026: питомцы, «Дневник Сезона», баня, беседки, фотосессии.
+
+Страницы — обычные ContentPage с галочкой «Раздел дополняется» (заводит
+seed_pages). Вёрстка — core/templates/core/temp/, стили temp-pages.css,
+интерактив temp-pages.js. Общие блоки (hook, numbers, collage, note, path…)
+и рассказы берутся из dop_extras / dop_stories по слагу страницы.
+
+Факты — только с сайта: FAQ, карточки услуг и территории, «О нас», канал.
+Где фактов нет (малая беседка, подробности историй дневника) — честно
+пишем «уточните у нас» и ведём в Telegram. Тексты команде вычитать.
+"""
+
+PETS_INDEX = "pushistiki"
+DIARY_INDEX = "dnevnik"
+
+# Питомцы: слаг страницы → имя в блоке «О нас» и то, чего там нет.
+PETS = {
+    "snezhka": {
+        "name": "Снежка", "acc": "Снежку", "ins": "Снежкой", "image": "BS About pet-snezhka", "tone": "dark",
+        "traits": ["Нежная", "Любопытная", "Любит поспать"],
+        "motto": "Кажется, её разбудили ради этой фотографии.",
+        # Шкала «на глазок» — по описанию из «О нас», не ветеринарная карта.
+        "meters": [("Нежность", 5), ("Любопытство", 4), ("Сонливость", 5), ("Игривость", 3)],
+        "likes": ["тёплые колени", "солнечный подоконник", "долгий сон", "тихие разговоры"],
+        "story": [
+            "Снежка — из тех котиков, что сначала долго смотрят издалека, а потом вдруг оказываются у вас на руках. Ей интересно всё: новые люди, шуршащий пакет, чужой рюкзак на террасе.",
+            "Но больше всего на свете она любит поспать. Если вы её разбудили — не обижайтесь на сонный взгляд: на фотографии выше именно это и случилось.",
+        ],
+    },
+    "dymok": {
+        "name": "Дымок", "acc": "Дымка", "ins": "Дымком", "image": "BS About pet-dymok", "tone": "olive",
+        "traits": ["Активный", "Позитивный", "Ест за двоих"],
+        "motto": "Его усам позавидовал бы сам Сальвадор Дали.",
+        "meters": [("Энергия", 5), ("Аппетит", 5), ("Позитив", 5), ("Пышность усов", 5)],
+        "likes": ["высокая трава", "охота за травинками", "миска с добавкой", "новые знакомства"],
+        "story": [
+            "Дымок не умеет сидеть на месте: только что он был в траве у домиков, а через минуту уже проверяет, что у вас в руках. Усы — его гордость и визитная карточка.",
+            "Ест за двоих и не стесняется об этом напомнить. Зато и настроение у него всегда отличное — с таким котом скучно не бывает.",
+        ],
+    },
+}
+
+PET_STEPS = [
+    ("Написать нам", "Расскажите, кого хотите взять и где будет жить котик."),
+    ("Познакомиться", "Договоримся о встрече — можно совместить с отдыхом у нас."),
+    ("Подготовить дом", "Подскажем, что купить заранее и чем котик привык питаться."),
+    ("Забрать домой", "И присылать нам фото — мы правда будем ждать."),
+]
+
+# Мини-тест «Кто вы из пушистиков?»: вопрос и два ответа (Снежка, Дымок).
+PET_QUIZ = [
+    ("Идеальное утро —", "проснуться к обеду", "пробежка до завтрака"),
+    ("В компании вы —", "слушаете и наблюдаете", "душа вечеринки"),
+    ("Главное в поездке —", "уютный плед", "вкусная еда"),
+]
+
+# Дневник: слаг → запись. Подробности историй — в канале, здесь короткий пересказ.
+DIARY = [
+    {
+        "slug": "novyj-god", "title": "Мы открыли бронирование на Новый год и праздники",
+        "image": "BS About diary-holidays", "rubric": "Новости", "tag": "news",
+        "lead": "Новогодние даты у нас всегда разбирают первыми — поэтому рассказываем заранее.",
+        "paras": [
+            "Новый год в домике с камином или с финской сауной, снег за панорамными окнами, баня на дровах и тишина вместо салютов под окнами. Домики на праздники бронируют первыми, поэтому мы открыли даты заранее.",
+            "На праздничные дни (Новый год, Рождество и другие) предоплата составляет 100%. Скидки за длительное проживание в праздники не действуют — на эти даты у нас свои специальные предложения: напишите нам, расскажем обо всех акциях на ваши даты.",
+            "А если хочется подарить близким не вещь, а время, — есть подарочные сертификаты в электронном или бумажном виде.",
+        ],
+        "quote": "Время — самый ценный подарок.",
+        "facts": [("100%", "предоплата в праздничные даты"), ("4", "домика — бронируют первыми"), ("14:00", "заезд, выезд до 12:00")],
+        "countdown": True,
+    },
+    {
+        "slug": "ayka", "title": "В нашем Амбаре пополнение: знакомимся с Айкой",
+        "image": "BS About diary-ayka", "rubric": "Ферма", "tag": "farm",
+        "lead": "На ферме новая жительница — Айка. Пока она осваивается, а мы рассказываем, как с ней подружиться.",
+        "paras": [
+            "Ферма у нас настоящая: козы, овцы, коровы, куры, гуси и утки. Животные живут своей жизнью, а гости могут познакомиться с ними поближе — погладить, посмотреть, как их кормят, и выбрать фермерские продукты к завтраку.",
+            "У нас одна большая просьба: не кормите животных самостоятельно. При заселении мы расскажем, как и чем их лучше угощать, чтобы это было в радость и вам, и им.",
+            "Подробности о самой Айке — в нашем канале: там мы показываем, как она растёт.",
+        ],
+        "quote": "Ферма пахнет фермой — и это лучшее, что в ней есть.",
+        "facts": [("6", "видов животных на ферме"), ("круглый год", "работает контактная ферма"), ("0", "угощений без спроса")],
+        "review_phrase": "погладить козу",
+    },
+    {
+        "slug": "zheltoe-chudo", "title": "История о маленьком жёлтом японском чуде",
+        "image": "BS About diary-car", "rubric": "Истории", "tag": "stories",
+        "lead": "Маленькое, жёлтое и очень важное. Эту историю мы рассказываем в своём канале — здесь короткий анонс.",
+        "paras": [
+            "Жизнь на ферме полна маленьких событий, которых в городе просто не замечаешь: кто-то вылупился, кто-то впервые вышел на траву, кто-то научился плавать в речке.",
+            "Утки у нас и домашние, и дикие — их можно увидеть с сапа на Скнижке. А саму историю «жёлтого чуда» целиком читайте в Telegram-канале «Лучшего сезона».",
+        ],
+        "quote": "Мы за то, чтобы не успевать жить, а успеть проживать.",
+        "facts": [("утки", "домашние и дикие"), ("Скнижка", "речка у глэмпинга"), ("1 га", "территории без заборов")],
+    },
+]
+DIARY_FILTERS = [("news", "Новости"), ("farm", "Ферма"), ("stories", "Истории")]
+
+# Услуги: слаг страницы → справочник услуг, плитка территории и наполнение.
+SERVICES = {
+    "banya": {
+        "service": "russkaya-banya", "tile": "Русская баня", "kicker": "Пар и тишина",
+        "chips": ["на дровах", "берёзовые и дубовые веники", "травяной чай", "затопим к приезду"],
+        "steps": [("Выберите время", "Время бани бронируется заранее — скажите, к какому часу затопить."),
+                  ("Мы затопим", "Баня на дровах прогреется к вашему приходу."),
+                  ("Парьтесь", "Берёзовые и дубовые веники, травяной чай — уже на месте."),
+                  ("Остыньте", "Выйдите на воздух: лес с трёх сторон и звёзды над поляной.")],
+        "thermo": [("Предбанник", 30), ("Мойка", 50), ("Парная", 80)],
+        "faq": [("Нужно ли бронировать баню заранее?", "Да, время бани бронируется заранее: её затапливают к нужному часу."),
+                ("Что входит?", "Берёзовые и дубовые веники и травяной чай."),
+                ("А если в домике уже есть сауна?", "В Домике №1 своя финская сауна без ограничения по времени. Русская баня на дровах — отдельно, по часам.")],
+        "season": "Зимой — баня под звёздами, на Крещение — купель в речке, огибающей глэмпинг.",
+    },
+    "bolshaya-besedka": {
+        "service": "bolshaya-besedka", "tile": "Большая беседка", "kicker": "Беседка «Корабль»",
+        "chips": ["русская печь", "до 50 гостей", "в стороне от домиков", "круглый год"],
+        "capacity": 50,
+        "steps": [("Расскажите о поводе", "День рождения, выпускной, выезд команды — скажите заранее."),
+                  ("Согласуем детали", "Время, число гостей, баня и домики — всё обсудим."),
+                  ("Празднуйте громко", "Беседка стоит в стороне от домиков и никому не мешает."),
+                  ("Останьтесь на ночь", "Четыре домика вмещают до 16 гостей.")],
+        "faq": [("Можно ли шуметь?", "Да: для больших и громких вечеров и создана беседка «Корабль» — она достаточно далеко от домиков. Рядом с домиками после 23:00 просим потише."),
+                ("Сколько гостей поместится?", "До 50 гостей днём. С ночёвкой — до 16, по четыре в каждом домике."),
+                ("Есть ли скидка на день рождения?", "Да, если повод — день рождения, скажите заранее: сделаем скидку.")],
+        "season": "Работает круглый год: летом — открытый вечер, зимой — тепло русской печи.",
+    },
+    "malaya-besedka": {
+        "service": "", "tile": "", "kicker": "Для своих",
+        "chips": ["камерно", "вдвоём или семьёй", "ужин на воздухе"],
+        "steps": [("Напишите нам", "Расскажите, на сколько человек и когда хотите посидеть."),
+                  ("Уточним детали", "Назовём цену и свободное время."),
+                  ("Приходите", "Ужин на свежем воздухе без большой компании.")],
+        "faq": [("Сколько стоит и сколько человек помещается?", "Страница дополняется: цену и вместимость уточните у нас в Telegram — ответим быстро."),
+                ("Чем отличается от «Корабля»?", "Большая беседка «Корабль» — для праздников до 50 гостей с русской печью. Малая — для небольшой компании.")],
+        "season": "Подробности и фото скоро появятся здесь.",
+    },
+    "fotosessii": {
+        "service": "fotosessii", "tile": "Фотосессии", "kicker": "Свет и декорации от природы",
+        "chips": ["лес", "река Скнижка", "поляна", "ферма", "терраса домика"],
+        "steps": [("Придумайте образ", "Семейная, love story, с животными или с собакой."),
+                  ("Напишите нам", "Подберём время с лучшим светом и локации."),
+                  ("Снимайте", "Лес, река, поляна и ферма — без заборов и случайных людей."),
+                  ("Останьтесь", "Съёмку легко совместить с выходными в домике.")],
+        "locations": [("Река", "Туман над Скнижкой и пологий берег", "Река"), ("Ферма", "Козы, овцы и сено", "Контактная ферма"),
+                      ("Костровая зона", "Тёплый вечерний свет", "Костровая зона"), ("Беседка", "Русская печь и дерево", "Большая беседка")],
+        "pack": ["Однотонная одежда без логотипов", "Плед для пикника", "Резиновые сапоги — роса", "Угощение для собаки, если она снимается"],
+        "faq": [("Есть ли свой фотограф?", "Организуем фотосессию: напишите нам, расскажем о вариантах и цене."),
+                ("Можно снимать с животными фермы?", "Да, но кормить животных самостоятельно нельзя — расскажем, как познакомиться с ними правильно.")],
+        "season": "Лучший свет — ранним утром и за час до заката.",
+        "sun": True,
+    },
+}
+SERVICE_TITLES = {"banya": "Русская баня", "bolshaya-besedka": "Большая беседка",
+                  "malaya-besedka": "Малая беседка", "fotosessii": "Фотосессии"}
+
+# Глэмпинг (Страхово, Заокский район) — для расчёта «золотого часа».
+COORDS = (54.736, 37.388)
+
+# Дневник с 20.10 — свои типы страниц (DiaryIndexPage/DiaryEntryPage, core/diary_seed.py).
+DIARY_SLUGS = {DIARY_INDEX, *(entry["slug"] for entry in DIARY)}
+TEMPLATES = {PETS_INDEX: "core/temp/pets.html",
+             **{slug: "core/temp/pet.html" for slug in PETS},
+             **{slug: "core/temp/service.html" for slug in SERVICES}}
+
+# Дерево для seed_pages: (родитель, слаг, заголовок, вступление).
+TREE = [
+    ("o-nas", PETS_INDEX, "Наши пушистики", "Котики глэмпинга, которые ищут дом, и все, кого вы встретите на ферме."),
+    *[(PETS_INDEX, slug, pet["name"], " × ".join(pet["traits"])) for slug, pet in PETS.items()],
+    *[("uslugi", slug, SERVICE_TITLES[slug], "") for slug in SERVICES],
+]
+# Волна 2: страницы со своим характером (core/temp_more.py).
+from core.temp_more import PAGES as MORE, PLAY_OLD  # noqa: E402
+
+TEMPLATES.update({slug: data["template"] for slug, data in MORE.items()})
+TREE += [(data["parent"], slug, data["title"], data["intro"]) for slug, data in MORE.items()]
+SLUGS = {slug for _, slug, _, _ in TREE}
+
+
+def _url(slug):
+    from wagtail.models import Page
+
+    page = Page.objects.live().filter(slug=slug).first()
+    return page.url if page else ""
+
+
+def _telegram(request, placement, text):
+    from core.models import SiteSettings
+    from core.templatetags.marketing_tags import marketing_url
+
+    settings = SiteSettings.for_request(request) if request else SiteSettings.objects.first()
+    telegram = settings and (settings.telegram_chat_url or settings.telegram_url)
+    return marketing_url(telegram, placement, text) if telegram else ""
+
+
+def _pet(slug):
+    from core.models import image_titled
+
+    pet = PETS[slug]
+    return {**pet, "slug": slug, "url": _url(slug), "photo": image_titled(pet["image"])}
+
+
+def _entry(entry):
+    from core.models import image_titled
+
+    words = len(" ".join([entry["lead"], *entry["paras"]]).split())
+    return {**entry, "url": _url(entry["slug"]), "photo": image_titled(entry["image"]),
+            "minutes": max(1, round(words / 180))}
+
+
+def _service_card(slug):
+    from core.dop_pages import _image
+    from services.models import Service
+
+    data = SERVICES[slug]
+    service = Service.objects.filter(slug=data["service"], is_published=True).first() if data["service"] else None
+    photo = (service.display_image if service else None) or (_image(("territory", data["tile"])) if data["tile"] else None)
+    return {"slug": slug, "title": SERVICE_TITLES[slug], "url": _url(slug), "photo": photo, "service": service}
+
+
+def context(page, request):
+    """Контекст временной страницы по слагу."""
+    from core.dop_pages import _image, _faq
+
+    slug = page.slug
+    if slug == PETS_INDEX:
+        from core import dop_content as dc
+        from houses.booking import rates
+
+        fees = rates()
+        return {"pets": [_pet(s) for s in PETS], "neighbours": dc.NEIGHBOURS, "quiz": PET_QUIZ,
+                "feeding_faq": _faq(["Можно ли кормить"]), "pet_small_fee": fees.pet_small_fee,
+                "pet_large_fee": fees.pet_large_fee, "rules_url": _url("pravila-bronirovaniya"),
+                "farm_photo": _image(("territory", "Контактная ферма")),
+                "ask_url": _telegram(request, "pushistiki", "Здравствуйте! Хочу узнать про котиков, которые ищут дом")}
+    if slug in PETS:
+        pet = _pet(slug)
+        others = [_pet(s) for s in PETS if s != slug]
+        return {"pet": pet, "others": others, "pet_steps": PET_STEPS, "pets_url": _url(PETS_INDEX),
+                "ask_url": _telegram(request, f"pet_{slug}", f"Здравствуйте! Хочу познакомиться: {pet['name']}")}
+    if slug in SERVICES:
+        data = SERVICES[slug]
+        card = _service_card(slug)
+        service = card["service"]
+        photos = list(service.card_slides) if service else []
+        if not photos and card["photo"]:
+            photos = [card["photo"]]
+        locations = [{"title": t, "text": x, "photo": _image(("territory", tile))} for t, x, tile in data.get("locations", [])]
+        return {"svc": data, "service": service, "photos": photos[:5], "locations": locations,
+                "others": [_service_card(s) for s in SERVICES if s != slug], "coords": COORDS,
+                "services_url": _url("uslugi"),
+                "ask_url": _telegram(request, f"service_{slug}", f"Здравствуйте! Хочу узнать про «{SERVICE_TITLES[slug]}»")}
+    if slug in MORE:
+        return _more_context(slug, request)
+    return {}
+
+
+def _photos(sources):
+    from core.dop_pages import _image
+    from services.models import Service
+
+    photos = []
+    for kind, value in sources:
+        if kind == "service":
+            service = Service.objects.filter(slug=value).first()
+            images = list(service.card_slides) if service else []
+        else:
+            images = [_image((kind, value))]
+        photos += [image for image in images if image and image not in photos]
+    return photos
+
+
+def _related(slugs):
+    from core.dop_pages import _image
+
+    cards = []
+    for slug in slugs:
+        data = MORE.get(slug) or SERVICES.get(slug)
+        if not data:
+            continue
+        title = data.get("title") or SERVICE_TITLES.get(slug, "")
+        photos = _photos(data["photos"]) if "photos" in data else [_service_card(slug)["photo"]]
+        cards.append({"slug": slug, "title": title, "url": _url(slug), "photo": photos[0] if photos else None})
+    return cards
+
+
+def _more_context(slug, request):
+    from core.dop_pages import _faq
+    from services.models import Service
+
+    data = MORE[slug]
+    service = Service.objects.filter(slug=data["service"], is_published=True).first() if data.get("service") else None
+    context = {"p": data, "service": service, "photos": _photos(data["photos"])[:5], "coords": COORDS,
+               "others": _related(data.get("related", [])), "parent_url": _url(data["parent"]),
+               "faq_items": _faq(data["faq_starts"]) if data.get("faq_starts") else [],
+               "ask_url": _telegram(request, f"page_{slug}", f"Здравствуйте! Вопрос про «{data['title']}»"),
+               "months": [(n, name[:3], n in data.get("months", [])) for n, name in enumerate(
+                   ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь",
+                    "Октябрь", "Ноябрь", "Декабрь"], start=1)]}
+    full = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+    context["year"] = [(month, full[month - 1], text) for month, text in data.get("year", [])]
+    if slug == "finskaya-sauna":
+        context["house_url"] = _url("domik-1")
+        context["banya_url"] = _url("banya")
+    if slug == "s-pitomcem":
+        from houses.booking import rates
+
+        fees = rates()
+        context.update(pet_small_fee=fees.pet_small_fee, pet_large_fee=fees.pet_large_fee,
+                       pets_url=_url(PETS_INDEX), rules_url=_url("pravila-bronirovaniya"))
+    if slug == "podarochnyj-sertifikat":
+        context["gift_base"] = _telegram(request, "gift", "")
+    if slug == "master-klassy":
+        context["partners_url"] = _url("partneram")
+    context["play"] = [_play_block(block) for block in data.get("play", [])]
+    return context
+
+
+def _play_block(block):
+    """Готовит игровой блок: ссылки результатов теста по слагам."""
+    block = dict(block)
+    if block.get("results"):
+        block["results"] = [(title, text, _url(target) if target else "") for title, text, target in block["results"]]
+    if block["type"] == "trivia":
+        block["questions"] = [(q, options, answer) for q, options, answer in block["questions"]]
+    return block
+
+
+def play_for(key):
+    return [_play_block(block) for block in PLAY_OLD.get(key, [])]
+
+
+# Общие блоки (core/dop_extras.py) и рассказы (core/dop_stories.py) новых страниц.
+EXTRAS = {
+    PETS_INDEX: [
+        {"slot": "top", "type": "hook", "kicker": "Пушистики",
+         "title": "Пришли сами — и остались",
+         "text": "Мы заботимся о лесе, о реке, о животных — и о тех, кто пришёл сам и остался. Некоторые из них ищут свой дом."},
+        {"type": "marquee", "words": ["котики", "козы", "овцы", "коровы", "куры", "гуси", "утки",
+                                      "ежи", "кролики", "аисты", "бобры", "выдры"]},
+    ],
+    "snezhka": [
+        {"type": "note", "title": "Совет от Снежки",
+         "text": "Не будите её ради фото. Она всё равно проснётся, когда вы откроете холодильник."},
+    ],
+    "dymok": [
+        {"type": "note", "title": "Совет от Дымка",
+         "text": "Если он смотрит на вашу тарелку — это не голод. Это интерес. Огромный интерес."},
+    ],
+    DIARY_INDEX: [
+        {"slot": "top", "type": "hook", "kicker": "Дневник Сезона",
+         "title": "Здесь каждую неделю что-то случается",
+         "text": "Кто-то родился в Амбаре, кто-то впервые увидел снег, а мы открыли новые даты. Рассказываем о жизни глэмпинга как есть."},
+        {"type": "now"},
+    ],
+    "ayka": [
+        {"type": "marquee", "words": ["козы", "овцы", "коровы", "куры", "гуси", "утки"]},
+    ],
+    "novyj-god": [
+        {"type": "compare", "title": "Новый год вместо привычного",
+         "rows": [("Салюты под окном", "тишина и снег за панорамным окном"), ("Очередь в ресторан", "свой домик с камином"),
+                  ("Пробки 1 января", "баня на дровах и прогулка к речке")]},
+    ],
+    "banya": [
+        {"slot": "top", "type": "hook", "kicker": "Русская баня",
+         "title": "Баню затопят к вашему приходу",
+         "text": "Баня на дровах в лучших традициях парного искусства: веники, травяной чай и лес вокруг. Комфорт, который не кричит."},
+        {"type": "compare", "title": "Здесь вместо городского",
+         "rows": [("Спа по абонементу", "баня на дровах только для вас"), ("Душ после зала", "свежий воздух и лес"),
+                  ("Бутылка воды", "травяной чай")]},
+    ],
+    "bolshaya-besedka": [
+        {"slot": "top", "type": "hook", "kicker": "Большая беседка «Корабль»",
+         "title": "Праздник, который никто не попросит закончить раньше",
+         "text": "Русская печь, до 50 гостей и место в стороне от домиков — для дней рождения, выпускных и выездов команды."},
+        {"type": "numbers", "items": [("до 50", "гостей в беседке"), ("16", "гостей с ночёвкой"),
+                                      ("от 4 000 ₽", "в час"), ("1", "русская печь")]},
+        {"type": "marquee", "words": ["день рождения", "выпускной", "девичник", "выезд команды",
+                                      "годовщина", "семейный праздник"]},
+    ],
+    "malaya-besedka": [
+        {"slot": "top", "type": "hook", "kicker": "Малая беседка",
+         "title": "Ужин на воздухе — без большой компании",
+         "text": "Страница дополняется: скоро здесь появятся фото, цена и вместимость. А пока — спросите нас, ответим быстро."},
+        {"type": "note", "title": "Пока страница растёт",
+         "text": "Напишите в Telegram, на сколько человек и когда хотите посидеть, — подскажем свободное время."},
+    ],
+    "fotosessii": [
+        {"slot": "top", "type": "hook", "kicker": "Фотосессии",
+         "title": "Снимайте как есть — декорации не понадобятся",
+         "text": "Лес, река, терраса и поляна без заборов. Утренний и закатный свет делают половину работы за фотографа."},
+        {"type": "collage", "kicker": "Что попадёт в кадр", "title": "Туман, сено и тёплый вечерний свет",
+         "text": "Утро у реки, день на ферме, вечер у огня — за один день можно снять три разных истории.",
+         "images": [("territory", "Река"), ("territory", "Контактная ферма"), ("territory", "Костровая зона")]},
+    ],
+}
+
+STORIES = {
+    "banya": [{
+        "kicker": "Зачем ехать за баней",
+        "title": "Медленность как ценность",
+        "lead": "Не торопим. Ни с планами, ни с завтраком, ни с разговором. Баня — лучший способ это почувствовать.",
+        "paras": ["Скажите, к какому часу затопить, — и баня будет готова к вашему приходу. Можно совместить с проживанием в любом домике, а если хочется сауны без ограничения по времени — она есть в Домике №1.",
+                  "Зимой выйти из парной в снег, летом — на тёплую поляну. После — травяной чай и вечер, который никуда не торопится."],
+        "facts": [("от 1 500 ₽", "в час"), ("на дровах", "в лучших традициях"), ("заранее", "бронируется время")],
+    }],
+    "fotosessii": [{
+        "kicker": "Почему здесь",
+        "title": "Показываем как есть",
+        "lead": "Ферма пахнет фермой, тропа к реке петляет, а на фотографиях — наши дома. Поэтому кадры получаются живыми.",
+        "paras": ["Без железных заборов — живые изгороди, лес с трёх сторон и речка Скнижка рядом. Здесь можно снять семейную историю, love story, портрет с собакой или с козами фермы.",
+                  "Напишите нам, что задумали, — подскажем время с лучшим светом и поможем организовать съёмку."],
+        "facts": [("≈1 га", "без заборов"), ("3", "стороны — лес"), ("4", "домика с террасами")],
+    }],
+    PETS_INDEX: [{
+        "kicker": "Заботиться",
+        "title": "О тех, кто пришёл сам и остался",
+        "lead": "Наши кошечки настойчивы в вопросе ласк и угощений — и это лучшая часть утра на террасе.",
+        "paras": ["Помимо фермы, на территории живёт много соседей: котики, семейство ежей, кролики, у реки — дикие утки, бобры и выдры. Многие очень дружелюбны.",
+                  "Некоторые котики ищут свой дом. Если вы влюбились с первого взгляда — не сдерживайтесь, напишите нам."],
+        "facts": [("2", "котика ищут дом"), ("6", "видов животных на ферме"), ("∞", "ласки на террасе")],
+    }],
+}
+
+
+# Справочник услуг → страница услуги (кнопка «Подробнее» карточек).
+SERVICE_PAGES = {data["service"]: slug for slug, data in SERVICES.items() if data["service"]}
+SERVICE_PAGES.update({data["service"]: slug for slug, data in MORE.items() if data.get("service")})
+# Плитки «Территории» (начало названия) → страница.
+TILE_PAGES = {"Русская баня": "banya", "Большая беседка": "bolshaya-besedka", "Фотосессии": "fotosessii",
+              "Финская сауна": "finskaya-sauna", "Мастер-классы": "master-klassy",
+              **{data["tile"]: slug for slug, data in MORE.items() if data.get("tile")}}
+
+
+def tile_page_url(title):
+    slug = next((slug for start, slug in TILE_PAGES.items() if title.startswith(start)), None)
+    return _url(slug) if slug else ""
+DIARY_CROPS = {"diary-holidays": "novyj-god", "diary-ayka": "ayka", "diary-car": "zheltoe-chudo"}
+
+
+def service_page_url(service_slug):
+    slug = SERVICE_PAGES.get(service_slug)
+    return _url(slug) if slug else ""
+
+
+def link_about(context):
+    """«О нас»: кнопки питомцев и записи дневника ведут на временные страницы.
+
+    Ссылка записи из CMS (поле «Ссылка на запись») важнее нашей.
+    """
+    from wagtail.models import Page
+
+    urls = {page.slug: page.url for page in Page.objects.live().filter(slug__in=SLUGS | DIARY_SLUGS)}
+    by_name = {pet["name"]: slug for slug, pet in PETS.items()}
+    for pet in context.get("about_pets") or []:
+        slug = by_name.get(pet.get("name")) or (pet.get("crop") or "").removeprefix("pet-")
+        pet["page_url"] = urls.get(slug, "")
+    for item in context.get("about_diary") or []:
+        item["page_url"] = "" if item.get("url") else urls.get(DIARY_CROPS.get(item.get("crop"), ""), "")
+    context["about_pets_url"] = urls.get(PETS_INDEX, "")
+    context["about_diary_url"] = urls.get(DIARY_INDEX, "")

@@ -1,0 +1,47 @@
+from django.conf import settings
+from django.urls import include, path
+from django.contrib import admin
+
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail import urls as wagtail_urls
+from wagtail.documents import urls as wagtaildocs_urls
+
+from wagtail.contrib.sitemaps.views import sitemap
+
+from core.views import robots_txt
+from search import views as search_views
+
+urlpatterns = [
+    path("django-admin/", admin.site.urls),
+    path("admin/", include(wagtailadmin_urls)),
+    path("documents/", include(wagtaildocs_urls)),
+    path("search/", search_views.search, name="search"),
+    path("", include("forms.urls")),
+    # Календарь и расчёт стоимости для блока брони на странице дома
+    path("", include("houses.urls")),
+    # SEO-минимум по п. 10.8 ТЗ
+    path("sitemap.xml", sitemap, name="sitemap"),
+    path("robots.txt", robots_txt, name="robots"),
+]
+
+
+if settings.DEBUG:
+    from django.conf.urls.static import static
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+    # Serve static and media files from development server
+    urlpatterns += staticfiles_urlpatterns()
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns = urlpatterns + [
+    # For anything not caught by a more specific rule above, hand over to
+    # Wagtail's page serving mechanism. This should be the last pattern in
+    # the list:
+    path("", include(wagtail_urls)),
+    # Alternatively, if you want Wagtail pages to be served from a subpath
+    # of your site, rather than the site root:
+    #    path("pages/", include(wagtail_urls)),
+]
+
+# Своя 500: шаблон не зависит от базы и контекстных процессоров.
+handler500 = "core.views.server_error"

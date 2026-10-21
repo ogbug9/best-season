@@ -1,0 +1,1 @@
+{% load media_tags %}{% about_sizes photo.crop as responsive_sizes %}<div class="about-photo about-photo--{{ photo.crop }}{% if value %} about-value__photo{% endif %}">{% picture photo.image preset="about" alt=photo.alt sizes=responsive_sizes %}</div>

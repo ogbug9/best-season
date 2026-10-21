@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load content_tags %}
+{% load static wagtailcore_tags media_tags icon_tags houses_tags layout_tags l10n seo_tags %}
+
+{# Фотографии, сведения о домике, удобства, кнопка бронирования, отзывы. #}
+
+{% block body_class %}page-house page-house--{{ page.slug }}{% endblock %}
+{% block body_attributes %}data-house-slug="{{ page.slug }}"{% endblock %}
+
+
+{% block structured_data %}{% accommodation_schema %}{% endblock %}
+
+{% block content %}
+
+{% comment %} ---------- 3. Мозаика фото ----------
+   Пять кадров по макету: крупный слева, четыре справа. Клик открывает
+   просмотрщик; без JS каждое фото остаётся ссылкой на полный размер,
+   поэтому галерея работает и со снятым скриптом. {% endcomment %}
+{% with mosaic=page.mosaic_images %}
+{% if mosaic %}
+<section class="house-mosaic-section">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}"><img class="home-bg__layer home-bg__layer--house-gallery" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1172" height="1199" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="container">
+    <h1 class="visually-hidden">{{ page.title }}</h1>
+    <ul class="house-mosaic gallery" data-gallery>
+      {% for image in mosaic %}
+        <li class="house-mosaic__item gallery__item">
+          <a class="house-mosaic__link gallery__link" href="{% full_image_url image 'jpeg' %}"
+             data-gallery-item data-full="{% full_image_url image %}" data-caption="{{ page.title }}">
+            {% comment %} Первая плитка — LCP страницы дома: без lazy браузер
+               находит её сразу при разборе HTML (п. 1.2 ТЗ, LCP ≤ 2,5 с). {% endcomment %}
+            {% if forloop.first %}{% picture image preset="mosaic" alt=page.title loading="eager" %}{% else %}{% picture image preset="mosaic" alt=page.title %}{% endif %}
+            {% if forloop.last %}
+              <span class="house-mosaic__more">{% house_icon "camera" %}{% cms_text "house_page-7ac84107c129" %}</span>
+            {% endif %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    {% comment %} Остальные кадры нужны просмотрщику, но на странице их не
+       видно: показывать 15 плиток макет не просит. {% endcomment %}
+    <ul class="house-mosaic__rest" hidden>
+      {% for item in page.remaining_gallery_images %}
+        <li class="gallery__item gallery__item--rest">
+          <a class="gallery__link" href="{% full_image_url item.image 'jpeg' %}" data-gallery-item
+             data-full="{% full_image_url item.image %}" data-caption="{{ item.caption|default:page.title }}">
+            {{ item.caption|default:page.title }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <button type="button" class="btn btn--outline mobile-gallery-more" data-mobile-gallery-open>{% cms_text "house_page-c0d934ae2838" %}</button>
+  </div>
+</section>
+{% else %}
+<section class="house-mosaic-section" aria-hidden="true">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}"><img class="home-bg__layer home-bg__layer--house-gallery" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1172" height="1199" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="container"><div class="house-mosaic house-mosaic--empty"><span class="ph"></span></div><button type="button" class="btn btn--outline mobile-gallery-more" disabled>{% cms_text "house_page-c0d934ae2838" %}</button></div>
+</section>
+{% endif %}
+{% endwith %}
+
+{# ---------- 4. Карточки-факты ---------- #}
+<section class="house-facts-section">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-left.svg' %}"><img class="home-bg__layer home-bg__layer--house-left" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1186" height="1394" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="container">
+    <div class="house-facts">
+      <div class="fact-card">
+        <p class="fact-card__title">{% house_icon "capacity" %}{% cms_text "house_page-c8c7e8482bf6" %} {{ page.capacity }}{% cms_text "house_page-f51cb058d5cb" %}</p>
+        <p class="fact-card__chips">
+          {% if page.area %}<span class="chip">{% house_icon "area" %}{{ page.area|floatformat:"-1" }} {% cms_text "house_page-9bdb4917feac" %}</span>{% endif %}
+          {% if page.layout_note %}<span class="chip">{% house_icon "layout" %}{{ page.layout_note }}</span>{% endif %}
+        </p>
+      </div>
+
+      {% if page.sleeping_places.all %}
+      <div class="fact-card">
+        <h2 class="fact-card__title">{% cms_text "house_page-966d89a4aa2c" %}</h2>
+        <p class="fact-card__chips">
+          {% for place in page.sleeping_places.all %}
+            <span class="chip">{% sleeping_icon place %}{{ place.name }}</span>
+          {% endfor %}
+        </p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{# ---------- 5. «О домике» и «Удобства» ---------- #}
+{% if page.description or page.featured_amenities %}
+<section class="house-about-section">
+  <div class="container house-about">
+    {% if page.description %}
+      <div class="house-about__text">
+        <h2 class="section__title">{% cms_text "house_page-8280889d935a" %}</h2>
+        <div class="prose">{{ page.description|richtext|house_about_copy:page.slug }}</div>
+      </div>
+    {% endif %}
+
+    {% if page.featured_amenities %}
+      <div class="house-about__amenities">
+        <h2 class="section__title">{% cms_text "house_page-b457d34be745" %}</h2>
+        <ul class="amenity-tags">
+          {% for amenity in page.featured_amenities %}
+            <li class="amenity-tag{% if amenity.name == 'Умная колонка Алиса' %} amenity-tag--alice{% endif %}"><span class="home-desktop-copy">{{ amenity.name|featured_label }}</span><span class="home-mobile-copy">{{ amenity.name|featured_label|layout_lines:"amenity_mobile"|linebreaksbr }}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% comment %} ---------- 6. Развёрнутое описание ----------
+   Переключатель на чекбоксе, а не на <details>: закрытый <details>
+   прячет содержимое целиком, а в макете свёрнутый блок показывает
+   начало колонок с затуханием. Чекбокс работает без JS так же. {% endcomment %}
+{% if page.equipment_groups %}
+<section class="equipment-section">
+  <div class="container">
+    <div class="equipment">
+      <input type="checkbox" id="equipment-toggle" class="equipment__switch visually-hidden">
+
+      <div class="equipment__columns">
+        {% for column in page.equipment_columns %}
+          <div class="equipment__column">
+            {% for group, items in column %}
+              <div class="equipment__group">
+                <h3 class="equipment__title">{{ group.name }}</h3>
+                <ul class="equipment__list">
+                  {% for item in items %}<li>{{ item.name|layout_lines:"equipment"|linebreaksbr }}</li>{% endfor %}
+                </ul>
+              </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <label class="btn btn--outline equipment__toggle" for="equipment-toggle">
+        <span class="equipment__toggle-more">{% cms_text "house_page-59589fe2a549" %}</span>
+        <span class="equipment__toggle-less">{% cms_text "house_page-36c25d9ffcfd" %}</span>
+      </label>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="house-booking-cta" aria-label="Бронирование домика">
+  <div class="container">
+    <button type="button" class="btn btn--primary" data-booking-open data-house-id="{{ page.pk }}" data-entry-point="4">{% cms_text "_booking_panel-5d9d7f118153" %}</button>
+  </div>
+</section>
+
+{# ---------- 7. Отзывы о домике (п. 4.1.7 ТЗ) ---------- #}
+{% if page.house_reviews %}
+<section class="house-reviews-section">
+  <div class="container">
+    <h2 class="section__title section__title--center">{% cms_text "house_page-33ddcf19676b" %}</h2>
+    {% comment %} Три колонки по 397 с зазором 24, фото 397×220 сверху,
+       под ним текст, автор справа. Фото необязательно. {% endcomment %}
+    <ul class="reviews">
+      {% for review in page.house_reviews %}
+        {% include "reviews/_review_card.html" %}
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+
+
+{% comment %} Просмотрщик галереи. Разметка пустая: скрипт подставляет в неё
+   кадр, а <dialog> сам держит фокус и закрывается по Esc. {% endcomment %}
+{% if page.gallery_images.all %}
+<dialog class="lightbox" data-lightbox aria-label="Просмотр фото">
+  <button type="button" class="lightbox__close" data-lightbox-close aria-label="Закрыть">×</button>
+  <button type="button" class="lightbox__nav lightbox__nav--prev" data-lightbox-prev aria-label="Предыдущее фото"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle cx="20" cy="20" r="19.5" fill="none" stroke-width="1"/><polyline class="lightbox__chevron" points="22.5,14 16.5,20 22.5,26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <img class="lightbox__image" data-lightbox-image alt="">
+  <button type="button" class="lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="Следующее фото"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle cx="20" cy="20" r="19.5" fill="none" stroke-width="1"/><polyline class="lightbox__chevron" points="17.5,14 23.5,20 17.5,26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <p class="lightbox__caption" data-lightbox-caption></p>
+</dialog>
+{% endif %}
+
+{% endblock %}

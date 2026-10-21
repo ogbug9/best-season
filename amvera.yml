@@ -1,0 +1,15 @@
+meta:
+  environment: python
+  toolchain:
+    name: pip
+    version: "3.11"
+
+build:
+  requirementsPath: requirements.txt
+
+run:
+  # Вся логика запуска — в run.py (миграции, статика, gunicorn).
+  # В YAML цепочку через && класть нельзя: Amvera разбирает command без шелла.
+  scriptName: run.py
+  containerPort: 8000
+  persistenceMount: /data

@@ -1,0 +1,122 @@
+{% load marketing_tags %}
+{% load content_tags %}
+{% load wagtailcore_tags static %}
+{% wagtail_site as current_site %}
+{% with s=settings.core.SiteSettings %}
+
+{% comment %}
+  Подвал по макету. Своей заливки у него нет — фон наследуется от страницы,
+  то есть кремовый. Заголовки колонок оливковые, ссылки тёмно-серые.
+
+  Состав колонок задаётся в core/context_processors.py: в подвале
+  группировка не такая, как в шапке, из дерева страниц её не вывести.
+{% endcomment %}
+
+<footer class="footer">
+  {# Нижний слой фона главной, «Размещения» и «Акций» (fon-footer) и страницы домика (fon-house-footer) (у каждой страницы свой top в main.css). На остальных страницах скрыт стилями, а loading="lazy" не даёт его скачать. #}
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-footer.svg' %}"><img class="home-bg__layer home-bg__layer--footer" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2069" height="1853" alt="" loading="lazy" decoding="async"></picture><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-footer.svg' %}"><img class="home-bg__layer home-bg__layer--house-footer" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2088" height="1919" alt="" loading="lazy" decoding="async"></picture></div>
+  <div class="container">
+    <div class="footer__top">
+
+      <div class="footer__brand">
+        <a class="footer__logo" href="/" aria-label="{{ current_site.site_name|default:"Лучший сезон" }} — на главную">
+          <span class="footer__mark" aria-hidden="true">
+            <svg viewBox="0 0 70 70" fill="none" aria-hidden="true" focusable="false">
+<path d="M30.3184 1.10352C48.3223 -1.09164 64.9088 11.1825 67.7275 28.8438C68.7933 35.5233 67.8318 41.9466 64.9502 48.0889C64.8137 48.3809 64.6521 48.6158 64.4346 48.7998C64.2166 48.984 63.951 49.1096 63.6182 49.1963C57.1036 50.8818 50.8483 50.1499 44.793 47.3604C44.2459 47.1085 43.6898 46.8743 43.1318 46.6377C42.5746 46.4014 42.0152 46.1633 41.4639 45.9072C36.7471 43.7162 32.0895 43.8369 27.3389 45.9473C24.384 47.2589 21.3437 48.4575 18.2363 49.3662C13.8418 50.6509 9.3875 50.2144 5.02246 49.082C4.81732 49.029 4.62576 48.8848 4.46973 48.7227C4.31154 48.5582 4.17592 48.3608 4.08789 48.1777V48.1768C1.91857 43.6869 0.819505 38.9542 0.850586 33.9746C0.836304 17.292 13.5128 3.15289 30.3184 1.10352ZM64.9834 27.1631C59.8954 5.21474 33.385 -4.1093 15.2842 9.66992C4.0243 18.2422 0.0759608 33.4795 5.80371 46.293L5.91797 46.5225C5.96092 46.6002 6.00912 46.6763 6.05957 46.7451C6.13937 46.8539 6.21336 46.9254 6.27637 46.9609L6.33594 46.9844L6.87207 47.0996C8.07092 47.3463 9.28673 47.5383 10.541 47.7568V37.585C9.46407 38.8333 8.4697 39.9842 7.43945 41.1777L7.34277 41.29L7.22949 41.1953C6.68756 40.7406 6.20619 40.3377 5.6748 39.8916L5.55859 39.7949L5.65723 39.6797C7.17912 37.9 8.63854 36.14 10.1641 34.4424C10.4229 34.1542 10.5424 33.8749 10.584 33.5742C10.6149 33.3502 10.6024 33.1101 10.5654 32.8379C9.79682 33.7241 9.09715 34.5328 8.36035 35.3848L8.26367 35.4961L8.15137 35.4023C7.60264 34.9483 7.1213 34.552 6.58691 34.1104L6.46973 34.0137L6.56836 33.8975C7.73981 32.5296 8.83606 31.1625 10.0312 29.8887C10.331 29.569 10.4919 29.2497 10.5615 28.9043C10.6155 28.6363 10.6146 28.3469 10.5762 28.0205C10.198 28.4279 9.85835 28.7955 9.49805 29.1836L9.40039 29.2881L9.29102 29.1963C8.7759 28.7644 8.29571 28.3637 7.75293 27.9082L7.63672 27.8105L7.73535 27.6953C9.0714 26.1378 10.3517 24.6481 11.6895 23.0889L11.8027 22.9561L11.917 23.0889C13.2768 24.6767 14.5586 26.1758 15.8691 27.7061L15.9678 27.8223L15.8506 27.9189C15.2854 28.3874 14.8081 28.7826 14.2959 29.2061L14.1846 29.2979L14.0879 29.1904C13.712 28.7686 13.4002 28.4264 13.0342 28.0195C12.9847 28.3681 12.9852 28.6643 13.0439 28.9326C13.1182 29.272 13.2872 29.5796 13.5859 29.8994C14.7756 31.1713 15.868 32.5368 17.0303 33.8955L17.1289 34.0117L17.0117 34.1084C16.4632 34.562 15.989 34.9555 15.4512 35.4004L15.3389 35.4941L15.2422 35.3838C14.4892 34.5135 13.7766 33.6887 13.0186 32.8115C12.9598 33.1369 12.968 33.4144 13.0312 33.665C13.1122 33.9857 13.2874 34.2766 13.5557 34.5752C15.0391 36.2296 16.4578 37.9412 17.9414 39.6777L18.04 39.793L17.9248 39.8896C17.3871 40.3436 16.909 40.7478 16.3711 41.2002L16.2578 41.2959L16.1611 41.1836C15.1261 39.9801 14.1225 38.8127 13.0254 37.5391V47.71C13.0585 47.7164 13.089 47.7217 13.1152 47.7266C13.1769 47.7381 13.2228 47.7448 13.2646 47.7441C15.9196 47.7086 18.4535 47.0748 20.9121 46.1191C20.9402 46.1083 20.9801 46.0807 21.0254 46.0273C21.0695 45.9754 21.1124 45.9068 21.1504 45.8291C21.2275 45.6713 21.2736 45.495 21.2744 45.3701V45.3691C21.3054 41.6317 21.2903 30.9388 21.2666 27.2012V27.2002C21.2649 26.909 21.3293 26.6522 21.4805 26.4658C21.6359 26.2743 21.8663 26.1787 22.1465 26.1787L33.9277 26.1748L46.6641 26.1787C46.9578 26.177 47.2116 26.2449 47.3887 26.4268C47.565 26.608 47.6367 26.8735 47.6338 27.2021C47.6201 29.0404 47.639 32.6405 47.6572 36.2422C47.6755 39.8431 47.6932 43.4463 47.6777 45.2861C47.6751 45.5936 47.721 45.7903 47.8203 45.9346C47.9197 46.0788 48.0894 46.1942 48.3867 46.3027C52.8769 47.945 57.4454 48.1595 62.1084 47.1582C62.4073 47.0939 62.6247 46.9916 62.7949 46.8447C62.9659 46.6972 63.0995 46.4963 63.2178 46.2197C65.8472 40.0456 66.4961 33.6861 64.9834 27.1631ZM24.1504 28.4277C23.9526 28.427 23.8132 28.4845 23.7227 28.5811C23.631 28.6789 23.569 28.8389 23.5723 29.083L23.625 35.6562C23.6423 38.3667 23.6562 41.077 23.6562 42.2285V45.1992C27.2693 43.0754 30.8621 42.0072 34.4473 41.9961C38.0902 41.9848 41.7138 43.0638 45.3291 45.2139C45.342 41.7071 45.3647 32.2969 45.3291 29.0869V29.085C45.3291 28.8264 45.284 28.6694 45.2051 28.5762C45.1313 28.489 45.0011 28.4278 44.75 28.4277H24.1504Z" fill="currentColor" stroke="currentColor" stroke-width="0.3"/>
+<path d="M35.9316 62.4531C32.9884 62.4546 30.0309 63.3611 27.0586 65.1943C29.8418 66.1797 33.1712 66.6155 36.3623 66.5781C39.5338 66.5409 42.5537 66.0361 44.7529 65.1572C41.8181 63.3572 38.8777 62.4517 35.9316 62.4531ZM51.1504 65.3828L51.0654 65.4238C40.9284 70.3703 30.9812 70.388 20.9346 65.499L20.7744 65.4219L20.8779 65.2773C20.9314 65.203 20.9631 65.1478 20.9971 65.0947C21.0243 65.0523 21.069 64.9812 21.1455 64.9463H21.1465C23.8261 63.7393 26.5053 62.5264 29.1934 61.3369V61.3359C33.689 59.3494 38.1982 59.3539 42.6865 61.3525H42.6855C45.4221 62.57 48.1456 63.826 51.0625 65.1504L51.1504 65.1904V65.3828Z" fill="currentColor" stroke="currentColor" stroke-width="0.3"/>
+<path d="M28.0088 52.209C32.109 50.3452 36.2244 50.4185 40.3057 52.3057C41.5389 52.8753 42.7715 53.4603 43.9795 54.1055C48.3959 56.4655 52.9118 58.0922 57.8457 57.3701L57.96 57.3535L58.0049 57.46C58.0258 57.5092 58.0476 57.5586 58.0693 57.6084C58.0842 57.6425 58.0992 57.6771 58.1143 57.7119L58.2373 57.7832L58.1104 57.9219C57.5967 58.4797 57.089 59.0811 56.541 59.6201L56.3037 59.8467C56.1667 59.974 55.9872 60.0413 55.8135 60.0781C55.6383 60.1152 55.4545 60.1239 55.2979 60.126C51.9999 60.1686 48.8829 59.2582 45.8691 57.8789L45.2676 57.5967C43.4432 56.7224 41.6319 55.787 39.8174 54.8965C35.929 52.9906 32.0576 53.0524 28.1602 54.9277C25.2536 56.328 22.3522 57.8242 19.3486 58.9414C18.3795 59.302 17.3693 59.5032 16.3564 59.6621C15.3378 59.822 14.3275 59.9379 13.3281 60.1299C13.0652 60.1801 12.788 60.1315 12.5293 60.041C12.2693 59.95 12.0161 59.8127 11.7969 59.6729C11.577 59.5325 11.3868 59.3866 11.252 59.2764C11.1844 59.2212 11.1301 59.1746 11.0928 59.1416C11.0742 59.1252 11.0597 59.1116 11.0498 59.1025C11.045 59.0981 11.0407 59.0952 11.0381 59.0928L11.0342 59.0889V59.0879L11.0322 59.0869L9.89551 57.9873L9.81055 57.9053L9.87109 57.8027L9.87207 57.8008C9.87297 57.7993 9.87427 57.7968 9.87598 57.7939C9.87939 57.7881 9.88453 57.7799 9.89062 57.7695C9.90287 57.7487 9.91964 57.7195 9.93848 57.6875C9.97611 57.6236 10.0217 57.5472 10.0518 57.4961L10.0986 57.417L10.1904 57.4219C10.5783 57.4463 10.9713 57.4674 11.3623 57.4961L11.7266 57.5186C15.4813 57.7116 19.0214 56.6418 22.4639 54.9248C24.3036 54.0087 26.14 53.0583 28.0088 52.209Z" fill="currentColor" stroke="currentColor" stroke-width="0.3"/>
+<path d="M42.2803 30.8496C42.756 30.8498 43.1502 31.225 43.1504 31.6973V46.1504H41.0498V33.2676C41.0498 32.9697 40.7995 32.72 40.4805 32.7197H27.3398C27.0206 32.7198 26.7695 32.9696 26.7695 33.2676V46.1504H24.8496V31.6973C24.8498 31.225 25.244 30.8498 25.7197 30.8496H42.2803Z" fill="currentColor" stroke="currentColor" stroke-width="0.3"/>
+</svg>
+          </span>
+          <span class="footer__name">{{ current_site.site_name|default:"Лучший сезон" }}</span>
+        </a>
+
+        <div class="footer__contacts">
+          <p><a class="footer__phone" href="tel:{{ s.phone|default:'+79912550837' }}">{{ s.phone_display|default:s.phone|default:'+7 (991) 255-08-37' }}</a></p>
+          <p><a href="mailto:{{ s.email|default:'bestseasonst@gmail.com' }}">{{ s.email|default:'bestseasonst@gmail.com' }}</a></p>
+          <p class="footer__hours">{{ s.work_hours|default:'10:00 - 22:00' }}</p>
+        </div>
+
+        {% comment %}
+          Иконки соцсетей. У каждой ссылки есть текстовая подпись для
+          скринридера: без неё это кружок без содержимого (п. 10.13 ТЗ).
+        {% endcomment %}
+        <ul class="socials">
+          {% if s.telegram_url %}
+            <li><a class="socials__item" href="{% marketing_url s.telegram_url 'footer' %}" rel="noopener" target="_blank">
+              <img src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Telegram</span></a></li>
+          {% else %}
+            <li><span class="socials__item"><img src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Telegram</span></span></li>
+          {% endif %}
+          {% if s.vk_url %}
+            <li><a class="socials__item" href="{% marketing_url s.vk_url 'footer' %}" rel="noopener" target="_blank">
+              <img src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">{% cms_text "footer-125394ee160a" %}</span></a></li>
+          {% else %}
+            <li><span class="socials__item"><img src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">{% cms_text "footer-125394ee160a" %}</span></span></li>
+          {% endif %}
+          {% if s.tiktok_url %}
+            <li><a class="socials__item" href="{% marketing_url s.tiktok_url 'footer' %}" rel="noopener" target="_blank">
+              <img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></a></li>
+          {% else %}
+            <li><span class="socials__item"><img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></span></li>
+          {% endif %}
+          {% if s.whatsapp_url %}
+            <li><a class="socials__item" href="{% marketing_url s.whatsapp_url 'footer' %}" rel="noopener" target="_blank">
+              <img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">WhatsApp</span></a><span class="socials__note" aria-hidden="true">*</span></li>
+          {% else %}
+            <li><span class="socials__item"><img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">WhatsApp</span></span><span class="socials__note" aria-hidden="true">*</span></li>
+          {% endif %}
+          {% if s.instagram_url %}
+            <li><a class="socials__item" href="{% marketing_url s.instagram_url 'footer' %}" rel="noopener" target="_blank">
+              <img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Instagram</span></a><span class="socials__note" aria-hidden="true">*</span></li>
+          {% else %}
+            <li><span class="socials__item"><img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Instagram</span></span><span class="socials__note" aria-hidden="true">*</span></li>
+          {% endif %}
+        </ul>
+
+        <p>
+          <button type="button" class="btn btn--primary footer__cta" data-booking-open data-entry-point="1">
+            {% cms_text "footer-aa5b7a42a613" %}
+          </button>
+        </p>
+      </div>
+
+      {% include "includes/footer_columns.html" %}
+    </div>
+
+    <div class="footer__legal">
+
+      <div class="footer__requisites">
+        {% if s.legal_name %}<span>{{ s.legal_name }}</span>{% else %}<span>{% cms_text "footer-6ea391cc2463" %}</span>{% endif %}
+        {% if s.ogrnip %}<span>{% cms_text "footer-d47f74a52d01" %} {{ s.ogrnip }}</span>{% else %}<span>{% cms_text "footer-6a2f62061838" %}</span>{% endif %}
+        {% if s.inn %}<span>{% cms_text "footer-41e2469679b6" %} {{ s.inn }}</span>{% else %}<span>{% cms_text "footer-6a6a061fd3d7" %}</span>{% endif %}
+      </div>
+
+      <div class="footer__center">
+        <p>{% cms_text "footer-c75bbc08a90a" %} {% now "Y" %}{% cms_text "footer-8792ac747bae" %}</p>
+        <p class="footer__meta-note">{% cms_text "footer-62a4aef192cf" %}</p>
+        {% comment %}
+          Указание автора обязательно по лицензии CC BY 4.0, под которой
+          распространяется шрифт Etude Noire. Убирать нельзя — без него
+          использование шрифта неправомерно.
+        {% endcomment %}
+        <p class="footer__meta-note">
+          {% cms_text "footer-f3e25ea65c86" %} <a href="{% marketing_url 'https://creativecommons.org/licenses/by/4.0/' 'footer' %}" rel="license noopener" target="_blank">CC BY 4.0</a>
+        </p>
+      </div>
+
+      {% comment %}
+        Значки платёжных систем — файлы от дизайнера, размеры из инспектора
+        (Frame 30, группа 206×40, зазор 40): Visa 40×40, Mastercard 32×24,
+        Мир 54×16. Порядок такой же, как в макете.
+      {% endcomment %}
+      <p class="footer__pay" aria-label="Принимаем карты Visa, Mastercard и Мир">
+        <img src="{% static 'img/pay-visa.png' %}" width="40" height="40" alt="Visa" loading="lazy">
+        <img src="{% static 'img/pay-mastercard.png' %}" width="32" height="24" alt="Mastercard" loading="lazy">
+        <img src="{% static 'img/pay-mir.png' %}" width="54" height="16" alt="Мир" loading="lazy">
+      </p>
+    </div>
+  </div>
+</footer>
+
+{% endwith %}

@@ -1,0 +1,8 @@
+Django>=5.2,<5.3
+wagtail>=7.4,<7.5
+psycopg2-binary>=2.9,<3.0
+python-decouple>=3.8,<4.0
+requests>=2.32,<3.0
+gunicorn>=22.0,<27.0
+whitenoise>=6.7,<7.0
+Pillow>=10.0,<13.0

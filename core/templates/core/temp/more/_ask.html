@@ -1,0 +1,5 @@
+{% load content_tags %}
+<p class="split__actions">
+  {% if book %}<button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="{{ page.slug }}">{% cms_text "booking_cta-5d9d7f118153" %}</button>{% endif %}
+  {% if ask_url %}<a class="btn {% if book %}btn--outline{% else %}btn--primary{% endif %}" href="{{ ask_url }}" rel="noopener" target="_blank">{{ ask_label|default:"Спросить в Telegram" }}</a>{% endif %}
+</p>

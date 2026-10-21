@@ -1,0 +1,15 @@
+{% load media_tags houses_tags %}
+        <li class="reviews__item"{% if review_filter %} data-tags="{% if review.house %}{{ review.house.slug }}{% else %}none{% endif %}{% for key in review.theme_keys %} {{ key }}{% endfor %}" data-reveal{% endif %}>
+          {% if review.image %}
+            <div class="reviews__media">
+              {% picture review.image preset="review" alt=review.author_name %}
+            </div>
+          {% else %}
+            <div class="reviews__media" aria-hidden="true"></div>
+          {% endif %}
+          <blockquote class="reviews__text"><p>{{ review.text|review_quote }}</p></blockquote>
+          <p class="reviews__author">{{ review.author_name }}</p>
+          {% if review_filter and review.house or review_filter and review.source != "site" %}
+            <p class="reviews__meta">{% if review.house %}{{ review.house.title }}{% endif %}{% if review.house and review.source != "site" %} · {% endif %}{% if review.source != "site" %}{{ review.get_source_display }}{% endif %}</p>
+          {% endif %}
+        </li>
