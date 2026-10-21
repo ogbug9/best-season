@@ -665,6 +665,13 @@ class ChannelPost(models.Model):
         line = next((part.strip() for part in self.text.splitlines() if part.strip()), "")
         return line if len(line) <= 140 else line[:139].rstrip() + "…"
 
+    @property
+    def local_image_url(self):
+        """Только фото, сохранённое у нас: ссылки CDN Telegram через несколько дней битые."""
+        from django.conf import settings
+
+        return self.image_url if self.image_url.startswith(settings.MEDIA_URL) else ""
+
 
 @register_snippet
 class InterfaceText(models.Model):

@@ -112,6 +112,10 @@ class ComponentTemplatesTests(TestCase):
 
 
 class Wave1LogicTests(SimpleTestCase):
+    # Страница Wagtail в конструкторе берёт ContentType из базы — без этого модуль
+    # падал при отдельном запуске (в полном прогоне кэш уже прогрет).
+    databases = {"default"}
+
     def test_marketing_url_adds_chat_text_only_for_messengers(self):
         from core.templatetags.marketing_tags import marketing_url
         url = marketing_url('https://wa.me/79650000000', 'contacts_page', 'Хочу забронировать')
@@ -244,7 +248,7 @@ class PageStoryTests(SimpleTestCase):
         self.assertIn('3 км', html)
 
 
-class TelegramPreviewImageTests(TestCase):
+class TelegramPreviewImageTests(SimpleTestCase):
     """21.10: превью «Рассылки» хранятся у нас — ссылки CDN Telegram устаревают."""
 
     def test_image_saved_to_media_or_dropped(self):
@@ -267,3 +271,9 @@ class TelegramPreviewImageTests(TestCase):
                 self.assertEqual(cmd.keep_image("https://t.me/best_season_bs/151", "https://cdn.example/y.jpg"), "")
             with patch.object(cmd, "urlopen", side_effect=OSError("offline")):
                 self.assertEqual(cmd.keep_image("https://t.me/best_season_bs/152", "https://cdn.example/z.jpg"), "")
+
+    def test_only_local_images_are_shown(self):
+        from core.models import ChannelPost
+
+        self.assertEqual(ChannelPost(image_url="https://cdn4.telesco.pe/file/x.jpg").local_image_url, "")
+        self.assertEqual(ChannelPost(image_url="/media/channel/a-1.jpg").local_image_url, "/media/channel/a-1.jpg")
