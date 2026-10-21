@@ -14,6 +14,9 @@ from urllib.request import Request, urlopen
 from django.core.management.base import BaseCommand
 
 LIMIT = 6
+# Ссылки CDN Telegram живут несколько дней — картинку превью храним у себя в медиа.
+MEDIA_DIR = "channel"
+JPEG, PNG = bytes([0xFF, 0xD8, 0xFF]), bytes([0x89, 0x50, 0x4E, 0x47])
 BLOCK = re.compile(r'<div class="tgme_widget_message_wrap')
 POST = re.compile(r'data-post="([^"/]+/\d+)"')
 DATE = re.compile(r'<time[^>]+datetime="([^"]+)"')
@@ -50,6 +53,25 @@ def channel_name(url):
     return parts.path.strip("/").split("/")[-1]
 
 
+def keep_image(post_url, image_url):
+    """Скачать фото поста в медиа; при ошибке — пусто (без битой картинки)."""
+    from django.core.files.base import ContentFile
+    from django.core.files.storage import default_storage
+
+    if not image_url:
+        return ""
+    name = f"{MEDIA_DIR}/{post_url.rstrip('/').rsplit('/', 2)[-2]}-{post_url.rstrip('/').rsplit('/', 1)[-1]}.jpg"
+    try:
+        if not default_storage.exists(name):
+            data = urlopen(Request(image_url, headers={"User-Agent": "Mozilla/5.0"}), timeout=15).read()
+            if not (data.startswith(JPEG) or data.startswith(PNG) or data[8:12] == b"WEBP"):
+                return ""  # вместо картинки пришла страница ошибки
+            name = default_storage.save(name, ContentFile(data))
+        return default_storage.url(name)
+    except Exception:
+        return ""
+
+
 class Command(BaseCommand):
     help = "Обновить превью последних постов Telegram-канала для страницы «Рассылка»."
 
@@ -74,6 +96,7 @@ class Command(BaseCommand):
             self.stderr.write("Посты не найдены — разметка t.me могла измениться; превью оставлены как были.")
             return
         for post in sorted(posts, key=lambda item: item["published_at"], reverse=True)[:LIMIT]:
+            post["image_url"] = keep_image(post["url"], post["image_url"])
             ChannelPost.objects.update_or_create(url=post["url"], defaults=post)
         stale = ChannelPost.objects.order_by("-published_at").values_list("pk", flat=True)[LIMIT:]
         ChannelPost.objects.filter(pk__in=list(stale)).delete()

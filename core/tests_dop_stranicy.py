@@ -242,3 +242,28 @@ class PageStoryTests(SimpleTestCase):
         }]})
         self.assertIn('story__lead', html)
         self.assertIn('3 км', html)
+
+
+class TelegramPreviewImageTests(TestCase):
+    """21.10: превью «Рассылки» хранятся у нас — ссылки CDN Telegram устаревают."""
+
+    def test_image_saved_to_media_or_dropped(self):
+        import tempfile
+        from unittest.mock import patch
+
+        from django.test import override_settings
+
+        from core.management.commands import fetch_telegram_preview as cmd
+
+        class Response:
+            def __init__(self, data): self.data = data
+            def read(self): return self.data
+
+        with tempfile.TemporaryDirectory() as media, override_settings(MEDIA_ROOT=media, MEDIA_URL="/media/"):
+            with patch.object(cmd, "urlopen", return_value=Response(bytes([0xFF, 0xD8, 0xFF]) + b"jpeg")):
+                url = cmd.keep_image("https://t.me/best_season_bs/150", "https://cdn.example/x.jpg")
+            self.assertEqual(url, "/media/channel/best_season_bs-150.jpg")
+            with patch.object(cmd, "urlopen", return_value=Response(b"<html>expired</html>")):
+                self.assertEqual(cmd.keep_image("https://t.me/best_season_bs/151", "https://cdn.example/y.jpg"), "")
+            with patch.object(cmd, "urlopen", side_effect=OSError("offline")):
+                self.assertEqual(cmd.keep_image("https://t.me/best_season_bs/152", "https://cdn.example/z.jpg"), "")

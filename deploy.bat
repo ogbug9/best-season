@@ -34,8 +34,8 @@ echo [3/4] Пуш на GitHub...
 git push origin main
 if errorlevel 1 goto :err
 
-echo [4/4] Пуш на Amvera (ветка master — так собирает Amvera)...
-git push amvera main:master
+echo [4/4] Amvera: снимок кода без истории и оригиналов фото (deploy_amvera.py)...
+".venv\Scripts\python.exe" deploy_amvera.py
 if errorlevel 1 goto :err
 
 echo.
