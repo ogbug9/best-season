@@ -117,6 +117,23 @@ class ArchivePhotoImportTests(TestCase):
                 self.assertEqual(image.renditions.count(), 0)
                 self.assertEqual(Path(image.file.path).read_bytes(), path.read_bytes())
 
+    def test_missing_originals_skip_when_archive_already_applied(self):
+        """21.10: сборка Amvera без оригиналов — старт не падает, если архив уже применён."""
+        import json as _json
+        from core.models import ArchivePhotoImport
+        with tempfile.TemporaryDirectory() as folder:
+            base = Path(folder) / 'config/static/img/content-gallery'
+            base.mkdir(parents=True)
+            (base / 'originals.json').write_text(_json.dumps([{'path': 'house-1/originals/a.jpg', 'house': 1}]), encoding='utf-8')
+            with override_settings(BASE_DIR=Path(folder), MEDIA_ROOT=Path(folder) / 'media'):
+                err = io.StringIO()
+                call_command('import_archive_photos', if_not_applied=True, stdout=io.StringIO(), stderr=err)
+                self.assertIn('ещё не применён', err.getvalue())
+                ArchivePhotoImport.objects.create(source_key='@batch/old', sha256='x')
+                out = io.StringIO()
+                call_command('import_archive_photos', if_not_applied=True, stdout=out)
+                self.assertIn('пропускаю', out.getvalue())
+
     def test_editor_file_replacement_is_preserved_when_source_changes(self):
         from PIL import Image as PILImage
         from wagtail.images import get_image_model

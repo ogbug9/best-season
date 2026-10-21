@@ -70,6 +70,16 @@ class Command(BaseCommand):
             return
         manifest_path = base / 'originals.json'
         originals = json.loads(manifest_path.read_text(encoding='utf-8')) if manifest_path.exists() else []
+        # 21.10: в сборку Amvera оригиналы (1,4 ГБ) не входят — фото уже в медиа на
+        # постоянном диске. Без исходников, если архив когда-то применён, шаг пропускается.
+        missing = [item['path'] for item in originals if not (base / item['path']).is_file()]
+        if missing:
+            if ArchivePhotoImport.objects.filter(source_key__startswith='@batch/').exists():
+                self.stdout.write(f'Исходников архива нет в сборке ({len(missing)}); архив уже применён — пропускаю.')
+            else:
+                self.stderr.write(f'Исходников архива нет в сборке ({len(missing)}), архив ещё не применён — '
+                                  'запустите import_archive_photos из полной копии репозитория.')
+            return
         aliases = {item['legacy']['title'] for item in originals if item.get('legacy')}
         old_paths = sorted(base.glob('*/*.webp'))
         batch = sha256(manifest_path.read_bytes() if manifest_path.exists() else b'')
