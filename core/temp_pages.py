@@ -126,13 +126,15 @@ SERVICES = {
     },
     "malaya-besedka": {
         "service": "", "tile": "", "kicker": "Для своих",
+        # Кадр утвердила Софья 16.10 (комментарий в макете «Pop-up Бронь 2 шаг»).
+        "photo": ("BS service malaya-besedka", "img/services/malaya-besedka.jpg"),
         "chips": ["камерно", "вдвоём или семьёй", "ужин на воздухе"],
         "steps": [("Напишите нам", "Расскажите, на сколько человек и когда хотите посидеть."),
                   ("Уточним детали", "Назовём цену и свободное время."),
                   ("Приходите", "Ужин на свежем воздухе без большой компании.")],
         "faq": [("Сколько стоит и сколько человек помещается?", "Страница дополняется: цену и вместимость уточните у нас в Telegram — ответим быстро."),
                 ("Чем отличается от «Корабля»?", "Большая беседка «Корабль» — для праздников до 50 гостей с русской печью. Малая — для небольшой компании.")],
-        "season": "Подробности и фото скоро появятся здесь.",
+        "season": "Цену и свободное время подскажем в Telegram — ответим быстро.",
     },
     "fotosessii": {
         "service": "fotosessii", "tile": "Фотосессии", "kicker": "Свет и декорации от природы",
@@ -209,11 +211,14 @@ def _entry(entry):
 
 def _service_card(slug):
     from core.dop_pages import _image
+    from core.models import image_titled
     from services.models import Service
 
     data = SERVICES[slug]
     service = Service.objects.filter(slug=data["service"], is_published=True).first() if data["service"] else None
     photo = (service.display_image if service else None) or (_image(("territory", data["tile"])) if data["tile"] else None)
+    if photo is None and data.get("photo"):
+        photo = image_titled(data["photo"][0])
     return {"slug": slug, "title": SERVICE_TITLES[slug], "url": _url(slug), "photo": photo, "service": service}
 
 
@@ -458,3 +463,35 @@ def link_about(context):
         item["page_url"] = "" if item.get("url") else urls.get(DIARY_CROPS.get(item.get("crop"), ""), "")
     context["about_pets_url"] = urls.get(PETS_INDEX, "")
     context["about_diary_url"] = urls.get(DIARY_INDEX, "")
+
+
+def ensure_service_photos(log=print):
+    """Заводит в медиатеку фото услуг из статики (SERVICES[...]["photo"]), если их ещё нет.
+
+    Один раз: замену или удаление фото редактором в админке не перезаписывает,
+    пока название картинки не совпадёт снова.
+    """
+    from django.conf import settings
+    from django.contrib.staticfiles import finders
+    from django.core.files.images import ImageFile
+    from wagtail.images import get_image_model
+
+    from core.models import image_titled
+
+    created = 0
+    for slug, data in SERVICES.items():
+        if not data.get("photo"):
+            continue
+        title, static_path = data["photo"]
+        if image_titled(title):
+            continue
+        path = finders.find(static_path) or str(settings.BASE_DIR / "config" / "static" / static_path)
+        try:
+            with open(path, "rb") as source:
+                get_image_model().objects.create(title=title, file=ImageFile(source, name=static_path.rsplit("/", 1)[-1]))
+        except OSError:
+            log(f"  фото услуги «{slug}»: нет файла {static_path}")
+            continue
+        created += 1
+        log(f"  фото услуги «{slug}» добавлено в медиатеку")
+    return created

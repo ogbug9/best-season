@@ -318,6 +318,9 @@ class Command(BaseCommand):
             from core.diary_seed import ensure_diary
 
             self.created += ensure_diary(self.stdout.write)
+            from core.temp_pages import ensure_service_photos
+
+            ensure_service_photos(self.stdout.write)
             if not self.create_only:
                 self.seed_legal_settings(site)
                 self.hide_duplicates()

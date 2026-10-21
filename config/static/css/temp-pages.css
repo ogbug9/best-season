@@ -105,6 +105,7 @@
 .t-mosaic { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-auto-rows: 220px; gap: 12px; margin: 0; padding: 0; list-style: none; }
 .t-mosaic__item:first-child { grid-row: span 2; }
 .t-mosaic--1 { grid-template-columns: 1fr; grid-auto-rows: 460px; }
+.t-mosaic--1 .t-mosaic__item:first-child { grid-column: auto; grid-row: auto; }
 .t-mosaic--2 { grid-template-columns: 2fr 1fr; }
 .t-mosaic--2 .t-mosaic__item:last-child { grid-row: span 2; }
 .t-mosaic--3 { grid-template-columns: 2fr 1fr; }
