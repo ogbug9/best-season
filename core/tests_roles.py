@@ -78,3 +78,11 @@ class EditorContactSettingsTests(TestCase):
         self.assertEqual(self.client.get(url).status_code, 200)
         # Полные настройки (hotelId, Метрика) редактору недоступны: перенаправление на панель.
         self.assertEqual(self.client.get(f"/admin/settings/core/sitesettings/{site.pk}/").status_code, 302)
+
+
+class VideoUploadSettingsTests(TestCase):
+    def test_editor_can_upload_mp4_for_video_clips(self):
+        from django.conf import settings
+
+        self.assertIn("mp4", settings.WAGTAILDOCS_EXTENSIONS)
+        self.assertGreaterEqual(settings.WAGTAILDOCS_MAX_UPLOAD_SIZE, 50 * 1024 * 1024)
