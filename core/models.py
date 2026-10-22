@@ -372,6 +372,55 @@ class SiteSettings(BaseSiteSetting):
         verbose_name = "Настройки сайта"
 
 
+@register_setting(icon="mail")
+class ContactSettings(SiteSettings):
+    """Только контакты, соцсети, адрес и маршрут — для роли «Редактор».
+
+    Прокси на ту же таблицу: данные одни, а права раздельные. П. 8.1 ТЗ
+    требует, чтобы контакты правились без разработчика, а п. 3.4 закрывает
+    от редактора hotelId, Метрику, реквизиты и юридические тексты — они
+    остаются только в «Настройках сайта».
+    """
+
+    panels = [
+        MultiFieldPanel(
+            [
+                FieldPanel("phone"),
+                FieldPanel("phone_display"),
+                FieldPanel("email"),
+                FieldPanel("work_hours"),
+                FieldPanel("form_reply_time"),
+            ],
+            heading="Контакты",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("telegram_url"),
+                FieldPanel("telegram_chat_url"),
+                FieldPanel("whatsapp_url"),
+                FieldPanel("vk_url"),
+                FieldPanel("tiktok_url"),
+                FieldPanel("instagram_url"),
+            ],
+            heading="Мессенджеры и соцсети",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("address"),
+                FieldPanel("yandex_map_url"),
+                FieldPanel("directions_short"),
+                FieldPanel("directions_page"),
+            ],
+            heading="Адрес и маршрут",
+        ),
+    ]
+
+    class Meta:
+        proxy = True
+        verbose_name = "Контакты и соцсети"
+        verbose_name_plural = "Контакты и соцсети"
+
+
 @register_snippet
 class TerritoryItem(models.Model):
     """Плитка блока «Наша территория».

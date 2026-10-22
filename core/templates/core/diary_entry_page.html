@@ -2,7 +2,7 @@
 {% load static wagtailcore_tags media_tags seo_tags layout_tags %}
 {% comment %} Запись «Дневника Сезона», схема «картинка — текст» (ориентир eurokappa). Макета страницы нет — стиль карточек и заголовков из макета News. {% endcomment %}
 {% block body_class %}page-diary page-diary-entry{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/diary.css' %}?v=20261020-b">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/diary.css' %}?v=20261021-bg">{% endblock %}
 {% block og_type %}article{% endblock %}
 {% block og_image %}{% og_rendition page.cover as og %}{% if og %}{% absolute_media_url og.url as og_url %}<meta property="og:image" content="{{ og_url }}"><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="{{ og.width }}"><meta property="og:image:height" content="{{ og.height }}"><meta name="twitter:image" content="{{ og_url }}">{% elif page.cover %}{% absolute_media_url page.cover.file.url as og_url %}<meta property="og:image" content="{{ og_url }}"><meta name="twitter:image" content="{{ og_url }}">{% else %}{{ block.super }}{% endif %}{% endblock %}
 {% block structured_data %}{% og_rendition page.cover as og %}{% if og %}{% absolute_media_url og.url as og_url %}{% article_schema og_url %}{% elif page.cover %}{% absolute_media_url page.cover.file.url as og_url %}{% article_schema og_url %}{% else %}{% article_schema %}{% endif %}{% endblock %}

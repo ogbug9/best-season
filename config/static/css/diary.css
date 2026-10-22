@@ -73,7 +73,7 @@
   .page-diary .footer { position: relative; isolation: isolate; overflow: clip; }
   .page-diary .home-bg { display: block; position: absolute; inset: 0; pointer-events: none; user-select: none; }
   .page-diary .home-bg__layer { position: absolute; z-index: -1; left: calc(50% - 720px + var(--x)); top: var(--y); width: var(--w); height: var(--h); max-width: none; }
-  .page-diary .home-bg__layer--diary-top { --x: 0px; --y: 0px; --w: 1440px; --h: 275px; }
+  .page-diary .home-bg__layer--diary-top { --x: -356px; --y: 0px; --w: 1919px; --h: 275px; }  /* весь узор макета: x −356…1563 */
   .page-diary .home-bg__layer--footer { --x: 221px; --y: 310.53px; --w: 2069px; --h: 1853px; }
 }
 

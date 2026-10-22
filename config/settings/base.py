@@ -223,6 +223,7 @@ WAGTAILDOCS_EXTENSIONS = [
     "csv",
     "docx",
     "key",
+    "mp4",  # ролики для «Видео на сайте» (core.VideoClip.file)
     "odt",
     "pdf",
     "pptx",
@@ -233,7 +234,7 @@ WAGTAILDOCS_EXTENSIONS = [
 ]
 
 # Maximum upload size for documents in bytes.
-WAGTAILDOCS_MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10MB
+WAGTAILDOCS_MAX_UPLOAD_SIZE = 50 * 1024 * 1024  # 50MB: короткий ролик MP4 не влезал в 10MB
 
 # Уведомления по заявкам (раздел 7 ТЗ) — токены только из окружения, не в коде.
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="")
