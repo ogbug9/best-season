@@ -21,74 +21,7 @@ from core.temp_pages import TEMPLATES as _TEMP_TEMPLATES  # noqa: E402
 
 TEMPLATES.update(_TEMP_TEMPLATES)
 
-# Сценарии «Чем заняться». Шаг: (время, заголовок, строка, фото, слаг услуги).
-# Фото: ("image", точное название) или ("territory", начало названия плитки).
-SCENARIOS = [
-    {
-        "code": "couple", "label": "Вдвоём", "title": "Сбежать вдвоём",
-        # Telegram 02.06.2026 «Люди, которые никогда не отдыхают вдвоём…»
-        "lead": "Два дня без ролей «родитель» и «начальник» — только вы двое, лес и тишина.",
-        "house": "domik-1", "house_note": "Домик №1 — с собственной финской сауной и панорамными окнами.",
-        "steps": [
-            ("Утро", "Кофе на террасе", "Проснуться без будильника и увидеть солнце в панорамных окнах.", ("image", "BS About story-terrace"), None),
-            ("День", "Сапы по Скнижке", "С воды берег выглядит иначе: гнёзда аистов, дикие утки, бобровая хатка.", ("territory", "Река"), "arenda-sapov"),
-            ("Вечер", "Сауна с видом на лес", "Финская сауна в Домике №1 не ограничена по времени.", ("territory", "Финская сауна"), None),
-            ("Ночь", "Звёзды над поляной", "Вдали от города небо видно целиком.", ("image", "BS About pillar-slow"), None),
-        ],
-    },
-    {
-        "code": "kids", "label": "С детьми", "title": "Выходные с детьми",
-        "lead": "Животные, батут и костёр — день, после которого дети засыпают сами.",
-        "house": "", "house_note": "В каждом домике до четырёх гостей, детям есть где развернуться на террасе.",
-        "steps": [
-            ("Утро", "Контактная ферма", "Покормить животных вместе с хозяевами и выбрать продукты к завтраку.", ("territory", "Контактная ферма"), None),
-            ("День", "Батут и площадка", "Маленьким гостям точно не будет скучно.", ("territory", "Батут"), None),
-            ("Вечер", "Костёр", "Собраться всей семьёй у живого огня в костровой зоне.", ("territory", "Костровая зона"), None),
-            ("Ночь", "Тихий лес", "Лес с трёх сторон и речка рядом — спится здесь иначе.", ("image", "BS About story-moss"), None),
-        ],
-    },
-    {
-        "code": "dog", "label": "С собакой", "title": "Всей семьёй, вместе с питомцем",
-        # Telegram 17.04.2026 «pet-friendly»
-        "lead": "Не «разрешение на вход», а приглашение для всей семьи. Возьмите любимую лежанку и игрушку.",
-        "house": "", "house_note": "Доплата за питомца — 1 000 ₽ (в холке до 45 см) или 1 500 ₽ (выше). Предупредите при бронировании.",
-        "steps": [
-            ("Утро", "Роса на террасе", "Пёс проверяет утреннюю росу, пока вы варите кофе.", ("image", "BS About story-season"), None),
-            ("День", "Прогулка по территории", "Около гектара без заборов и лес сразу за домиками.", ("image", "BS About value-journey"), None),
-            ("Вечер", "Терраса и мангал", "У каждого домика своя терраса и зона для мангала.", ("image", "BS About pillar-comfort"), None),
-        ],
-    },
-    {
-        "code": "company", "label": "Компанией", "title": "Выходные компанией",
-        # Telegram 26.06.2026 «Только свои»; FAQ «Можно ли слушать музыку…»
-        "lead": "Баня, большая беседка и костёр — и никто не попросит разойтись раньше.",
-        "house": "vyezdy-kompaniy", "house_note": "Можно снять весь глэмпинг: все 4 домика, поляну и беседку «Корабль».",
-        "steps": [
-            ("День", "Спортивные игры", "Волейбол, бадминтон и детский футбол на поляне.", ("territory", "Спортивные игры"), None),
-            ("Вечер", "Русская баня", "Баня на дровах — её затопят к вашему приезду.", ("territory", "Русская баня"), "russkaya-banya"),
-            ("Ночь", "Беседка «Корабль»", "Для больших вечеров — вдали от домиков, с русской печью.", ("territory", "Большая беседка"), "bolshaya-besedka"),
-        ],
-    },
-    {
-        "code": "work", "label": "Работать", "title": "Неделя на удалёнке",
-        # Telegram 12.01.2026; FAQ «Стабильная ли связь и интернет?», «…на месяц или больше?»
-        "lead": "Работать можно и уютно: оптоволокно в домике, обед на террасе, баня вечером.",
-        "house": "", "house_note": "Можно остаться на неделю и дольше — спросите про длительное проживание.",
-        "steps": [
-            ("Утро", "Связь без компромиссов", "В домиках оптоволокно без ограничений по скорости.", ("image", "BS About story-terrace"), None),
-            ("День", "Обед на террасе", "Перерыв на свежем воздухе вместо офисной кухни.", ("image", "BS About pillar-farm"), None),
-            ("Вечер", "Баня после работы", "Лучший способ закрыть ноутбук.", ("territory", "Русская баня"), "russkaya-banya"),
-        ],
-    },
-]
-
-# Telegram 04.07.2026 «Когда идёт дождь…»; камин — в домиках №2–4 (в Домике №1 — сауна, FAQ про залог).
-RAINY_DAY = [
-    ("Книга", "До которой наконец дойдут руки."),
-    ("Чай", "В дождь он почему-то вкуснее."),
-    ("Настолки и кино", "Вечер, который затянется сам собой."),
-    ("Камин", "В домиках с камином — свой; в Домике №1 — финская сауна."),
-]
+# Сценарии, кубик, дождь и «Что взять» «Чем заняться» — core/things_content.py (макет 25.10).
 
 # Развлечения: метки плиток по названию (бесплатно/платно, детям, в дождь).
 ACTIVITY_TAGS = {
@@ -183,18 +116,21 @@ def context_for(page, request):
     slug = page.slug
     services = {service.slug: service for service in Service.objects.filter(is_published=True)}
     if slug == "chem-zanyatsya":
-        scenarios = []
-        for scenario in SCENARIOS:
-            steps = [{"time": time, "title": title, "text": text, "image": _image(photo),
-                      "service": services.get(service_slug) if service_slug else None}
-                     for time, title, text, photo, service_slug in scenario["steps"]]
-            house = Page.objects.live().filter(slug=scenario["house"]).first() if scenario["house"] else None
-            scenarios.append({**scenario, "steps": steps, "house_page": house})
-        from core import dop_content as dc
+        from core import things_content as things
 
-        second_day = [place for place in dc.GUIDE if place["key"] in ("polenovo", "behovo", "konyukhov")]
-        return {"scenarios": scenarios, "rainy_day": RAINY_DAY, "packing": dc.PACKING, "second_day": second_day,
-                "nearby_page": Page.objects.live().filter(slug="interesnoe-ryadom").first(),
+        tiles = {item.title: item.image for item in TerritoryItem.objects.filter(is_published=True).select_related("image")}
+
+        def tile_image(start):
+            return next((image for title, image in tiles.items() if start and title.startswith(start)), None)
+
+        scenarios = []
+        for scenario in things.SCENARIOS:
+            steps = [{"time": time, "title": title, "text": text, "image": tile_image(tile),
+                      "service": services.get(service_slug) if service_slug else None}
+                     for time, title, text, tile, service_slug in scenario["steps"]]
+            house = Page.objects.live().filter(slug=scenario["house"]).first() if scenario.get("house") else None
+            scenarios.append({**scenario, "steps": steps, "house_page": house})
+        return {"things": things, "scenarios": scenarios,
                 "houses_page": Page.objects.live().filter(slug="razmeshchenie").first()}
     if slug == "razvlecheniya":
         tiles = []

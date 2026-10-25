@@ -269,6 +269,7 @@
           window.setTimeout(spin, 60 + n * 12);
         } else {
           button.disabled = false;
+          if (button.getAttribute("data-again")) button.textContent = button.getAttribute("data-again");
           cube.classList.remove("is-rolled"); void cube.offsetWidth; cube.classList.add("is-rolled");
         }
       })();

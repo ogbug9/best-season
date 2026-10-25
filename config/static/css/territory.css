@@ -1,0 +1,172 @@
+/* «Территория» по макету Territory.svg (1440, 25.10.2026, Desktop/Макет PNG SVG).
+   Размеры сняты с рендера макета: контейнер 1240 (x 100–1340).
+   Мобильной версии в макете нет — правила ниже 700 px собраны по образцу
+   остальных страниц (поля 20 px, колонки в одну). */
+
+.page-territory { --t-band: #E4D0C0; --t-band-light: #F3E3D6; --t-note: #F2E4D6; }
+
+/* ---------- Первый экран ---------- */
+.t-hero { padding-bottom: 80px; }
+/* Общий отступ первой секции (main.css) даёт 139 px; в макете текст ниже шапки на 107 px. */
+@media (min-width: 700px) { body.page-territory main > .t-hero:first-child { padding-top: 214px; } }
+.t-hero__before,
+.t-hero__aside { font-family: var(--font-body); font-style: italic; font-weight: 300; font-size: 44px; line-height: 54px; color: var(--c-dark); }
+.t-hero__before { margin: 0 0 0 55px; }
+.site .t-hero__title { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 22px; margin: 0 0 51px 55px; font-size: inherit; line-height: 1; text-wrap: wrap; hyphens: none; }
+.t-hero__word { font-family: var(--font-heading); font-weight: 500; font-size: 90px; line-height: 100px; color: var(--c-olive); }
+.t-hero__aside { white-space: nowrap; }
+.t-hero__grid { display: grid; grid-template-columns: 551px minmax(0, 1fr); column-gap: 51px; align-items: center; padding-left: 26px; }
+.t-hero__photos { position: relative; height: 353px; }
+.t-hero__photo { position: absolute; display: block; object-fit: cover; border-radius: 20px; }
+.t-hero__photo--big { top: 0; left: 0; width: 450px; height: 300px; }
+.t-hero__photo--small { top: 153px; left: 225px; width: 300px; height: 200px; }
+.t-hero__text { margin: 0; max-width: 620px; font-size: 24px; line-height: 29px; color: var(--c-dark); }
+
+/* ---------- Полоса «За территорией мы ухаживаем сами» ---------- */
+.t-care { padding: 37px 0; background: var(--t-band); }
+.t-care__grid { display: flex; justify-content: center; align-items: center; gap: 34px; }
+.site .t-care__title { margin: 0; font-size: 26px; line-height: 26px; font-weight: 400; color: var(--c-terra); text-wrap: wrap; }
+.t-care__text { margin: 0; font-size: 17px; line-height: 22px; color: var(--c-dark); }
+
+/* ---------- Цифры ---------- */
+.t-stats-section { padding: 80px 0; }
+.t-stats { display: flex; justify-content: center; gap: 40px; margin: 0; }
+.t-stats__item { padding-left: 20px; border-left: 1px solid #D4CEBB; }
+.t-stats dt { font-family: var(--font-heading); font-size: 44px; line-height: 48px; color: var(--c-olive); white-space: nowrap; }
+.t-stats dd { margin: 6px 0 0; font-size: 14px; line-height: 18px; color: var(--c-dark); }
+
+/* ---------- Полоса с бронированием ---------- */
+.t-cta { padding: 40px 0; background: var(--t-band-light); text-align: center; }
+.site .t-cta__title { margin: 0 0 28px; font-size: 26px; line-height: 30px; font-weight: 400; color: var(--c-terra); }
+.t-cta__actions { display: flex; justify-content: center; gap: 32px; margin: 0; }
+.t-cta__actions .btn { min-width: 264px; min-height: 52px; font-size: 20px; }
+.t-cta__actions .btn--primary { min-width: 297px; }
+
+/* ---------- Крупные заголовки секций (Еда, Чем заняться, Ответы на вопросы) ---------- */
+.site .t-big-title { margin: 0 0 30px; text-align: center; font-size: 90px; line-height: 95px; font-weight: 500; color: var(--c-olive); }
+
+/* ---------- Еда ---------- */
+.t-food { padding-top: 85px; }
+.t-food__lead { margin: 0 auto 50px; text-align: center; font-size: 20px; line-height: 24px; color: var(--c-dark); }
+.chips.t-food__tabs { gap: 10px; margin-bottom: 33px; }
+.t-food__tabs .filter-chip { min-height: 42px; padding: 0 23px; border: 1px solid #B9B499; border-radius: 21px; font-size: 18px; }
+.t-food__panel.is-fading { opacity: 0; transition: opacity .2s ease; }
+.t-food__grid { display: grid; grid-template-columns: 610px 590px; justify-content: space-between; align-items: stretch; }
+.t-food__intro { margin: -12px 0 22px; font-size: 20px; line-height: 24px; color: var(--c-dark); }
+.t-food__places { display: grid; grid-template-columns: repeat(2, 300px); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.t-place { display: flex; flex-direction: column; padding: 20px 20px 18px; border: 1px solid var(--c-terra); border-radius: 20px; background: var(--c-white); }
+.site .t-place__title { margin: 0 0 8px; font-family: var(--font-body); font-size: 19px; line-height: 23px; font-weight: 400; color: var(--c-dark); }
+.site .t-place__text { margin: 0 0 14px; font-size: 14px; line-height: 17px; color: var(--c-dark); }
+.t-place__link.btn { margin-top: auto; min-height: 32px; padding: 0 12px; border-radius: 16px; font-size: 14px; }
+.t-food__map { display: block; width: 100%; height: 100%; min-height: 360px; object-fit: cover; border: 1px solid var(--c-terra); border-radius: 20px; }
+.t-food__tips { display: grid; grid-template-columns: repeat(2, 575px); justify-content: center; gap: 31px; margin-top: 45px; }
+.t-food__tips--1 { justify-content: start; }
+.t-tip { position: relative; display: flex; flex-direction: column; padding: 40px 40px 40px; border-radius: 5px; background: var(--t-note); }
+.t-tip::before { content: ""; position: absolute; top: -13px; left: 50%; width: 112px; height: 30px; margin-left: -56px; background: rgb(132 127 87 / 28%); }
+.t-tip__title { margin: 0 0 14px; font-family: var(--font-heading); font-size: 36px; line-height: 40px; color: var(--c-terra); }
+.site .t-tip__text { margin: 0 0 14px; font-size: 20px; line-height: 24px; color: var(--c-dark); }
+.t-tip__accent { font-size: 28px; line-height: 34px; font-weight: 600; color: var(--c-terra); }
+.t-tip__link.btn { width: 100%; min-height: 42px; margin-top: auto; border-radius: 21px; font-size: 18px; }
+
+/* ---------- Игра и «Одна просьба» ---------- */
+.page-territory .t-play .container--narrow { max-width: 950px; }
+.page-territory .t-play { padding-top: 20px; }
+.page-territory .t-game { padding: 40px 40px 32px; border-radius: 40px; box-shadow: none; }
+.page-territory .t-bingo { max-width: 650px; gap: 10px; }
+.page-territory .t-bingo__cell { min-height: 107px; font-size: 18px; }
+.t-request-section { padding-top: 40px; }
+.page-territory .t-request { max-width: 625px; padding: 50px 40px 36px; rotate: -3deg; box-shadow: none; background: var(--t-note); }
+.page-territory .t-request .x-note__title { font-size: 30px; line-height: 34px; }
+.page-territory .t-request .x-note__text { font-size: 22px; line-height: 28px; color: var(--c-dark); }
+
+/* ---------- Чем заняться ---------- */
+.t-activities .territory__chips { justify-content: center; margin-bottom: 20px; }
+.t-activities .mosaic { margin-bottom: 40px; }
+.t-activities__more { margin: 0; text-align: center; }
+.t-activities__more .btn { min-width: 222px; min-height: 52px; font-size: 20px; }
+
+/* ---------- Ответы на вопросы ---------- */
+.t-faq .t-big-title { margin-bottom: 50px; }
+
+/* ---------- Планшет ---------- */
+@media (max-width: 1299px) {
+  .t-hero__before, .site .t-hero__title { margin-left: 0; }
+  .t-hero__grid { grid-template-columns: minmax(0, 525px) minmax(0, 1fr); column-gap: 40px; padding-left: 0; }
+  .t-food__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr); gap: 30px; }
+  .t-food__places { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .t-food__tips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .t-food__tips--1 { grid-template-columns: minmax(0, 575px); }
+}
+@media (max-width: 1099px) {
+  .t-hero__word { font-size: 72px; line-height: 80px; }
+  .t-hero__before, .t-hero__aside { font-size: 32px; line-height: 40px; }
+  .t-hero__grid { grid-template-columns: 1fr; row-gap: 40px; }
+  .t-hero__photos { width: 525px; max-width: 100%; }
+  .t-stats { flex-wrap: wrap; row-gap: 30px; }
+  .t-food__grid { grid-template-columns: 1fr; }
+  .t-food__map { height: auto; min-height: 0; aspect-ratio: 590 / 420; }
+  .site .t-big-title { font-size: 64px; line-height: 70px; }
+}
+
+/* ---------- Телефон ---------- */
+@media (max-width: 699px) {
+  .t-hero { padding-bottom: 48px; }
+  .t-hero__before, .t-hero__aside { font-size: 20px; line-height: 26px; }
+  .site .t-hero__title { column-gap: 10px; margin-bottom: 28px; }
+  .t-hero__aside:first-child { flex-basis: 100%; }
+  .t-hero__word { font-size: 40px; line-height: 48px; }
+  .t-hero__photos { width: 100%; height: auto; aspect-ratio: 350 / 280; }
+  .t-hero__photo--big { width: 80%; height: auto; aspect-ratio: 3 / 2; }
+  .t-hero__photo--small { top: auto; bottom: 0; left: auto; right: 0; width: 56%; height: auto; aspect-ratio: 3 / 2; }
+  .t-hero__grid { row-gap: 24px; }
+  .t-hero__text { font-size: 16px; line-height: 22px; }
+
+  .t-care { padding: 28px 0; }
+  .t-care__grid { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .site .t-care__title { font-size: 22px; line-height: 24px; }
+  .t-care__text { font-size: 15px; line-height: 21px; }
+  .t-care__text br { display: none; }
+
+  .t-stats-section { padding: 40px 0; }
+  .t-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
+  .t-stats__item { padding-left: 12px; }
+  .t-stats dt { font-size: 25px; line-height: 30px; }
+  .t-stats dd { font-size: 13px; line-height: 16px; }
+
+  .t-cta { padding: 32px 0; }
+  .site .t-cta__title { margin-bottom: 20px; font-size: 20px; line-height: 24px; }
+  .t-cta__actions { flex-direction: column; align-items: stretch; gap: 12px; }
+  .t-cta__actions .btn, .t-cta__actions .btn--primary { min-width: 0; min-height: 48px; font-size: 16px; }
+
+  .site .t-big-title { margin-bottom: 16px; font-size: 44px; line-height: 48px; }
+  .t-food { padding-top: 48px; }
+  .t-food__lead { margin-bottom: 24px; font-size: 15px; line-height: 21px; }
+  .t-food__lead br { display: none; }
+  .chips.t-food__tabs { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--s-4)); padding-inline: var(--s-4); margin-bottom: 20px; scrollbar-width: none; }
+  .t-food__tabs .filter-chip { flex: none; min-height: 40px; padding: 0 18px; font-size: 15px; }
+  .t-food__intro { margin: 0 0 16px; font-size: 15px; line-height: 21px; }
+  .t-food__places { grid-template-columns: 1fr; }
+  .t-place { padding: 16px; }
+  .site .t-place__title { font-size: 17px; line-height: 21px; }
+  .t-place__link.btn { min-height: 40px; border-radius: 20px; }
+  .t-food__tips, .t-food__tips--1 { grid-template-columns: 1fr; gap: 36px; margin-top: 40px; }
+  .t-tip { padding: 32px 20px 24px; }
+  .t-tip__title { font-size: 26px; line-height: 30px; }
+  .site .t-tip__text { font-size: 15px; line-height: 21px; }
+  .t-tip__accent { font-size: 20px; line-height: 24px; }
+  .t-tip__link.btn { min-height: 44px; font-size: 15px; }
+
+  .page-territory .t-game { padding: 28px 16px 24px; border-radius: 24px; }
+  .page-territory .t-bingo__cell { min-height: 72px; font-size: 14px; }
+  .page-territory .t-request { padding: 36px 22px 26px; rotate: -2deg; }
+  .page-territory .t-request .x-note__title { font-size: 24px; line-height: 28px; }
+  .page-territory .t-request .x-note__text { font-size: 16px; line-height: 22px; }
+  .page-territory .t-request .x-note__text br { display: none; }
+
+  .t-activities .territory__chips { justify-content: flex-start; }
+  .t-activities__more .btn { width: 100%; min-height: 48px; font-size: 16px; }
+  .t-faq .t-big-title { margin-bottom: 24px; }
+}
+@media (max-width: 374px) {
+  .t-hero__word { font-size: 34px; line-height: 42px; }
+}

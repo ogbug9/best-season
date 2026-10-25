@@ -162,8 +162,8 @@ class DopPagesTests(TestCase):
         self.assertEqual(form.save().topic, 'Выпускной')
 
     def test_scenarios_have_steps_and_labels(self):
-        from core.dop_pages import SCENARIOS
-        self.assertEqual([s['code'] for s in SCENARIOS], ['couple', 'kids', 'dog', 'company', 'work'])
+        from core.things_content import SCENARIOS
+        self.assertEqual([s['code'] for s in SCENARIOS], ['couple', 'kids', 'company', 'work', 'pet'])
         self.assertTrue(all(len(s['steps']) >= 3 for s in SCENARIOS))
 
 

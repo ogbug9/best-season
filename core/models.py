@@ -1052,16 +1052,16 @@ class TerritoryPage(InProgressMixin, Page):
         context["territory"] = items
         context["groups"] = [(value, label) for value, label in TerritoryItem.GROUPS
                              if any(item.group == value for item in items)]
-        context["aerial"] = image_titled("BS About aerial")
-        context["neighbours"] = [image for image in (
-            next((item.image for item in items if "ферма" in item.title.lower()), None),
-            image_titled("BS About pet-snezhka"), image_titled("BS About pet-dymok"), image_titled("BS About diary-ayka"),
-        ) if image]
-        context["animals_answer"] = (FaqItem.objects.filter(is_published=True, question__startswith="Можно ли кормить животных")
-                                     .values_list("answer", flat=True).first())
-        from core import dop_content as dc
+        # 25.10: остальное — по макету Territory.svg (core/territory_content.py).
+        from core import territory_content as tc
 
-        context["neighbour_groups"] = dc.NEIGHBOURS
+        context["tc"] = tc
+        context["food_tabs"] = tc.food_tabs()
+        faq = {item.question: item for item in FaqItem.objects.filter(is_published=True,
+                                                                      question__in=tc.FAQ_QUESTIONS)}
+        context["faq"] = [faq[question] for question in tc.FAQ_QUESTIONS if question in faq]
+        context["things_page"] = Page.objects.live().filter(slug="chem-zanyatsya").first()
+        context["houses_page"] = Page.objects.live().filter(slug="razmeshchenie").first()
         return context
 
 
