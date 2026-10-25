@@ -1,102 +1,132 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags media_tags content_tags marketing_tags %}
+{% load static wagtailcore_tags media_tags content_tags marketing_tags layout_tags %}
 {% block body_class %}page-dop page-scenarios{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261021-gazebo"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261025">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261025-dice" defer></script>{% endblock %}
 
 {% comment %}
-  Чем заняться (docs/dop-stranicy/18-…): готовые выходные, а не список.
-  Чип «С кем едете?» (Д10) показывает один сценарий; шаги — пунктиром.
-  Без JS видны все сценарии подряд.
+  Чем заняться по макету Things to do.svg (25.10.2026, Desktop/Макет PNG SVG).
+  Тексты — core/things_content.py. Чип «С кем едете» показывает один сценарий;
+  без JS видны все сценарии подряд. Мобильной версии в макете нет — things.css.
 {% endcomment %}
 
 {% block content %}
-{% include "core/dop/_head.html" %}
+{% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
 
-<section class="section">
+<section class="section page-head things-head">
+  <div class="container container--narrow">
+    <h1>{{ page.title|heading_breaks }}</h1>
+  </div>
+</section>
+
+<section class="things-hook">
+  <div class="container things-hook__grid">
+    <p class="things-hook__title">{{ things.HOOK.title|linebreaksbr }}</p>
+    <div class="things-hook__side">
+      <p class="things-hook__text">{{ things.HOOK.text|linebreaksbr }}</p>
+      <a class="btn btn--primary" href="#scenarios">{{ things.HOOK.button }}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section things-compare">
   <div class="container">
-    <div class="chips scenarios__chips" data-chips="who" data-chips-default="couple" role="group" aria-label="С кем едете">
+    <h2 class="things-title">{{ things.COMPARE_TITLE }}</h2>
+    <ul class="things-compare__list">
+      {% for city, here in things.COMPARE %}
+        <li class="things-compare__row" data-reveal><s>{{ city }}</s><span class="things-compare__arrow" aria-hidden="true"></span><span>{{ here }}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section things-tip-section">
+  <div class="container">
+    <aside class="x-note things-tip" data-reveal>
+      <p class="x-note__title">{{ things.TIP.title }}</p>
+      <p class="x-note__text">{{ things.TIP.text|linebreaksbr }}</p>
+    </aside>
+  </div>
+</section>
+
+<section class="things-scenarios" id="scenarios" aria-labelledby="scenarios-title">
+  <div class="container">
+    <h2 class="things-title" id="scenarios-title">{{ things.SCENARIOS_TITLE }}</h2>
+    <div class="chips scenarios__chips" data-chips="who" data-chips-default="{{ scenarios.0.code }}" role="group" aria-label="С кем едете">
       {% for scenario in scenarios %}<button type="button" class="filter-chip" data-chip="{{ scenario.code }}">{{ scenario.label }}</button>{% endfor %}
     </div>
-    <div data-chips-for="who">
-      {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
-      {% for scenario in scenarios %}
-        <article class="scenario" data-tags="{{ scenario.code }}" aria-labelledby="scenario-{{ scenario.code }}">
-          <h2 class="scenario__title" id="scenario-{{ scenario.code }}">{{ scenario.title }}</h2>
-          <p class="scenario__lead">{{ scenario.lead }}</p>
-          <ol class="scenario__steps">
+  </div>
+  <div data-chips-for="who">
+    {% for scenario in scenarios %}
+      <article class="scenario" data-tags="{{ scenario.code }}" aria-labelledby="scenario-{{ scenario.code }}">
+        <div class="container">
+          <h3 class="scenario__title" id="scenario-{{ scenario.code }}">{{ scenario.title }}</h3>
+          <p class="scenario__lead">{{ scenario.lead|linebreaksbr }}</p>
+          <ol class="scenario__steps scenario__steps--{{ scenario.steps|length }}">
             {% for step in scenario.steps %}
-              <li class="scenario__step" data-reveal>
+              <li class="scenario__step">
                 <div class="scenario__media">{% if step.image %}{% picture step.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
                   {% if step.service.price %}<span class="card__badge scenario__price">от {{ step.service.price_display }} ₽ {{ step.service.get_price_unit_display|lower }}</span>{% endif %}
                 </div>
                 <p class="scenario__time">{{ step.time }}</p>
-                <h3 class="scenario__step-title">{{ step.title }}</h3>
+                <h4 class="scenario__step-title">{{ step.title }}</h4>
                 <p class="scenario__text">{{ step.text }}</p>
-                {% if step.service and step.service.price and step.service.is_hourly %}
-                  <button type="button" class="btn btn--outline scenario__add" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Забронировать</button>
-                {% elif step.service and telegram %}
-                  <a class="scenario__ask" href="{% marketing_url telegram 'chem_zanyatsya' 'Здравствуйте! Хочу узнать про «'|add:step.title|add:'»' %}" rel="noopener" target="_blank">Спросить про {{ step.title|lower }}</a>
+                {% if step.service and step.service.price %}
+                  <button type="button" class="btn btn--primary scenario__add" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Забронировать</button>
                 {% endif %}
               </li>
             {% endfor %}
           </ol>
-          <div class="scenario__house" data-reveal>
-            <p>{{ scenario.house_note }}</p>
-            {% if scenario.house_page %}<a class="btn btn--outline" href="{% pageurl scenario.house_page %}">{{ scenario.house_page.title }}</a>
-            {% elif houses_page %}<a class="btn btn--outline" href="{% pageurl houses_page %}">Выбрать домик</a>{% endif %}
-            <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Забронировать эти выходные</button>
+        </div>
+        <div class="scenario__house">
+          <div class="container">
+            <p>{{ scenario.note|linebreaksbr }}</p>
+            <p class="scenario__actions">
+              {% if scenario.house_page %}
+                <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Забронировать даты</button>
+                <a class="btn btn--outline" href="{% pageurl scenario.house_page %}">{{ scenario.house_label }}</a>
+              {% else %}
+                {% if houses_page %}<a class="btn btn--primary" href="{% pageurl houses_page %}">Выбрать домик</a>{% endif %}
+                {% if telegram %}<a class="btn btn--outline" href="{% marketing_url telegram 'chem_zanyatsya' things.ASK_TEXT %}" rel="noopener" target="_blank">Уточнить детали</a>{% endif %}
+              {% endif %}
+            </p>
           </div>
-        </article>
-      {% endfor %}
-      {% endwith %}
-    </div>
+        </div>
+      </article>
+    {% endfor %}
   </div>
 </section>
 
-{% guest_quote "слушать тишину и смотреть на лес" %}
+<section class="section t-play t-play--dice things-dice"><div class="container container--narrow">
+  {% include "core/temp/play/_block.html" with b=things.DICE bare=True %}
+</div></section>
 
-{% if second_day %}
-<section class="section">
+<section class="section things-rain">
   <div class="container">
-    <h2 class="section__title section__title--center">Если остаётесь на вторую ночь</h2>
-    <p class="center scenario__lead">Второй день — для соседей: усадьба Поленова, церковь в Бёхово и деревня Конюхова в десяти минутах.</p>
-    <ul class="guide__list guide__list--short">
-      {% for place in second_day %}
-        <li class="guide-card" data-reveal>
-          <h3>{{ place.title }}</h3>
-          <dl class="guide-card__facts"><div><dt>Ехать</dt><dd>{{ place.drive }}</dd></div><div><dt>Когда</dt><dd>{{ place.hours }}</dd></div></dl>
-          <p class="guide-card__tip"><b>Совет:</b> {{ place.tip }}</p>
+    <h2 class="things-title things-title--dark">{{ things.RAINY_TITLE }}</h2>
+    <p class="things-lead">{{ things.RAINY_LEAD|linebreaksbr }}</p>
+    <ul class="things-rain__list">
+      {% for icon, title, text in things.RAINY %}
+        <li class="things-rain__card" data-reveal>
+          <img class="things-rain__icon" src="{% static 'img/things/rain-'|add:icon|add:'.svg' %}" width="80" height="80" alt="">
+          <b class="things-rain__title">{{ title|linebreaksbr }}</b>
+          <span class="things-rain__text">{{ text|linebreaksbr }}</span>
         </li>
       {% endfor %}
     </ul>
-    {% if nearby_page %}<p class="center"><a class="btn btn--outline" href="{% pageurl nearby_page %}">Весь путеводитель и план дня</a></p>{% endif %}
-  </div>
-</section>
-{% endif %}
-
-<section class="section">
-  <div class="container container--narrow">
-    <h2 class="center">Если пойдёт дождь</h2>
-    <p class="center">Прогноз с дождём — не «пропавшие выходные», а повод пожить для себя.</p>
-    <ul class="fact-cards rainy-day">
-      {% for title, text in rainy_day %}<li class="fact-cards__item" data-reveal><b class="fact-cards__value">{{ title }}</b><span class="fact-cards__label">{{ text }}</span></li>{% endfor %}
-    </ul>
   </div>
 </section>
 
-<section class="section">
+<section class="section things-packing">
   <div class="container container--narrow">
     <div class="checklist" data-checklist="weekend">
-      <div class="checklist__head"><h2>Что взять на выходные</h2><span class="checklist__count" data-checklist-count></span></div>
+      <div class="checklist__head"><h2>{{ things.PACKING_TITLE }}</h2><span class="checklist__count" data-checklist-count></span></div>
       <ul>
-        {% for key, text in packing %}<li><label><input type="checkbox" value="{{ key }}"> {{ text }}</label></li>{% endfor %}
+        {% for key, text in things.PACKING %}<li><label><input type="checkbox" value="{{ key }}"> {{ text }}</label></li>{% endfor %}
       </ul>
     </div>
   </div>
 </section>
 
-<section class="section">
-  <div class="container container--narrow">
-    {% include "includes/video_slot.html" with slot="scenario-day" poster=None title="Здесь будет видео одного дня в «Лучшем сезоне»" note="Снимаем этой осенью" %}
-  </div>
-</section>
+{% endwith %}
 {% endblock %}

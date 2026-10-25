@@ -1,40 +1,115 @@
 {% extends "base.html" %}
-{% load content_tags %}
-{% load wagtailcore_tags media_tags territory_tags layout_tags %}
+{% load static content_tags %}
+{% load wagtailcore_tags media_tags territory_tags layout_tags marketing_tags %}
 
 {% block body_class %}page-territory{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261025">{% endblock %}
 
 {% comment %}
-  Территория (docs/dop-stranicy/10-territoriya.md), волна 1: аэрофото,
-  вступление, чипы групп (Д10), карточки как на главной (Д1, Д2) с ценой
-  у платного, место под видео, «Наши соседи». Карта точек — волна 2.
+  Территория по макету Territory.svg (25.10.2026, Desktop/Макет PNG SVG). Тексты —
+  core/territory_content.py. Карта поляны и видео в макете помечены «пока скрыть»
+  и не выводятся. Мобильной версии в макете нет — адаптация в territory.css.
 {% endcomment %}
 
 {% block content %}
-<section class="section page-head">
-  <div class="container container--narrow">
-    {% include "includes/in_progress_note.html" %}
-    <h1>{{ page.title|heading_breaks }}</h1>
-    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+{% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+
+<section class="t-hero">
+  <div class="container">
+    <p class="t-hero__before">{{ tc.HERO.before }}</p>
+    <h1 class="t-hero__title"><span class="t-hero__aside">{{ tc.HERO.prefix }}</span> <span class="t-hero__word">{{ page.title }}</span> <span class="t-hero__aside">{{ tc.HERO.suffix }}</span></h1>
+    <div class="t-hero__grid">
+      <div class="t-hero__photos" aria-hidden="true">
+        <img class="t-hero__photo t-hero__photo--big" src="{% static 'img/territory/hero-house-900.webp' %}" srcset="{% static 'img/territory/hero-house-600.webp' %} 600w, {% static 'img/territory/hero-house-900.webp' %} 900w" sizes="(max-width: 699px) 80vw, 450px" width="450" height="300" alt="" fetchpriority="high">
+        <img class="t-hero__photo t-hero__photo--small" src="{% static 'img/territory/hero-field-600.webp' %}" srcset="{% static 'img/territory/hero-field-400.webp' %} 400w, {% static 'img/territory/hero-field-600.webp' %} 600w" sizes="(max-width: 699px) 55vw, 300px" width="300" height="200" alt="" loading="lazy">
+      </div>
+      <p class="t-hero__text">{{ tc.HERO.text|linebreaksbr }}</p>
+    </div>
   </div>
 </section>
-{% page_extras "territory" "top" %}
-{% page_story "territory" %}
-{% page_extras "territory" %}
 
-{% if aerial %}
-<section class="section territory-aerial">
-  <div class="container" data-reveal>{% picture aerial preset="hero" alt="Глэмпинг «Лучший сезон» сверху" %}</div>
+<section class="t-care">
+  <div class="container t-care__grid">
+    <h2 class="t-care__title">{{ tc.CARE.title|linebreaksbr }}</h2>
+    <p class="t-care__text">{{ tc.CARE.text|linebreaksbr }}</p>
+  </div>
 </section>
-{% endif %}
 
-{% if page.body|filled %}
-<section class="section"><div class="container container--narrow prose" data-reveal>{{ page.body|richtext }}</div></section>
-{% endif %}
+<section class="t-stats-section">
+  <div class="container">
+    <dl class="t-stats">
+      {% for value, label in tc.STATS %}<div class="t-stats__item" data-reveal><dt>{{ value }}</dt><dd>{{ label }}</dd></div>{% endfor %}
+    </dl>
+  </div>
+</section>
+
+<section class="t-cta">
+  <div class="container">
+    <h2 class="t-cta__title">{{ tc.CTA_TITLE }}</h2>
+    <p class="t-cta__actions">
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="territory">Забронировать даты</button>
+      {% if houses_page %}<a class="btn btn--outline" href="{% pageurl houses_page %}">Смотреть домики</a>{% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="section t-food" aria-labelledby="food-title">
+  <div class="container">
+    <h2 class="t-big-title" id="food-title">{{ tc.FOOD_TITLE }}</h2>
+    <p class="t-food__lead">{{ tc.FOOD_LEAD|linebreaksbr }}</p>
+    <div class="chips t-food__tabs" data-chips="food" data-chips-default="{{ food_tabs.0.code }}" role="group" aria-label="Где поесть">
+      {% for tab in food_tabs %}<button type="button" class="filter-chip" data-chip="{{ tab.code }}">{{ tab.label }}</button>{% endfor %}
+    </div>
+    <div data-chips-for="food">
+      {% for tab in food_tabs %}
+        <div class="t-food__panel" data-tags="{{ tab.code }}">
+          <div class="t-food__grid">
+            <div class="t-food__list">
+              {% if tab.intro %}<p class="t-food__intro">{{ tab.intro }}</p>{% endif %}
+              <ul class="t-food__places">
+                {% for place in tab.places %}
+                  <li class="t-place">
+                    <h3 class="t-place__title">{{ place.title }}</h3>
+                    <p class="t-place__text">{% for line in place.lines %}{{ line }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</p>
+                    <a class="btn btn--primary t-place__link" href="{{ place.url }}" rel="noopener" target="_blank">Открыть на Яндекс Картах</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+            <img class="t-food__map" src="{% static tab.map %}" width="590" height="490" alt="Карта: {{ tab.label|lower }} рядом с глэмпингом" loading="lazy">
+          </div>
+          <div class="t-food__tips t-food__tips--{{ tab.tips|length }}">
+            {% for tip in tab.tips %}
+              <aside class="t-tip">
+                <p class="t-tip__title">{{ tip.title }}</p>
+                <p class="t-tip__text">{{ tip.text|linebreaksbr }}{% if tip.accent %} <b class="t-tip__accent">{{ tip.accent }}</b>.{% endif %}</p>
+                {% if tip.after %}<p class="t-tip__text">{{ tip.after }}</p>{% endif %}
+                {% if tip.url %}<a class="btn btn--primary t-tip__link" href="{{ tip.url }}" rel="noopener" target="_blank">{{ tip.button }}</a>
+                {% elif telegram %}<a class="btn btn--primary t-tip__link" href="{% marketing_url telegram 'territory_food' tip.telegram_text %}" rel="noopener" target="_blank">{{ tip.button }}</a>{% endif %}
+              </aside>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% page_play "territory" %}
+
+<section class="section t-request-section">
+  <div class="container">
+    <aside class="x-note t-request" data-reveal>
+      <p class="x-note__title">{{ tc.REQUEST.title }}</p>
+      <p class="x-note__text">{{ tc.REQUEST.text|linebreaksbr }}</p>
+    </aside>
+  </div>
+</section>
 
 {% if territory %}
-<section class="section section--pattern">
+<section class="section t-activities" aria-labelledby="activities-title">
   <div class="container">
+    <h2 class="t-big-title" id="activities-title">{{ tc.ACTIVITIES_TITLE }}</h2>
     {% if groups %}
       <div class="chips territory__chips" data-chips="group" role="group" aria-label="Что показать">
         <button type="button" class="filter-chip" data-chip="">Всё</button>
@@ -48,11 +123,11 @@
         на тач-устройствах его включает нажатие — см. site.js.
       {% endcomment %}
       {% for item in territory %}
-        <li class="mosaic__item territory-card{% if item.is_large %} mosaic__item--large{% endif %}" tabindex="0" data-tags="{{ item.group|default:'other' }}" data-reveal>
+        <li class="mosaic__item territory-card" tabindex="0" data-tags="{{ item.group|default:'other' }}" data-reveal>
           {% picture item.image preset="card" alt=item.title %}
           {% if item.service %}<span class="card__badge territory-card__price">от {{ item.service.price_display }} ₽ {{ item.service.get_price_unit_display|lower }}</span>{% endif %}
           <div class="mosaic__caption">
-            <h2 class="mosaic__title">{{ item.title|territory_lines|linebreaksbr }}</h2>
+            <h3 class="mosaic__title">{{ item.title|territory_lines|linebreaksbr }}</h3>
             <div class="territory-card__details">
               {% if item.description %}<p><span class="home-desktop-copy">{{ item.description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ item.description }}</span></p>{% endif %}
               {% if item.service %}
@@ -65,44 +140,19 @@
         </li>
       {% endfor %}
     </ul>
+    {% if things_page %}<p class="t-activities__more"><a class="btn btn--outline" href="{% pageurl things_page %}">Подробнее <span aria-hidden="true">→</span></a></p>{% endif %}
   </div>
 </section>
 {% endif %}
 
-{% guest_quote "Большая территория без заборов" %}
-
-<section class="section">
-  <div class="container container--narrow">
-    {% include "includes/video_slot.html" with slot="territory-walk" poster=aerial title="Прогулка по глэмпингу" %}
-  </div>
-</section>
-
-{% if neighbours or neighbour_groups %}
-<section class="section territory-neighbours">
+{% if faq %}
+<section class="section t-faq" aria-labelledby="faq-title">
   <div class="container">
-    <h2 class="section__title section__title--center">Наши соседи</h2>
-    {% if neighbour_groups %}
-      <div class="neighbour-groups">
-        {% for group, names in neighbour_groups.items %}
-          <div class="neighbour-groups__item" data-reveal><b>{{ group }}</b><ul class="reviews-rating__tags">{% for name in names %}<li>{{ name }}</li>{% endfor %}</ul></div>
-        {% endfor %}
-      </div>
-    {% endif %}
-    {% if animals_answer %}<div class="container--narrow prose territory-neighbours__text">{{ animals_answer|richtext }}</div>{% endif %}
-    <ul class="territory-neighbours__grid">
-      {% for image in neighbours %}<li class="territory-neighbours__item" data-reveal>{% picture image preset="card" alt="" %}</li>{% endfor %}
-    </ul>
+    <h2 class="t-big-title" id="faq-title">Ответы на вопросы</h2>
+    {% include "includes/faq_items.html" %}
   </div>
 </section>
 {% endif %}
 
-<section class="section section--deep">
-  <div class="container container--narrow center">
-    <h2>Всё это рядом с вашим домиком</h2>
-    <p class="split__actions territory__actions">
-      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="territory">{% cms_text "booking_cta-5d9d7f118153" %}</button>
-      {% slugurl "razmeshchenie" as houses_url %}{% if houses_url %}<a class="btn btn--outline" href="{{ houses_url }}">Смотреть домики</a>{% endif %}
-    </p>
-  </div>
-</section>
+{% endwith %}
 {% endblock %}

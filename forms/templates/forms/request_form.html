@@ -56,9 +56,11 @@
             {{ field }}
             <span>
               {% cms_text "request_form-f47a0fe77ed2" %}
-              {% if consent_page %}
-                {% cms_text "request_form-c02b77578811" %} <a href="{% pageurl consent_page %}">{% cms_text "request_form-649bda914d2f" %}</a>
+              {% with consent_link=consent_page|default:site_legal.personal_data %}
+              {% if consent_link %}
+                {% cms_text "request_form-c02b77578811" %} <a href="{% pageurl consent_link %}">{% cms_text "request_form-649bda914d2f" %}</a>{% if site_legal.privacy %} и <a href="{% pageurl site_legal.privacy %}">политики конфиденциальности</a>{% endif %}.
               {% endif %}
+              {% endwith %}{% if site_legal.marketing %}Условия рассылки — <a href="{% pageurl site_legal.marketing %}">согласие на рассылку</a>.{% endif %}
             </span>
           </label>
           {% if field.errors %}<p class="form__error">{{ field.errors|join:" " }}</p>{% endif %}

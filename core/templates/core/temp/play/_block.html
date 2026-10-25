@@ -5,7 +5,7 @@
 {% if not bare %}<section class="section t-play t-play--{{ b.type }}"><div class="container container--narrow">{% endif %}
 <div class="t-game t-game--{{ b.type }}" data-game="{{ b.type }}" data-game-key="{{ b.key }}">
   <p class="t-kicker">{% if b.type == "bingo" %}Игра{% elif b.type == "dice" %}Кубик{% elif b.type == "cards" %}Колода{% elif b.type == "teams" %}Инструмент{% elif b.type == "memory" %}Игра на память{% elif b.type == "trivia" %}Викторина{% elif b.type == "quiz" %}Тест{% elif b.type == "mixer" %}Конструктор{% elif b.type == "score" %}Табло{% elif b.type == "breath" %}Пауза{% endif %}</p>
-  <h2 class="t-game__title">{{ b.title }}</h2>
+  <h2 class="t-game__title">{{ b.title|linebreaksbr }}</h2>
   {% if b.lead %}<p class="t-game__lead">{{ b.lead }}</p>{% endif %}
 
   {% if b.type == "bingo" %}
@@ -20,7 +20,7 @@
       <span class="t-dice__cube" data-dice-cube aria-hidden="true">⚄</span>
       <div class="t-dice__result" aria-live="polite"><b data-dice-title>Бросьте кубик</b><span data-dice-text></span></div>
     </div>
-    <button type="button" class="btn btn--primary" data-dice-roll>{{ b.button|default:"Бросить кубик" }}</button>
+    <button type="button" class="btn btn--primary" data-dice-roll{% if b.again %} data-again="{{ b.again }}"{% endif %}>{{ b.button|default:"Бросить кубик" }}</button>
     <ol class="t-dice__options" data-dice-options>{% for title, text in b.options %}<li data-title="{{ title }}" data-text="{{ text }}">{{ title }}</li>{% endfor %}</ol>
 
   {% elif b.type == "cards" %}
