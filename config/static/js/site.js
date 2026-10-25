@@ -285,8 +285,8 @@
   banner.querySelector("[data-cookie-accept]").addEventListener("click", function () {
     finish("accepted");
   });
-  banner.querySelector("[data-cookie-close]").addEventListener("click", function () {
-    finish("dismissed");
+  banner.querySelector("[data-cookie-decline]").addEventListener("click", function () {
+    finish("declined");
   });
 })();
 

@@ -1626,30 +1626,32 @@ body {
   color: #fff;
   font-size: 11px;
 }
-.cookie-close {
-  width: 36px;
+/* 25.10: «Отказаться» вместо крестика (ТЗ 11.2) — пара к «Согласиться» в обводке прежнего крестика. */
+.cookie-decline {
+  width: 120px;
   height: 36px;
   padding: 0;
   border: 1px solid #D4CEBB;
-  border-radius: 50%;
+  border-radius: 100px;
   background: #fff;
   color: var(--c-dark);
-  font-size: 18px;
-  line-height: 1;
+  font-size: 11px;
 }
+.cookie-text a { color: var(--c-terra); }
 @media (max-width: 699px) {
   .cookie-banner {
     bottom: 14px;
     flex-direction: column;
     width: 266px;
-    height: 154px;
+    height: auto;
+    min-height: 154px;
     max-width: calc(100vw - 20px);
     padding: 14px;
     text-align: center;
   }
   .cookie-icon { flex: 0 0 36px; margin: 0 0 10px; }
   .cookie-text {
-    flex: 0 0 42px;
+    flex: 0 0 auto;
     width: 238px;
     max-width: 100%;
     margin: 0;
@@ -1658,7 +1660,7 @@ body {
   }
   .cookie-actions { gap: 14px; margin-top: 11px; }
   .cookie-accept { width: 99px; height: 27px; font-size: 9px; }
-  .cookie-close { width: 27px; height: 27px; font-size: 15px; }
+  .cookie-decline { width: 99px; height: 27px; font-size: 9px; }
 }
 /* 06.10: на десктопе плашка размером с пилюлю меню, отступ снизу = отступу шапки сверху. */
 @media (min-width: 900px) {
@@ -1666,8 +1668,9 @@ body {
     bottom: var(--header-desk-top);
     width: var(--header-w);
     max-width: none;
-    height: var(--header-desk-h);
-    padding: 0 32px;
+    height: auto;
+    min-height: var(--header-desk-h);
+    padding: 10px 32px;
     border-radius: var(--header-radius);
   }
   .cookie-text {
@@ -1677,7 +1680,7 @@ body {
     line-height: var(--nav-line-height);
   }
   .cookie-accept { width: auto; height: var(--header-cta-h); padding-inline: 20px; }
-  .cookie-close { width: var(--header-cta-h); height: var(--header-cta-h); font-size: 20px; }
+  .cookie-decline { width: auto; height: var(--header-cta-h); padding-inline: 20px; font-size: var(--nav-font-size); white-space: nowrap; }
 }
 
 @keyframes btn-spin { to { transform: rotate(360deg); } }
@@ -5444,7 +5447,6 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-head .section__lead { font-size: 14px; line-height: 17px; }
   .page-head { text-align: left; }
   .cookie-banner { bottom: min(167px, 20dvh); }
-  .cookie-close { border-radius: 6px; }
   .cookie-accept { box-shadow: 0 3px 5px #49494940; }
   .form:has(input[name="form_type"][value="transfer"]) .form__actions .btn { width: 100%; }
 }
@@ -5568,9 +5570,9 @@ html:has(.lightbox[open]) { overflow: hidden; }
 
 /* Invisible touch targets keep the approved icon dimensions and coordinates. */
 @media (max-width: 699px) {
-  :is(.guests__step, .guests__hint-toggle, .booking-hint__toggle, .booking-field__slot, .cookie-accept, .cookie-close, .footer__cta, .lightbox__nav) { position: relative; }
+  :is(.guests__step, .guests__hint-toggle, .booking-hint__toggle, .booking-field__slot, .cookie-accept, .cookie-decline, .footer__cta, .lightbox__nav) { position: relative; }
   .site .lightbox__nav { position: absolute; }
-  :is(.guests__step, .guests__hint-toggle, .booking-hint__toggle, .booking-field__slot, .cookie-accept, .cookie-close, .footer__cta, .lightbox__nav)::after {
+  :is(.guests__step, .guests__hint-toggle, .booking-hint__toggle, .booking-field__slot, .cookie-accept, .cookie-decline, .footer__cta, .lightbox__nav)::after {
     content: ''; position: absolute; width: max(100%, 44px); height: max(100%, 44px);
     left: 50%; top: 50%; transform: translate(-50%, -50%);
   }
@@ -5578,7 +5580,7 @@ html:has(.lightbox[open]) { overflow: hidden; }
   .site.page-house [data-counter="adults"] .guests__step::after { top: calc(50% - 4px); }
   .site.page-house .guests__hint-toggle::after { top: calc(50% + 4px); }
   .site.page-house [data-counter="pets"] .guests__hint-toggle::after { top: calc(50% + 9px); }
-  :is(.guests__step, .cookie-close, .lightbox__nav):focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+  :is(.guests__step, .cookie-decline, .lightbox__nav):focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 }
 
 /* Approved hero: keep the booking CTA, hide the date/guest decorations. */

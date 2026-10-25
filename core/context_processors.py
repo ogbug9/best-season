@@ -147,4 +147,28 @@ def booking(request):
         "colorLight": "#F7F0E6",
     }
     context["analytics_config"] = {"telegramUrl": telegram_url, "whatsappUrl": whatsapp_url}
+    context["site_legal"] = _legal_pages()
     return context
+
+
+LEGAL_PAGE_SLUGS = {
+    "personal_data": "soglasie-na-obrabotku",
+    "privacy": "politika-konfidencialnosti",
+    "cookies": "politika-cookies",
+    "marketing": "soglasie-na-rassylku",
+}
+
+
+def _legal_pages():
+    """Юридические страницы для плашки cookie и согласий в формах (ТЗ 7.6, 11.2).
+
+    Один запрос по слагам; ненайденная страница просто не даёт ссылку.
+    """
+    from wagtail.models import Page
+
+    try:
+        by_slug = {p.slug: p for p in Page.objects.live().filter(slug__in=LEGAL_PAGE_SLUGS.values())}
+    except Exception:
+        logger.exception("Не удалось найти юридические страницы")
+        by_slug = {}
+    return {key: by_slug.get(slug) for key, slug in LEGAL_PAGE_SLUGS.items()}
