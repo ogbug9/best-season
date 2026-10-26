@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags media_tags content_tags marketing_tags layout_tags %}
 {% block body_class %}page-dop page-scenarios{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261021-gazebo"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261026">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261021-gazebo"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261026b">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261025-dice" defer></script>{% endblock %}
 
 {% comment %}
@@ -45,7 +45,7 @@
   <div class="container">
     <div class="things-tip-wrap" data-reveal>
       <aside class="x-note things-tip">
-        <p class="x-note__title">{{ things.TIP.title }}</p>
+        <h2 class="x-note__title">{{ things.TIP.title }}</h2>
         <p class="x-note__text">{{ things.TIP.text|linebreaksbr }}</p>
       </aside>
     </div>
