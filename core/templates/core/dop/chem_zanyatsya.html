@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags media_tags content_tags marketing_tags layout_tags %}
 {% block body_class %}page-dop page-scenarios{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261021-gazebo"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261025">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261021-gazebo"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261026">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261025-dice" defer></script>{% endblock %}
 
 {% comment %}
@@ -13,6 +13,7 @@
 {% block content %}
 {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
 
+<div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-territory-top.svg' %}"><img class="home-bg__layer home-bg__layer--territory-top" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1866" height="1866" alt="" decoding="async"></picture></div>
 <section class="section page-head things-head">
   <div class="container container--narrow">
     <h1>{{ page.title|heading_breaks }}</h1>
@@ -42,10 +43,12 @@
 
 <section class="section things-tip-section">
   <div class="container">
-    <aside class="x-note things-tip" data-reveal>
-      <p class="x-note__title">{{ things.TIP.title }}</p>
-      <p class="x-note__text">{{ things.TIP.text|linebreaksbr }}</p>
-    </aside>
+    <div class="things-tip-wrap" data-reveal>
+      <aside class="x-note things-tip">
+        <p class="x-note__title">{{ things.TIP.title }}</p>
+        <p class="x-note__text">{{ things.TIP.text|linebreaksbr }}</p>
+      </aside>
+    </div>
   </div>
 </section>
 
@@ -69,8 +72,8 @@
                   {% if step.service.price %}<span class="card__badge scenario__price">от {{ step.service.price_display }} ₽ {{ step.service.get_price_unit_display|lower }}</span>{% endif %}
                 </div>
                 <p class="scenario__time">{{ step.time }}</p>
-                <h4 class="scenario__step-title">{{ step.title }}</h4>
-                <p class="scenario__text">{{ step.text }}</p>
+                <h4 class="scenario__step-title">{{ step.title|linebreaksbr }}</h4>
+                <p class="scenario__text">{{ step.text|linebreaksbr }}</p>
                 {% if step.service and step.service.price %}
                   <button type="button" class="btn btn--primary scenario__add" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Забронировать</button>
                 {% endif %}
@@ -83,11 +86,11 @@
             <p>{{ scenario.note|linebreaksbr }}</p>
             <p class="scenario__actions">
               {% if scenario.house_page %}
-                <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Забронировать даты</button>
-                <a class="btn btn--outline" href="{% pageurl scenario.house_page %}">{{ scenario.house_label }}</a>
+                <button type="button" class="btn btn--primary scenario__btn scenario__btn--book" data-booking-open data-entry-point="7" data-entry-page="scenario-{{ scenario.code }}">Забронировать даты</button>
+                <a class="btn btn--outline scenario__btn scenario__btn--house" href="{% pageurl scenario.house_page %}">{{ scenario.house_label }}</a>
               {% else %}
-                {% if houses_page %}<a class="btn btn--primary" href="{% pageurl houses_page %}">Выбрать домик</a>{% endif %}
-                {% if telegram %}<a class="btn btn--outline" href="{% marketing_url telegram 'chem_zanyatsya' things.ASK_TEXT %}" rel="noopener" target="_blank">Уточнить детали</a>{% endif %}
+                {% if houses_page %}<a class="btn btn--primary scenario__btn scenario__btn--choose" href="{% pageurl houses_page %}">Выбрать домик</a>{% endif %}
+                {% if telegram %}<a class="btn btn--outline scenario__btn scenario__btn--ask" href="{% marketing_url telegram 'chem_zanyatsya' things.ASK_TEXT %}" rel="noopener" target="_blank">Уточнить детали</a>{% endif %}
               {% endif %}
             </p>
           </div>

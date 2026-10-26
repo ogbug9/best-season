@@ -100,7 +100,7 @@ FOOD_TABS = [
         "tips": [TIP_KVIN],
     },
     {
-        "code": "delivery", "label": "Доставка", "map": "img/territory/map-cafes.webp",
+        "code": "delivery", "label": "Доставка", "map": "img/territory/map-delivery.webp",
         "intro": "Если не хочется никуда ехать, то с 10:00 можно заказать доставку готовых блюд у наших партнёров:",
         "places": [
             ("Кафе «Всё вкусно»", ["— домашняя русская кухня."], "кафе Всё вкусно"),

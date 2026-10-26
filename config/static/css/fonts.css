@@ -17,6 +17,16 @@
 
 /* Montserrat 500: static subsets from google/fonts ofl/montserrat/Montserrat[wght].ttf; license: ../fonts/Montserrat-OFL.txt. */
 /* ---------- Montserrat: основной текст ---------- */
+/* 26.10: знак ₽ (U+20BD) — в наборах выше его нет, браузер брал системный шрифт, а в макетах он из Montserrat.
+   Один вариативный глиф (ось wght 100–900) из Google Fonts, Montserrat OFL; семейство стоит в --font-body сразу после Montserrat. */
+@font-face {
+  font-family: "Montserrat Rub";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/montserrat-rub.woff2") format("woff2");
+  unicode-range: U+20BD;
+}
 @font-face {
   font-family: "Montserrat";
   font-style: normal;
