@@ -3,7 +3,7 @@
 {% load wagtailcore_tags media_tags territory_tags layout_tags marketing_tags %}
 
 {% block body_class %}page-territory{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261026">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261026bb">{% endblock %}
 
 {% comment %}
   Территория по макету Territory.svg (25.10.2026, Desktop/Макет PNG SVG). Тексты —
@@ -83,7 +83,7 @@
           <div class="t-food__tips t-food__tips--{{ tab.tips|length }}">
             {% for tip in tab.tips %}
               <aside class="t-tip">
-                <p class="t-tip__title">{{ tip.title }}</p>
+                <h3 class="t-tip__title">{{ tip.title }}</h3>
                 <p class="t-tip__text">{{ tip.text|linebreaksbr }}{% if tip.accent %}<br><b class="t-tip__accent">{{ tip.accent }}</b><span class="t-tip__dot">.</span>{% endif %}</p>
                 {% if tip.after %}<p class="t-tip__text">{{ tip.after }}</p>{% endif %}
                 {% if tip.url %}<a class="btn btn--primary t-tip__link" href="{{ tip.url }}" rel="noopener" target="_blank">{{ tip.button }}</a>
@@ -103,7 +103,7 @@
   <div class="container">
     <div class="t-request-wrap" data-reveal>
       <aside class="x-note t-request">
-        <p class="x-note__title">{{ tc.REQUEST.title }}</p>
+        <h2 class="x-note__title">{{ tc.REQUEST.title }}</h2>
         <p class="x-note__text">{{ tc.REQUEST.text|linebreaksbr }}</p>
       </aside>
     </div>

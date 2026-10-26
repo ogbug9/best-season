@@ -80,7 +80,9 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .site .t-food__panel[data-tags="cafes"] .t-tip__link.btn { height: 36.3px; padding: 0 16px 1.1px; border-radius: 18.15px; font-size: 14px; }
 .t-tip { position: relative; display: flex; flex-direction: column; padding: 38.4px 36px 40.3px 40.4px; border-radius: 5px; background: var(--t-note); }
 .t-tip::before { content: ""; position: absolute; top: -13.3px; left: 50%; width: 112px; height: 30px; margin-left: -57.2px; background: rgb(62 63 32 / 20%); }
-.t-tip__title { margin: 0 0 9.9px; font-family: var(--font-heading); font-size: 32px; line-height: 40px; color: var(--c-terra); }
+/* Заголовки советов и записок — h3/h2 (не абзацы), вид прежний: сбрасываем общие стили заголовков. */
+.site .t-tip__title { margin: 0 0 9.9px; font-family: var(--font-heading); font-size: 32px; line-height: 40px; font-weight: 400; color: var(--c-terra); text-wrap: wrap; hyphens: none; }
+.site .x-note__title { font-weight: 400; text-wrap: wrap; hyphens: none; }
 .site .t-tip__text { margin: 0 0 14.6px; font-size: 20px; line-height: 24px; color: var(--c-dark); }
 .t-tip__accent { display: inline-block; padding-top: 2.8px; font-size: 28px; line-height: 34px; font-weight: 600; color: var(--c-terra); }
 .t-tip__dot { font-size: 28px; }
@@ -204,7 +206,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .t-place__link.btn { min-height: 40px; border-radius: 20px; }
   .t-food__tips, .t-food__tips--1 { grid-template-columns: 1fr; gap: 36px; margin-top: 40px; }
   .t-tip { padding: 32px 20px 24px; }
-  .t-tip__title { font-size: 26px; line-height: 30px; }
+  .site .t-tip__title { font-size: 26px; line-height: 30px; }
   .site .t-tip__text { font-size: 15px; line-height: 21px; }
   .t-tip__accent { font-size: 20px; line-height: 24px; }
   .site .t-tip__link.btn, .site .t-food__panel[data-tags="cafes"] .t-tip__link.btn { width: 100%; height: auto; min-height: 44px; padding: 10px 16px; border-radius: 22px; font-size: 15px; }
