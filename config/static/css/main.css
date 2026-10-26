@@ -55,7 +55,7 @@
 
   /* Типографика. Локальные Montserrat, Etude Noire и Inter — см. fonts.css. */
   --font-heading: "Etude Noire", ui-serif, Georgia, serif;
-  --font-body:    "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body:    "Montserrat", "Montserrat Rub", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   /* Нижняя строка подвала набрана в макете Inter (@font-face в fonts.css) */
   --font-ui:      "Inter", "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
@@ -3591,6 +3591,12 @@ body[data-modal-open] {
   transition: transform 0.2s ease;
 }
 .faq__item.is-open .faq__question::after { content: ""; transform: rotate(-135deg) translate(-3px, -3px); }
+/* 26.10: на десктопе стрелка — точный контур из макетов FAQ (24×12, белая, скруглённые концы);
+   прежний квадрат с рамкой давал 28×15 и кремовый цвет. Мобильная стрелка (home-mobile.css) прежняя. */
+@media (min-width: 700px) {
+  .faq__item .faq__question::after { width: 24px; height: 12px; border: 0; background: url("../img/faq-chevron.svg") 0 0 / 24px 12px no-repeat; transform: none; }
+  .faq__item.is-open .faq__question::after { transform: rotate(180deg); }
+}
 /* Значения ответа собраны в одном правиле выше (.faq__answer, замеры
    инспектора). Здесь раньше стоял кремовый текст — наследие тёмной
    секции; на кремовом фоне он был почти нечитаем. */
@@ -5384,8 +5390,10 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-house .footer { padding-top: 100px; }
   .page-houses .footer { padding-bottom: 15px; }
   :is(.page-promotions, .page-house) .footer { padding-bottom: 14px; }
-  :is(.page-home, .page-houses, .page-promotions, .page-house) .footer__brand .socials { margin-top: -21px; }
-  :is(.page-houses, .page-promotions, .page-house) .footer__legal { margin-top: 58px; }
+  :is(.page-home, .page-houses, .page-promotions, .page-house, .page-territory, .page-scenarios) .footer__brand .socials { margin-top: -21px; }
+  :is(.page-houses, .page-promotions, .page-house, .page-territory, .page-scenarios) .footer__legal { margin-top: 58px; }
+  /* «Территория», «Чем заняться»: нижняя строка подвала на 3,7 px выше (кадры 25.10). */
+  :is(.page-territory, .page-scenarios) .footer__legal { margin-top: 54.3px; }
   .page-house--domik-1 .house-about-section,
   .page-house--domik-4 .house-about-section { padding-bottom: 39.77px; }
   .page-house .house-reviews-section { padding-bottom: 18px; }

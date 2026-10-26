@@ -3,7 +3,7 @@
 {% load wagtailcore_tags media_tags territory_tags layout_tags marketing_tags %}
 
 {% block body_class %}page-territory{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261025">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261026">{% endblock %}
 
 {% comment %}
   Территория по макету Territory.svg (25.10.2026, Desktop/Макет PNG SVG). Тексты —
@@ -14,6 +14,7 @@
 {% block content %}
 {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
 
+<div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-territory-top.svg' %}"><img class="home-bg__layer home-bg__layer--territory-top" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1866" height="1866" alt="" decoding="async"></picture></div>
 <section class="t-hero">
   <div class="container">
     <p class="t-hero__before">{{ tc.HERO.before }}</p>
@@ -38,7 +39,7 @@
 <section class="t-stats-section">
   <div class="container">
     <dl class="t-stats">
-      {% for value, label in tc.STATS %}<div class="t-stats__item" data-reveal><dt>{{ value }}</dt><dd>{{ label }}</dd></div>{% endfor %}
+      {% for value, label in tc.STATS %}<div class="t-stats__item" data-reveal><dt>{% if value|slice:":2" == "~ " %}<span class="t-stats__tilde">~</span>{{ value|slice:"1:" }}{% else %}{{ value }}{% endif %}</dt><dd>{{ label }}</dd></div>{% endfor %}
     </dl>
   </div>
 </section>
@@ -54,6 +55,7 @@
 </section>
 
 <section class="section t-food" aria-labelledby="food-title">
+  <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-territory-food.svg' %}"><img class="home-bg__layer home-bg__layer--territory-food" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1272" height="1271" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
     <h2 class="t-big-title" id="food-title">{{ tc.FOOD_TITLE }}</h2>
     <p class="t-food__lead">{{ tc.FOOD_LEAD|linebreaksbr }}</p>
@@ -82,7 +84,7 @@
             {% for tip in tab.tips %}
               <aside class="t-tip">
                 <p class="t-tip__title">{{ tip.title }}</p>
-                <p class="t-tip__text">{{ tip.text|linebreaksbr }}{% if tip.accent %} <b class="t-tip__accent">{{ tip.accent }}</b>.{% endif %}</p>
+                <p class="t-tip__text">{{ tip.text|linebreaksbr }}{% if tip.accent %}<br><b class="t-tip__accent">{{ tip.accent }}</b><span class="t-tip__dot">.</span>{% endif %}</p>
                 {% if tip.after %}<p class="t-tip__text">{{ tip.after }}</p>{% endif %}
                 {% if tip.url %}<a class="btn btn--primary t-tip__link" href="{{ tip.url }}" rel="noopener" target="_blank">{{ tip.button }}</a>
                 {% elif telegram %}<a class="btn btn--primary t-tip__link" href="{% marketing_url telegram 'territory_food' tip.telegram_text %}" rel="noopener" target="_blank">{{ tip.button }}</a>{% endif %}
@@ -99,10 +101,12 @@
 
 <section class="section t-request-section">
   <div class="container">
-    <aside class="x-note t-request" data-reveal>
-      <p class="x-note__title">{{ tc.REQUEST.title }}</p>
-      <p class="x-note__text">{{ tc.REQUEST.text|linebreaksbr }}</p>
-    </aside>
+    <div class="t-request-wrap" data-reveal>
+      <aside class="x-note t-request">
+        <p class="x-note__title">{{ tc.REQUEST.title }}</p>
+        <p class="x-note__text">{{ tc.REQUEST.text|linebreaksbr }}</p>
+      </aside>
+    </div>
   </div>
 </section>
 
