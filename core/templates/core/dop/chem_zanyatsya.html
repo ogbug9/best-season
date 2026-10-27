@@ -104,6 +104,25 @@
   {% include "core/temp/play/_block.html" with b=things.DICE bare=True %}
 </div></section>
 
+{% if second_day %}
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Если остаётесь на вторую ночь</h2>
+    <p class="center scenario__lead">Второй день — для соседей: усадьба Поленова, церковь в Бёхово и деревня Конюхова в десяти минутах.</p>
+    <ul class="guide__list guide__list--short">
+      {% for place in second_day %}
+        <li class="guide-card" data-reveal>
+          <h3>{{ place.title }}</h3>
+          <dl class="guide-card__facts"><div><dt>Ехать</dt><dd>{{ place.drive }}</dd></div><div><dt>Когда</dt><dd>{{ place.hours }}</dd></div></dl>
+          <p class="guide-card__tip"><b>Совет:</b> {{ place.tip }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+    {% if nearby_page %}<p class="center"><a class="btn btn--outline" href="{% pageurl nearby_page %}">Весь путеводитель и план дня</a></p>{% endif %}
+  </div>
+</section>
+{% endif %}
+
 <section class="section things-rain">
   <div class="container">
     <h2 class="things-title things-title--dark">{{ things.RAINY_TITLE }}</h2>
