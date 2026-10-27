@@ -130,7 +130,11 @@ def context_for(page, request):
                      for time, title, text, tile, service_slug in scenario["steps"]]
             house = Page.objects.live().filter(slug=scenario["house"]).first() if scenario.get("house") else None
             scenarios.append({**scenario, "steps": steps, "house_page": house})
-        return {"things": things, "scenarios": scenarios,
+        from core import dop_content as dc
+
+        second_day = [place for place in dc.GUIDE if place["key"] in ("polenovo", "behovo", "konyukhov")]
+        return {"things": things, "scenarios": scenarios, "second_day": second_day,
+                "nearby_page": Page.objects.live().filter(slug="interesnoe-ryadom").first(),
                 "houses_page": Page.objects.live().filter(slug="razmeshchenie").first()}
     if slug == "razvlecheniya":
         tiles = []
