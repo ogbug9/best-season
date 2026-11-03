@@ -45,14 +45,10 @@ class Command(BaseCommand):
                 if current == selected:
                     self.stdout.write(f'{title}: уже применено')
                     continue
-                house_number = page.slug.removeprefix('domik-')
-                archive_prefixes = (
-                    f'BS archive house-{house_number}/',
-                    f'BS original house-{house_number}/',
-                )
+                archive_prefix = f'BS archive house-{page.slug.removeprefix("domik-")}/'
                 managed_gallery = current == expected or (
-                    any(name.startswith(archive_prefixes) for name in current)
-                    and all(name in expected or name.startswith(archive_prefixes) for name in current)
+                    any(name.startswith(archive_prefix) for name in current)
+                    and all(name in expected or name.startswith(archive_prefix) for name in current)
                 )
                 if page.has_unpublished_changes or not managed_gallery or any(
                     photo.sort_order is None or photo.sort_order < 0 for photo in photos
