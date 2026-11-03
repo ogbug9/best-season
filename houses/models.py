@@ -398,8 +398,8 @@ class HousePage(Page):
         price = rates()
         small = price.pet_small_fee
         return (
-            f"За проживание с питомцем: {small:,} ₽ за ночь при росте в холке "
-            f"до 45 см; {price.pet_large_fee:,} ₽ за ночь при росте выше 45 см."
+            f"Разовая доплата за питомца: {small:,} ₽ при росте в холке "
+            f"до 45 см; {price.pet_large_fee:,} ₽ при росте выше 45 см."
         ).replace(",", " ")
 
     @property

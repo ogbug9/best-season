@@ -13,8 +13,16 @@ LEGAL_PDFS = {
     "soglasie-na-rassylku": "legal/marketing-consent.pdf",
 }
 
+# The supplied PDFs remain the original CMS backfill sources; these two
+# typeset copies complete the blank site addresses for visitors to download.
+LEGAL_DOWNLOAD_PDFS = {
+    **LEGAL_PDFS,
+    "oferta": "legal/booking-offer-site.pdf",
+    "politika-konfidencialnosti": "legal/privacy-policy-site.pdf",
+}
+
 
 @register.simple_tag
 def legal_pdf_url(slug):
-    path = LEGAL_PDFS.get(slug)
+    path = LEGAL_DOWNLOAD_PDFS.get(slug)
     return static(path) if path else ""

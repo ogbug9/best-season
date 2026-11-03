@@ -71,13 +71,6 @@ TREE = [
         [
             (
                 "core.ContentPage",
-                "razvlecheniya",
-                "Развлечения",
-                {"intro": "Чем занять себя на территории.", "body": rich(PLACEHOLDER)},
-                [],
-            ),
-            (
-                "core.ContentPage",
                 "chem-zanyatsya",
                 "Чем заняться",
                 {"intro": "Маршруты, прогулки и активности.", "body": rich(PLACEHOLDER)},
@@ -240,7 +233,7 @@ LEGAL = [
 # верхнего меню убрана — ссылки на неё стоят в подвале, в компактном блоке
 # на страницах домов и в точке входа №8. Расхождение макета с ТЗ — вопрос
 # к заказчику, молча выкидывать страницу нельзя.
-NOT_IN_MENU = {"kak-dobratsya"}
+NOT_IN_MENU = {"kak-dobratsya", "razvlecheniya"}
 
 # 09.10: временные страницы (питомцы, дневник, баня, беседки, фотосессии) —
 # по ссылкам со страниц, в шапку не выводятся. Данные — core/temp_pages.py.
@@ -252,7 +245,7 @@ NOT_IN_MENU = NOT_IN_MENU | TEMP_SLUGS
 # уровень, остальные ключи — слаги разделов с выпадающими списками.
 MENU_ORDER = {
     None: ["razmeshchenie", "akcii", "territoriya", "interesnoe-ryadom", "o-nas"],
-    "territoriya": ["razvlecheniya", "chem-zanyatsya", "uslugi", "meropriyatiya"],
+    "territoriya": ["chem-zanyatsya", "uslugi", "meropriyatiya"],
     "o-nas": ["galereya", "otzyvy", "kontakty", "voprosy", "partneram"],
 }
 

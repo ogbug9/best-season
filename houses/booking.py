@@ -273,15 +273,10 @@ def quote(
         return result
 
     provider = get_provider(house)
-    # Надбавки считаются за сутки и умножаются на число ночей вместе с
-    # ценой домика: тариф может отличаться по дням (сезонные правила),
-    # а доплаты одинаковы, но начисляются за каждую ночь.
+    # Дополнительные гости оплачиваются за ночь, питомцы — разово за проживание.
     extra_guests = max(0, billable - price.guests_included)
-    surcharge = (
-        extra_guests * price.extra_guest_fee
-        + (pets - pets_large) * price.pet_small_fee
-        + pets_large * price.pet_large_fee
-    )
+    surcharge = extra_guests * price.extra_guest_fee
+    pet_surcharge = (pets - pets_large) * price.pet_small_fee + pets_large * price.pet_large_fee
 
     total = 0
     for offset in range(nights):
@@ -292,7 +287,7 @@ def quote(
         total += provider.nightly_price(house, day) + surcharge
 
     result["nights"] = nights
-    result["total"] = total
+    result["total"] = total + pet_surcharge
     return result
 
 

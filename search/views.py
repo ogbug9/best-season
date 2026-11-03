@@ -32,7 +32,7 @@ def search(request):
 
     # Search
     if search_query:
-        search_results = Page.objects.live().search(search_query)
+        search_results = Page.objects.live().exclude(slug="razvlecheniya").search(search_query)
 
         # To log this query for use with the "Promoted search results" module:
 

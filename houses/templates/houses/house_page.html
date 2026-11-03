@@ -6,6 +6,7 @@
 
 {% block body_class %}page-house page-house--{{ page.slug }}{% endblock %}
 {% block body_attributes %}data-house-slug="{{ page.slug }}"{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/house-equipment.css' %}?v=20261103">{% endblock %}
 
 
 {% block structured_data %}{% accommodation_schema %}{% endblock %}

@@ -1920,11 +1920,13 @@ body:not(.page-home) main > :first-child {
   color: var(--c-dark);
   text-decoration: none;
   font-size: 0.9375rem;
+  transition: background-color .2s ease, color .2s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
-.nav__sublink:hover{ background: var(--c-hover-warm); color: var(--c-dark); }
+.nav--desktop .nav__sublink:hover{ background: var(--c-hover-warm); color: var(--c-dark); }
 }
+.nav--desktop .nav__sublink:focus-visible { background: var(--c-hover-warm); color: var(--c-dark); }
 
 @media (min-width: 1100px) {
   .nav--desktop .nav__item:nth-child(3) > .nav__dropdown { min-width: 143px; width: 143px; }
@@ -6276,6 +6278,7 @@ html:has(.lightbox[open]) { overflow: hidden; }
 @media (min-width: 700px) and (max-width: 1279px) { .x-numbers dt { font-size: 40px; line-height: 46px; white-space: normal; overflow-wrap: anywhere; } }
 .scenario__steps { overflow-x: clip; }
 @media (min-width: 700px) and (max-width: 899px) {
+  .cookie-banner { height: auto; min-height: 76px; }
   .cookie-text { flex: 1 1 auto; width: auto; min-width: 0; }
 }
 .fact-cards__item { min-width: 0; }
@@ -6295,3 +6298,18 @@ html:has(.lightbox[open]) { overflow: hidden; }
 }
 /* Иконка TikTok — файл 38×41 в рамке 40×40: не растягивать (PageSpeed «неверные пропорции»). */
 .socials__item img { object-fit: contain; }
+.footer-address { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 36px; padding: 24px; border-radius: 20px; background: var(--c-sand); }
+.footer-address p { margin: 0; }
+.promo--podarochnyy-sertifikat { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(180px, 280px) minmax(0, 1fr); align-items: center; gap: 24px 32px; min-height: 0; text-align: left; }
+.promo--podarochnyy-sertifikat .promo__media { grid-row: 1 / 3; }
+.promo--podarochnyy-sertifikat .promo__title { min-height: 0; }
+.promo--podarochnyy-sertifikat .promo__book { width: fit-content; margin-top: 0; }
+@media (max-width: 699px) { .promo--podarochnyy-sertifikat { grid-template-columns: 1fr; } .promo--podarochnyy-sertifikat .promo__media { grid-row: auto; } .promo--podarochnyy-sertifikat .promo__book { width: 100%; } }
+.duration-discounts { margin-top: 64px; }
+.duration-discounts > p { margin: 12px 0 24px; }
+.duration-discounts ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding: 0; list-style: none; }
+.duration-discounts li { display: grid; gap: 14px; padding: 20px; border-radius: 16px; background: var(--c-sand); }
+.duration-discounts strong { font-size: 28px; line-height: 1.2; }
+@media (max-width: 699px) { .duration-discounts ul { grid-template-columns: 1fr; } }
+/* Ширина плашки согласована на встрече 26.10; высота зависит от текста. */
+@media (min-width: 900px) { .cookie-banner { width: min(747px, calc(100vw - 24px)); } }

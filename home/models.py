@@ -228,15 +228,17 @@ class HomePage(Page):
         from core.models import FaqItem, NearbyPlace, TerritoryItem, TerritoryPage
 
         context["territory"] = list(TerritoryItem.objects.filter(is_published=True))
-        # Кнопка «Подробнее» должна быть у КАЖДОЙ карточки: раньше она
-        # появлялась только там, где заведена своя ссылка или нашлась
-        # одноимённая платная услуга, и у бесплатных (батут, костровая
-        # зона, спортивные игры) кнопки не было вовсе. Запасной адрес —
-        # страница «Наша территория», а не каталог с бронированием.
+        from core.temp_pages import tile_page_url
+        from wagtail.models import Page
+
         territory_page = TerritoryPage.objects.live().first()
         territory_url = territory_page.get_url(request) if territory_page else ""
+        house_one = Page.objects.live().filter(slug="domik-1").first()
         for item in context["territory"]:
-            item.details_url = item.link_url or territory_url
+            target = tile_page_url(item.title) if not item.link_url else ""
+            if not target and not item.link_url and "сауна" in item.title.lower() and house_one:
+                target = house_one.get_url(request)
+            item.details_url = item.link_url or target or territory_url
         context["nearby"] = NearbyPlace.objects.filter(is_published=True)[:3]
         context["faq"] = FaqItem.objects.filter(is_published=True, show_on_home=True)
         return context

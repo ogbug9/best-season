@@ -192,6 +192,24 @@ class ValidationTests(FormTestCase):
 class NotificationTests(FormTestCase):
     """П. 7 ТЗ: уведомление в Telegram и на почту не позже минуты."""
 
+    @override_settings(TELEGRAM_BOT_TOKEN='test-token', TELEGRAM_CHAT_ID='test-chat')
+    @patch('forms.notifications.requests.post')
+    def test_service_message_requires_telegram_api_success(self, mocked):
+        from forms.notifications import send_service_message
+        mocked.return_value.json.return_value = {'ok': False}
+        self.assertFalse(send_service_message('Тест'))
+        mocked.return_value.json.return_value = {'ok': True}
+        self.assertTrue(send_service_message('Тест'))
+
+    @patch('forms.notifications.send_service_message', return_value=False)
+    def test_widget_notification_failure_gets_short_retry_window(self, send):
+        from forms.views import widget_error, WIDGET_ERROR_RETRY_WINDOW
+        from django.test import RequestFactory
+        with patch('forms.views.cache.set') as cache_set:
+            widget_error(RequestFactory().post('/widget-error/', {'reason': 'test'}))
+        send.assert_called_once()
+        cache_set.assert_called_once_with('kontur-widget-error-notified', True, WIDGET_ERROR_RETRY_WINDOW)
+
     @override_settings(NOTIFY_EMAIL="vladelec@example.ru", TELEGRAM_BOT_TOKEN="", TELEGRAM_CHAT_ID="")
     def test_email_is_sent(self):
         self.client.post(reverse("forms:submit", args=["transfer"]), payload())
@@ -312,6 +330,17 @@ class CsvExportTests(FormTestCase):
 
 
 class FormTypesTests(FormTestCase):
+    @patch('forms.views.notify')
+    def test_all_form_types_save_and_notify_without_network(self, notify):
+        from forms.forms import FORM_CLASSES
+        for form_type in FORM_CLASSES:
+            with self.subTest(form_type=form_type):
+                cache.clear()
+                response = self.client.post(reverse('forms:submit', args=[form_type]), payload())
+                self.assertEqual(response.status_code, 302)
+                self.assertTrue(FormSubmission.objects.filter(form_type=form_type, name='Пётр').exists())
+        self.assertEqual(notify.call_count, len(FORM_CLASSES))
+
     def test_all_four_forms_plus_fallback_exist(self):
         """Раздел 7 ТЗ перечисляет четыре формы, п. 5.6 добавляет пятую —
         резервный сценарий бронирования."""

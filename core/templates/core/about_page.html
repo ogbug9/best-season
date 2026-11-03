@@ -3,8 +3,8 @@
 {% load content_tags %}
 {% load static wagtailcore_tags layout_tags media_tags %}
 {% block body_class %}page-about{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261009-video">{% endblock %}
-{% block extra_js %}<script src="{% static 'js/vendor/swiper-12.0.3.min.js' %}" defer></script><script src="{% static 'js/about.js' %}?v=20261009-video" defer></script>{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261102-quiz">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/vendor/swiper-12.0.3.min.js' %}" defer></script><script src="{% static 'js/about.js' %}?v=20261009-video" defer></script><script src="{% static 'js/about-quiz.js' %}?v=20261102" defer></script>{% endblock %}
 {% block page_background %}
 <div class="about-background" aria-hidden="true" data-about-art="{% static 'img/about/about-art-desktop.svg' %}">
 {% include 'core/includes/about-art-mobile.svg' %}
@@ -56,6 +56,7 @@
   <div class="about-carousel" data-about-carousel><ol class="about-track" tabindex="0" aria-label="Дневник Сезона" data-about-track>{% for item in about_diary %}<li class="about-entry">{% if item.url %}<a href="{% marketing_url item.url 'about_diary' %}" target="_blank" rel="noopener">{% elif item.page_url %}<a href="{{ item.page_url }}">{% endif %}{% include 'core/includes/about_photo.html' with photo=item %}<h3>{{ item.title|linebreaksbr }}</h3>{% if item.url or item.page_url %}</a>{% endif %}</li>{% endfor %}</ol><div class="about-dots" data-about-dots hidden aria-label="Выбор записи дневника"></div></div>
   <p class="about-section__action">{% if about_diary_url %}<a class="btn btn--outline" href="{{ about_diary_url }}">{% cms_text "about_page-bd8ca31e7f18" %} <span aria-hidden="true">→</span></a>{% elif settings.core.SiteSettings.vk_url %}<a class="btn btn--outline" href="{% marketing_url settings.core.SiteSettings.vk_url 'about_page' %}" target="_blank" rel="noopener">{% cms_text "about_page-bd8ca31e7f18" %} <span aria-hidden="true">→</span></a>{% elif about_contacts %}<a class="btn btn--outline" href="{% pageurl about_contacts %}">{% cms_text "about_page-bd8ca31e7f18" %} <span aria-hidden="true">→</span></a>{% endif %}</p>
 </section>
-<section class="container about-section about-map" aria-labelledby="map-title"><h2 id="map-title" class="section__title">{{ about.map_title|linebreaksbr }}</h2><p class="about-section__lead"><span class="about-lead__desktop">{{ about.map_text|linebreaksbr }}</span><span class="about-lead__mobile">{{ about.map_text|about_mobile_paragraphs:'map' }}</span></p><div class="about-map__placeholder"><iframe class="about-map__frame" src="{{ about_map_embed_url }}" title="Лучший сезон на Яндекс.Картах" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></section>
+<section class="container about-section about-map" aria-labelledby="map-title"><h2 id="map-title" class="section__title">{{ about.map_title|linebreaksbr }}</h2><p class="about-section__lead">Здесь будет карта территории. Сейчас она в процессе отрисовки, так что пока можете поиграться с Яндекс Картами :)</p><div class="about-map__placeholder"><iframe class="about-map__frame" src="{{ about_map_embed_url }}" title="Лучший сезон на Яндекс.Картах" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></section>
+<section class="container about-section" aria-labelledby="about-quiz-title"><div class="about-quiz" data-about-quiz><p>ВИКТОРИНА</p><h2 id="about-quiz-title">Хорошо ли вы знаете «Лучший сезон»?</h2><div data-quiz-content aria-live="polite"></div><noscript>Для викторины включите JavaScript.</noscript></div></section>
 </div>
 {% endblock %}

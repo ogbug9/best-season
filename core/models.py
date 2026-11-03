@@ -268,10 +268,10 @@ class SiteSettings(BaseSiteSetting):
         help_text="За каждого платного гостя сверх «Гостей в базовой цене».",
     )
     pet_small_fee = models.PositiveIntegerField(
-        "Доплата за питомца до 45 см, ₽/сутки", default=1000,
+        "Разовая доплата за питомца до 45 см, ₽", default=1000,
     )
     pet_large_fee = models.PositiveIntegerField(
-        "Доплата за питомца выше 45 см, ₽/сутки", default=1500,
+        "Разовая доплата за питомца выше 45 см, ₽", default=1500,
     )
     child_free_max_age = models.PositiveSmallIntegerField(
         "Дети бесплатно до возраста включительно", default=7,
@@ -801,6 +801,11 @@ class ContentPage(InProgressMixin, Page):
         FieldPanel("show_booking_cta"),
     ]
 
+    def get_sitemap_urls(self, request=None):
+        if self.slug == "razvlecheniya":
+            return []
+        return super().get_sitemap_urls(request=request)
+
     def get_template(self, request, *args, **kwargs):
         from core.dop_pages import TEMPLATES
 
@@ -1038,12 +1043,14 @@ class TerritoryPage(InProgressMixin, Page):
                     for service in Service.objects.filter(is_published=True)}
         house_one = Page.objects.live().filter(slug="domik-1").first()
         from core.temp_pages import tile_page_url
+        from core import territory_content as tc
 
         for item in items:
             # 09.10: у плитки есть своя временная страница — ведём туда, если в CMS нет ссылки.
             page_url = "" if item.link_url else tile_page_url(item.title)
             item.details_url = item.link_url or page_url or own_url
             item.details_label = ""
+            item.filter_tags = tc.activity_tags(item.title, item.group)
             service = services.get(" ".join(item.title.split()).lower())
             item.service = service if service and service.price else None
             if "сауна" in item.title.lower() and house_one and not item.link_url and not page_url:
@@ -1053,9 +1060,14 @@ class TerritoryPage(InProgressMixin, Page):
         context["groups"] = [(value, label) for value, label in TerritoryItem.GROUPS
                              if any(item.group == value for item in items)]
         # 25.10: остальное — по макету Territory.svg (core/territory_content.py).
-        from core import territory_content as tc
-
         context["tc"] = tc
+        existing_titles = {" ".join(item.title.casefold().split()) for item in items}
+        context["extra_activities"] = [
+            {"title": title, "tags": tags,
+             "image": "img/house-mosaic-20261102/figma-81.webp" if title == "Вечер у камина" else ""}
+            for title, tags in tc.EXTRA_ACTIVITIES
+            if " ".join(title.casefold().split()) not in existing_titles
+        ]
         context["food_tabs"] = tc.food_tabs()
         faq = {item.question: item for item in FaqItem.objects.filter(is_published=True,
                                                                       question__in=tc.FAQ_QUESTIONS)}
@@ -1111,7 +1123,8 @@ class NearbyPage(InProgressMixin, Page):
 
         context.update(places=places, season=season, seasons=NearbyPlace.SEASONS,
                        place_facts=self._rows(self.facts, 2), route_points=self._rows(self.day_route, 3),
-                       guide=dc.guide_with_sources(), guide_kinds=dc.GUIDE_KINDS,
+                       guide=__import__('core.nearby_content', fromlist=['guide_cards']).guide_cards(), guide_kinds=dc.GUIDE_KINDS,
+                       nearby_faq=dc.NEARBY_FAQ,
                        weekdays=["пн", "вт", "ср", "чт", "пт", "сб", "вс"])
         return context
 
@@ -1218,6 +1231,11 @@ class DiaryIndexPage(InProgressMixin, Page):
         from django.http import Http404
         from core.templatetags.media_tags import rendition_plan
 
+        newsletter = ContentPage.objects.live().filter(slug="rassylka").first()
+        context["newsletter_url"] = newsletter.get_url(request) if newsletter else ""
+        from core import dop_content as dc
+        context["channel_posts"] = ChannelPost.objects.all()[:3]
+        context["channel_rubrics"] = dc.CHANNEL_RUBRICS
         paginator = Paginator(self.entries(), self.PER_PAGE)
         # prepare_site_images рендерит индекс без ?page — пусть видит все карточки.
         if request.GET.get("page") == "all" or rendition_plan.get() is not None:

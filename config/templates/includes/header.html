@@ -37,7 +37,9 @@
                 {% if children %}
                   <ul class="nav__dropdown">
                     {% for child in children %}
+                      {% if child.slug != 'razvlecheniya' %}
                       <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
+                      {% endif %}
                     {% endfor %}
                   </ul>
                 {% endif %}
@@ -86,7 +88,9 @@
                   <summary><a href="{% pageurl item %}">{{ item.title }}</a><span class="nav-section__sign" aria-hidden="true"></span></summary>
                   <ul class="nav__sublist">
                     {% for child in item.get_children.live.in_menu %}
+                      {% if child.slug != 'razvlecheniya' %}
                       <li><a class="nav__sublink" href="{% pageurl child %}">{{ child.title }}</a></li>
+                      {% endif %}
                     {% empty %}
                       <li><a class="nav__sublink" href="{% pageurl item %}">{% cms_text "header-1887350f1a37" %}</a></li>
                     {% endfor %}

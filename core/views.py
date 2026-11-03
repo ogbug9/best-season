@@ -2,6 +2,19 @@ from django.http import HttpResponse
 from django.views.decorators.cache import cache_control
 
 
+def old_activities_redirect(request):
+    """Старый адрес сохраняет переход, а содержимое страницы остаётся в CMS."""
+    from django.http import Http404, HttpResponsePermanentRedirect
+    from wagtail.models import Page
+
+    target = Page.objects.live().filter(slug="chem-zanyatsya").first()
+    url = target.get_url(request) if target else None
+    if not url:
+        raise Http404
+    query = request.META.get("QUERY_STRING", "")
+    return HttpResponsePermanentRedirect(url + ("?" + query if query else ""))
+
+
 @cache_control(max_age=60 * 60 * 24)
 def robots_txt(request):
     """robots.txt по п. 10.8 ТЗ. Отдаётся вьюхой, а не статикой,
