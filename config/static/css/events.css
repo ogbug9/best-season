@@ -1,0 +1,14 @@
+.events-intro__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 48px; border-block: 1px dashed var(--c-olive); padding-block: 32px; }
+.events-intro__grid > * { min-width: 0; overflow-wrap: anywhere; }
+.events-intro__grid h2, .events-intro__grid p { margin: 0; }
+.events-intro__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.events-faq details { margin-bottom: 10px; border-radius: 8px; overflow: hidden; }
+.events-faq summary { position: relative; padding: 18px 48px 18px 22px; list-style: none; background: #202020; color: #f7f0e6; cursor: pointer; }
+.events-faq details:nth-of-type(even) summary { background: #847f57; }
+.events-faq summary::-webkit-details-marker { display: none; }
+.events-faq summary::after { content: '⌄'; position: absolute; right: 20px; font-size: 22px; top: 8px; }
+.events-faq details[open] summary::after { transform: rotate(180deg); }
+.events-faq details p { margin: 0; padding: 18px 22px; }
+.page-events .section__title { font-size: 48px; line-height: 1.15; margin-bottom: 20px; }
+@media (max-width: 699px) { .events-intro__grid { grid-template-columns: 1fr; gap: 18px; } }
+@media (max-width: 699px) { .page-events .section__title { font-size: 32px; line-height: 1.15; } }

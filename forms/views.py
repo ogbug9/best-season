@@ -138,6 +138,7 @@ def form_types():
 # сразу, и без этого ограничения владелец получит сотню одинаковых
 # уведомлений вместо одного.
 WIDGET_ERROR_NOTIFY_WINDOW = 60 * 60
+WIDGET_ERROR_RETRY_WINDOW = 60
 
 
 @require_POST
@@ -160,11 +161,10 @@ def widget_error(request):
         entry_point,
     )
 
-    if not cache.get("kontur-widget-error-notified"):
-        cache.set("kontur-widget-error-notified", True, WIDGET_ERROR_NOTIFY_WINDOW)
+    if cache.add("kontur-widget-error-notified", True, WIDGET_ERROR_NOTIFY_WINDOW):
         from .notifications import send_service_message
 
-        send_service_message(
+        sent = send_service_message(
             "⚠️ Виджет бронирования недоступен\n"
             f"Причина: {reason}\n"
             f"Страница: {page}\n"
@@ -173,5 +173,7 @@ def widget_error(request):
             "Проверьте подписку на модуль бронирования и список разрешённых "
             "доменов в Контур.Отеле."
         )
+        cache.set("kontur-widget-error-notified", True,
+                  WIDGET_ERROR_NOTIFY_WINDOW if sent else WIDGET_ERROR_RETRY_WINDOW)
 
     return JsonResponse({"ok": True})

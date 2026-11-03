@@ -110,6 +110,18 @@ class Promotion(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def duration_discounts(self):
+        """Шкала берётся только из текста активного сезонного тарифа в CMS."""
+        if self.slug not in {'may-sentyabr', 'oktyabr-aprel'}:
+            return []
+        found = []
+        for line in self.short_description.splitlines():
+            match = re.search(r'(\d+)[^\d\n]*сут(?:ок|ки)[^\d\n]*(\d+)\s*%', line, re.IGNORECASE)
+            if match:
+                found.append((int(match.group(1)), int(match.group(2))))
+        return found if len(found) == 3 else []
+
     def clean(self):
         super().clean()
         if bool(self.season_start) != bool(self.season_end):

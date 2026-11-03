@@ -34,7 +34,7 @@ FOOTER_COLUMNS = [
             ("vyezdy-kompaniy", "Выезды компаний"),
         ],
         "legal_slugs": [
-            ("rassylka", "Рассылка"),
+            ("soglasie-na-rassylku", "Рассылка"),
             ("oferta", "Оферта"),
             ("politika-konfidencialnosti", "Политика конфиденциальности"),
             ("soglasie-na-obrabotku", "Персональные данные"),
@@ -43,7 +43,6 @@ FOOTER_COLUMNS = [
     {
         "title": "Территория",
         "slugs": [
-            ("razvlecheniya", "Развлечения"),
             ("chem-zanyatsya", "Чем заняться"),
             ("uslugi", "Доп услуги"),
             ("meropriyatiya", "Мероприятия"),

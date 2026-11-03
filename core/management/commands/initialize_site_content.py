@@ -12,6 +12,7 @@ from wagtail.images import get_image_model
 from core.models import ContentPage, InterfaceText
 from core.about_content import PILLARS, VALUES, PETS, DIARY
 from core.templatetags.legal_docs import LEGAL_PDFS
+from core.legal_domain import fill_legal_domain
 
 
 class Command(BaseCommand):
@@ -58,7 +59,7 @@ class Command(BaseCommand):
                 if sha256(source.read_bytes()).hexdigest() != data['sha256']:
                     raise CommandError(f'Исходный PDF изменился: {source.name}; требуется повторная сверка текста.')
                 if not page.legal_body:
-                    page.legal_body = data['blocks']
+                    page.legal_body = fill_legal_domain(page.slug, data['blocks'])
                     fields.append('legal_body')
                 page.legal_source_sha256 = data['sha256']
                 fields.append('legal_source_sha256')

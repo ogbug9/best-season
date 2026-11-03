@@ -6,6 +6,17 @@ register = template.Library()
 
 
 @register.filter
+def nearby_guide(value):
+    """Сопоставить название из CMS с известными местами путеводителя."""
+    from core.dop_content import GUIDE
+
+    name = ' '.join(str(value or '').casefold().replace('ё', 'е').split())
+    keys = [('поленов', 'polenovo'), ('бехов', 'behovo'), ('конюхов', 'konyukhov')]
+    key = next((key for token, key in keys if token in name), None)
+    return next((place for place in GUIDE if place['key'] == key), None)
+
+
+@register.filter
 def mobile_text(value):
     """Убирает настольные переносы, сохраняя пробелы между словами."""
     return ' '.join(str(value).split())

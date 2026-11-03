@@ -104,7 +104,7 @@ def send_service_message(text):
             timeout=TIMEOUT_SECONDS,
         )
         response.raise_for_status()
-        return True
+        return response.json().get("ok") is True
     except Exception as error:
         logger.error("Не удалось отправить служебное сообщение в Telegram (%s)", type(error).__name__)
         return False

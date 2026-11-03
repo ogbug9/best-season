@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags media_tags content_tags %}
+{% load static wagtailcore_tags media_tags content_tags marketing_tags %}
 {% block body_class %}page-dop page-partners{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/partners-page.css' %}?v=20261103-visual">{% endblock %}
 
 {% comment %}
   Партнёрам (docs/dop-stranicy/19-…): три направления, у каждого «что
@@ -9,20 +10,46 @@
 {% endcomment %}
 
 {% block content %}
-{% include "core/dop/_head.html" %}
-
-<section class="section">
+<section class="section page-head">
   <div class="container container--narrow">
-    <h2 class="center">Наша аудитория</h2>
-    <ul class="fact-cards">
-      {% for value, label, source in audience %}<li class="fact-cards__item" data-reveal><b class="fact-cards__value">{{ value }}</b><span class="fact-cards__label">{{ label }}{% if source %} · <a href="{{ source.1 }}" rel="noopener" target="_blank">открыть</a>{% endif %}</span></li>{% endfor %}
-    </ul>
-    <p class="guide__note">Данные на 7 октября 2026. *Instagram принадлежит компании Meta, признанной в России экстремистской.</p>
+    {% include "includes/in_progress_note.html" %}
+    <h1>{{ page.title }}</h1>
+    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
+{% if page.body|filled %}<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>{% endif %}
+<section class="section partner-intro">
+  <div class="container partner-intro__grid">
+    <div class="partner-placeholder" aria-hidden="true"></div>
+    <div><h2>Поляна целиком, без посторонних</h2><p>Четыре дома, поляна, баня и беседка на 100 человек в 1,5 ч от Москвы. Это всё можно арендовать целиком — под ретрит, выезд команды или свой повод.</p></div>
+  </div>
+</section>
+<section class="section"><div class="container container--narrow center">
+  <h2>Мы можем</h2><p>Подойти к вашему запросу комплексно и оказать техническую поддержку в организации. Поможем подготовить мероприятие и реализовать задумку.</p>
+  <p class="split__actions"><a class="btn btn--primary" href="#partner-form">Оставить заявку</a> <button class="btn btn--outline" type="button" data-booking-open data-entry-point="7" data-entry-page="partneram">Забронировать</button></p>
+</div></section>
+<section class="section"><div class="container partner-intro__grid">
+  <div class="partner-placeholder" aria-hidden="true"></div>
+  <div><p>С кем мы дружим</p><h2>Делимся, а не обслуживаем</h2><p>Ведущие мастер-классов и выездных программ: живопись, фотография, флористика, ремёсла, ретриты, йога, культурно-образовательные объединения.</p></div>
+</div></section>
+<section class="section"><div class="container partner-intro__grid">
+  <h2>Снимайте как есть — декорации не понадобятся</h2>
+  <div><p>Лес, река, терраса и поляна без заборов. Мы ищем тех, кто делится, а не продаёт: авторов, мастеров, соседей по округе.</p><a class="btn btn--primary" href="#partner-form">Предложить сотрудничество</a></div>
+</div></section>
+<section class="section"><div class="container">
+  <h2 class="center">Что у нас есть</h2><p class="center">Глэмпинг в цифрах</p>
+  <ul class="partner-facts">
+    <li><b>Домов</b><span>4, по 30 м² плюс терраса 24 м²</span></li><li><b>Гостей с ночёвкой</b><span>до 16</span></li><li><b>Гостей на мероприятии</b><span>до 100 в крытой беседке</span></li><li><b>Беседка «Корабль»</b><span>русская печь, две кухни, два холодильника</span></li>
+    <li><b>Баня</b><span>на дровах, до 15 человек</span></li><li><b>Сауна</b><span>финская, в доме №1</span></li><li><b>Территория</b><span>2 га, лес с трёх сторон, река вдоль участка</span></li><li><b>Дорога</b><span>1,5 ч от Москвы, 3 км до усадьбы Поленово</span></li>
+    <li><b>Интернет</b><span>Wi-Fi, оптоволокно во всех домах</span></li><li><b>Парковка</b><span>8 мест</span></li><li><b>Своя ферма</b><span>овцы, коровы, козы, птица</span></li><li><b>Круглый год</b><span>дома отапливаются</span></li>
+  </ul>
+  <p class="center">Нужны детали — свяжитесь с нами.</p><p class="center"><a class="btn btn--primary" href="#partner-form">Связаться</a></p>
+</div></section>
 
 <section class="section">
   <div class="container">
+    <h2 class="center">5 форматов сотрудничества</h2>
+    <p class="center">Если не нашли подходящий вариант, всё равно напишите нам. Обсудим вашу идею и подумаем, как воплотить её в «Лучшем сезоне».</p>
     <ul class="partners">
       {% for direction in directions %}
         <li class="partners__item" data-reveal>
@@ -37,15 +64,13 @@
   </div>
 </section>
 
-<section class="section">
-  <div class="container container--narrow">
-    <div class="video-slot video-slot--empty partners__kit"><div class="video-slot__caption"><b>Медиакит «Лучшего сезона»</b><span>Презентацию с цифрами и фото пришлём по запросу.</span></div></div>
-  </div>
-</section>
-
 <section class="section" id="partner-form">
   <div class="container container--narrow">
     {% include "forms/request_form.html" with form=partner_form form_type="partner" title="Предложить сотрудничество" lead="Расскажите о себе и идее — ответим лично." submit_label="Отправить" %}
   </div>
 </section>
+<section class="section"><div class="container container--narrow">
+  <h2 class="section__title section__title--center">Ответы на вопросы</h2>
+  {% include "includes/faq_items.html" with faq=partner_faq %}
+</div></section>
 {% endblock %}

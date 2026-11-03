@@ -87,16 +87,14 @@ class QuoteTests(TestCase):
         self.assertEqual(result["error"], "")
 
     def test_pet_fee_is_added_per_pet(self):
-        # Доплата за питомца начисляется за каждую ночь: 16 000 за две
-        # ночи плюс 2 × 1 000 за питомца.
-        self.assertEqual(self._quote(pets=1)["total"], 18000)
-        self.assertEqual(self._quote(pets=2)["total"], 20000)
+        self.assertEqual(self._quote(pets=1)["total"], 17000)
+        self.assertEqual(self._quote(pets=2)["total"], 18000)
+        self.assertEqual(self._quote(nights=3, pets=1)["total"], 25000)
 
     def test_large_pet_has_own_rate(self):
-        """Питомец выше 45 см — 1 500 ₽ за ночь, ниже — 1 000 ₽."""
-        self.assertEqual(self._quote(pets=1, pets_large=1)["total"], 19000)
-        # Двое разного размера: 1 000 + 1 500 за каждую из двух ночей
-        self.assertEqual(self._quote(pets=2, pets_large=1)["total"], 21000)
+        """Питомец выше 45 см — 1 500 ₽ разово, ниже — 1 000 ₽."""
+        self.assertEqual(self._quote(pets=1, pets_large=1)["total"], 17500)
+        self.assertEqual(self._quote(pets=2, pets_large=1)["total"], 18500)
 
     def test_one_and_two_guests_cost_the_same(self):
         """Базовая цена рассчитана на двоих: один гость платит столько же."""

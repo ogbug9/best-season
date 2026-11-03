@@ -136,6 +136,7 @@
       if (isNaN(arrival) || isNaN(cancel)) { out.textContent = "Укажите дату заезда."; return; }
       var days = Math.round((arrival - cancel) / 86400000);
       if (days < 0) { out.textContent = "Дата отмены позже заезда — проверьте даты."; return; }
+      if (days === 3) { out.textContent = "Условия отмены за 3 дня до заезда уточните у нас."; return; }
       var share = days >= 7 ? 1 : days >= 4 ? 0.5 : 0;
       var text = "До заезда " + days + " " + plural(days, "день", "дня", "дней") + ": вернём " + share * 100 + "% предоплаты";
       if (paid) text += " — " + money(paid * share);
@@ -148,8 +149,7 @@
     var out = form.querySelector("[data-pet-out]");
     function render() {
       var fee = parseInt(form.elements.size.value, 10) || 0;
-      var nights = parseInt(form.elements.nights.value, 10) || 1;
-      out.textContent = "Доплата за питомца: " + money(fee * nights) + " за " + nights + " " + plural(nights, "ночь", "ночи", "ночей") + ".";
+      out.textContent = "Разовая доплата за питомца: " + money(fee) + ".";
     }
     form.addEventListener("input", render);
     render();

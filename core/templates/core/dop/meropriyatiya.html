@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags media_tags content_tags marketing_tags %}
+{% load static wagtailcore_tags media_tags content_tags marketing_tags %}
 {% block body_class %}page-dop page-events{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/events.css' %}?v=20261103-visual">{% endblock %}
 
 {% comment %}
   Мероприятия (docs/dop-stranicy/18-…). Ближайших дат пока нет — страница
@@ -9,10 +10,20 @@
 {% endcomment %}
 
 {% block content %}
-{% include "core/dop/_head.html" %}
+<section class="section page-head"><div class="container container--narrow">
+  {% include "includes/in_progress_note.html" %}
+  <h1>{{ page.title }}</h1><p class="section__lead">{% if page.intro|filled %}{{ page.intro }}{% else %}Поводы, ради которых точно стоит приехать.{% endif %}</p>
+</div></section>
+{% if page.body|filled %}<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>{% endif %}
+<section class="section events-intro"><div class="container container--narrow events-intro__grid">
+  <h2>Ежегодно мы собираемся все вместе</h2>
+  <div><p>Несколько раз в году мы собираемся в «Лучшем сезоне», чтобы встречать Масленицу, отмечать Осенины, смотреть кино под открытым небом и пробовать что-то новое на мастер-классах. Без строгого расписания и обязательной программы — с хорошей компанией и временем, которое приятно разделить друг с другом.</p>
+    <div class="events-intro__actions"><a class="btn btn--primary" href="#events-upcoming">Ближайшее событие</a><a class="btn btn--outline" href="#event-form">Подписаться на анонсы</a></div>
+  </div>
+</div></section>
 
 {% if upcoming %}
-<section class="section">
+<section class="section" id="events-upcoming">
   <div class="container">
     <h2 class="section__title section__title--center">Ближайшие события</h2>
     <ul class="events-list">
@@ -31,7 +42,7 @@
   </div>
 </section>
 {% else %}
-<section class="section">
+<section class="section" id="events-upcoming">
   <div class="container container--narrow center events-next" data-reveal>
     <p class="events-next__label">Ближайшие события</p>
     <h2>Следующее событие мы уже готовим</h2>
@@ -46,9 +57,9 @@
 <section class="section season-calendar">
   <div class="container container--narrow">
     <h2 class="section__title section__title--center">Календарь сезона</h2>
-    <p class="center">Что происходит у нас и вокруг в каждом месяце — по постам нашего канала и событиям округи.</p>
+    <p class="center">Что происходит у нас и у наших соседей в каждом месяце.</p>
     <div class="chips season-calendar__months" data-chips="month" data-chips-default="m{{ current_month }}" role="group" aria-label="Месяц">
-      {% for month in calendar %}<button type="button" class="filter-chip" data-chip="m{{ month.num }}">{{ month.name|slice:":3" }}</button>{% endfor %}
+      {% for month in calendar %}<button type="button" class="filter-chip" data-chip="m{{ month.num }}">{{ month.name }}</button>{% endfor %}
     </div>
     <div data-chips-for="month">
       {% for month in calendar %}
@@ -87,4 +98,13 @@
     {% endif %}
   </div>
 </section>
+<section class="section events-faq"><div class="container container--narrow">
+  <h2 class="section__title section__title--center">Ответы на вопросы</h2>
+  <details><summary>Все ли мероприятия открыты для внешних гостей?</summary><p>Зависит от формата конкретного события. В анонсе мы всегда указываем, кто может присоединиться и как записаться.</p></details>
+  <details><summary>Нужно ли заранее записываться на мероприятия?</summary><p>На некоторые встречи количество мест ограничено, поэтому мы рекомендуем записываться заранее. Условия участия публикуем вместе с анонсом.</p></details>
+  <details><summary>Можно ли приехать на мероприятие с детьми?</summary><p>Во многих случаях — да. Возрастные ограничения и особенности программы указываем в описании конкретного события.</p></details>
+  <details><summary>Можно ли остаться на ночь после мероприятия?</summary><p>Конечно, если событие предполагает проживание и на нужные даты есть свободные домики. Рекомендуем бронировать заранее.</p></details>
+  <details><summary>Можно ли организовать собственное мероприятие в «Сезоне»?</summary><p>Да. Можно обсудить аренду отдельных площадок или всей территории — формат зависит от количества гостей, даты и ваших пожеланий.</p></details>
+  <details><summary>Где узнавать о новых мероприятиях?</summary><p>Анонсы в первую очередь публикуем в нашем Telegram-канале. Подписывайтесь на канал или оставьте почтовый адрес, чтобы не пропустить новые встречи.</p></details>
+</div></section>
 {% endblock %}

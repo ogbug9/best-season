@@ -59,6 +59,12 @@ class PromotionRequestTests(TestCase):
 
 
 class SeasonalTariffTests(TestCase):
+    def test_discount_scale_uses_current_editor_text_and_hides_incomplete_data(self):
+        promo = Promotion(slug='may-sentyabr', short_description='От 3-х суток скидка 10%\nОт 5 суток — 15%\nОт 7 суток — 20%')
+        self.assertEqual(promo.duration_discounts, [(3, 10), (5, 15), (7, 20)])
+        promo.short_description = 'Условия уточняйте у нас'
+        self.assertEqual(promo.duration_discounts, [])
+
     def test_yearly_window_switches_on_30_april_and_30_september(self):
         from datetime import date
         from .models import in_season

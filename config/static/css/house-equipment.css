@@ -1,0 +1,19 @@
+/* Раскрытая комплектация: длинные группы не растягивают страницу одной колонкой. */
+.page-house .equipment--accordion .equipment__group + .equipment__group {
+  border-top: 1px solid rgb(73 73 73 / 18%);
+}
+.page-house .equipment--accordion .equipment__list:not([hidden]) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 12px 24px;
+  padding: 8px 0 20px;
+}
+.page-house .equipment--accordion .equipment__list li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 699px) {
+  .page-house .equipment--accordion .equipment__list:not([hidden]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -3,12 +3,12 @@
 {% load wagtailcore_tags media_tags territory_tags layout_tags marketing_tags %}
 
 {% block body_class %}page-territory{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261026bb">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261103-field">{% endblock %}
 
 {% comment %}
   Территория по макету Territory.svg (25.10.2026, Desktop/Макет PNG SVG). Тексты —
-  core/territory_content.py. Карта поляны и видео в макете помечены «пока скрыть»
-  и не выводятся. Мобильной версии в макете нет — адаптация в territory.css.
+  core/territory_content.py. Вместо карты поляны временно показана фотография;
+  видео в макете помечено «пока скрыть». Мобильная версия — адаптация в territory.css.
 {% endcomment %}
 
 {% block content %}
@@ -41,6 +41,17 @@
     <dl class="t-stats">
       {% for value, label in tc.STATS %}<div class="t-stats__item" data-reveal><dt>{% if value|slice:":2" == "~ " %}<span class="t-stats__tilde">~</span>{{ value|slice:"1:" }}{% else %}{{ value }}{% endif %}</dt><dd>{{ label }}</dd></div>{% endfor %}
     </dl>
+  </div>
+</section>
+
+<section class="section t-field" aria-labelledby="field-title">
+  <div class="container">
+    <h2 class="t-big-title" id="field-title">Вся поляна<br>на одной схеме</h2>
+    <p class="t-field__lead">От любого домика до бани, фермы или реки — несколько минут пешком.</p>
+    <figure class="t-field__figure">
+      <img src="{% static 'img/content-gallery/house-2/1d049b1b3bb1.webp' %}" alt="Зимняя поляна глэмпинга с домиком и огнями" loading="lazy" decoding="async">
+      <figcaption>Здесь будет карта территории. Сейчас она в процессе отрисовки, так что пока можете посмотреть на эту красивую фотографию :)</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -114,12 +125,13 @@
 <section class="section t-activities" aria-labelledby="activities-title">
   <div class="container">
     <h2 class="t-big-title" id="activities-title">{{ tc.ACTIVITIES_TITLE }}</h2>
-    {% if groups %}
       <div class="chips territory__chips" data-chips="group" role="group" aria-label="Что показать">
         <button type="button" class="filter-chip" data-chip="">Всё</button>
-        {% for value, label in groups %}<button type="button" class="filter-chip" data-chip="{{ value }}">{{ label }}</button>{% endfor %}
+        <button type="button" class="filter-chip" data-chip="active">Активный отдых</button>
+        <button type="button" class="filter-chip" data-chip="kids">С детьми</button>
+        <button type="button" class="filter-chip" data-chip="warm">Тепло и пар</button>
+        <button type="button" class="filter-chip" data-chip="events">События</button>
       </div>
-    {% endif %}
     <ul class="mosaic" data-chips-for="group">
       {% comment %}
         Карточки те же, что в блоке на главной: состояние «при наведении»
@@ -127,7 +139,7 @@
         на тач-устройствах его включает нажатие — см. site.js.
       {% endcomment %}
       {% for item in territory %}
-        <li class="mosaic__item territory-card" tabindex="0" data-tags="{{ item.group|default:'other' }}" data-reveal>
+        <li class="mosaic__item territory-card" tabindex="0" data-tags="{{ item.filter_tags }}" data-reveal>
           {% picture item.image preset="card" alt=item.title %}
           {% if item.service %}<span class="card__badge territory-card__price">от {{ item.service.price_display }} ₽ {{ item.service.get_price_unit_display|lower }}</span>{% endif %}
           <div class="mosaic__caption">
@@ -141,6 +153,12 @@
               {% endif %}
             </div>
           </div>
+        </li>
+      {% endfor %}
+      {% for item in extra_activities %}
+        <li class="mosaic__item territory-card t-activity-placeholder" data-tags="{{ item.tags }}" data-reveal>
+          {% if item.image %}<picture><img src="{% static item.image %}" alt="" loading="lazy" decoding="async"></picture>{% endif %}
+          <div class="mosaic__caption"><h3 class="mosaic__title">{{ item.title }}</h3></div>
         </li>
       {% endfor %}
     </ul>

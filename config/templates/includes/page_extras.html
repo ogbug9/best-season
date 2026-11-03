@@ -8,6 +8,7 @@
     <p class="x-hook__title">{{ block.title }}</p>
     <div class="x-hook__side">
       <p class="x-hook__text">{{ block.text }}</p>
+      {% if block.guide_cta %}<p class="nearby-hook__actions"><a class="btn btn--primary" href="#guide">Собрать свой день</a><button type="button" class="btn btn--outline" data-booking-open data-entry-point="7" data-entry-page="nearby">Свободные даты</button></p>{% endif %}
       {% if block.cta %}<button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="{{ key }}">{% cms_text "booking_cta-5d9d7f118153" %}</button>{% endif %}
     </div>
   </div>

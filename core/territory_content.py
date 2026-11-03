@@ -119,6 +119,32 @@ REQUEST = {
 
 ACTIVITIES_TITLE = "Чем заняться"
 
+# Дополнительные карточки из списка Софии 30.10. Фото и описание можно
+# заполнить в существующих плитках CMS: совпадающие названия не дублируются.
+EXTRA_ACTIVITIES = [
+    ("Теннисный корт", "active"),
+    ("Йога-практики", "active events"),
+    ("Настольные игры", "kids"),
+    ("Любимая книга", "kids"),
+    ("Вечер у камина", "warm"),
+    ("Пляжи Оки", "active"),
+    ("Культурный досуг", "events"),
+    ("Банный чан", "warm"),
+    ("Кинопоказы", "events"),
+]
+
+
+def activity_tags(title, group):
+    """Разделяем прежний смешанный фильтр воды и событий."""
+    name = title.casefold()
+    tags = set() if group == "water" else {group or "other"}
+    tags.update(next((value for label, value in EXTRA_ACTIVITIES if label.casefold() == name), "").split())
+    if any(word in name for word in ("спортивн", "велосипед", "сап", "река")):
+        tags.add("active")
+    if any(word in name for word in ("мастер-класс", "кинопоказ", "мероприят")):
+        tags.add("events")
+    return " ".join(sorted(tags))
+
 # Вопросы блока «Ответы на вопросы» в том порядке, как в макете (FAQ TERRITORY.svg).
 FAQ_QUESTIONS = [
     "Работает ли интернет, есть ли связь?",

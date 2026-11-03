@@ -36,7 +36,9 @@
             {% endcomment %}
             <div class="place__actions">
               {% if level == "2" %}<a class="btn btn--outline place__route" data-directions-link href="{{ place.route_link }}" rel="noopener" target="_blank">Маршрут</a>{% endif %}
-              {% if place.link_url %}
+              {% if level != "2" and place.description or level != "2" and place.title|nearby_guide %}
+                <a class="btn btn--outline place__more" href="{% if page.nearby_more_page %}{% pageurl page.nearby_more_page %}{% elif place.link_url %}{{ place.link_url }}{% else %}/interesnoe-ryadom/{% endif %}" data-nearby-open="nearby-detail-{{ place.pk }}" aria-haspopup="dialog">{% cms_text "_nearby_card-59589fe2a549" %}</a>
+              {% elif place.link_url %}
                 <a class="btn btn--outline place__more" href="{{ place.link_url }}" rel="noopener" target="_blank">{% cms_text "_nearby_card-59589fe2a549" %}</a>
               {% elif page.nearby_more_page %}
                 <a class="btn btn--outline place__more" href="{% pageurl page.nearby_more_page %}">{% cms_text "_nearby_card-59589fe2a549" %}</a>
@@ -47,5 +49,15 @@
                 </details>
               {% endif %}
             </div>
+            {% if level != "2" and place.description or level != "2" and place.title|nearby_guide %}
+              {% with detail=place.title|nearby_guide %}
+              <dialog class="nearby-dialog" id="nearby-detail-{{ place.pk }}" aria-labelledby="nearby-title-{{ place.pk }}">
+                <button class="nearby-dialog__close" type="button" data-nearby-close aria-label="Закрыть">×</button>
+                <h2 id="nearby-title-{{ place.pk }}">{{ place.title }}</h2>
+                <p>{{ detail.text|default:place.description }}</p>
+                {% if page.nearby_more_page %}<a class="btn btn--outline" href="{% pageurl page.nearby_more_page %}">Другие интересные места</a>{% endif %}
+              </dialog>
+              {% endwith %}
+            {% endif %}
           </div>
         </li>

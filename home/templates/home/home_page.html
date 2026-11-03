@@ -33,7 +33,10 @@
       {% endif %}
     {% endif %}
   {% endwith %}
+  <link rel="stylesheet" href="{% static 'css/nearby-dialog.css' %}?v=20261102">
 {% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/nearby-dialog.js' %}?v=20261102" defer></script>{% endblock %}
 
 {% block content %}
 

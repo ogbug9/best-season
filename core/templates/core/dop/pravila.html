@@ -43,7 +43,6 @@
     <form class="rules-calc" data-pet-calc onsubmit="return false" data-reveal>
       <h3>Доплата за питомца</h3>
       <label>Рост в холке<select name="size"><option value="{{ pet_small_fee|stringformat:'d' }}">до 45 см</option><option value="{{ pet_large_fee|stringformat:'d' }}">выше 45 см</option></select></label>
-      <label>Ночей<input type="number" name="nights" min="1" max="30" value="2"></label>
       <output data-pet-out aria-live="polite"></output>
       <p class="guide__note">Укажите питомца при бронировании — подберём домик и обговорим детали.</p>
     </form>

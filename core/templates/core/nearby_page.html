@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% load content_tags marketing_tags %}
-{% load wagtailcore_tags media_tags layout_tags %}
+{% load static wagtailcore_tags media_tags layout_tags %}
 
 {% block body_class %}page-nearby{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261103-visual">{% endblock %}
 
 {% comment %}
   Интересное рядом (docs/dop-stranicy/12-interesnoe-ryadom.md): путеводитель
@@ -26,6 +27,45 @@
 <section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
 {% endif %}
 
+<section class="section nearby-routes" aria-labelledby="nearby-routes-title">
+  <div class="container">
+    <h2 class="section__title section__title--center" id="nearby-routes-title">Три готовых маршрута</h2>
+    <p class="nearby-routes__intro">Три дня, которые у наших гостей складываются чаще всего.<br>Время примерное — у каждого свой темп.</p>
+    <div class="nearby-routes__grid">
+      <article class="nearby-routes__item">
+        <div class="nearby-routes__photo" aria-hidden="true"></div>
+        <h3>Если вы здесь впервые</h3>
+        <ol>
+          <li><b>11:00 · Усадьба Поленово</b><span>дом художника и парк над Окой</span></li>
+          <li><b>14:00 · Обед в Поленово</b><span>или дома на террасе</span></li>
+          <li><b>18:00 · Бёхово</b><span>церковь Троицы и закат над Окой</span></li>
+          <li><b>21:00 · Баня и костёр</b><span>в «Лучшем сезоне»</span></li>
+        </ol>
+      </article>
+      <article class="nearby-routes__item">
+        <div class="nearby-routes__photo" aria-hidden="true"></div>
+        <h3>Для тех, кто был</h3>
+        <ol>
+          <li><b>11:00 · Усадьба А. Болотова «Дворяниново»</b><span>дворянское гнездо известного русского агронома-учёного</span></li>
+          <li><b>14:00 · Обед в ресторане «Брунколь»</b><span>или дома на террасе</span></li>
+          <li><b>18:00 · Велегож</b><span>тропы вдоль Оки и пещеры, которые местные связывают с разбойником Улаем.</span></li>
+          <li><b>21:00 · Баня и ужин</b><span>на мангале в «Лучшем сезоне»</span></li>
+        </ol>
+      </article>
+      <article class="nearby-routes__item">
+        <div class="nearby-routes__photo" aria-hidden="true"></div>
+        <h3>С детьми</h3>
+        <ol>
+          <li><b>11:00 · Конюшня в Поленово</b><span>покормить лошадей, покататься на пони</span></li>
+          <li><b>15:00 · Деревня Фёдора Конюхова</b><span>экскурсия с квестом, начало в 15:00, по записи</span></li>
+          <li><b>18:00 · Лучший сезон</b><span>батут, детская площадка и костёр, когда стемнеет</span></li>
+          <li><b>21:00 · Звёзды над поляной</b><span>в «Лучшем сезоне»</span></li>
+        </ol>
+      </article>
+    </div>
+  </div>
+</section>
+
 {% if place_facts %}
 <section class="section">
   <div class="container container--narrow">
@@ -35,7 +75,7 @@
 </section>
 {% endif %}
 
-<section class="section guide" data-dayplan>
+<section class="section guide" id="guide" data-dayplan>
   <div class="container">
     <h2 class="section__title section__title--center">Путеводитель по округе</h2>
     <div class="guide__planner">
@@ -77,19 +117,6 @@
 
 {% guest_quote "Удобное местоположение" "Гости о соседстве" %}
 
-{% if route_points %}
-<section class="section nearby-route">
-  <div class="container container--narrow">
-    <h2>Готовый маршрут на день</h2>
-    <ol class="route-steps">
-      {% for time, place_name, note in route_points %}
-        <li class="route-steps__item{% if forloop.last %} route-steps__item--end{% endif %}" data-reveal><b>{{ time }} · {{ place_name }}</b>{% if note %}<span>{{ note }}</span>{% endif %}</li>
-      {% endfor %}
-    </ol>
-  </div>
-</section>
-{% endif %}
-
 {% with s=settings.core.SiteSettings %}
 <section class="section section--deep">
   <div class="container container--narrow center">
@@ -102,4 +129,23 @@
   </div>
 </section>
 {% endwith %}
+{% with s=settings.core.SiteSettings %}
+{% if s.telegram_url %}
+<section class="section">
+  <div class="container container--narrow">
+    <aside class="x-note">
+      <h2 class="x-note__title">Больше интересных мест:</h2>
+      <p class="x-note__text">В нашем Telegram-канале можно найти рубрику #ИнтересноеРядом, где мы рассказываем, что стоит посетить и почему.</p>
+      <p><a class="btn btn--primary" href="{% marketing_url s.telegram_url 'nearby_page' %}" rel="noopener" target="_blank">Перейти в Telegram</a></p>
+    </aside>
+  </div>
+</section>
+{% endif %}
+{% endwith %}
+<section class="section" aria-labelledby="nearby-faq-title">
+  <div class="container container--narrow">
+    <h2 class="section__title section__title--center" id="nearby-faq-title">Ответы на вопросы</h2>
+    {% include "includes/faq_items.html" with faq=nearby_faq %}
+  </div>
+</section>
 {% endblock %}

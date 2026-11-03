@@ -8,10 +8,12 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from wagtail.contrib.sitemaps.views import sitemap
 
-from core.views import robots_txt
+from core.views import old_activities_redirect, robots_txt
 from search import views as search_views
 
 urlpatterns = [
+    path("territoriya/razvlecheniya/", old_activities_redirect),
+    path("razvlecheniya/", old_activities_redirect),
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
