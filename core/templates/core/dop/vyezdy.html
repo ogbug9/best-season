@@ -1,768 +1,101 @@
 {% extends "base.html" %}
-{% load static %}
+{% load wagtailcore_tags media_tags content_tags marketing_tags layout_tags %}
+{% block body_class %}page-dop page-group{% endblock %}
 
-{% block title %}Интересное рядом | Лучший сезон — глэмпинг у Поленово{% endblock %}
+{% comment %}
+  Выезды компаний (docs/dop-stranicy/19-…): весь глэмпинг одной заявкой —
+  тариф «Только свои» из Telegram 26.06.2026. Цену пакета не пишем:
+  заявка с датами ведёт к разговору.
+{% endcomment %}
 
 {% block content %}
-<style>
-  .page-interesnoe {
-    background-color: #F7F0E6 !important;
-    color: #2B2E28;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    padding-bottom: 96px;
-    overflow-x: hidden;
-  }
-  .page-interesnoe * {
-    box-sizing: border-box;
-  }
-  .pi-container {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 32px;
-  }
-  @media (max-width: 768px) {
-    .pi-container {
-      padding: 0 20px;
-    }
-  }
+{% include "core/dop/_head.html" %}
 
-  /* 1. HERO */
-  .pi-hero {
-    padding-top: 56px;
-    padding-bottom: 44px;
-  }
-  .pi-badge-top {
-    display: inline-block;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #68725E;
-    margin-bottom: 18px;
-  }
-  .pi-hero-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
-  }
-  .pi-hero-h1 {
-    font-size: clamp(34px, 4.2vw, 56px);
-    font-weight: 500;
-    line-height: 1.14;
-    color: #2B2E28;
-    margin: 0;
-    max-width: 880px;
-    letter-spacing: -0.02em;
-  }
-  .pi-hero-pill {
-    background: #EBE4D5;
-    border: 1px solid #DFD7C5;
-    border-radius: 999px;
-    padding: 10px 22px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #4A4D43;
-    white-space: nowrap;
-    align-self: center;
-  }
-  .pi-lead-text {
-    font-size: 20px;
-    line-height: 1.55;
-    color: #55584E;
-    max-width: 1040px;
-    margin: 0;
-  }
-
-  /* 2. МЕСТО, КОТОРОЕ ВЫБРАЛ ХУДОЖНИК */
-  .pi-place-section {
-    margin-top: 36px;
-    margin-bottom: 80px;
-  }
-  .pi-place-grid {
-    display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: 52px;
-    align-items: start;
-  }
-  @media (max-width: 960px) {
-    .pi-place-grid {
-      grid-template-columns: 1fr;
-      gap: 36px;
-    }
-  }
-  .pi-place-col-title {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #7D8274;
-    margin-bottom: 24px;
-  }
-  .pi-facts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  @media (max-width: 560px) {
-    .pi-facts-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  .pi-fact-card {
-    background: #FFFFFF;
-    border: 1px solid #ECE4D6;
-    border-radius: 18px;
-    padding: 24px 22px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 146px;
-    box-shadow: 0 4px 16px rgba(43, 46, 40, 0.03);
-  }
-  .pi-fact-val {
-    font-size: 28px;
-    font-weight: 600;
-    color: #2B2E28;
-    line-height: 1.2;
-    margin-bottom: 10px;
-  }
-  .pi-fact-desc {
-    font-size: 14px;
-    line-height: 1.48;
-    color: #686C61;
-    margin: 0;
-  }
-  .pi-footnote {
-    font-size: 13px;
-    line-height: 1.55;
-    color: #8C9084;
-    margin-top: 20px;
-  }
-
-  .pi-story-text {
-    padding-top: 40px;
-  }
-  @media (max-width: 960px) {
-    .pi-story-text {
-      padding-top: 0;
-    }
-  }
-  .pi-story-text p {
-    font-size: 16px;
-    line-height: 1.68;
-    color: #383B33;
-    margin: 0 0 22px;
-  }
-
-  /* 3. ПУТЕВОДИТЕЛЬ ПО ОКРУГЕ */
-  .pi-guide-section {
-    margin-bottom: 88px;
-  }
-  .pi-section-title {
-    font-size: clamp(28px, 3.4vw, 44px);
-    font-weight: 500;
-    color: #2B2E28;
-    margin: 0 0 16px;
-    letter-spacing: -0.01em;
-  }
-  .pi-filters-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 22px;
-  }
-  .pi-filter-btn {
-    background: #EBE4D5;
-    border: 1px solid transparent;
-    border-radius: 999px;
-    padding: 8px 20px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #4A4D43;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .pi-filter-btn:hover, .pi-filter-btn.active {
-    background: #2B2E28;
-    color: #FFFFFF;
-  }
-
-  .pi-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 28px;
-    margin-top: 36px;
-  }
-  @media (max-width: 440px) {
-    .pi-cards-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  .pi-card {
-    background: #FFFFFF;
-    border: 1px solid #ECE4D6;
-    border-radius: 22px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 8px 24px rgba(43, 46, 40, 0.04);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .pi-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(43, 46, 40, 0.07);
-  }
-  .pi-card-img-wrap {
-    width: 100%;
-    height: 230px;
-    position: relative;
-    background: #E5DFD1;
-    overflow: hidden;
-  }
-  .pi-card-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .pi-card-badge {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    background: rgba(43, 46, 40, 0.78);
-    backdrop-filter: blur(4px);
-    color: #FFFFFF;
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .pi-card-content {
-    padding: 26px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
-  .pi-card-title {
-    font-size: 22px;
-    font-weight: 600;
-    color: #2B2E28;
-    margin: 0 0 12px;
-    line-height: 1.3;
-  }
-  .pi-card-desc {
-    font-size: 15px;
-    line-height: 1.58;
-    color: #55584E;
-    margin: 0 0 18px;
-    flex-grow: 1;
-  }
-  .pi-card-tip {
-    background: #F8F5EE;
-    border-left: 3px solid #847F57;
-    border-radius: 0 10px 10px 0;
-    padding: 10px 14px;
-    font-size: 13px;
-    line-height: 1.48;
-    color: #65695D;
-    margin-bottom: 22px;
-  }
-  .pi-card-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: #847F57;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    margin-top: auto;
-    transition: color 0.2s ease;
-  }
-  .pi-card-link:hover {
-    color: #2B2E28;
-  }
-
-  /* 4. ТАБЛИЦА РАССТОЯНИЙ */
-  .pi-times-section {
-    margin-bottom: 88px;
-  }
-  .pi-times-card {
-    background: #FFFFFF;
-    border: 1px solid #ECE4D6;
-    border-radius: 26px;
-    padding: 44px;
-    box-shadow: 0 8px 28px rgba(43, 46, 40, 0.04);
-  }
-  @media (max-width: 680px) {
-    .pi-times-card {
-      padding: 26px 20px;
-    }
-  }
-  .pi-times-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 52px;
-    row-gap: 16px;
-  }
-  @media (max-width: 860px) {
-    .pi-times-list {
-      grid-template-columns: 1fr;
-      row-gap: 14px;
-    }
-  }
-  .pi-time-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 12px 0;
-    border-bottom: 1px solid #EFEAE0;
-  }
-  .pi-time-name {
-    font-size: 16px;
-    font-weight: 500;
-    color: #2B2E28;
-  }
-  .pi-time-val {
-    font-size: 14px;
-    font-weight: 600;
-    color: #68725E;
-    white-space: nowrap;
-    text-align: right;
-  }
-  .pi-times-banner {
-    background: #F4EFE5;
-    border-radius: 16px;
-    padding: 22px 26px;
-    margin-top: 36px;
-    font-size: 15px;
-    line-height: 1.55;
-    color: #55584E;
-  }
-  .pi-times-banner strong {
-    color: #2B2E28;
-  }
-
-  /* 5. МАРШРУТЫ */
-  .pi-routes-section {
-    margin-bottom: 88px;
-  }
-  .pi-timeline-wrap {
-    background: #FFFFFF;
-    border: 1px solid #ECE4D6;
-    border-radius: 26px;
-    padding: 44px;
-    margin-top: 26px;
-    box-shadow: 0 8px 28px rgba(43, 46, 40, 0.04);
-  }
-  @media (max-width: 680px) {
-    .pi-timeline-wrap {
-      padding: 26px 20px;
-    }
-  }
-  .pi-timeline-item {
-    display: flex;
-    gap: 24px;
-    padding-bottom: 30px;
-    position: relative;
-  }
-  .pi-timeline-item:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 7px;
-    top: 26px;
-    bottom: 0;
-    width: 2px;
-    background: #E0D9CB;
-  }
-  .pi-tl-dot {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #847F57;
-    margin-top: 4px;
-    flex-shrink: 0;
-  }
-  .pi-tl-content {
-    flex-grow: 1;
-  }
-  .pi-tl-time {
-    font-size: 14px;
-    font-weight: 700;
-    color: #847F57;
-    margin-bottom: 4px;
-  }
-  .pi-tl-title {
-    font-size: 19px;
-    font-weight: 600;
-    color: #2B2E28;
-    margin: 0 0 6px;
-  }
-  .pi-tl-desc {
-    font-size: 14px;
-    color: #686C61;
-    margin: 0;
-    line-height: 1.45;
-  }
-
-  /* 6. FAQ */
-  .pi-faq-section {
-    margin-top: 64px;
-  }
-  .pi-faq-accordion {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .pi-faq-item {
-    border-radius: 16px;
-    padding: 22px 28px;
-    transition: all 0.2s ease;
-  }
-  .pi-faq-dark {
-    background: #252822;
-    color: #FFFFFF;
-  }
-  .pi-faq-olive {
-    background: #68725E;
-    color: #FFFFFF;
-  }
-  .pi-faq-summary {
-    font-size: 18px;
-    font-weight: 500;
-    cursor: pointer;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .pi-faq-summary::-webkit-details-marker {
-    display: none;
-  }
-  .pi-faq-body {
-    margin-top: 14px;
-    font-size: 15px;
-    line-height: 1.6;
-    color: #DFE3DA;
-  }
-</style>
-
-<div class="page-interesnoe">
-  <div class="pi-container">
-
-    <!-- 1. HERO -->
-    <header class="pi-hero">
-      <span class="pi-badge-top">ИНТЕРЕСНОЕ РЯДОМ</span>
-      <div class="pi-hero-title-row">
-        <h1 class="pi-hero-h1">Поленов прожил здесь 37 лет. Вам хватит выходных?</h1>
-        <div class="pi-hero-pill">В сезоне или на день</div>
+<section class="section">
+  <div class="container">
+    <div class="group-offer group-offer--static" data-reveal>
+      {% if group_image %}{% picture group_image preset="hero" alt="" %}{% endif %}
+      <div class="group-offer__body">
+        <span class="group-offer__label">Тариф «Только свои»</span>
+        <b class="group-offer__title">Весь глэмпинг — только для вас</b>
+        <span class="group-offer__text">Лес с трёх сторон, речка, ферма и никого рядом. Только вы и те, с кем хотите разделить этот день.</span>
+        <a class="btn btn--primary group-offer__button" href="#group-form">Узнать свободные даты</a>
       </div>
-      <p class="pi-lead-text">
-        Усадьба В. Поленова — в трёх километрах, д. Бёхово из списка лучших в мире — в 15 минутах. Утро в музее, на живописном берегу Оки, вечер дома у костра.
-      </p>
-    </header>
-
-    <!-- 2. МЕСТО, КОТОРОЕ ВЫБРАЛ ХУДОЖНИК -->
-    <section class="pi-place-section">
-      <div class="pi-place-grid">
-        <div>
-          <div class="pi-place-col-title">Место, которое выбрал художник</div>
-          <div class="pi-facts-grid">
-            <div class="pi-fact-card">
-              <div class="pi-fact-val">3 км</div>
-              <p class="pi-fact-desc">до усадьбы Поленово от нас</p>
-            </div>
-            <div class="pi-fact-card">
-              <div class="pi-fact-val">В топ-100</div>
-              <p class="pi-fact-desc">лучших деревень мира вошла д. Бёхово (по версии UNWTO)</p>
-            </div>
-            <div class="pi-fact-card">
-              <div class="pi-fact-val">870 га</div>
-              <p class="pi-fact-desc">историко-художественного и природного заповедника, открытых для прогулки</p>
-            </div>
-            <div class="pi-fact-card">
-              <div class="pi-fact-val">~ 1 ч</div>
-              <p class="pi-fact-desc">до Тарусы — знаменитого города художников и поэтов*</p>
-            </div>
-          </div>
-          <p class="pi-footnote">
-            *Географически она находится совсем рядом с нами — менее 6 км, но из-за отсутствия прямого моста добраться туда можно на теплоходе через Оку, либо на машине через Серпухов
-          </p>
-        </div>
-
-        <div class="pi-story-text">
-          <p>
-            Сюда больше века приезжают за красотой этих мест, энергетикой и атмосферой, которая исцеляет. На одном берегу Оки жил и работал Василий Поленов, на другом — Таруса, связанная с именами М. Цветаевой и К. Паустовского.
-          </p>
-          <p>
-            В 1890 г. Поленов приобрёл землю над рекой, сам разработал проект дома и прожил здесь 37 лет. Рядом по его эскизам построили церковь в Бёхово, которое век спустя включили в список лучших туристических деревень мира. Вокруг остались те же аллеи лиственниц, лес и дороги, гуляя по которым легко представить, чем жила Усадьба в XX веке.
-          </p>
-          <p>
-            Многие интересные места находятся всего в 5–10 минутах езды от нас, а до более дальних достопримечательностей дорога занимает до 1 часа.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. ПУТЕВОДИТЕЛЬ ПО ОКРУГЕ -->
-    <section class="pi-guide-section">
-      <div style="margin-bottom: 24px;">
-        <h2 class="pi-section-title">Путеводитель по округе</h2>
-        <div class="pi-filters-row">
-          <span style="font-size: 14px; font-weight: 600; color: #7D8274; margin-right: 8px;">Когда едете?</span>
-          <button type="button" class="pi-filter-btn active">Все</button>
-          <button type="button" class="pi-filter-btn">Лето</button>
-          <button type="button" class="pi-filter-btn">Осень</button>
-          <button type="button" class="pi-filter-btn">Зима</button>
-          <button type="button" class="pi-filter-btn">Весна</button>
-        </div>
-      </div>
-
-      <div class="pi-cards-grid">
-        <div class="pi-card">
-          <div class="pi-card-img-wrap">
-            <img src="{% static 'images/places/polenovo.jpg' %}" alt="Музей-усадьба Поленово" class="pi-card-img" onerror="this.src='/static/images/hero_bg.jpg'">
-            <span class="pi-card-badge">5–7 мин на машине · Музей</span>
-          </div>
-          <div class="pi-card-content">
-            <h3 class="pi-card-title">Музей-усадьба Поленово</h3>
-            <p class="pi-card-desc">
-              Земля, которую художник спроектировал и на которой прожил 37 лет. В Большом доме сохранились интерьеры, личные вещи, картины Поленова, Репина, Васнецова, Шишкина. Рядом Мастерская («Аббатство»), Фахверковый сарай и Адмиралтейство.
-            </p>
-            <div class="pi-card-tip">
-              <strong>Совет:</strong> Билеты в Большой дом покупайте заранее онлайн — в день визита их часто не бывает в кассе.
-            </div>
-            <a href="https://polenovo.ru" target="_blank" rel="noopener" class="pi-card-link">📍 Маршрут от глэмпинга →</a>
-          </div>
-        </div>
-
-        <div class="pi-card">
-          <div class="pi-card-img-wrap">
-            <img src="{% static 'images/places/bekhovo.jpg' %}" alt="Деревня Бёхово и церковь Троицы" class="pi-card-img" onerror="this.src='/static/images/hero_bg.jpg'">
-            <span class="pi-card-badge">10 мин на машине · Топ-100 деревень</span>
-          </div>
-          <div class="pi-card-content">
-            <h3 class="pi-card-title">Деревня Бёхово и церковь Троицы</h3>
-            <p class="pi-card-desc">
-              Входит в топ-100 лучших деревень мира по версии UNWTO. Белокаменная церковь Троицы построена по эскизам Поленова, на кладбище рядом похоронен сам художник. За храмом открывается легендарный вид на излучину Оки.
-            </p>
-            <div class="pi-card-tip">
-              <strong>Совет:</strong> Идеальное место для встречи заката над рекой.
-            </div>
-            <a href="https://yandex.ru/maps" target="_blank" rel="noopener" class="pi-card-link">📍 Маршрут от глэмпинга →</a>
-          </div>
-        </div>
-
-        <div class="pi-card">
-          <div class="pi-card-img-wrap">
-            <img src="{% static 'images/places/konyukhov.jpg' %}" alt="Деревня Фёдора Конюхова" class="pi-card-img" onerror="this.src='/static/images/hero_bg.jpg'">
-            <span class="pi-card-badge">10–12 мин на машине · Уникальное место</span>
-          </div>
-          <div class="pi-card-content">
-            <h3 class="pi-card-title">Деревня Фёдора Конюхова</h3>
-            <p class="pi-card-desc">
-              Уникальное поселение, основанное великим путешественником. Авторские часовни, якоря, памятные знаки первопроходцам и атмосфера романтики дальних странствий.
-            </p>
-            <div class="pi-card-tip">
-              <strong>Совет:</strong> В выходные лучше приезжать после 15:00, когда основной поток туристов спадает.
-            </div>
-            <a href="https://yandex.ru/maps" target="_blank" rel="noopener" class="pi-card-link">📍 Маршрут от глэмпинга →</a>
-          </div>
-        </div>
-
-        <div class="pi-card">
-          <div class="pi-card-img-wrap">
-            <img src="{% static 'images/places/obryv.jpg' %}" alt="Обрыв любви и пляжи на Оке" class="pi-card-img" onerror="this.src='/static/images/hero_bg.jpg'">
-            <span class="pi-card-badge">15 мин на машине · Природа</span>
-          </div>
-          <div class="pi-card-content">
-            <h3 class="pi-card-title">Обрыв любви и пляжи на Оке</h3>
-            <p class="pi-card-desc">
-              Высокий песчаный берег с головокружительной панорамой на реку и леса противоположного берега. Летом в получасе езды работают «Серпуховские Мальдивы» с белым песком и шезлонгами.
-            </p>
-            <div class="pi-card-tip">
-              <strong>Совет:</strong> Возьмите с собой термос с чаем и плед для пикника над рекой.
-            </div>
-            <a href="https://yandex.ru/maps" target="_blank" rel="noopener" class="pi-card-link">📍 Маршрут от глэмпинга →</a>
-          </div>
-        </div>
-
-        <div class="pi-card">
-          <div class="pi-card-img-wrap">
-            <img src="{% static 'images/places/spring.jpg' %}" alt="Святой источник и купель" class="pi-card-img" onerror="this.src='/static/images/hero_bg.jpg'">
-            <span class="pi-card-badge">8 мин на машине · Источник</span>
-          </div>
-          <div class="pi-card-content">
-            <h3 class="pi-card-title">Святой источник Казанской иконы</h3>
-            <p class="pi-card-desc">
-              Освящённый родник с чистейшей водой и благоустроенной закрытой деревянной купелью на лесной тропе близ Бёхово.
-            </p>
-            <div class="pi-card-tip">
-              <strong>Совет:</strong> Возьмите с собой бутылочки под свежую родниковую воду.
-            </div>
-            <a href="https://yandex.ru/maps" target="_blank" rel="noopener" class="pi-card-link">📍 Маршрут от глэмпинга →</a>
-          </div>
-        </div>
-
-        <div class="pi-card">
-          <div class="pi-card-img-wrap">
-            <img src="{% static 'images/places/tarusa.jpg' %}" alt="Таруса и речной теплоход" class="pi-card-img" onerror="this.src='/static/images/hero_bg.jpg'">
-            <span class="pi-card-badge">20 мин на катере / 1 ч на авто · Город искусств</span>
-          </div>
-          <div class="pi-card-content">
-            <h3 class="pi-card-title">Таруса и речной теплоход</h3>
-            <p class="pi-card-desc">
-              Старинный город художников, Цветаевой и Паустовского на другом берегу Оки. В тёплый сезон от Поленово в Тарусу ходит прогулочный катер — переправа занимает всего 15–20 минут.
-            </p>
-            <div class="pi-card-tip">
-              <strong>Совет:</strong> Навигация катеров обычно работает с мая по октябрь.
-            </div>
-            <a href="https://yandex.ru/maps" target="_blank" rel="noopener" class="pi-card-link">📍 Маршрут от глэмпинга →</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. ТАБЛИЦА РАССТОЯНИЙ -->
-    <section class="pi-times-section">
-      <div class="pi-times-card">
-        <h2 class="pi-section-title" style="margin-bottom: 24px;">Сколько ехать от глэмпинга</h2>
-        <div class="pi-times-list">
-          <div class="pi-time-item">
-            <span class="pi-time-name">Теннисный корт</span>
-            <span class="pi-time-val">Несколько минут</span>
-          </div>
-          <div class="pi-time-item">
-            <span class="pi-time-name">Музей-усадьба Поленово</span>
-            <span class="pi-time-val">5–7 мин на машине</span>
-          </div>
-          <div class="pi-time-item">
-            <span class="pi-time-name">Бёхово и церковь Троицы</span>
-            <span class="pi-time-val">≈10 мин</span>
-          </div>
-          <div class="pi-time-item">
-            <span class="pi-time-name">Деревня Фёдора Конюхова</span>
-            <span class="pi-time-val">≈10 мин</span>
-          </div>
-          <div class="pi-time-item">
-            <span class="pi-time-name">Серпухов</span>
-            <span class="pi-time-val">≈30 мин</span>
-          </div>
-          <div class="pi-time-item">
-            <span class="pi-time-name">Пляж «Серпуховские Мальдивы»</span>
-            <span class="pi-time-val">≈30 мин</span>
-          </div>
-          <div class="pi-time-item">
-            <span class="pi-time-name">Приокско-Террасный заповедник</span>
-            <span class="pi-time-val">≈45 мин через Серпухов</span>
-          </div>
-          <div class="pi-time-item">
-            <span class="pi-time-name">Таруса</span>
-            <span class="pi-time-val">≈1 ч на машине через Серпухов</span>
-          </div>
-        </div>
-
-        <div class="pi-times-banner">
-          <strong>Совет:</strong> Одно место в день — и время без суеты. Не спешите посетить всё за один день. Прогулка по усадьбе и закат в Бёхово запомнятся намного ярче.
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. МАРШРУТЫ -->
-    <section class="pi-routes-section">
-      <h2 class="pi-section-title">Три готовых маршрута</h2>
-      <p style="font-size: 16px; color: #686C61; margin: 0 0 24px;">Три дня, которые у наших гостей складываются чаще всего.</p>
-
-      <div class="pi-timeline-wrap">
-        <div style="font-size: 18px; font-weight: 600; color: #2B2E28; margin-bottom: 24px;">
-          Маршрут: «Если вы здесь впервые»
-        </div>
-
-        <div class="pi-timeline-item">
-          <div class="pi-tl-dot"></div>
-          <div class="pi-tl-content">
-            <div class="pi-tl-time">11:00</div>
-            <h4 class="pi-tl-title">Усадьба Поленово</h4>
-            <p class="pi-tl-desc">Дом художника и парк над Окой, аллеи лиственниц и берег реки.</p>
-          </div>
-        </div>
-
-        <div class="pi-timeline-item">
-          <div class="pi-tl-dot"></div>
-          <div class="pi-tl-content">
-            <div class="pi-tl-time">14:00</div>
-            <h4 class="pi-tl-title">Обед в Поленово</h4>
-            <p class="pi-tl-desc">В уютном кафе усадьбы или дома на террасе глэмпинга.</p>
-          </div>
-        </div>
-
-        <div class="pi-timeline-item">
-          <div class="pi-tl-dot"></div>
-          <div class="pi-tl-content">
-            <div class="pi-tl-time">18:00</div>
-            <h4 class="pi-tl-title">Бёхово</h4>
-            <p class="pi-tl-desc">Церковь Троицы, прогулочные тропы и закат над Окой.</p>
-          </div>
-        </div>
-
-        <div class="pi-timeline-item" style="padding-bottom: 0;">
-          <div class="pi-tl-dot"></div>
-          <div class="pi-tl-content">
-            <div class="pi-tl-time">21:00</div>
-            <h4 class="pi-tl-title">Баня и костёр</h4>
-            <p class="pi-tl-desc">В «Лучшем сезоне», под звёздным небом и в тишине леса.</p>
-          </div>
-        </div>
-
-        <div style="margin-top: 24px; font-size: 13px; color: #8C9084;">
-          Время примерное — у каждого свой темп.
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. FAQ -->
-    <section class="pi-faq-section">
-      <h2 style="font-size: 36px; font-weight: 500; text-align: center; margin-bottom: 32px; color: #2B2E28;">
-        Ответы на вопросы
-      </h2>
-      <div class="pi-faq-accordion">
-        <details class="pi-faq-item pi-faq-dark" open>
-          <summary class="pi-faq-summary">
-            <span>Нужна ли машина, чтобы куда-то съездить?</span>
-            <span style="font-size: 20px;">▾</span>
-          </summary>
-          <div class="pi-faq-body">
-            Для большинства мест — да. До Поленово и Бёхово при желании можно дойти пешком или доехать на велосипеде, остальное без машины неудобно. Если приехали на электричке, напишите нам заранее: подскажем по такси и трансферу.
-          </div>
-        </details>
-
-        <details class="pi-faq-item pi-faq-olive">
-          <summary class="pi-faq-summary">
-            <span>Можно ли купаться в Оке?</span>
-            <span style="font-size: 20px;">▾</span>
-          </summary>
-          <div class="pi-faq-body" style="color: #FFFFFF;">
-            Летом — да, на оборудованном пляже. «Серпуховские Мальдивы» в получасе: светлый песок, лежаки, кафе. Есть выход к воде и ближе. В Скнижке у нас на территории понырять не получится — она мелкая, но посидеть на берегу или сплавиться на сапах стоит.
-          </div>
-        </details>
-
-        <details class="pi-faq-item pi-faq-dark">
-          <summary class="pi-faq-summary">
-            <span>Что делать зимой, когда всё закрыто?</span>
-            <span style="font-size: 20px;">▾</span>
-          </summary>
-          <div class="pi-faq-body">
-            Закрыто далеко не всё. Поленово и Ясная Поляна работают круглый год, зимний парк там даже лучше летнего — пусто и тихо. Бёхово, источник и храмы открыты всегда. Не работают пляжи и теплоход.
-          </div>
-        </details>
-      </div>
-    </section>
-
+    </div>
   </div>
-</div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    {% include "includes/fact_cards.html" with facts=group_facts %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow">
+    <form class="group-calc" data-group-calc onsubmit="return false">
+      <label>Сколько вас будет?<input type="number" name="guests" min="1" max="60" value="10"></label>
+      <output data-group-out aria-live="polite"></output>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split group-plan">
+    <div class="split__text" data-reveal>
+      <h2>Как проходят два дня</h2>
+      <ol class="route-steps">
+        {% for time, text in group_timeline %}<li class="route-steps__item{% if forloop.last %} route-steps__item--end{% endif %}"><b>{{ time }}</b><span>{{ text }}</span></li>{% endfor %}
+      </ol>
+    </div>
+    <div class="split__text" data-reveal>
+      <div class="checklist" data-checklist="group">
+        <div class="checklist__head"><h2>Организатору</h2><span class="checklist__count" data-checklist-count></span></div>
+        <ul>{% for item in group_checklist %}<li><label><input type="checkbox" value="g{{ forloop.counter }}"> {{ item }}</label></li>{% endfor %}</ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section__title section__title--center">Какой у вас повод?</h2>
+    <ul class="occasions">
+      {% for occasion in occasions %}
+        <li class="occasions__item" data-reveal>
+          <a class="occasions__link" href="?occasion={{ occasion.title|urlencode }}#group-form">
+            {% if occasion.image %}{% picture occasion.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+            <span class="occasions__caption"><b>{{ occasion.title }}</b><span>{{ occasion.text }}</span></span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% guest_quote "Отдыхали здесь с подругами" %}
+
+<section class="section">
+  <div class="container container--narrow">
+    {% include "includes/video_slot.html" with slot="group-evening" poster=group_image title="Вечер в полном составе" %}
+    <p class="group-rules">После 23:00 рядом с домиками — потише. Для больших и громких вечеров есть беседка «Корабль»: она стоит вдали от домиков.</p>
+  </div>
+</section>
+
+<section class="section" id="group-form">
+  <div class="container container--narrow">
+    {% include "forms/request_form.html" with form=group_form form_type="group" title="Заявка на весь глэмпинг" lead="Расскажите о датах и компании — ответим со свободными датами и стоимостью." submit_label="Отправить заявку" %}
+    {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+      {% if telegram %}<p class="center">или <a href="{% marketing_url telegram 'vyezdy' 'Здравствуйте! Хотим весь глэмпинг' %}" rel="noopener" target="_blank">напишите в Telegram</a></p>{% endif %}
+    {% endwith %}
+  </div>
+</section>
+
+{% if group_faq %}
+<section class="section">
+  <div class="container">
+    {% include "includes/faq_items.html" with faq=group_faq %}
+  </div>
+</section>
+{% endif %}
 {% endblock %}
