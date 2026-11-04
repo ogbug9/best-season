@@ -10,4 +10,7 @@
     <li class="fact-cards__item" data-reveal><b class="fact-cards__value">{{ value }}</b><span class="fact-cards__label">{{ label }}</span></li>
   {% endif %}{% endfor %}
 </ul>
+{% for value, label in facts %}{% if "*" in label %}
+<p class="fact-cards__note" style="font-size: 13px; line-height: 1.4; color: #8F9489; margin-top: 14px; max-width: 800px;">*Географически она находится совсем рядом с нами - менее 6 км, но из-за отсутствия прямого моста добраться туда можно на теплоходе через Оку, либо на машине через Серпухов</p>
+{% endif %}{% endfor %}
 {% endif %}
