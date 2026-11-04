@@ -115,11 +115,12 @@ class Promotion(models.Model):
         """Шкала берётся только из текста активного сезонного тарифа в CMS."""
         if self.slug not in {'may-sentyabr', 'oktyabr-aprel'}:
             return []
-        found = []
-        for line in self.short_description.splitlines():
-            match = re.search(r'(\d+)[^\d\n]*сут(?:ок|ки)[^\d\n]*(\d+)\s*%', line, re.IGNORECASE)
-            if match:
-                found.append((int(match.group(1)), int(match.group(2))))
+        pairs = re.findall(
+            r'(\d+)[^\d\n%]*сут(?:ок|ки)[^\d\n%]*(\d+)\s*%',
+            self.short_description,
+            re.IGNORECASE,
+        )
+        found = [(int(nights), int(discount)) for nights, discount in pairs]
         return found if len(found) == 3 else []
 
     def clean(self):

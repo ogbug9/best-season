@@ -131,7 +131,11 @@ def context_for(page, request):
     slug = page.slug
     services = {service.slug: service for service in Service.objects.filter(is_published=True)}
     if slug == "chem-zanyatsya":
+        from django.utils.html import format_html
+
         from core import things_content as things
+        from core.models import SiteSettings
+        from core.templatetags.marketing_tags import marketing_url
 
         tiles = {item.title: item.image for item in TerritoryItem.objects.filter(is_published=True).select_related("image")}
 
@@ -148,7 +152,14 @@ def context_for(page, request):
         from core import dop_content as dc
 
         second_day = [place for place in dc.GUIDE if place["key"] in ("polenovo", "behovo", "konyukhov")]
+        faq = [item.copy() for item in dc.THINGS_FAQ]
+        chat_url = SiteSettings.for_request(request).telegram_chat_url
+        if chat_url:
+            phrase = "сообщить о своих планах заранее"
+            link = format_html('<a href="{}">{}</a>', marketing_url(chat_url, 'chem_zanyatsya'), phrase)
+            faq[2]["answer"] = faq[2]["answer"].replace(phrase, link)
         return {"things": things, "scenarios": scenarios, "second_day": second_day,
+                "things_faq": faq,
                 "nearby_page": Page.objects.live().filter(slug="interesnoe-ryadom").first(),
                 "houses_page": Page.objects.live().filter(slug="razmeshchenie").first()}
     if slug == "razvlecheniya":

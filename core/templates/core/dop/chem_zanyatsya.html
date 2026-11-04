@@ -150,5 +150,12 @@
   </div>
 </section>
 
+<section class="section things-faq" aria-labelledby="things-faq-title">
+  <div class="container">
+    <h2 class="things-title things-title--dark" id="things-faq-title">Ответы на вопросы</h2>
+    {% include "includes/faq_items.html" with faq=things_faq %}
+  </div>
+</section>
+
 {% endwith %}
 {% endblock %}

@@ -75,7 +75,7 @@
 {% if archive %}
 <section class="section">
   <div class="container">
-    <h2 class="section__title section__title--center">Как это было</h2>
+    <h2 class="section__title section__title--center">Как это бывает</h2>
     <ul class="events-archive">
       {% for event in archive %}
         <li class="events-archive__item" data-reveal>
@@ -88,6 +88,17 @@
   </div>
 </section>
 {% endif %}
+
+<section class="section events-new-year" aria-labelledby="events-new-year-title">
+  <div class="container events-new-year__grid">
+    <div>
+      <h2 id="events-new-year-title">Новогодне-Рождественское</h2>
+      <p>Подготовка к Новому году здесь начинается задолго до 31 декабря. Мы украшаем домики и территорию, готовимся к празднику, а гости бронируют любимые даты ещё осенью.</p>
+      <a class="btn btn--primary" href="#event-form">Узнать о событии первыми</a>
+    </div>
+    {% include "includes/video_slot.html" with slot="events-new-year" poster=None title="Новогодне-Рождественское" %}
+  </div>
+</section>
 
 <section class="section" id="event-form">
   <div class="container container--narrow">

@@ -45,15 +45,17 @@
 <section class="section"><div class="container container--narrow"><h2 class="center">Рубрики</h2><ul class="rubrics">{% for tag, text in channel_rubrics %}<li><b>{{ tag }}</b><span>{{ text }}</span></li>{% endfor %}</ul></div></section>
 {% endif %}
 {% with s=settings.core.SiteSettings %}
-{% if s.telegram_url or s.vk_url %}
+{% if newsletter_url or s.telegram_url or s.vk_url %}
 <section class="section"><div class="container center">
   <h2>Новости «Лучшего сезона»</h2>
-  <p>Подписывайтесь, чтобы узнавать о новых записях и событиях.</p>
   {% if newsletter_url %}<p><a href="{{ newsletter_url }}">Рубрики и новости наших каналов</a></p>{% endif %}
+  {% if s.telegram_url or s.vk_url %}
+  <p>Подписывайтесь, чтобы узнавать о новых записях и событиях.</p>
   <p class="split__actions">
     {% if s.telegram_url %}<a class="btn btn--primary" href="{% marketing_url s.telegram_url 'diary' %}" rel="noopener" target="_blank">Подписаться в Telegram</a>{% endif %}
     {% if s.vk_url %}<a class="btn btn--outline" href="{% marketing_url s.vk_url 'diary' %}" rel="noopener" target="_blank">Мы во ВКонтакте</a>{% endif %}
   </p>
+  {% endif %}
 </div></section>
 {% endif %}
 {% endwith %}

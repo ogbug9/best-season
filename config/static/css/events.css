@@ -9,6 +9,11 @@
 .events-faq summary::after { content: '⌄'; position: absolute; right: 20px; font-size: 22px; top: 8px; }
 .events-faq details[open] summary::after { transform: rotate(180deg); }
 .events-faq details p { margin: 0; padding: 18px 22px; }
+.events-new-year__grid { display: grid; gap: 24px; align-items: start; }
+.events-new-year h2 { overflow-wrap: anywhere; }
+@media (min-width: 900px) {
+  .events-new-year__grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; }
+}
 .page-events .section__title { font-size: 48px; line-height: 1.15; margin-bottom: 20px; }
 @media (max-width: 699px) { .events-intro__grid { grid-template-columns: 1fr; gap: 18px; } }
 @media (max-width: 699px) { .page-events .section__title { font-size: 32px; line-height: 1.15; } }
