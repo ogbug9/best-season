@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load content_tags marketing_tags %}
-{% load static wagtailcore_tags media_tags layout_tags %}
+{% load static wagtailcore_tags media_tags layout_tags l10n %}
 
 {% block title %}Интересное рядом — Лучший сезон{% endblock %}
 {% block body_class %}page-nearby{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261104-layout">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261104-visual2">{% endblock %}
 
 {% block content %}
 <section class="pn-hero">
@@ -28,13 +28,14 @@
 </section>
 
 {% page_story "nearby" %}
+<p class="pn-footnote container">* Географически Таруса совсем рядом с нами — менее 6 км, но из-за отсутствия прямого моста добраться туда можно на теплоходе через Оку либо на машине через Серпухов.</p>
 
 <section class="section pn-travel" aria-labelledby="pn-travel-title">
   <div class="container">
     <h2 class="section__title section__title--center" id="pn-travel-title">Сколько ехать от глэмпинга</h2>
     <p class="pn-section-lead">Время поездки на машине по живописным местам</p>
     <ul class="pn-travel__list">
-      {% for row in travel_rows %}<li><b>{{ row.title }}</b><span class="pn-travel__track"><i style="width: {{ row.width }}%"></i></span><span>{{ row.time }}</span></li>{% endfor %}
+      {% for row in travel_rows %}<li><b>{{ row.title }}</b><span class="pn-travel__track"><i style="width: {{ row.width|unlocalize }}%"></i></span><span>{{ row.time }}</span></li>{% endfor %}
     </ul>
   </div>
 </section>
@@ -77,8 +78,8 @@
     <aside class="pn-guide__filters">
       <h2 id="pn-guide-title">Путеводитель<br>по округе</h2>
       <p>Отметьте, что хочется посмотреть, и выберите день приезда. Наш планировщик подскажет актуальную последовательность, что в этот день открыто и сколько времени уйдёт на дорогу.</p>
-      <label class="guide__day">Когда едете?<select data-dayplan-day><option value="">Сегодня</option>{% for name in weekdays %}<option value="{{ forloop.counter0 }}">{{ name }}</option>{% endfor %}</select></label>
-      <p class="guide__plan" data-dayplan-out aria-live="polite">Отметьте места, которые хотите посетить.</p>
+      <label class="guide__day">Когда едете?<select data-dayplan-day><option value="today">Сегодня</option>{% for name in weekdays %}<option value="{{ forloop.counter0 }}">{{ name }}</option>{% endfor %}</select></label>
+      <p class="guide__plan" data-dayplan-out data-empty-message="Дни работы — по открытым источникам. Перед выездом сверьтесь с сайтом места: расписания меняются, а мы не хотим, чтобы вы приехали к закрытым дверям." aria-live="polite">Дни работы — по открытым источникам. Перед выездом сверьтесь с сайтом места: расписания меняются, а мы не хотим, чтобы вы приехали к закрытым дверям.</p>
       <div class="chips guide__chips" data-chips="kind" role="group" aria-label="Что показать">
         <button type="button" class="filter-chip" data-chip="">Все</button>{% for value, label in guide_kinds %}<button type="button" class="filter-chip" data-chip="{{ value }}">{{ label }}</button>{% endfor %}
       </div>

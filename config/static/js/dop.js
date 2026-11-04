@@ -30,10 +30,10 @@
     var out = box.querySelector("[data-dayplan-out]");
     var checks = box.querySelectorAll("[data-plan-item]");
     var names = ["понедельник", "вторник", "среду", "четверг", "пятницу", "субботу", "воскресенье"];
-    if (day && day.value === "") day.value = String((new Date().getDay() + 6) % 7);
+    if (day && day.value === "") day.value = "today";
 
     function render() {
-      var weekday = parseInt(day.value, 10);
+      var weekday = day.value === "today" ? (new Date().getDay() + 6) % 7 : parseInt(day.value, 10);
       var chosen = [], closed = [], minutes = 0;
       Array.prototype.forEach.call(checks, function (input) {
         var days = input.getAttribute("data-days").split(",").map(Number);
@@ -47,7 +47,7 @@
         if (!open) closed.push(title);
       });
       if (!chosen.length) {
-        out.innerHTML = "Отметьте места — соберём день и предупредим, если что-то закрыто в " + names[weekday] + ".";
+        out.textContent = out.getAttribute("data-empty-message") || "Отметьте места — соберём день и предупредим, если что-то закрыто в " + names[weekday] + ".";
         return;
       }
       var html = "<b>Ваш день, " + names[weekday] + ":</b> " + chosen.join(" → ") + ".";
