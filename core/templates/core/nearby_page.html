@@ -1,211 +1,157 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% load content_tags marketing_tags %}
 {% load static wagtailcore_tags media_tags layout_tags %}
 
+{% block title %}Интересное рядом — Лучший сезон{% endblock %}
 {% block body_class %}page-nearby{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261104-figma">
-<style>
-  /* 100% Figma SVG Спецификация (1440x6515, фон #F7F0E6) */
-  body.page-nearby, .page-nearby main {
-    background-color: #F7F0E6 !important;
-  }
-  .page-nearby-hero {
-    background-color: #F7F0E6 !important;
-    padding: 48px 0 32px;
-  }
-  .pn-badge {
-    display: inline-block;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #68725E;
-    margin-bottom: 16px;
-  }
-  .pn-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-  }
-  .pn-h1 {
-    font-size: clamp(32px, 4vw, 54px);
-    font-weight: 500;
-    line-height: 1.15;
-    color: #2B2E28;
-    margin: 0;
-    max-width: 860px;
-    letter-spacing: -0.02em;
-  }
-  .pn-pill {
-    background: #EBE4D5;
-    border: 1px solid #DFD7C5;
-    border-radius: 999px;
-    padding: 10px 22px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #4A4D43;
-    white-space: nowrap;
-    align-self: center;
-  }
-  .pn-lead {
-    font-size: 19px;
-    line-height: 1.55;
-    color: #55584E;
-    max-width: 980px;
-    margin: 0;
-  }
-
-  /* Стилизация блока путеводителя под макет */
-  .page-nearby section.guide {
-    background: transparent !important;
-    padding-top: 40px;
-  }
-  .page-nearby .guide-card {
-    background: #FFFFFF !important;
-    border: 1px solid #ECE4D6 !important;
-    border-radius: 20px !important;
-    box-shadow: 0 6px 20px rgba(43, 46, 40, 0.04) !important;
-  }
-  .page-nearby .guide-card__tip {
-    background: #F8F5EE !important;
-    border-left: 3px solid #847F57 !important;
-    border-radius: 0 10px 10px 0 !important;
-    color: #65695D !important;
-  }
-
-  /* Стилизация маршрутов */
-  .page-nearby section.nearby-routes {
-    background: transparent !important;
-    padding: 48px 0;
-  }
-  .page-nearby .nearby-routes__item {
-    background: #FFFFFF !important;
-    border: 1px solid #ECE4D6 !important;
-    border-radius: 24px !important;
-    padding: 32px 28px !important;
-    box-shadow: 0 6px 20px rgba(43, 46, 40, 0.04) !important;
-  }
-
-  /* Стилизация FAQ */
-  .page-nearby .faq-section {
-    padding-bottom: 80px;
-  }
-</style>
-{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261104-layout">{% endblock %}
 
 {% block content %}
-<!-- 1. ШАПКА / ПЕРВЫЙ ЭКРАН ПО МАКЕТУ FIGMA -->
-<section class="section page-nearby-hero">
+<section class="pn-hero">
   <div class="container">
-    <span class="pn-badge">ИНТЕРЕСНОЕ РЯДОМ</span>
-    <div class="pn-title-row">
-      <h1 class="pn-h1">Поленов прожил здесь 37 лет. Вам хватит выходных?</h1>
-      <div class="pn-pill">В сезоне или на день</div>
-    </div>
-    <p class="pn-lead">
-      Усадьба В. Поленова — в трёх километрах, д. Бёхово из списка лучших в мире — в 15 минутах. Утро в музее, на живописном берегу Оки, вечер дома у костра.
-    </p>
+    <h1>Интересное рядом</h1>
+    <p>Куда съездить и что посмотреть в округе.</p>
   </div>
 </section>
 
-<!-- 2. МЕСТО, КОТОРОЕ ВЫБРАЛ ХУДОЖНИК (ИСТОРИЯ + 4 ПЛАШКИ ФАКТОВ) -->
+<section class="pn-weekend" aria-label="Выходные рядом с Поленово">
+  <div class="container pn-weekend__grid">
+    <h2>Поленов прожил здесь 37 лет. Вам хватит выходных?</h2>
+    <div>
+      <p>Усадьба В. Поленова — в трёх километрах, д. Бёхово из списка лучших в мире — в 15 минутах. Утро в музее, на живописном берегу Оки, вечер дома у костра.</p>
+      <div class="pn-actions">
+        <a class="btn btn--primary" href="#guide">Собрать свой день</a>
+        <button class="btn btn--outline" type="button" data-booking-open data-entry-point="7" data-entry-page="nearby">Свободные даты</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 {% page_story "nearby" %}
 
-{% if page.body|filled %}
-<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
-{% endif %}
-
-<!-- 3. ПУТЕВОДИТЕЛЬ ПО ОКРУГЕ -->
-<section class="section guide" id="guide" data-dayplan>
+<section class="section pn-travel" aria-labelledby="pn-travel-title">
   <div class="container">
-    <h2 class="section__title section__title--center">Путеводитель по округе</h2>
-    <div class="guide__planner">
-      <label class="guide__day">Когда едете?
-        <select data-dayplan-day>
-          <option value="">сегодня</option>
-          {% for name in weekdays %}<option value="{{ forloop.counter0 }}">{{ name }}</option>{% endfor %}
-        </select>
-      </label>
-      <p class="guide__plan" data-dayplan-out aria-live="polite">Отметьте места — соберём день и подскажем, что в этот день закрыто.</p>
-    </div>
-    <div class="chips guide__chips" data-chips="kind" role="group" aria-label="Что показать">
-      <button type="button" class="filter-chip" data-chip="">Всё</button>
-      {% for value, label in guide_kinds %}<button type="button" class="filter-chip" data-chip="{{ value }}">{{ label }}</button>{% endfor %}
-    </div>
-    <ul class="guide__list" data-chips-for="kind">
-      {% for place in guide %}
-        <li class="guide-card" data-tags="{{ place.kind }}" data-guide-card data-reveal>
-          <div class="guide-card__head">
-            <h3>{{ place.title }}</h3>
-            <label class="guide-card__add"><input type="checkbox" data-plan-item data-title="{{ place.title }}" data-days="{{ place.days|join:',' }}" data-minutes="{{ place.minutes }}"> в план дня</label>
-          </div>
-          <dl class="guide-card__facts">
-            <div><dt>Ехать</dt><dd>{{ place.drive }}{% if place.distance and place.distance != place.drive %} · {{ place.distance }}{% endif %}</dd></div>
-            <div><dt>Когда</dt><dd>{{ place.hours }}{% if place.season %} · {{ place.season }}{% endif %}</dd></div>
-            <div><dt>Стоимость</dt><dd>{{ place.price }}</dd></div>
-          </dl>
-          <p>{{ place.text }}</p>
-          {% if place.tip %}<p class="guide-card__tip"><b>Совет:</b> {{ place.tip }}</p>{% endif %}
-          {% if place.route %}<a class="guide-card__route" href="{% marketing_url place.route 'nearby_route' %}" rel="noopener" target="_blank">📍 Маршрут от глэмпинга →</a>{% endif %}
-          <p class="guide-card__closed" aria-hidden="true">В выбранный день закрыто</p>
-          {% if place.links %}
-          <p class="guide-card__sources">Источник: {% for label, url in place.links %}<a href="{{ url }}" rel="noopener" target="_blank">{{ label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-          {% endif %}
-        </li>
-      {% endfor %}
+    <h2 class="section__title section__title--center" id="pn-travel-title">Сколько ехать от глэмпинга</h2>
+    <p class="pn-section-lead">Время поездки на машине по живописным местам</p>
+    <ul class="pn-travel__list">
+      {% for row in travel_rows %}<li><b>{{ row.title }}</b><span class="pn-travel__track"><i style="width: {{ row.width }}%"></i></span><span>{{ row.time }}</span></li>{% endfor %}
     </ul>
-    <p class="guide__note">Часы и цены — по открытым источникам на октябрь 2026; перед поездкой сверьте на сайте места.</p>
   </div>
 </section>
 
-<!-- 4. ТРИ ГОТОВЫХ МАРШРУТА -->
+<aside class="pn-note container" aria-label="Совет">
+  <h2>Совет</h2>
+  <h3>Одно место в день — и время без суеты</h3>
+  <p>Не спешите посетить всё за один день. Прогулка по Усадьбе и закат в Бёхово запомнятся лучше, чем пять галочек на карте и усталость к вечеру.</p>
+</aside>
+
 <section class="section nearby-routes" aria-labelledby="nearby-routes-title">
   <div class="container">
     <h2 class="section__title section__title--center" id="nearby-routes-title">Три готовых маршрута</h2>
     <p class="nearby-routes__intro">Три дня, которые у наших гостей складываются чаще всего.<br>Время примерное — у каждого свой темп.</p>
     <div class="nearby-routes__grid">
       <article class="nearby-routes__item">
-        <h3>Если вы здесь впервые</h3>
-        <ol>
-          <li><b>11:00 · Усадьба Поленово</b><span>дом художника и парк над Окой</span></li>
-          <li><b>14:00 · Обед в Поленово</b><span>или дома на террасе</span></li>
-          <li><b>18:00 · Бёхово</b><span>церковь Троицы и закат над Окой</span></li>
-          <li><b>21:00 · Баня и костёр</b><span>в «Лучшем сезоне»</span></li>
-        </ol>
+        <div class="nearby-routes__photo" aria-hidden="true"></div><h3>Если вы здесь впервые</h3>
+        <ol><li><b>11:00 · Усадьба Поленово</b><span>дом художника и парк над Окой</span></li><li><b>14:00 · Обед в Поленово</b><span>или дома на террасе</span></li><li><b>18:00 · Бёхово</b><span>церковь Троицы и закат над Окой</span></li><li><b>21:00 · Баня и костёр</b><span>в «Лучшем сезоне»</span></li></ol>
       </article>
       <article class="nearby-routes__item">
-        <h3>Для тех, кто был</h3>
-        <ol>
-          <li><b>11:00 · Усадьба А. Болотова «Дворяниново»</b><span>дворянское гнездо известного русского агронома-учёного</span></li>
-          <li><b>14:00 · Обед в ресторане «Брунколь»</b><span>или дома на террасе</span></li>
-          <li><b>18:00 · Велегож</b><span>тропы вдоль Оки и пещеры, которые местные связывают с разбойником Улаем.</span></li>
-          <li><b>21:00 · Баня и ужин</b><span>на мангале в «Лучшем сезоне»</span></li>
-        </ol>
+        <div class="nearby-routes__photo" aria-hidden="true"></div><h3>Для тех, кто был</h3>
+        <ol><li><b>11:00 · Усадьба А. Болотова «Дворяниново»</b><span>дворянское гнездо русского агронома-учёного</span></li><li><b>14:00 · Обед в ресторане «Брунколь»</b><span>или дома на террасе</span></li><li><b>18:00 · Велегож</b><span>тропы вдоль Оки и пещеры, которые местные связывают с разбойником Улаем</span></li><li><b>21:00 · Баня и ужин</b><span>на мангале в «Лучшем сезоне»</span></li></ol>
       </article>
       <article class="nearby-routes__item">
-        <h3>С детьми</h3>
-        <ol>
-          <li><b>11:00 · Конюшня в Поленово</b><span>покормить лошадей, покататься на пони</span></li>
-          <li><b>15:00 · Деревня Фёдора Конюхова</b><span>экскурсия с квестом, начало в 15:00, по записи</span></li>
-          <li><b>18:00 · Лучший сезон</b><span>батут, детская площадка и костёр, когда стемнеет</span></li>
-          <li><b>21:00 · Звёзды над поляной</b><span>в «Лучшем сезоне»</span></li>
-        </ol>
+        <div class="nearby-routes__photo" aria-hidden="true"></div><h3>С детьми</h3>
+        <ol><li><b>11:00 · Конюшня в Поленово</b><span>покормить лошадей, покататься на пони</span></li><li><b>14:00 · Деревня Фёдора Конюхова</b><span>экскурсия с квестом, начало в 13:00, по записи</span></li><li><b>18:00 · Лучший сезон</b><span>батут, детская площадка и костёр, когда стемнеет</span></li><li><b>21:00 · Звёзды над поляной</b><span>в «Лучшем сезоне»</span></li></ol>
       </article>
     </div>
   </div>
 </section>
 
-{% guest_quote "Удобное местоположение" "Гости о соседстве" %}
+<aside class="pn-note pn-note--bee container" aria-label="Совет">
+  <h2>Совет</h2>
+  <p>Если окажетесь в Велегоже, загляните на камерную пасеку Виктора. Позвоните заранее и договоритесь о визите — возможно, это знакомство станет одним из самых приятных открытий поездки.</p>
+  <a class="btn btn--primary" href="tel:+79912550837">Телефон</a>
+</aside>
 
-<!-- 5. FAQ (ОТВЕТЫ НА ВОПРОСЫ) -->
-<section class="section faq-section" aria-labelledby="nearby-faq-title">
-  <div class="container container--narrow">
-    <h2 class="section__title section__title--center" id="nearby-faq-title">Ответы на вопросы</h2>
-    {% include "includes/faq_items.html" with faq=nearby_faq %}
+<section class="section pn-guide" id="guide" data-dayplan aria-labelledby="pn-guide-title">
+  <div class="container pn-guide__layout">
+    <aside class="pn-guide__filters">
+      <h2 id="pn-guide-title">Путеводитель<br>по округе</h2>
+      <p>Отметьте, что хочется посмотреть, и выберите день приезда. Наш планировщик подскажет актуальную последовательность, что в этот день открыто и сколько времени уйдёт на дорогу.</p>
+      <label class="guide__day">Когда едете?<select data-dayplan-day><option value="">Сегодня</option>{% for name in weekdays %}<option value="{{ forloop.counter0 }}">{{ name }}</option>{% endfor %}</select></label>
+      <p class="guide__plan" data-dayplan-out aria-live="polite">Отметьте места, которые хотите посетить.</p>
+      <div class="chips guide__chips" data-chips="kind" role="group" aria-label="Что показать">
+        <button type="button" class="filter-chip" data-chip="">Все</button>{% for value, label in guide_kinds %}<button type="button" class="filter-chip" data-chip="{{ value }}">{{ label }}</button>{% endfor %}
+      </div>
+      <div class="chips guide__chips pn-distance" role="group" aria-label="Время в дороге">
+        <button type="button" class="filter-chip is-active" data-distance="15" aria-pressed="true">До 15 минут</button><button type="button" class="filter-chip" data-distance="30" aria-pressed="false">До 30 минут</button><button type="button" class="filter-chip" data-distance="60" data-distance-min="true" aria-pressed="false">От часа</button>
+      </div>
+      <button type="button" class="pn-reset" data-nearby-reset>Сбросить результат</button>
+      <div class="pn-ready-route"><h3>Ваш готовый маршрут</h3><div class="nearby-routes__photo" aria-hidden="true"></div><ol><li>Конюшня в Поленово</li><li>Деревня Фёдора Конюхова</li><li>Лучший сезон</li><li>Звёзды над поляной</li></ol></div>
+    </aside>
+    <ul class="guide__list" data-chips-for="kind">
+      {% for place in guide %}
+      <li class="guide-card" data-tags="{{ place.kind }}" data-guide-card data-minutes="{{ place.minutes }}" data-reveal>
+        <div class="guide-card__head"><h3>{{ place.title }}</h3><label class="guide-card__add"><input type="checkbox" data-plan-item data-title="{{ place.title }}" data-days="{{ place.days|join:',' }}" data-minutes="{{ place.minutes }}"> в план дня</label></div>
+        <dl class="guide-card__facts"><div><dt>Ехать:</dt><dd>{{ place.drive }}{% if place.distance and place.distance != place.drive %} · {{ place.distance }}{% endif %}</dd></div><div><dt>Когда:</dt><dd>{{ place.hours }}{% if place.season %} · {{ place.season }}{% endif %}</dd></div><div><dt>Билет:</dt><dd>{{ place.price }}</dd></div></dl>
+        <p>{{ place.text }}</p>{% if place.tip %}<p class="guide-card__tip"><b>Совет:</b> {{ place.tip }}</p>{% endif %}
+        {% if place.route %}<a class="guide-card__route" href="{% marketing_url place.route 'nearby_route' %}" rel="noopener" target="_blank">Маршрут от глэмпинга</a>{% endif %}
+        <p class="guide-card__closed" aria-hidden="true">В выбранный день закрыто</p>
+        {% if place.links %}<p class="guide-card__sources">Источник: {% for label, url in place.links %}<a href="{{ url }}" rel="noopener" target="_blank">{{ label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
   </div>
 </section>
+
+<aside class="pn-note pn-note--telegram container">
+  <h2>Больше интересных мест:</h2>
+  <p>В нашем Телеграм-канале можно найти целую рубрику <b>#ИнтересноеРядом</b>, где мы собираем и рассказываем не о том, что стоит посетить, но и почему.</p>
+  <a class="btn btn--primary" href="https://t.me/best_season_bs" target="_blank" rel="noopener">Перейти в Telegram</a>
+</aside>
+
+<section class="section faq-section" aria-labelledby="nearby-faq-title">
+  <div class="container container--narrow"><h2 class="section__title section__title--center" id="nearby-faq-title">Ответы на вопросы</h2>{% include "includes/faq_items.html" with faq=nearby_faq faq_open=True %}</div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    var root = document.querySelector('.pn-guide');
+    if (!root) return;
+    var cards = Array.from(root.querySelectorAll('[data-guide-card]'));
+    var distance = 15;
+    var distanceMin = false;
+    function apply() {
+      cards.forEach(function (card) {
+        var category = root.querySelector('[data-chips="kind"] [aria-pressed="true"]');
+        var kind = category ? category.dataset.chip : '';
+        var matchesKind = !kind || card.dataset.tags.split(' ').includes(kind);
+        var minutes = Number(card.dataset.minutes);
+        var matchesDistance = distanceMin ? minutes >= distance : minutes <= distance;
+        card.hidden = !matchesKind || !matchesDistance;
+      });
+    }
+    root.querySelectorAll('[data-distance]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        distance = Number(button.dataset.distance);
+        distanceMin = button.hasAttribute('data-distance-min');
+        root.querySelectorAll('[data-distance]').forEach(function (item) {
+          var active = item === button;
+          item.classList.toggle('is-active', active);
+          item.setAttribute('aria-pressed', String(active));
+        });
+        apply();
+      });
+    });
+    root.querySelector('[data-chips="kind"]').addEventListener('click', apply);
+    root.querySelector('[data-nearby-reset]').addEventListener('click', function () {
+      root.querySelector('[data-chips="kind"] [data-chip=""]').click();
+      root.querySelector('[data-distance="15"]').click();
+      root.querySelectorAll('[data-plan-item]').forEach(function (input) { input.checked = false; });
+      root.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    apply();
+  }());
+</script>
 {% endblock %}

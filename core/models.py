@@ -1123,6 +1123,7 @@ class NearbyPage(InProgressMixin, Page):
 
         context.update(places=places, season=season, seasons=NearbyPlace.SEASONS,
                        place_facts=self._rows(self.facts, 2), route_points=self._rows(self.day_route, 3),
+                       travel_rows=__import__('core.nearby_content', fromlist=['travel_rows']).travel_rows(),
                        guide=__import__('core.nearby_content', fromlist=['guide_cards']).guide_cards(), guide_kinds=dc.GUIDE_KINDS,
                        nearby_faq=dc.NEARBY_FAQ,
                        weekdays=["пн", "вт", "ср", "чт", "пт", "сб", "вс"])
