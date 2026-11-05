@@ -12,8 +12,8 @@
       {% endif %}
     </div>
     <div class="story__body" data-reveal>
-      <p class="story__lead">{{ story.lead }}</p>
-      {% for para in story.paras %}<p>{{ para }}</p>{% endfor %}
+      <p class="story__lead">{{ story.lead|linebreaksbr }}</p>
+      {% for para in story.paras %}<p>{{ para|linebreaksbr }}</p>{% endfor %}
       {% if story.quote %}<blockquote class="story__quote"><p>{{ story.quote.0 }}</p><cite>{{ story.quote.1 }}</cite></blockquote>{% endif %}
       {% if story.link %}<p class="story__source">Источник: <a href="{{ story.link.1 }}" rel="noopener" target="_blank">{{ story.link.0 }}</a></p>{% endif %}
     </div>

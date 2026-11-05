@@ -4,7 +4,7 @@
 
 {% block title %}Интересное рядом — Лучший сезон{% endblock %}
 {% block body_class %}page-nearby{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261105-visual7">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261105-visual8">{% endblock %}
 
 {% block content %}
 <section class="pn-hero">
@@ -18,7 +18,7 @@
   <div class="container pn-weekend__grid">
     <h2>Поленов прожил здесь 37 лет. Вам хватит выходных?</h2>
     <div>
-      <p>Усадьба В. Поленова — в трёх километрах, д. Бёхово из списка лучших в мире — в 15 минутах. Утро в музее, на живописном берегу Оки, вечер дома у костра.</p>
+      <p>Усадьба В. Поленова — в трёх <br> километрах, д. Бёхово из списка <br> лучших в мире — в 15 минутах. <br> Утро в музее, на живописном берегу <br> Оки, вечер дома у костра.</p>
       <div class="pn-actions">
         <a class="btn btn--primary" href="#guide">Собрать свой день</a>
         <button class="btn btn--outline" type="button" data-booking-open data-entry-point="7" data-entry-page="nearby">Свободные даты</button>
@@ -28,12 +28,12 @@
 </section>
 
 {% page_story "nearby" %}
-<p class="pn-footnote container">*Географически она находится совсем рядом с нами - менее 6 км, но из-за отсутствия прямого моста добраться туда можно на теплоходе через Оку, либо на машине через Серпухов</p>
+<p class="pn-footnote container">*Географически она находится совсем рядом с нами - менее 6 км, <br> но из-за отсутствия прямого моста добраться туда можно на <br> теплоходе через Оку, либо на машине через Серпухов</p>
 
 <section class="section pn-travel" aria-labelledby="pn-travel-title">
   <div class="container">
     <h2 class="section__title section__title--center" id="pn-travel-title">Сколько ехать от глэмпинга</h2>
-    <p class="pn-section-lead">Время поездки на машине по живописным местам</p>
+    <p class="pn-section-lead">время поездки на машине по живописным местам</p>
     <ul class="pn-travel__list">
       {% for row in travel_rows %}<li><b>{{ row.title }}</b><span class="pn-travel__track"><i style="width: {{ row.width|unlocalize }}%"></i></span><span>{{ row.time }}</span></li>{% endfor %}
     </ul>
