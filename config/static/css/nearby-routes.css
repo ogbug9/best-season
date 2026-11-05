@@ -4,7 +4,7 @@
 .page-nearby .section { padding-block: 52px; }
 .page-nearby .section__title { margin: 0 0 12px; font-size: 40px; line-height: 1.12; font-weight: 400; color: var(--c-dark); }
 .page-nearby .container { width: min(100% - 48px, 1250px); }
-.pn-hero { padding: 128px 0 66px; text-align: center; }
+.pn-hero { padding: 188px 0 66px; text-align: center; }
 .pn-hero h1 { margin: 0; color: var(--c-olive); font: 500 clamp(48px, 6vw, 80px)/1.05 var(--font-heading); }
 .pn-hero p { margin: 30px 0 0; color: var(--c-dark); font-size: 22px; line-height: 1.3; }
 .pn-weekend { padding: 44px 0 37px; border-block: 2px dashed var(--c-olive-soft); }
@@ -67,7 +67,15 @@
 .pn-reset { width: 100%; min-height: 42px; margin-top: 6px; border: 1px solid var(--c-terra); border-radius: 999px; background: transparent; color: var(--c-dark); font: inherit; font-size: 16px; cursor: pointer; }
 .pn-ready-route { margin-top: 28px; padding-top: 22px; border-top: 2px dashed var(--c-olive-soft); }
 .pn-ready-route h3 { margin: 0 0 14px; font: 400 26px/1.1 var(--font-heading); }
-.pn-ready-route ol { display: grid; gap: 9px; margin: 18px 0 0; padding-left: 24px; }
+.pn-ready-route .nearby-routes__photo { aspect-ratio: 4; border-radius: 18px; }
+.pn-ready-route ol { display: grid; margin: 18px 0 0; padding: 0 0 0 9px; list-style: none; }
+.pn-ready-route li { position: relative; padding: 0 0 15px 20px; border-left: 1px dashed var(--c-terra); font-size: 15px; line-height: 1.25; }
+.pn-ready-route li:last-child { padding-bottom: 0; border-left-color: transparent; }
+.pn-ready-route li::before { position: absolute; top: 2px; left: -9px; width: 16px; height: 16px; border: 1px solid var(--c-terra); border-radius: 50%; background: var(--c-cream); content: ""; }
+.pn-ready-route li:first-child::before { background: var(--c-terra); box-shadow: inset 0 0 0 4px var(--c-cream); }
+.pn-ready-route li b, .pn-ready-route li span { display: block; }
+.pn-ready-route li b { margin-bottom: 2px; font-weight: 500; }
+.pn-ready-route li span { color: var(--c-muted); }
 .pn-guide .guide__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
 .pn-guide .guide-card { gap: 12px; padding: 20px; border-radius: 20px; background: var(--c-white); }
 .pn-guide .guide-card h3 { font-size: 17px; line-height: 1.2; font-weight: 500; }

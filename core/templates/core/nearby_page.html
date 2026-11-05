@@ -4,7 +4,7 @@
 
 {% block title %}Интересное рядом — Лучший сезон{% endblock %}
 {% block body_class %}page-nearby{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261104-visual2">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261105-visual3">{% endblock %}
 
 {% block content %}
 <section class="pn-hero">
@@ -87,7 +87,7 @@
         <button type="button" class="filter-chip is-active" data-distance="15" aria-pressed="true">До 15 минут</button><button type="button" class="filter-chip" data-distance="30" aria-pressed="false">До 30 минут</button><button type="button" class="filter-chip" data-distance="60" data-distance-min="true" aria-pressed="false">От часа</button>
       </div>
       <button type="button" class="pn-reset" data-nearby-reset>Сбросить результат</button>
-      <div class="pn-ready-route"><h3>Ваш готовый маршрут</h3><div class="nearby-routes__photo" aria-hidden="true"></div><ol><li>Конюшня в Поленово</li><li>Деревня Фёдора Конюхова</li><li>Лучший сезон</li><li>Звёзды над поляной</li></ol></div>
+      <div class="pn-ready-route"><h3>Ваш готовый маршрут</h3><div class="nearby-routes__photo" aria-hidden="true"></div><ol data-ready-route-list><li><b>1 · Конюшня в Поленово</b><span>покормить лошадей, покататься на пони</span></li><li><b>2 · Деревня Фёдора Конюхова</b><span>экскурсия с квестом, начало в 13:00, по записи</span></li><li><b>3 · Лучший сезон</b><span>батут, детская площадка и костёр, когда стемнеет</span></li><li><b>4 · Звёзды над поляной</b><span>в «Лучшем сезоне»</span></li></ol></div>
     </aside>
     <ul class="guide__list" data-chips-for="kind">
       {% for place in guide %}
@@ -111,7 +111,7 @@
 </aside>
 
 <section class="section faq-section" aria-labelledby="nearby-faq-title">
-  <div class="container container--narrow"><h2 class="section__title section__title--center" id="nearby-faq-title">Ответы на вопросы</h2>{% include "includes/faq_items.html" with faq=nearby_faq faq_open=True %}</div>
+  <div class="container container--narrow"><h2 class="section__title section__title--center" id="nearby-faq-title">Ответы на вопросы</h2>{% include "includes/faq_items.html" with faq=nearby_faq faq_open=False %}</div>
 </section>
 {% endblock %}
 

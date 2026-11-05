@@ -29,12 +29,33 @@
     var day = box.querySelector("[data-dayplan-day]");
     var out = box.querySelector("[data-dayplan-out]");
     var checks = box.querySelectorAll("[data-plan-item]");
+    var routeList = box.querySelector("[data-ready-route-list]");
+    var defaultRoute = routeList ? Array.prototype.map.call(routeList.children, function (item) { return item.cloneNode(true); }) : [];
     var names = ["понедельник", "вторник", "среду", "четверг", "пятницу", "субботу", "воскресенье"];
     if (day && day.value === "") day.value = "today";
 
+    function renderReadyRoute(items) {
+      if (!routeList) return;
+      routeList.replaceChildren();
+      if (!items.length) {
+        defaultRoute.forEach(function (item) { routeList.appendChild(item.cloneNode(true)); });
+        return;
+      }
+      items.sort(function (a, b) { return a.minutes - b.minutes; }).forEach(function (item, index) {
+        var row = document.createElement("li");
+        var title = document.createElement("b");
+        var detail = document.createElement("span");
+        title.textContent = (index + 1) + " · " + item.title;
+        detail.textContent = "≈ " + item.minutes + " " + plural(item.minutes, "минута", "минуты", "минут") + " на машине";
+        row.appendChild(title);
+        row.appendChild(detail);
+        routeList.appendChild(row);
+      });
+    }
+
     function render() {
       var weekday = day.value === "today" ? (new Date().getDay() + 6) % 7 : parseInt(day.value, 10);
-      var chosen = [], closed = [], minutes = 0;
+      var chosen = [], selected = [], closed = [], minutes = 0;
       Array.prototype.forEach.call(checks, function (input) {
         var days = input.getAttribute("data-days").split(",").map(Number);
         var card = input.closest("[data-guide-card]");
@@ -42,10 +63,13 @@
         if (card) card.classList.toggle("is-closed", !open);
         if (!input.checked) return;
         var title = input.getAttribute("data-title");
+        var drive = parseInt(input.getAttribute("data-minutes"), 10) || 0;
         chosen.push(title);
-        minutes = Math.max(minutes, parseInt(input.getAttribute("data-minutes"), 10) || 0);
+        selected.push({ title: title, minutes: drive });
+        minutes = Math.max(minutes, drive);
         if (!open) closed.push(title);
       });
+      renderReadyRoute(selected);
       if (!chosen.length) {
         out.textContent = out.getAttribute("data-empty-message") || "Отметьте места — соберём день и предупредим, если что-то закрыто в " + names[weekday] + ".";
         return;
