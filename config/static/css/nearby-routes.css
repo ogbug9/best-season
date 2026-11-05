@@ -5,12 +5,16 @@
 .page-nearby .section__title { margin: 0 0 12px; font-size: 40px; line-height: 1.12; font-weight: 400; color: var(--c-dark); }
 .page-nearby .container { width: min(100% - 48px, 1250px); }
 .pn-hero { padding: 188px 0 66px; text-align: center; }
+@media (min-width: 700px) {
+  .site.page-nearby main > .pn-hero { padding-top: 211px; padding-bottom: 54px; }
+}
 .pn-hero h1 { margin: 0; color: var(--c-olive); font: 500 clamp(48px, 6vw, 80px)/1.05 var(--font-heading); }
 .pn-hero p { margin: 30px 0 0; color: var(--c-dark); font-size: 22px; line-height: 1.3; }
-.pn-weekend { padding: 44px 0 37px; border-block: 2px dashed var(--c-olive-soft); }
-.pn-weekend__grid { display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 54px; }
+.pn-weekend { padding: 36px 0 29px; border-block: 2px dashed var(--c-olive-soft); }
+.pn-weekend .container { width: min(100% - 48px, 1176px); }
+.pn-weekend__grid { display: grid; grid-template-columns: 1.15fr .85fr; align-items: center; gap: 44px; }
 .pn-weekend h2 { margin: 0; color: var(--c-dark); font: 400 clamp(34px, 3.8vw, 54px)/1.02 var(--font-heading); }
-.pn-weekend__grid > div > p { margin: 0; font-size: 18px; line-height: 1.34; }
+.pn-weekend__grid > div > p { max-width: 400px; margin: 0; font-size: 18px; line-height: 1.34; }
 .pn-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; }
 .pn-actions .btn { min-height: 44px; padding-inline: 22px; border-radius: 999px; font-size: 16px; }
 .page-nearby .story { padding-block: 76px 58px; }
