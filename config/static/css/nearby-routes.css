@@ -25,7 +25,7 @@
 .page-nearby .story__body p { margin-bottom: 20px; font-size: 18px; line-height: 1.3; }
 .page-nearby .story__body .story__lead { font-size: 18px; line-height: 1.35; color: var(--c-dark); }
 .page-nearby .story__source { display: none; }
-.pn-footnote { width: min(100% - 48px, 1120px) !important; margin: -46px auto 40px; padding-inline: 10px; color: #77746D; font-size: 12px; line-height: 1.3; }
+.pn-footnote { width: min(100% - 48px, 490px) !important; margin: -46px 0 40px max(24px, calc((100% - 1120px) / 2)); padding-inline: 0; color: #77746D; font-size: 12px; line-height: 1.3; }
 .pn-travel { padding-top: 24px !important; }
 .pn-section-lead { margin: 0 0 32px; text-align: center; font-size: 18px; }
 .pn-travel__list { display: grid; gap: 13px; width: min(100%, 1000px); margin: 0 auto; padding: 0; list-style: none; }
