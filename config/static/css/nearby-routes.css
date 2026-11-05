@@ -93,13 +93,19 @@
 .pn-guide .guide-card__facts dt { color: var(--c-terra); }
 .pn-guide .guide-card p { font-size: 16px; line-height: 1.25; }
 .pn-guide .guide-card__tip { padding: 10px 12px; background: var(--c-blush); }
-.pn-guide .guide-card__route { display: block; width: 100%; min-height: 40px; margin-top: auto; padding: 9px 12px; border-radius: 999px; background: var(--c-olive); color: white; text-align: center; text-decoration: none; font-size: 15px; }
+.pn-guide .guide-card__route { display: block; width: 100%; min-height: 40px; margin-top: auto; padding: 9px 12px; border-radius: 999px; background: var(--c-olive); color: white; text-align: center; text-decoration: none; font-size: 15px; font-weight: 400; }
 .pn-guide .guide-card__route::before, .pn-guide .guide-card__route::after { content: none; }
 .pn-guide .guide-card__sources { display: none; }
 .pn-note--telegram { width: min(100% - 48px, 600px) !important; margin-block: 55px 72px; }
 .page-nearby .faq-section { padding-bottom: 70px; }
-.page-nearby .faq-section .section__title { margin-bottom: 28px; }
+.page-nearby .faq-section .section__title { margin-bottom: 58px; }
 .page-nearby .faq-section .container--narrow { width: min(100% - 48px, 1000px); max-width: 1000px; }
+.page-nearby .faq { gap: 20px; }
+@media (min-width: 700px) {
+  .page-nearby .faq__item .faq__question { min-height: 53px; padding-block: 12px; font-size: 24px; line-height: 1.22; }
+  .page-nearby .faq__item .faq__answer { padding: 20px 32px; font-size: 20px; line-height: 24px; }
+  .page-nearby .faq__reference-break { display: initial; }
+}
 .page-nearby .footer-address { display: none; }
 
 @media (max-width: 1100px) {
@@ -150,5 +156,9 @@
   .pn-guide .guide__list { grid-template-columns: 1fr; }
   .pn-guide .guide-card { padding: 18px; }
   .page-nearby .faq-section .container--narrow { width: min(100% - 36px, 560px); max-width: 560px; }
+  .page-nearby .faq-section .section__title { margin-bottom: 28px; }
+  .page-nearby .faq__item .faq__question { min-height: 0; padding: 12px 16px; font-size: 22px; line-height: 1.22; }
+  .page-nearby .faq__item .faq__answer { padding: 20px 16px; font-size: 18px; line-height: 24px; }
+  .page-nearby .faq__reference-break { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .pn-guide .guide-card { transition: none; } }
