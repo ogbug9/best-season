@@ -4,7 +4,7 @@
 
 {% block title %}Интересное рядом — Лучший сезон{% endblock %}
 {% block body_class %}page-nearby{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261110-nearby">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261110-layout">{% endblock %}
 
 {% block content %}
 <section class="pn-hero">
@@ -43,7 +43,7 @@
 <aside class="pn-note container" aria-label="Совет">
   <h2>Совет</h2>
   <h3>Одно место в день — и время без суеты</h3>
-  <p>Не спешите посетить всё за один день. Прогулка по Усадьбе<br class="pn-reference-break"> и закат в Бёхово запомнятся лучше, чем пять галочек на<br class="pn-reference-break"> карте и усталость к вечеру.</p>
+  <p>Не спешите посетить всё за один день.<br class="pn-reference-break"> Прогулка по Усадьбе и закат в Бёхово запомнятся лучше,<br class="pn-reference-break"> чем пять галочек на карте и усталость к вечеру.</p>
 </aside>
 
 <section class="section nearby-routes" aria-labelledby="nearby-routes-title">
@@ -57,19 +57,19 @@
       </article>
       <article class="nearby-routes__item">
         <div class="nearby-routes__photo" aria-hidden="true"></div><h3>Для тех, кто был</h3>
-        <ol><li><b>11:00 · Усадьба А. Болотова «Дворяниново»</b><span>дворянское гнездо русского агронома-учёного</span></li><li><b>14:00 · Обед в ресторане «Брунколь»</b><span>или дома на террасе</span></li><li><b>18:00 · Велегож</b><span>тропы вдоль Оки и пещеры, которые местные связывают с разбойником Улаем</span></li><li><b>21:00 · Баня и ужин</b><span>на мангале в «Лучшем сезоне»</span></li></ol>
+        <ol><li><b>11:00 · Усадьба А. Болотова «Дворяниново»</b><span>дворянское гнездо известного русского<br class="pn-reference-break"> агронома-учёного</span></li><li><b>14:00 · Обед в ресторане «Брунколь»</b><span>или дома на террасе</span></li><li><b>18:00 · Велегож</b><span>тропы вдоль Оки и пещеры, которые местные связывают с разбойником Улаем</span></li><li><b>21:00 · Баня и ужин</b><span>на мангале в «Лучшем сезоне»</span></li></ol>
       </article>
       <article class="nearby-routes__item">
         <div class="nearby-routes__photo" aria-hidden="true"></div><h3>С детьми</h3>
-        <ol><li><b>11:00 · Конюшня в Поленово</b><span>покормить лошадей, покататься на пони</span></li><li><b>14:00 · Деревня Фёдора Конюхова</b><span>экскурсия с квестом, начало в 13:00, по записи</span></li><li><b>18:00 · Лучший сезон</b><span>батут, детская площадка и костёр, когда стемнеет</span></li><li><b>21:00 · Звёзды над поляной</b><span>в «Лучшем сезоне»</span></li></ol>
+        <ol><li><b>11:00 · Конюшня в Поленово</b><span>покормить лошадей,<br class="pn-reference-break"> покататься на пони</span></li><li><b>14:00 · Деревня Фёдора Конюхова</b><span>экскурсия с квестом, начало в 13:00,<br class="pn-reference-break"> по записи</span></li><li><b>18:00 · Лучший сезон</b><span>Батут, детская площадка и костёр,<br class="pn-reference-break"> когда стемнеет</span></li><li><b>21:00 · Звёзды над поляной</b><span>в «Лучшем сезоне»</span></li></ol>
       </article>
     </div>
   </div>
 </section>
 
 <aside class="pn-note pn-note--bee container" aria-label="Совет">
-  <h2>Совет</h2>
-  <p>Если окажетесь в Велегоже, загляните на камерную<br class="pn-reference-break"> пасеку Виктора. Позвоните заранее и договоритесь о<br class="pn-reference-break"> визите — возможно, это знакомство станет одним из<br class="pn-reference-break"> самых приятных открытий поездки.</p>
+  <h2>Совет:</h2>
+  <p>Если окажетесь в Велегоже,<br class="pn-reference-break"> загляните на камерную пасеку Виктора.<br class="pn-reference-break"> Позвоните заранее и договоритесь о визите<br class="pn-reference-break"> — возможно, это знакомство станет одним<br class="pn-reference-break"> из самых приятных открытий поездки.</p>
   <a class="btn btn--primary" href="tel:+79912550837">Телефон</a>
 </aside>
 
@@ -77,7 +77,7 @@
   <div class="container pn-guide__layout">
     <aside class="pn-guide__filters">
       <h2 id="pn-guide-title">Путеводитель<br>по округе</h2>
-      <p>Отметьте, что хочется посмотреть, и выберите день приезда. Наш планировщик подскажет актуальную последовательность, что в этот день открыто и сколько времени уйдёт на дорогу.</p>
+      <p class="pn-guide__intro">Отметьте, что хочется посмотреть,<br class="pn-reference-break"> и выберите день приезда.<br class="pn-reference-break"> Наш планировщик подскажет<br class="pn-reference-break"> актуальную последовательность,<br class="pn-reference-break"> что в этот день открыто и сколько<br class="pn-reference-break"> времени уйдёт на дорогу.</p>
       <label class="guide__day">Когда едете?<select data-dayplan-day><option value="today">Сегодня</option>{% for name in weekdays %}<option value="{{ forloop.counter0 }}">{{ name }}</option>{% endfor %}</select></label>
       <p class="guide__plan" data-dayplan-out data-empty-message="Дни работы — по открытым источникам. Перед выездом сверьтесь с сайтом места: расписания меняются, а мы не хотим, чтобы вы приехали к закрытым дверям." aria-live="polite">Дни работы — по открытым источникам. Перед выездом сверьтесь с сайтом места: расписания меняются, а мы не хотим, чтобы вы приехали к закрытым дверям.</p>
       <div class="chips guide__chips" data-chips="kind" role="group" aria-label="Что показать">
@@ -87,7 +87,7 @@
         <button type="button" class="filter-chip is-active" data-distance="15" aria-pressed="true">До 15 минут</button><button type="button" class="filter-chip" data-distance="30" aria-pressed="false">До 30 минут</button><button type="button" class="filter-chip" data-distance="60" data-distance-min="true" aria-pressed="false">От часа</button>
       </div>
       <button type="button" class="pn-reset" data-nearby-reset>Сбросить результат</button>
-      <div class="pn-ready-route"><h3>Ваш готовый маршрут</h3><div class="nearby-routes__photo" aria-hidden="true"></div><ol data-ready-route-list><li><b>1 · Конюшня в Поленово</b><span>покормить лошадей, покататься на пони</span></li><li><b>2 · Деревня Фёдора Конюхова</b><span>экскурсия с квестом, начало в 13:00, по записи</span></li><li><b>3 · Лучший сезон</b><span>Батут, детская площадка и костёр, когда стемнеет</span></li><li><b>4 · Звёзды над поляной</b><span>в «Лучшем сезоне»</span></li></ol></div>
+      <div class="pn-ready-route"><h3>Ваш готовый маршрут</h3><div class="nearby-routes__photo" aria-hidden="true"></div><ol data-ready-route-list><li><b>1 · Конюшня в Поленово</b><span>покормить лошадей,<br class="pn-reference-break"> покататься на пони</span></li><li><b>2 · Деревня Фёдора Конюхова</b><span>экскурсия с квестом, начало в 13:00,<br class="pn-reference-break"> по записи</span></li><li><b>3 · Лучший сезон</b><span>Батут, детская площадка и костёр, когда стемнеет</span></li><li><b>4 · Звёзды над поляной</b><span>в «Лучшем сезоне»</span></li></ol></div>
     </aside>
     <div>
       <p data-nearby-empty role="status" hidden>По выбранным фильтрам ничего не найдено.</p>
@@ -112,7 +112,7 @@
 
 <aside class="pn-note pn-note--telegram container">
   <h2>Больше интересных мест:</h2>
-  <p>В нашем Телеграм-канале можно найти целую<br class="pn-reference-break"> рубрику <b>#ИнтересноеРядом</b>, где мы собираем и<br class="pn-reference-break"> рассказываем не о том, что стоит посетить, но и<br class="pn-reference-break"> почему.</p>
+  <p>В нашем Телеграм-канале можно найти<br class="pn-reference-break"> целую рубрику <b>#ИнтересноеРядом</b>, где мы<br class="pn-reference-break"> собираем и рассказываем не о том, что стоит<br class="pn-reference-break"> посетить, но и почему.</p>
   <a class="btn btn--primary" href="https://t.me/best_season_bs" target="_blank" rel="noopener">Перейти в Telegram</a>
 </aside>
 
