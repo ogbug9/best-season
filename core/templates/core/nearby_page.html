@@ -4,7 +4,7 @@
 
 {% block title %}Интересное рядом — Лучший сезон{% endblock %}
 {% block body_class %}page-nearby{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261109-nearby">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261110-nearby">{% endblock %}
 
 {% block content %}
 <section class="pn-hero">
@@ -43,7 +43,7 @@
 <aside class="pn-note container" aria-label="Совет">
   <h2>Совет</h2>
   <h3>Одно место в день — и время без суеты</h3>
-  <p>Не спешите посетить всё за один день. Прогулка по Усадьбе и закат в Бёхово запомнятся лучше, чем пять галочек на карте и усталость к вечеру.</p>
+  <p>Не спешите посетить всё за один день. Прогулка по Усадьбе<br class="pn-reference-break"> и закат в Бёхово запомнятся лучше, чем пять галочек на<br class="pn-reference-break"> карте и усталость к вечеру.</p>
 </aside>
 
 <section class="section nearby-routes" aria-labelledby="nearby-routes-title">
@@ -69,7 +69,7 @@
 
 <aside class="pn-note pn-note--bee container" aria-label="Совет">
   <h2>Совет</h2>
-  <p>Если окажетесь в Велегоже, загляните на камерную пасеку Виктора. Позвоните заранее и договоритесь о визите — возможно, это знакомство станет одним из самых приятных открытий поездки.</p>
+  <p>Если окажетесь в Велегоже, загляните на камерную<br class="pn-reference-break"> пасеку Виктора. Позвоните заранее и договоритесь о<br class="pn-reference-break"> визите — возможно, это знакомство станет одним из<br class="pn-reference-break"> самых приятных открытий поездки.</p>
   <a class="btn btn--primary" href="tel:+79912550837">Телефон</a>
 </aside>
 
@@ -94,11 +94,14 @@
       <ul class="guide__list">
         {% for place in guide %}
         <li class="guide-card" data-tags="{{ place.kind }}" data-guide-card data-minutes="{{ place.minutes }}">
-          <div class="guide-card__head"><h3>{{ place.title }}</h3><label class="guide-card__add"><input type="checkbox" data-plan-item data-title="{{ place.title }}" data-days="{{ place.days|join:',' }}" data-minutes="{{ place.minutes }}"> в план дня</label></div>
+          <div class="guide-card__head">
+            <h3>{{ place.display_title|linebreaksbr }}</h3>
+            <label class="guide-card__add"><input type="checkbox" data-plan-item data-title="{{ place.title }}" data-days="{{ place.days|join:',' }}" data-minutes="{{ place.minutes }}">в план дня</label>
+          </div>
           <dl class="guide-card__facts"><div><dt>Ехать:</dt><dd>{{ place.drive }}{% if place.distance and place.distance != place.drive %} · {{ place.distance }}{% endif %}</dd></div><div><dt>Когда:</dt><dd>{{ place.hours }}{% if place.season %} · {{ place.season }}{% endif %}</dd></div><div><dt>Билет:</dt><dd>{{ place.price }}</dd></div></dl>
           <p>{{ place.text }}</p>{% if place.tip %}<p class="guide-card__tip"><b>Совет:</b> {{ place.tip }}</p>{% endif %}
-          {% if place.route %}<a class="guide-card__route" href="{% marketing_url place.route 'nearby_route' %}" rel="noopener" target="_blank">Маршрут от глэмпинга</a>{% endif %}
           <p class="guide-card__closed">В выбранный день закрыто</p>
+          {% if place.route %}<a class="guide-card__route" href="{% marketing_url place.route 'nearby_route' %}" rel="noopener" target="_blank">Маршрут от глэмпинга</a>{% endif %}
           {% if place.links %}<p class="guide-card__sources">Источник: {% for label, url in place.links %}<a href="{{ url }}" rel="noopener" target="_blank">{{ label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>{% endif %}
         </li>
         {% endfor %}
@@ -109,7 +112,7 @@
 
 <aside class="pn-note pn-note--telegram container">
   <h2>Больше интересных мест:</h2>
-  <p>В нашем Телеграм-канале можно найти целую рубрику <b>#ИнтересноеРядом</b>, где мы собираем и рассказываем не о том, что стоит посетить, но и почему.</p>
+  <p>В нашем Телеграм-канале можно найти целую<br class="pn-reference-break"> рубрику <b>#ИнтересноеРядом</b>, где мы собираем и<br class="pn-reference-break"> рассказываем не о том, что стоит посетить, но и<br class="pn-reference-break"> почему.</p>
   <a class="btn btn--primary" href="https://t.me/best_season_bs" target="_blank" rel="noopener">Перейти в Telegram</a>
 </aside>
 
@@ -124,10 +127,34 @@
     var root = document.querySelector('.pn-guide');
     if (!root) return;
     var cards = Array.from(root.querySelectorAll('[data-guide-card]'));
+    var list = root.querySelector('.guide__list');
     var categories = root.querySelector('[data-chips="kind"]');
     var empty = root.querySelector('[data-nearby-empty]');
     var distance = 15;
     var distanceMin = false;
+    var wideGuide = window.matchMedia('(min-width: 901px)');
+
+    function arrangeCards() {
+      if (!wideGuide.matches) return;
+      var visible = cards.filter(function (card) { return !card.hidden; });
+      var heights = visible.map(function (card) { return Math.ceil(card.getBoundingClientRect().height); });
+      var gap = parseFloat(getComputedStyle(list).columnGap);
+      var nextRow = [1, 1];
+      visible.forEach(function (card, index) {
+        var column = index % 2;
+        card.style.setProperty('--guide-column', column + 1);
+        card.style.setProperty('--guide-row', nextRow[column] + ' / span ' + heights[index]);
+        nextRow[column] += heights[index] + gap;
+      });
+      list.classList.add('guide__list--stacked');
+    }
+
+    if (window.ResizeObserver) {
+      var cardSizes = new ResizeObserver(arrangeCards);
+      cards.forEach(function (card) { cardSizes.observe(card); });
+      wideGuide.addEventListener('change', arrangeCards);
+    }
+
     function apply() {
       var category = categories.querySelector('[aria-pressed="true"]');
       var kind = category ? category.dataset.chip : '';
@@ -138,6 +165,7 @@
         card.hidden = !matchesKind || !matchesDistance;
       });
       empty.hidden = cards.some(function (card) { return !card.hidden; });
+      if (cardSizes) arrangeCards();
     }
     root.querySelectorAll('[data-distance]').forEach(function (button) {
       button.addEventListener('click', function () {

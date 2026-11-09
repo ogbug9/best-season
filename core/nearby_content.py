@@ -42,7 +42,15 @@ def guide_cards():
          "Пятнадцать-двадцать минут по Оке вместо часа по дороге. Это не транспорт, а аттракцион: берег, который Поленов писал с воды, вы увидите ровно с его точки.",
          "Обратный рейс обычно через несколько часов — рассчитывайте время, чтобы не оказаться на том берегу без машины.", "Таруса причал памятник Паустовскому"),
     ]
-    return [{"key": key, "title": title, "kind": kind, "drive": drive, "minutes": minutes,
+    title_lines = {
+        "polenovo": "Музей-\nусадьба Поленово",
+        "behovo": "Деревня Бёхово и\nцерковь Троицы",
+        "spring": "Святой источник\nи купель",
+        "cliff": "Обрыв любви\nи пляж на Оке",
+        "boat": "Теплоход Таруса\n— Поленово",
+    }
+    return [{"key": key, "title": title, "display_title": title_lines.get(key, title),
+             "kind": kind, "drive": drive, "minutes": minutes,
              "days": days, "hours": hours, "price": price, "text": text, "tip": tip,
              "route": f"https://yandex.ru/maps/?rtext={quote(DESTINATION)}~{quote(destination)}&rtt=auto"}
             for key, title, kind, drive, minutes, days, hours, price, text, tip, destination in records]
