@@ -4,7 +4,7 @@
 
 {% block title %}Интересное рядом — Лучший сезон{% endblock %}
 {% block body_class %}page-nearby{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261110-layout">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/nearby-routes.css' %}?v=20261110-linebreaks">{% endblock %}
 
 {% block content %}
 <section class="pn-hero">
@@ -40,9 +40,9 @@
   </div>
 </section>
 
-<aside class="pn-note container" aria-label="Совет">
+<aside class="pn-note pn-note--day container" aria-label="Совет">
   <h2>Совет</h2>
-  <h3>Одно место в день — и время без суеты</h3>
+  <h3>Одно место в день - и время без суеты</h3>
   <p>Не спешите посетить всё за один день.<br class="pn-reference-break"> Прогулка по Усадьбе и закат в Бёхово запомнятся лучше,<br class="pn-reference-break"> чем пять галочек на карте и усталость к вечеру.</p>
 </aside>
 
@@ -99,7 +99,7 @@
             <label class="guide-card__add"><input type="checkbox" data-plan-item data-title="{{ place.title }}" data-days="{{ place.days|join:',' }}" data-minutes="{{ place.minutes }}">в план дня</label>
           </div>
           <dl class="guide-card__facts"><div><dt>Ехать:</dt><dd>{{ place.drive }}{% if place.distance and place.distance != place.drive %} · {{ place.distance }}{% endif %}</dd></div><div><dt>Когда:</dt><dd>{{ place.hours }}{% if place.season %} · {{ place.season }}{% endif %}</dd></div><div><dt>Билет:</dt><dd>{{ place.price }}</dd></div></dl>
-          <p>{{ place.text }}</p>{% if place.tip %}<p class="guide-card__tip"><b>Совет:</b> {{ place.tip }}</p>{% endif %}
+          <p>{{ place.text|linebreaksbr }}</p>{% if place.tip %}<p class="guide-card__tip"><b>Совет:</b> {{ place.tip|linebreaksbr }}</p>{% endif %}
           <p class="guide-card__closed">В выбранный день закрыто</p>
           {% if place.route %}<a class="guide-card__route" href="{% marketing_url place.route 'nearby_route' %}" rel="noopener" target="_blank">Маршрут от глэмпинга</a>{% endif %}
           {% if place.links %}<p class="guide-card__sources">Источник: {% for label, url in place.links %}<a href="{{ url }}" rel="noopener" target="_blank">{{ label }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>{% endif %}

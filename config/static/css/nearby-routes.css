@@ -43,7 +43,7 @@
 .pn-note { position: relative; width: min(100% - 48px, 681px) !important; margin-block: 42px 72px; padding: 36px 40px; border-radius: 6px; background: #f3e2d4; }
 .pn-note::before { position: absolute; top: -12px; left: calc(50% - 56px); width: 112px; height: 30px; background: rgb(132 127 87 / 30%); content: ""; }
 .pn-note h2 { margin: 0 0 8px; color: var(--c-terra); font: 400 30px/1.1 var(--font-heading); }
-.pn-note h3 { margin: 0 0 10px; font-size: 21px; font-weight: 400; }
+.pn-note h3 { margin: 0 0 10px; color: var(--c-dark); font-size: 21px; font-weight: 400; }
 .pn-note p { margin: 0; color: var(--c-dark); font-size: 18px; line-height: 1.36; }
 .pn-reference-break { display: none; }
 .nearby-routes { padding-top: 24px !important; }
@@ -114,6 +114,7 @@
 .pn-guide .guide-card__facts div { grid-template-columns: 54px minmax(0, 1fr); gap: 6px; }
 .pn-guide .guide-card__facts dt { color: var(--c-terra); }
 .pn-guide .guide-card p { color: var(--c-dark); font-size: 16px; line-height: 1.25; }
+.pn-guide .guide-card p br { display: none; }
 .pn-guide .guide-card .guide-card__closed { color: var(--c-terra); font-size: 14px; }
 .pn-guide .guide-card__tip { padding: 10px 12px; border-radius: 10px; background: #e9d8ca; }
 .pn-guide .guide-card__route { display: block; width: 100%; min-height: 36px; margin-top: auto; padding: 7px 12px; border-radius: 999px; background: var(--c-olive); color: white; text-align: center; text-decoration: none; font-size: 16px; font-weight: 500; }
@@ -139,25 +140,31 @@
 .page-nearby .faq__reference-break { display: none; }
 .page-nearby .footer-address { display: none; }
 
+@media (min-width: 750px) {
+  .pn-note .pn-reference-break { display: initial; }
+  .pn-note { padding: 40px; }
+  .pn-note--day { padding-bottom: 46px; }
+  .pn-note h2 { font-size: 32px; margin-bottom: 12px; }
+  .pn-note h3 { font-size: 24px; }
+  .pn-note p { font-size: 20px; line-height: 24px; }
+  .pn-note--bee p, .pn-note--telegram p { font-size: 24px; line-height: 29px; }
+  .pn-note--bee .btn, .pn-note--telegram .btn { margin-top: 24px; }
+}
+
 @media (min-width: 1250px) {
   .pn-reference-break { display: initial; }
   .page-nearby .story { padding-top: 82px; }
   .pn-footnote { margin-bottom: 74px; }
   .pn-actions { gap: 17px; }
   .pn-weekend__grid { grid-template-columns: 648px minmax(0, 1fr); }
-  .pn-note { padding: 40px; }
-  .pn-note:not(.pn-note--bee, .pn-note--telegram) { margin-block: 46px 66px; padding-bottom: 46px; }
-  .pn-note h2 { font-size: 32px; margin-bottom: 12px; }
-  .pn-note h3 { font-size: 24px; }
-  .pn-note p { font-size: 20px; line-height: 24px; }
-  .pn-note--bee p, .pn-note--telegram p { font-size: 24px; line-height: 29px; }
+  .pn-note--day { margin-block: 46px 66px; }
   .pn-note--bee { margin-block: 34px 60px; }
   .pn-note--telegram { margin-bottom: 32px; }
-  .pn-note--bee .btn, .pn-note--telegram .btn { margin-top: 24px; }
   .nearby-routes__intro { margin-bottom: 37px; }
   .nearby-routes__item h3 { margin-top: 24px; padding-inline: 24px; font-size: 18px; }
   .nearby-routes__item li { font-size: 16px; padding-left: 21px; }
   .nearby-routes__item li b { font-size: 17px; line-height: 22px; }
+  .page-nearby .pn-guide { padding-block: 54px 30px; }
   .pn-guide__filters h2 { font-size: 42px; margin-bottom: 24px; }
   .pn-guide__filters .pn-guide__intro { font-size: 20px; line-height: 24px; }
   .pn-guide .guide__day { margin-block: 61px 26px; font-size: 24px; }
@@ -202,6 +209,10 @@
   .page-nearby .faq-section { padding-bottom: 56px; }
   .page-nearby .faq-section .section__title { margin-bottom: 32px; }
   .page-nearby .footer__brand .socials { margin-top: -16px; }
+}
+
+@media (min-width: 1320px) {
+  .pn-guide .guide-card p br { display: initial; }
 }
 
 @media (min-width: 1100px) {
