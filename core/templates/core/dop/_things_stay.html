@@ -1,0 +1,38 @@
+{% load wagtailcore_tags media_tags marketing_tags %}
+<section class="things-stay" aria-labelledby="things-stay-title">
+  <div class="container">
+    <h2 class="things-title" id="things-stay-title">Если остаётесь подольше</h2>
+    <p class="things-lead">Активности на территории, наши праздники и мастер-классы, места в округе.<br> За два дня всё это не успеть — и это лучший довод остаться подольше.</p>
+    <div class="chips things-stay__chips" data-chips="stay" data-chips-default="active" role="group" aria-label="Занятия для долгого отдыха">
+      {% for panel in stay_panels %}<button class="filter-chip" type="button" data-chip="{{ panel.code }}">{{ panel.title }}</button>{% endfor %}
+    </div>
+    <div data-chips-for="stay">
+      {% for panel in stay_panels %}
+        <article class="things-stay__panel" data-tags="{{ panel.code }}" aria-labelledby="stay-{{ panel.code }}">
+          <h3 class="things-title things-title--dark" id="stay-{{ panel.code }}">{{ panel.title }}</h3>
+          <p class="things-lead">{{ panel.lead|linebreaksbr }}</p>
+          <ul class="things-stay__grid">
+            {% for card in panel.cards %}
+              <li class="things-stay__card">
+                <div class="things-stay__media">{% if card.image %}{% picture card.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+                <div>
+                  <h4>{{ card.title|linebreaksbr }}</h4>
+                  <p>{{ card.text|linebreaksbr }}</p>
+                  {% if card.map %}<a class="btn btn--outline things-stay__map" href="https://yandex.ru/maps/?text=Теннисный%20корт%20Страхово%20Тульская%20область" target="_blank" rel="noopener">Открыть на Яндекс Картах</a>{% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+          <div class="things-stay__actions">
+            {% if panel.code == 'nearby' and nearby_page %}
+              <a class="btn btn--primary" href="{% pageurl nearby_page %}">Больше активностей</a>
+            {% elif activities_page %}
+              <a class="btn btn--primary" href="{% pageurl activities_page %}#activities-title">Больше активностей</a>
+            {% endif %}
+            {% if telegram %}<a class="btn btn--outline" href="{% marketing_url telegram 'chem_zanyatsya' things.ASK_TEXT %}" rel="noopener" target="_blank">Уточнить детали</a>{% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>

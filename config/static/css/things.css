@@ -40,7 +40,7 @@ body.page-scenarios main > .things-head { padding-top: calc(var(--s-4) + var(--h
   .site .things-faq .faq__item .faq__answer { padding: 16px 10px; font-size: 14px; line-height: 20px; }
 }
 @media (min-width: 900px) {
-  .site .things-faq .things-title { margin-bottom: 56px; }
+  .site .things-faq .things-title { margin-bottom: 57.5px; }
   .things-faq .faq__item .faq__question { min-height: 53px; padding-block: 12px; font-size: 24px; line-height: 29px; }
   .things-faq .faq__item .faq__answer { font-size: 20px; line-height: 24px; }
 }
@@ -63,7 +63,7 @@ body.page-scenarios main > .things-head { padding-top: calc(var(--s-4) + var(--h
 .things-tip-wrap { position: relative; width: 592px; max-width: 100%; margin: 29.6px auto 0; }
 @media (min-width: 1300px) { .things-tip-wrap { margin-left: 314px; } }
 .things-tip-wrap::before { content: ""; position: absolute; z-index: 1; top: -29.6px; left: 244.3px; width: 112px; height: 30px; background: rgb(62 63 32 / 20%); }
-.page-scenarios .things-tip { box-sizing: border-box; width: 100%; max-width: none; min-height: 187px; margin: 0; padding: 38.9px 40px 20px 39.4px; rotate: -3deg; transform-origin: 0 0; box-shadow: 0 14px 30px rgb(58 60 21 / 12%); background: rgb(226 178 151 / 20%); }
+.page-scenarios .things-tip { box-sizing: border-box; width: 100%; max-width: none; min-height: 187px; margin: 0; padding: 38.9px 40px 20px 39.4px; rotate: -3deg; transform-origin: 0 0; border-radius: 6px; box-shadow: none; background: rgb(226 178 151 / 20%); }
 .page-scenarios .things-tip::before { content: none; }
 .site .x-note__title { font-weight: 400; text-wrap: wrap; hyphens: none; }  /* заголовок записки — h2, вид прежний */
 .page-scenarios .things-tip .x-note__title { margin: 0 0 9.8px; font-size: 32px; line-height: 40px; }
@@ -114,7 +114,7 @@ body.page-scenarios main > .things-head { padding-top: calc(var(--s-4) + var(--h
 
 /* ---------- Если пойдёт дождь ---------- */
 .things-rain__list { display: grid; grid-template-columns: repeat(4, 282px); justify-content: center; gap: 20px; margin: 0; padding: 0; list-style: none; }
-.things-rain__card { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 282px; padding: 32px 30px 30px 32px; overflow: hidden; border-radius: 20px; background: var(--c-dark); }
+.things-rain__card { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 280px; padding: 32px 30px 30px 32px; overflow: hidden; border-radius: 20px; background: var(--c-dark); }
 .things-rain { padding-top: 20.4px; }
 .things-rain__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .things-rain__photo--book { object-position: center 43%; }
@@ -124,9 +124,9 @@ body.page-scenarios main > .things-head { padding-top: calc(var(--s-4) + var(--h
 .things-rain__text { position: relative; z-index: 1; margin-top: 5px; font-size: 18px; line-height: 22px; color: #fff; }
 
 /* ---------- Что взять ---------- */
-.things-packing { padding-top: 20px; }
+.things-packing { padding: 22px 0 80px; }
 .things-packing .container--narrow { max-width: 760px; }
-.page-scenarios .checklist { padding: 20.5px 24px 8.7px; border-radius: 30px; }
+.page-scenarios .checklist { padding: 20.5px 24px 8.7px; border-radius: 20px; }
 .page-scenarios .checklist__head h2 { font-size: 40px; line-height: 44px; color: var(--c-deep); }
 .page-scenarios .checklist__count { font-size: 18px; white-space: nowrap; }
 .page-scenarios .checklist ul { gap: 0; margin-top: 1.9px; }
@@ -210,4 +210,50 @@ body.page-scenarios main > .things-head { padding-top: calc(var(--s-4) + var(--h
   .page-scenarios .checklist__head h2 { font-size: 24px; line-height: 28px; }
   .page-scenarios .checklist__count { font-size: 15px; }
   .page-scenarios .checklist label { min-height: 48px; font-size: 14px; line-height: 19px; }
+}
+
+/* ---------- Если остаётесь подольше ---------- */
+.things-stay__chips { justify-content: center; gap: 10.73px; margin-bottom: 40px; }
+.things-stay__chips .filter-chip { min-height: 41.73px; padding: 0 23px; border-radius: 24px; font-size: 18px; }
+.things-stay__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; margin: 0; padding: 0; list-style: none; }
+.things-stay__card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 285px); align-items: center; gap: 20px; }
+.things-stay__media { aspect-ratio: 295 / 200; overflow: hidden; border-radius: 20px; background: #D9D9D9; }
+.things-stay__media :is(picture, img, .ph) { display: block; width: 100%; height: 100%; object-fit: cover; }
+.site .things-stay__card h4 { margin: 0 0 8px; color: var(--c-dark); font: 600 20px/24px var(--font-body); }
+.things-stay__card p { margin: 0; font-size: 18px; line-height: 22px; }
+.things-stay__actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 32.5px; margin-top: 40px; }
+.site .things-stay__actions .btn { min-height: 52px; padding-inline: 16px; font-size: 20px; }
+.site .things-stay__actions .btn--primary { width: 299px; }
+.site .things-stay__actions .btn--outline { width: 252px; background: var(--c-white); }
+.site .things-stay__map { min-height: 35px; margin-top: 6px; padding: 0 15px; font-size: 16px; }
+
+.things-faq { padding-bottom: 0; }
+@media (min-width: 1300px) {
+  .things-stay .things-title { margin-bottom: 18.36px; }
+  .things-stay__chips .filter-chip:nth-child(1) { width: 201.27px; }
+  .things-stay__chips .filter-chip:nth-child(2) { width: 179.27px; }
+  .things-stay__chips .filter-chip:nth-child(3) { width: 221.27px; }
+}
+@media (min-width: 900px) {
+  .things-faq:has(.is-open) {
+    background: url("../img/things/faq-top.svg") center -62px / 1440px 780px no-repeat,
+                url("../img/things/faq-bottom.svg") center bottom / 1440px 208px no-repeat;
+    padding-bottom: 100px;
+  }
+}
+@media (max-width: 1299px) {
+  .page-scenarios :is(.things-hook, .scenario, .things-stay, .things-faq .home-desktop-copy) br { display: none; }
+  .things-stay__card { grid-template-columns: 1fr; align-content: start; }
+}
+@media (max-width: 699px) {
+  .page-scenarios .things-packing { padding-bottom: 48px; }
+  .page-scenarios .checklist__head { flex-wrap: wrap; gap: 2px 12px; }
+  .page-scenarios .scenario[data-tags="work"] .scenario__house { margin-top: 40px; }
+  .page-scenarios .things-dice .t-game { left: 0; padding-inline: 16px; }
+  .things-stay__grid { grid-template-columns: 1fr; gap: 28px; }
+  .things-stay__chips { gap: 8px; margin-bottom: 24px; }
+  .things-stay__chips .filter-chip { padding-inline: 12px; font-size: 15px; }
+  .things-stay__actions { gap: 12px; margin-top: 28px; }
+  .site .things-stay__actions .btn { width: 100%; min-width: 0; min-height: 48px; font-size: 16px; }
+  .things-stay__card p { font-size: 15px; line-height: 21px; }
 }

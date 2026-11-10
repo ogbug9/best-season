@@ -163,16 +163,23 @@ def context_for(page, request):
             scenarios.append({**scenario, "steps": steps, "house_page": house})
         from core import dop_content as dc
 
-        second_day = [place for place in dc.GUIDE if place["key"] in ("polenovo", "behovo", "konyukhov")]
+        stay_panels = [
+            {**panel, "cards": [
+                {"title": title, "text": text, "image": tile_image(tile), "map": show_map}
+                for title, text, tile, show_map in panel["cards"]
+            ]}
+            for panel in things.STAY_LONGER
+        ]
         faq = [item.copy() for item in dc.THINGS_FAQ]
         chat_url = SiteSettings.for_request(request).telegram_chat_url
         if chat_url:
             phrase = "сообщить о своих планах заранее"
             link = format_html('<a href="{}">{}</a>', marketing_url(chat_url, 'chem_zanyatsya'), phrase)
             faq[2]["answer"] = faq[2]["answer"].replace(phrase, link)
-        return {"things": things, "scenarios": scenarios, "second_day": second_day,
+        return {"things": things, "scenarios": scenarios, "stay_panels": stay_panels,
                 "things_faq": faq,
                 "nearby_page": Page.objects.live().filter(slug="interesnoe-ryadom").first(),
+                "activities_page": Page.objects.live().filter(slug="territoriya").first(),
                 "houses_page": Page.objects.live().filter(slug="razmeshchenie").first()}
     if slug == "razvlecheniya":
         tiles = []
