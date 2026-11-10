@@ -1,11 +1,11 @@
 """«Дневник Сезона» (20.10): перевод временных ContentPage в DiaryIndexPage/DiaryEntryPage.
 
-Адреса не меняются: /o-nas/dnevnik/ и три записи (novyj-god, ayka, zheltoe-chudo).
-Запускается из seed_pages (run.py) и ничего не делает, если дневник уже нового типа —
-правки редактора не перезаписываются.
+Запускается из seed_pages (run.py). Сохраняет адреса и редакторские записи.
 """
 from django.utils import timezone
+from django.utils.html import format_html
 
+from core.diary_edition import ARTICLES
 from core.temp_pages import DIARY, DIARY_INDEX
 
 TITLE = "Дневник Сезона"
@@ -28,9 +28,10 @@ def ensure_diary(log=print):
 
     from core.models import DiaryEntryPage, DiaryIndexPage, image_titled
 
-    if DiaryIndexPage.objects.exists():
+    index = DiaryIndexPage.objects.first()
+    if index is not None:
         _fill_covers(log)
-        return 0
+        return _ensure_edition(index)
     old = Page.objects.filter(slug=DIARY_INDEX).first()
     parent = old.get_parent() if old else Page.objects.filter(slug="o-nas").first()
     if parent is None:
@@ -65,8 +66,32 @@ def ensure_diary(log=print):
         index.add_child(instance=page)
         page.save_revision().publish()
         created += 1
+    created += _ensure_edition(index)
     log(f"  дневник: {'перенесён' if old else 'создан'} ({created} стр.)")
     return created
+
+
+def _ensure_edition(index):
+    from core.models import DiaryEntryPage
+
+    children = index.get_children()
+    duck = DiaryEntryPage.objects.child_of(index).filter(slug="zheltoe-chudo").first()
+    if (duck and duck.live and not duck.has_unpublished_changes
+            and duck.title == "История о маленьком жёлтом японском чуде"):
+        duck.title = "История о маленьком жёлтом июньском чуде"
+        duck.save_revision().publish()
+
+    existing = set(children.values_list("slug", flat=True))
+    for slug, (title, lead, paragraphs) in ARTICLES.items():
+        if slug in existing:
+            continue
+        page = DiaryEntryPage(
+            title=title, slug=slug, show_in_menus=False, date=timezone.localdate(),
+            lead=lead, body=[("paragraph", format_html("<p>{}</p>", text)) for text in paragraphs],
+        )
+        index.add_child(instance=page)
+        page.save_revision().publish()
+    return len(ARTICLES.keys() - existing)
 
 
 def _fill_covers(log):

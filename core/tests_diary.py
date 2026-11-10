@@ -10,6 +10,7 @@ from django.test import TestCase
 from django.urls import reverse
 from wagtail.models import Page
 
+from core.diary_edition import EDITION_ORDER
 from core.diary_seed import ensure_diary
 from core.models import ContentPage, DiaryEntryPage, DiaryIndexPage
 
@@ -26,10 +27,12 @@ class DiaryTests(TestCase):
         page.save_revision().publish()
         return page
 
-    def test_seed_keeps_addresses_and_three_entries(self):
+    def test_seed_keeps_addresses_and_renders_the_first_edition(self):
         self.assertEqual(self.index.url, "/o-nas/dnevnik/")
-        self.assertEqual([p.url for p in self.index.entries()],
-                         ["/o-nas/dnevnik/novyj-god/", "/o-nas/dnevnik/ayka/", "/o-nas/dnevnik/zheltoe-chudo/"])
+        response = self.client.get(self.index.url)
+        self.assertEqual([p.slug for p in response.context["entries"]], list(EDITION_ORDER))
+        self.assertContains(response, 'class="diary-card"', count=9)
+        self.assertContains(response, 'href="?page=all"')
         out = StringIO()
         call_command("seed_pages", "--create-only", stdout=out, stderr=StringIO())
         self.assertIn("создано 0", out.getvalue())
@@ -38,9 +41,8 @@ class DiaryTests(TestCase):
         self.add_entry("svezhee", datetime.date.today() + datetime.timedelta(days=1), "Самая свежая")
         html = self.client.get(self.index.url).content.decode()
         self.assertEqual(html.count("<h1"), 1)
-        self.assertEqual(html.count('class="diary-card"'), 4)
+        self.assertEqual(html.count('class="diary-card"'), 9)
         self.assertLess(html.index("Самая свежая"), html.index("бронирование"))
-        self.assertNotIn("diary-pages", html)  # одна страница — без пагинации
 
     def test_pagination_and_all(self):
         for n in range(8):
@@ -50,10 +52,10 @@ class DiaryTests(TestCase):
         self.assertIn('aria-current="page">1<', first)
         self.assertIn('href="?page=2"', first)
         second = self.client.get(self.index.url + "?page=2").content.decode()
-        self.assertEqual(second.count('class="diary-card"'), 2)
+        self.assertEqual(second.count('class="diary-card"'), 8)
         self.assertIn('/o-nas/dnevnik/?page=2">', second)
         everything = self.client.get(self.index.url + "?page=all").content.decode()
-        self.assertEqual(everything.count('class="diary-card"'), 11)
+        self.assertEqual(everything.count('class="diary-card"'), 17)
 
     def test_bad_page_numbers_are_404(self):
         for value in ("abc", "0", "999"):
@@ -70,7 +72,7 @@ class DiaryTests(TestCase):
             context = self.index.get_context(RequestFactory().get(self.index.url))
         finally:
             rendition_plan.reset(token)
-        self.assertEqual(len(context["entries"]), 13)
+        self.assertEqual(len(context["entries"]), 19)
 
     def test_entry_without_cover_renders(self):
         page = self.add_entry("bez-foto", datetime.date(2020, 1, 1))
@@ -117,7 +119,7 @@ class DiaryTests(TestCase):
         about.add_child(instance=old)
         child = ContentPage(title="Новый год", slug="novyj-god", search_description="Описание из админки")
         old.add_child(instance=child)
-        self.assertEqual(ensure_diary(log=lambda *_: None), 4)
+        self.assertEqual(ensure_diary(log=lambda *_: None), 10)
         index = DiaryIndexPage.objects.get()
         self.assertEqual(index.url, "/o-nas/dnevnik/")
         self.assertFalse(ContentPage.objects.filter(slug__in=["dnevnik", "novyj-god"]).exists())

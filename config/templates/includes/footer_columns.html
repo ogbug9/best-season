@@ -15,8 +15,10 @@
       <p class="footer__column-title">{{ column.title }}</p>
       {% if column.links %}
         <ul>
-          {% if forloop.counter == 2 and partner_activities_page %}
-            <li><a href="{% pageurl partner_activities_page %}#scenarios">Развлечения</a></li>
+          {% if forloop.counter == 2 %}
+            {% if partner_activities_page or page.slug == "dnevnik" and footer_activities_page %}
+              <li><a href="{% pageurl partner_activities_page|default:footer_activities_page %}#scenarios">Развлечения</a></li>
+            {% endif %}
           {% endif %}
           {% for link in column.links %}
             <li>{% if link.booking %}<button type="button" class="btn btn--ghost footer__booking-link" data-booking-open data-entry-point="1">{{ link.title }}</button>{% else %}<a href="{{ link.url }}">{{ link.title }}</a>{% endif %}</li>

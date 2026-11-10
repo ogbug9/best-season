@@ -1232,7 +1232,21 @@ class DiaryIndexPage(InProgressMixin, Page):
         from django.http import Http404
         from core.templatetags.media_tags import rendition_plan
 
-        paginator = Paginator(self.entries(), self.PER_PAGE)
+        from core.diary_edition import EDITION_ORDER
+
+        entries = self.entries()
+        edition_date = entries.filter(slug__in=EDITION_ORDER).order_by("-date").values("date")[:1]
+        entries = entries.alias(
+            issue_date=models.Case(
+                models.When(slug__in=EDITION_ORDER, then=models.Subquery(edition_date)),
+                default=models.F("date"),
+            ),
+            issue_order=models.Case(
+                *(models.When(slug=slug, then=position) for position, slug in enumerate(EDITION_ORDER, 1)),
+                default=0,
+            ),
+        ).order_by("-issue_date", "issue_order", "path")
+        paginator = Paginator(entries, self.PER_PAGE)
         # prepare_site_images рендерит индекс без ?page — пусть видит все карточки.
         if request.GET.get("page") == "all" or rendition_plan.get() is not None:
             context.update(entries=paginator.object_list, paginator=paginator, show_all=True,

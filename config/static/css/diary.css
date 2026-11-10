@@ -86,13 +86,24 @@
   .page-diary-index .footer { padding-bottom: 7px; }
   .page-diary-index .footer__brand .socials { margin-top: -20px; }
   .page-diary-index .footer__brand > p { margin: 0; }
+  .page-diary-index .footer__booking-link { display: block; height: 22px; min-height: 0; line-height: 22px; }
+  .page-diary-index .footer__legal { min-height: 88px; grid-template-columns: 1fr 336px 1fr; }
+  .page-diary-index .footer__pay { margin-top: 1.5px; }
   .page-diary-index .footer__center { text-align: left; }
-  .page-diary-index .footer__center p { margin: 0 0 4px; }
-  .page-diary-index .footer__center p:last-child { margin-bottom: 0; font-size: 11px; }
+  .page-diary-index .footer__center p { margin: 2px 0 4px; }
+  .page-diary-index .footer__center p:last-child { margin-bottom: 0; font-size: 11px; line-height: 12px; }
 }
 
 @media (min-width: 1320px) {
   .page-diary-index .diary-card__title { white-space: pre-line; letter-spacing: -.15px; }
+  .diary-index__title { transform: translateX(-6px); }
+  .diary-index__lead { transform: translateX(-3px); }
+}
+
+@media (min-width: 700px) {
+  .diary-pages__prev { width: 112px; }
+  .diary-pages__next { width: 128px; }
+  .diary-pages__all { width: 87px; }
 }
 
 @media (min-width: 700px) and (max-width: 1279px) {

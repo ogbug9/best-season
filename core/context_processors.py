@@ -107,7 +107,7 @@ def footer(request):
                 "legal": _links(column.get("legal_slugs", []), pages, request),
             }
         )
-    return {"footer_columns": columns}
+    return {"footer_columns": columns, "footer_activities_page": pages.get("chem-zanyatsya")}
 
 
 def booking(request):
