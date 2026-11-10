@@ -149,24 +149,19 @@ def context_for(page, request):
         from core.models import SiteSettings
         from core.templatetags.marketing_tags import marketing_url
 
-        tiles = {item.title: item.image for item in TerritoryItem.objects.filter(is_published=True).select_related("image")}
-
-        def tile_image(start):
-            return next((image for title, image in tiles.items() if start and title.startswith(start)), None)
-
         scenarios = []
         for scenario in things.SCENARIOS:
-            steps = [{"time": time, "title": title, "text": text, "image": tile_image(tile),
+            steps = [{"time": time, "title": title, "text": text, "photo": photo,
                       "service": services.get(service_slug) if service_slug else None}
-                     for time, title, text, tile, service_slug in scenario["steps"]]
+                     for time, title, text, photo, service_slug in scenario["steps"]]
             house = Page.objects.live().filter(slug=scenario["house"]).first() if scenario.get("house") else None
             scenarios.append({**scenario, "steps": steps, "house_page": house})
         from core import dop_content as dc
 
         stay_panels = [
             {**panel, "cards": [
-                {"title": title, "text": text, "image": tile_image(tile), "map": show_map}
-                for title, text, tile, show_map in panel["cards"]
+                {"title": title, "text": text, "photo": photo, "map": show_map}
+                for title, text, photo, show_map in panel["cards"]
             ]}
             for panel in things.STAY_LONGER
         ]

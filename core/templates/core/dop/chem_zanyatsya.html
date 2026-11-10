@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags media_tags content_tags marketing_tags layout_tags %}
+{% load static wagtailcore_tags content_tags marketing_tags layout_tags %}
 {% block body_class %}page-dop page-scenarios{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261021-gazebo"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261110-things">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261021-gazebo"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261110-things-media">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261025-dice" defer></script>{% endblock %}
 
 {% comment %}
@@ -68,7 +68,7 @@
           <ol class="scenario__steps scenario__steps--{{ scenario.steps|length }}">
             {% for step in scenario.steps %}
               <li class="scenario__step">
-                <div class="scenario__media">{% if step.image %}{% picture step.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+                <div class="scenario__media"><img src="{% static 'img/things/'|add:step.photo|add:'.webp' %}" {% if scenario.code == "pet" %}width="680" height="461"{% else %}width="590" height="400"{% endif %} alt="" loading="lazy" decoding="async">
                   {% if step.service.price %}<span class="card__badge scenario__price">от {{ step.service.price_display }} ₽ {{ step.service.get_price_unit_display|lower }}</span>{% endif %}
                 </div>
                 <p class="scenario__time">{{ step.time }}</p>
@@ -110,8 +110,8 @@
     <p class="things-lead">{{ things.RAINY_LEAD|linebreaksbr }}</p>
     <ul class="things-rain__list">
       {% for icon, title, text in things.RAINY %}
-        <li class="things-rain__card" data-reveal>
-          <img class="things-rain__photo things-rain__photo--{{ icon }}" src="{% static 'img/things/rain-photo-'|add:icon|add:'.webp' %}" alt="" loading="lazy" decoding="async">
+        <li class="things-rain__card things-rain__card--{{ icon }}" data-reveal>
+          <img class="things-rain__photo" src="{% static 'img/things/rain-photo-'|add:icon|add:'.webp' %}" width="564" height="560" alt="" loading="lazy" decoding="async">
           <b class="things-rain__title">{{ title|linebreaksbr }}</b>
           <span class="things-rain__text">{{ text|linebreaksbr }}</span>
         </li>

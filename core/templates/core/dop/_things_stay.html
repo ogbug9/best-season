@@ -1,4 +1,4 @@
-{% load wagtailcore_tags media_tags marketing_tags %}
+{% load wagtailcore_tags static marketing_tags %}
 <section class="things-stay" aria-labelledby="things-stay-title">
   <div class="container">
     <h2 class="things-title" id="things-stay-title">Если остаётесь подольше</h2>
@@ -14,7 +14,7 @@
           <ul class="things-stay__grid">
             {% for card in panel.cards %}
               <li class="things-stay__card">
-                <div class="things-stay__media">{% if card.image %}{% picture card.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+                <div class="things-stay__media"><img src="{% static 'img/things/'|add:card.photo|add:'.webp' %}" width="885" height="600" alt="" loading="lazy" decoding="async"></div>
                 <div>
                   <h4>{{ card.title|linebreaksbr }}</h4>
                   <p>{{ card.text|linebreaksbr }}</p>
