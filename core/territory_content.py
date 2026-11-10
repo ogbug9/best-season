@@ -81,7 +81,7 @@ TIP_ORDER = {
 # Вкладки «Еды». Карточка: (название, строки описания, запрос для карты).
 FOOD_TABS = [
     {
-        "code": "shops", "label": "Продуктовые", "map": "img/territory/map-shops.webp",
+        "code": "shops", "label": "Продуктовые", "map": "img/territory/map-shops.webp", "map_height": 976,
         "places": [
             ("«Авокадо»", ["— в 2 км от нас.", "~ 4 минуты на машине или 20 минут пешком."], "Авокадо магазин"),
             ("«Пятёрочка»", ["— в 6 км от глэмпинга.", "~ 8 минут на машине."], "Пятёрочка"),
@@ -93,7 +93,7 @@ FOOD_TABS = [
         "tips": [TIP_KVIN, TIP_FARM],
     },
     {
-        "code": "cafes", "label": "Кафе / Рестораны", "map": "img/territory/map-cafes.webp",
+        "code": "cafes", "label": "Кафе / Рестораны", "map": "img/territory/map-cafes.webp", "map_height": 1078,
         "places": [
             ("Ресторан «Поленово»", ["— русская и европейская домашняя кухня.", "~ 3 км от нас, 4 мин. на машине"],
              "ресторан Поленово"),
@@ -110,7 +110,7 @@ FOOD_TABS = [
         "tips": [TIP_KVIN],
     },
     {
-        "code": "delivery", "label": "Доставка", "map": "img/territory/map-delivery.webp",
+        "code": "delivery", "label": "Доставка", "map": "img/territory/map-delivery.webp", "map_height": 722,
         "intro": "Если не хочется никуда ехать, то с 10:00 можно заказать доставку готовых блюд у наших партнёров:",
         "places": [
             ("Кафе «Всё вкусно»", ["— домашняя русская кухня."], "кафе Всё вкусно"),

@@ -3,7 +3,7 @@
 {% load wagtailcore_tags media_tags territory_tags layout_tags marketing_tags %}
 
 {% block body_class %}page-territory{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261110-territory-layout">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261110-territory-media">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/territory-map.js' %}" defer></script>{% endblock %}
 
 {% block content %}
@@ -85,7 +85,7 @@
                 {% endfor %}
               </ul>
             </div>
-            <img class="t-food__map" src="{% static tab.map %}" width="590" height="490" alt="Карта: {{ tab.label|lower }} рядом с глэмпингом" loading="lazy">
+            <img class="t-food__map" src="{% static tab.map %}" width="1176" height="{{ tab.map_height }}" alt="Карта: {{ tab.label|lower }} рядом с глэмпингом" loading="lazy" decoding="async">
           </div>
           <div class="t-food__tips t-food__tips--{{ tab.tips|length }}">
             {% for tip in tab.tips %}

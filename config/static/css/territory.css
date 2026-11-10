@@ -187,6 +187,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .t-care__grid { padding-left: 0; justify-content: center; }
   .t-hero__grid { grid-template-columns: minmax(0, 525px) minmax(0, 1fr); column-gap: 40px; padding-left: 0; }
   .t-food__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr); gap: 30px; }
+  .t-food__map { height: auto; contain: none; align-self: start; }
   .t-food__places { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .t-food__tips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .t-food__tips--1 { grid-template-columns: minmax(0, 575px); }
@@ -200,7 +201,6 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .t-hero__photos { width: 525px; max-width: 100%; }
   .t-stats { flex-wrap: wrap; row-gap: 30px; }
   .t-food__grid { grid-template-columns: 1fr; }
-  .t-food__map { height: auto; min-height: 0; contain: none; aspect-ratio: 590 / 420; }
   .site .t-big-title { font-size: 64px; line-height: 70px; }
   .t-care { padding: 32px 0; }
   .t-care__grid { flex-direction: column; align-items: flex-start; gap: 12px; padding-left: 0; }
