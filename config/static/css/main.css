@@ -3950,7 +3950,17 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 .promo__title { margin: 0; font-family: var(--font-heading); font-weight: 400; color: #F7F0E6; font-size: 24px; line-height: 25px; min-height: 50px; }
 .promo__copy .promo__text { margin: 14px 0 0; color: #F7F0E6; font-size: 18px; line-height: 22px; }
 .promo__book { flex: none; margin-top: auto; width: 100%; height: 50px; min-height: 50px; padding: 14px 40px; font-size: 18px; font-weight: 500; line-height: 22px; border: 0; background: #F7F0E6; color: #494949; border-radius: 100px; }
-.page-promotions .offers-section + .section { padding-top: 60px; }
+.page-promotions .promotions-faq { padding-block: 60px 0; }
+.promotions-faq__certificate { margin-top: 16px; }
+@media (min-width: 900px) {
+  .page-promotions .promotions-faq { padding-top: 145px; }
+  :is(.page-promotions, .page-house) .header__bar { box-shadow: none; }
+}
+@media (min-width: 1280px) {
+  .page-promotions .promo { gap: 18px; }
+  .page-promotions .promo__media { margin-bottom: 22px; }
+  .page-promotions .promotions-faq .section__title { line-height: 95px; margin-bottom: 57px; }
+}
 @media (max-width: 1279px) {
   .promo__title br, .promo__text br { display: none; }
   .promo__title { min-height: 50px; }
@@ -4460,7 +4470,7 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   align-items: center;
   justify-content: center;
   min-height: 67.47px;
-  padding: 21.23px 42.46px;
+  padding: 20.75px 42.46px;
   background: var(--c-sand);
   border-radius: var(--radius);
 }
@@ -4569,7 +4579,7 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
   table-layout: fixed;
 }
 .page-house .calendar__grid th {
-  padding-bottom: 21.23px;
+  padding-bottom: 8.67px;
   font-weight: 400;
   font-size: 14.86px;
   color: var(--text);
@@ -5019,7 +5029,7 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
 .page-house .equipment__switch:not(:checked) ~ .equipment__columns {
   max-height: 210px;
   overflow: hidden;
-  mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 63%, rgb(0 0 0 / 48%) 100%);
 }
 .page-house .equipment__group {
   display: flex;
@@ -5374,14 +5384,9 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
    60 были сняты с Special Offers.png старой версии; ниже 900 они
    оставлены (мобильного макета с этими блоками нет). */
 .page-promotions .offers-section { padding-bottom: 0; }
-.page-promotions main > .section:last-child { padding-top: 120px; padding-bottom: 0; }
 .page-promotions .footer { padding-top: 60px; }
 @media (min-width: 900px) {
-  .page-promotions main > .section:last-child { padding-top: 130px; }
   .page-promotions .footer { padding-top: 100px; }
-}
-@media (min-width: 1280px) {
-  .page-promotions main > .section:last-child .section__title { line-height: 95px; margin-bottom: 50px; }
 }
 
 /* От последней плашки до логотипа в макетах: 160 px у каталога/акций,
@@ -5398,6 +5403,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   :is(.page-territory, .page-scenarios) .footer__legal { margin-top: 54.3px; }
   .page-house--domik-1 .house-about-section,
   .page-house--domik-4 .house-about-section { padding-bottom: 39.77px; }
+  :is(.page-house--domik-2, .page-house--domik-3) .house-about-section { padding-bottom: 41.92px; }
   .page-house .house-reviews-section { padding-bottom: 18px; }
 }
 
@@ -5450,7 +5456,6 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-home .home-nearby > .container > .section__title { transform: translateY(-5px); }
   .page-home .home-faq-background-anchor > .section { padding-top: 75px; }
   .page-houses .houses-faq .section__title,
-  .page-promotions main > .section:last-child .section__title { margin-bottom: 57px; }
 }
 @media (max-width: 699px) {
   .page-head h1 { font-size: 36px; line-height: 38px; }

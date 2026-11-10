@@ -101,14 +101,17 @@
     if (temporary) cleanups.push(() => { links.hidden = oldHidden; links.id = oldId; title.replaceChildren(...original); });
   }
 
-  // Комплектация раскрывается по группам на любой ширине, как на мобильной.
-  document.querySelectorAll('.equipment').forEach((equipment, index) => {
-    equipment.classList.add('equipment--accordion');
-    equipment.querySelectorAll('.equipment__title').forEach((title, group) => {
-      const list = title.nextElementSibling;
-      if (list) disclosure(title, list, `equipment-${index}-${group}`, false);
+  // На широком экране комплектация открывается целиком, на узком — по группам.
+  function setupEquipment() {
+    document.querySelectorAll('.equipment').forEach((equipment, index) => {
+      equipment.classList.add('equipment--accordion');
+      cleanups.push(() => equipment.classList.remove('equipment--accordion'));
+      equipment.querySelectorAll('.equipment__title').forEach((title, group) => {
+        const list = title.nextElementSibling;
+        if (list) disclosure(title, list, `equipment-${index}-${group}`, true);
+      });
     });
-  });
+  }
 
   const header = document.querySelector('.header');
   const menu = header?.querySelector('.nav-toggle');
@@ -290,6 +293,7 @@
   function sync() {
     cleanups.splice(0).reverse().forEach(cleanup => cleanup());
     if (!mobile.matches) return;
+    setupEquipment();
     const photoTrack = document.querySelector('.photo-mosaic__tiles');
     const firstPhoto = photoTrack?.querySelector('[data-mobile-gallery-first]');
     if (firstPhoto) {

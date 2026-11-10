@@ -1,7 +1,7 @@
 {% load content_tags %}
 {% load wagtailcore_tags %}
 {% if faq %}
-<section class="section">
+<section class="section{% if promotion_faq %} promotions-faq{% endif %}">
   {% comment %}
     Контейнер обычной ширины: в узком (760px) заголовок в 90px по макету
     разбивался на две строки, а в макете он в одну.

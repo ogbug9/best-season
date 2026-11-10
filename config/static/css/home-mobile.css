@@ -259,7 +259,7 @@
    столько же от вопросов до подвала. Нижний отступ секции обнулён,
    зазор до подвала держит сам подвал — иначе к нему прибавились бы
    его собственные 32. */
-.page-promotions main > .section:last-child { padding-top: 80px; padding-bottom: 0; }
+.page-promotions .promotions-faq { padding-top: 80px; padding-bottom: 0; }
 .page-promotions .footer { margin-top: 80px; }
 
 /* Отдельные контуры из Mobile (1).svg привязаны к своим секциям.
@@ -274,13 +274,13 @@
 .page-houses .houses-catalog { overflow: visible; isolation: auto; }
 :is(.page-home .quote, .page-home .home-nearby, .page-home .home-faq-background-anchor,
     .page-houses .houses-catalog, .page-houses .houses-faq,
-    .page-promotions .offers-section, .page-promotions main > .section:last-child,
+    .page-promotions .offers-section, .page-promotions .promotions-faq,
     .page-house .house-title, .page-house .house-about-section,
     .page-home .footer, .page-houses .footer, .page-promotions .footer, .page-house .footer) { position: relative; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .footer { background-image: none; overflow: clip; }
 :is(.page-home .quote, .page-home .home-after-hero > .section--pattern, .page-home .home-nearby, .page-home .home-faq-background-anchor,
     .page-houses .houses-catalog, .page-houses .houses-faq,
-    .page-promotions .offers-section, .page-promotions main > .section:last-child,
+    .page-promotions .offers-section, .page-promotions .promotions-faq,
     .page-house .house-title, .page-house .house-about-section)::before,
 .page-houses .houses-catalog::after, .page-house .house-title::after {
   content: ''; display: var(--bg-pattern-mobile-display); position: absolute; z-index: -1; pointer-events: none;
@@ -298,7 +298,7 @@
 .page-houses .houses-faq::before { --mobile-bg: url('../img/mobile-backgrounds/lite/houses-faq.svg'); --mobile-bg-x: -205px; --mobile-bg-y: -228.36px; --mobile-bg-w: 601px; --mobile-bg-h: 908px; }
 .page-houses .footer { --mobile-bg: url('../img/mobile-backgrounds/houses-footer.webp'); --mobile-bg-opacity: .86; --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
 .page-promotions .offers-section::before { --mobile-bg: url('../img/mobile-backgrounds/lite/promotions-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
-.page-promotions main > .section:last-child::before { --mobile-bg: url('../img/mobile-backgrounds/lite/promotions-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -785.75px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
+.page-promotions .promotions-faq::before { --mobile-bg: url('../img/mobile-backgrounds/lite/promotions-faq.svg'); --mobile-bg-x: -255px; --mobile-bg-y: -785.75px; --mobile-bg-w: 748px; --mobile-bg-h: 1130px; }
 .page-promotions .footer { --mobile-bg: url('../img/mobile-backgrounds/promotions-footer.webp'); --mobile-bg-opacity: .82; --mobile-bg-x: 0px; --mobile-bg-y: 0px; --mobile-bg-w: 390px; --mobile-bg-h: 1100px; }
 .page-house .house-title::after { --mobile-bg: url('../img/mobile-backgrounds/lite/house-top.svg'); --mobile-bg-x: -86px; --mobile-bg-y: -239.00px; --mobile-bg-w: 456px; --mobile-bg-h: 342px; }
 .page-house .house-title::before { --mobile-bg: url('../img/mobile-backgrounds/lite/house-booking.svg'); --mobile-bg-x: 0px; --mobile-bg-y: 203.00px; --mobile-bg-w: 867px; --mobile-bg-h: 971px; }

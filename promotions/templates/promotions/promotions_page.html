@@ -58,75 +58,12 @@
       {% endfor %}
     </ul>
 
-    <!-- ВЫТЯНУТАЯ КАРТОЧКА СЕРТИФИКАТА (РЕФЕРЕНС photo_12) -->
-    <div class="promo-certificate-wide" style="margin: 48px 0; background: #30463A; border-radius: 24px; padding: 36px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; align-items: center; color: #FFFFFF; box-shadow: 0 10px 30px rgba(0,0,0,0.06);">
-      <div style="width: 100%; aspect-ratio: 4/3; background: #40574B; border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-        <img src="{% static 'img/gift-certificate.jpg' %}" alt="Подарочный сертификат" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.parentElement.style.background='#3A5144'; this.parentElement.innerHTML='<div style=\'color: #DFE8E2; font-size: 14px; text-align: center; padding: 20px; font-weight: 500;\'>СЕРТИФИКАТ В КОНВЕРТЕ</div>';">
-      </div>
-
-      <div>
-        <h2 style="font-size: 32px; font-weight: 500; margin: 0 0 12px; color: #FFFFFF; font-family: inherit;">Подарочный сертификат</h2>
-        <p style="font-size: 16px; line-height: 1.5; color: #DFE8E2; margin: 0 0 24px;">
-          Два дня тишины вместо очередной вещи. Электронный — пришлём на почту за час, бумажный — отдадим в конверте при встрече.
-        </p>
-
-        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px;">
-          <span style="background: rgba(255, 255, 255, 0.12); border-radius: 100px; padding: 8px 16px; font-size: 14px; color: #FFFFFF;">Номинал от 5 000 ₽</span>
-          <span style="background: rgba(255, 255, 255, 0.12); border-radius: 100px; padding: 8px 16px; font-size: 14px; color: #FFFFFF;">Действует 6 месяцев</span>
-          <span style="background: rgba(255, 255, 255, 0.12); border-radius: 100px; padding: 8px 16px; font-size: 14px; color: #FFFFFF;">Электронный и бумажный</span>
-        </div>
-
-        <a class="btn" href="?promotion=podarochnyy-sertifikat#promotion-request" data-promotion-request-open data-form-type="certificate" data-topic="Подарочный сертификат" style="background: #EED790; color: #2B2E28; border: none; border-radius: 100px; padding: 14px 28px; font-size: 15px; font-weight: 600; text-decoration: none; display: inline-block;">
-          Заказать сертификат
-        </a>
-      </div>
-    </div>
-
-    <!-- ШКАЛА СКИДКИ ЗА ДЛИТЕЛЬНОСТЬ (РЕФЕРЕНС photo_13) -->
-    <section class="duration-discount-section" style="margin: 48px 0 20px;">
-      <div style="margin-bottom: 24px;">
-        <h2 style="font-size: 32px; font-weight: 500; color: #2B2E28; margin: 0 0 8px; font-family: inherit;">Шкала скидки за длительность</h2>
-        <p style="font-size: 16px; color: #6F7268; margin: 0;">Чем больше ночей, тем ниже цена каждой из них.</p>
-      </div>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-        <div style="background: #F5F1E5; border-radius: 16px; padding: 24px 20px; display: flex; flex-direction: column; justify-content: space-between; min-height: 120px;">
-          <span style="font-size: 14px; color: #6F7268;">1–2 суток</span>
-          <div style="height: 6px; background: #E6E1D3; border-radius: 3px; margin: 12px 0;"></div>
-          <span style="font-size: 26px; font-weight: 500; color: #7F8A78;">без скидки</span>
-        </div>
-
-        <div style="background: #F5F1E5; border-radius: 16px; padding: 24px 20px; display: flex; flex-direction: column; justify-content: space-between; min-height: 120px;">
-          <span style="font-size: 14px; color: #6F7268;">от 3 суток</span>
-          <div style="height: 6px; background: #E6E1D3; border-radius: 3px; margin: 12px 0; overflow: hidden;">
-            <div style="width: 40%; height: 100%; background: #E7CC7F; border-radius: 3px;"></div>
-          </div>
-          <span style="font-size: 26px; font-weight: 600; color: #2B2E28;">−10%</span>
-        </div>
-
-        <div style="background: #F5F1E5; border-radius: 16px; padding: 24px 20px; display: flex; flex-direction: column; justify-content: space-between; min-height: 120px;">
-          <span style="font-size: 14px; color: #6F7268;">от 5 суток</span>
-          <div style="height: 6px; background: #E6E1D3; border-radius: 3px; margin: 12px 0; overflow: hidden;">
-            <div style="width: 70%; height: 100%; background: #BE6044; border-radius: 3px;"></div>
-          </div>
-          <span style="font-size: 26px; font-weight: 600; color: #2B2E28;">−20%</span>
-        </div>
-
-        <div style="background: #304737; border-radius: 16px; padding: 24px 20px; display: flex; flex-direction: column; justify-content: space-between; min-height: 120px;">
-          <span style="font-size: 14px; color: #C2CDBE;">от 7 суток</span>
-          <div style="height: 6px; background: rgba(255, 255, 255, 0.2); border-radius: 3px; margin: 12px 0; overflow: hidden;">
-            <div style="width: 100%; height: 100%; background: #E9D080; border-radius: 3px;"></div>
-          </div>
-          <span style="font-size: 26px; font-weight: 600; color: #E9D080;">−25%</span>
-        </div>
-      </div>
-    </section>
     {% else %}
     <p>{% cms_text "promotions_page-3535fea44523" %}</p>
     {% endif %}
   </div>
 </section>
-{% include "includes/faq_section.html" %}
+{% include "includes/faq_section.html" with promotion_faq=True %}
 <section class="section" id="promotion-request" data-promotion-request-panel>
   <div class="container">
     <h2 id="promotion-request-title" data-promotion-request-title>{{ promotion_request_topic|default:'Оставить заявку' }}</h2>
