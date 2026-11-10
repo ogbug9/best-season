@@ -356,3 +356,37 @@ class FormTypesTests(FormTestCase):
             },
             set(FORM_CLASSES),
         )
+
+class PartnerAttachmentTests(FormTestCase):
+    def test_saved_attachments_are_downloadable_only_with_submission_access(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        content = b"%PDF-test"
+        with patch("forms.views.notify"):
+            response = self.client.post(
+                reverse("forms:submit", args=["partner"]),
+                payload(attachments=[SimpleUploadedFile("project.pdf", content)]),
+                HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            )
+        self.assertEqual(response.status_code, 200)
+        attachment = FormSubmission.objects.get(form_type=FormType.PARTNER).attachments.get()
+        url = reverse("forms_download_attachment", args=[attachment.pk])
+        self.assertEqual(self.client.get(url).status_code, 302)
+        editor = get_user_model().objects.create_superuser(username="partner-editor")
+        self.client.force_login(editor)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("attachment", response["Content-Disposition"])
+        self.assertEqual(b"".join(response.streaming_content), content)
+
+    def test_unsupported_files_do_not_create_a_submission(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        response = self.client.post(
+            reverse("forms:submit", args=["partner"]),
+            payload(attachments=[SimpleUploadedFile("project.pdf", b"<script>")]),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("attachments", response.json()["errors"])
+        self.assertFalse(FormSubmission.objects.exists())

@@ -1,24 +1,24 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags content_tags %}
+{% load static %}
 {% block body_class %}page-dop page-partners{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/partners-page.css' %}?v=20261110-partners">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/partners-page.css' %}?v=20261110-partners-detail">{% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/partner-upload.js' %}" defer></script>{% endblock %}
 
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow">
-    <h1>{{ page.title }}</h1>
-    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    <h1>Партнерам</h1>
   </div>
 </section>
-{% if page.body|filled %}<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>{% endif %}
 <section class="section partner-intro">
   <div class="container partner-intro__grid">
     <div class="partner-placeholder" aria-hidden="true"></div>
-    <div><h2>Поляна целиком,<br class="partner-reference-break"> без посторонних</h2><p>Четыре дома, поляна, баня и беседка на 100 человек в 1,5 ч от Москвы. Это всё можно арендовать целиком — под ретрит, выезд команды или свой повод.</p></div>
+    <div><h2>Поляна целиком,<br class="partner-reference-break"> без посторонних</h2><p>Четыре дома, поляна, баня и беседка на 100 человек<br class="partner-reference-break"> в 1,5 ч от Москвы. Это всё можно арендовать целиком —<br class="partner-reference-break"> под ретрит, выезд команды или свой повод.</p></div>
   </div>
 </section>
 <section class="section partner-support"><div class="container center">
-  <h2>Мы можем</h2><p>Подойти к вашему запросу комплексно и оказать техническую поддержку в организации. Поможем подготовить мероприятие и реализовать задумку.</p>
+  <h2>Мы можем</h2><p>Подойти к вашему запросу комплексно и оказать<br class="partner-reference-break"> техническую поддержку в организации. Поможем<br class="partner-reference-break"> подготовить мероприятие и реализовать задумку.</p>
   <p class="split__actions"><a class="btn btn--primary" href="#partner-form">Оставить заявку</a> <button class="btn btn--outline" type="button" data-booking-open data-entry-point="7" data-entry-page="partneram">Забронировать</button></p>
 </div></section>
 <section class="section partner-friends"><div class="container partner-intro__grid">
@@ -26,21 +26,27 @@
   <div><p class="partner-eyebrow">С кем мы дружим</p>
     <h2>Делимся,<br class="partner-reference-break"> а не обслуживаем</h2>
     <ul class="partner-tags">
-      <li class="partner-tags__lead">Ведущие мастер-классов<br class="partner-reference-break"> и выездных программ</li>
+      <li class="partner-tags__lead">ведущие мастер-классов<br class="partner-reference-break"> и выездных программ:</li>
       <li>живопись</li><li>фотография</li><li>флористика</li><li>ремёсла</li>
       <li>ретриты</li><li>йога</li><li>культурно-образовательные объединения</li>
     </ul></div>
 </div></section>
 <section class="section partner-shoot"><div class="container partner-intro__grid">
   <h2>Снимайте как<br class="partner-reference-break"> есть — декорации<br class="partner-reference-break"> не понадобятся</h2>
-  <div><p>Лес, река, терраса и поляна без заборов. Мы ищем тех, кто делится, а не продаёт: авторов, мастеров, соседей по округе.</p><a class="btn btn--primary" href="#partner-form">Предложить сотрудничество</a></div>
+  <div>
+    <p>Лес, река, терраса и поляна без заборов.<br class="partner-reference-break"> Мы ищем тех, кто делится, а не продаёт:<br class="partner-reference-break"> авторов, мастеров, соседей по округе.</p>
+    <div class="partner-shoot__actions">
+      <a class="btn btn--primary" href="#partner-form">Предложить сотрудничество</a>
+      <a class="btn btn--outline" href="?direction=Блогеры%20и%20медиа&amp;request=media-kit#partner-form">Запросить медиакит</a>
+    </div>
+  </div>
 </div></section>
 <section class="section partner-numbers"><div class="container">
   <h2 class="center">Что у нас есть</h2><p class="center">Глэмпинг в цифрах</p>
   <ul class="partner-facts">
-    <li><b>Домов</b><span>4, по 30 м² плюс терраса 24 м²</span></li><li><b>Гостей с ночёвкой</b><span>до 16</span></li><li><b>Гостей на мероприятии</b><span>до 100 в крытой беседке</span></li><li><b>Беседка «Корабль»</b><span>русская печь, две кухни, два холодильника</span></li>
-    <li><b>Баня</b><span>на дровах, до 15 человек</span></li><li><b>Сауна</b><span>финская, в доме №1</span></li><li><b>Территория</b><span>2 га, лес с трёх сторон, река вдоль участка</span></li><li><b>Дорога</b><span>1,5 ч от Москвы, 3 км до усадьбы Поленово</span></li>
-    <li><b>Интернет</b><span>Wi-Fi, оптоволокно во всех домах</span></li><li><b>Парковка</b><span>8 мест</span></li><li><b>Своя ферма</b><span>овцы, коровы, козы, птица</span></li><li><b>Круглый год</b><span>дома отапливаются</span></li>
+    <li><b>Домов</b><span>4, по 30 м² плюс терраса 24 м²</span></li><li><b>Гостей с<br class="partner-reference-break"> ночёвкой</b><span>до 16</span></li><li><b>Гостей на<br class="partner-reference-break"> мероприятии</b><span>до 100 чел в крытой беседке</span></li><li><b>Беседка<br class="partner-reference-break"> «Корабль»</b><span>русская печь, 2 кухни, 2 холодильника, всесезонная</span></li>
+    <li><b>Баня</b><span>на дровах, есть душ и туалет (летом), до 15 чел</span></li><li><b>Сауна</b><span>финская, в доме №1</span></li><li><b>Территория</b><span>2 га, лес с трёх сторон, река вдоль участка</span></li><li><b>Дорога</b><span>1,5 ч от Москвы, 3 км до усадьбы Поленово</span></li>
+    <li><b>Интернет</b><span>Wi-Fi, оптоволокно во всех домах</span></li><li><b>Парковка</b><span>8 мест</span></li><li><b>Своя ферма</b><span>около 100 овец, коровы, козы, птица</span></li><li><b>Круглый год</b><span>дома отапливаются</span></li>
   </ul>
   <p class="center">Нужны детали — свяжитесь с нами, вышлем паспорт площадки одним файлом.</p><p class="center"><a class="btn btn--primary" href="#partner-form">Связаться</a></p>
 </div></section>
@@ -56,9 +62,9 @@
         <li class="partners__item" data-reveal>
           <div class="partners__media" aria-hidden="true"></div>
           <h3 class="partners__title">{{ direction.title }}</h3>
-          {{ direction.text|linebreaks }}
+          {% for paragraph in direction.paragraphs %}<p>{% for line in paragraph %}{% if not forloop.first %}<br class="partner-reference-break"> {% endif %}{{ line }}{% endfor %}</p>{% endfor %}
           <p class="partners__terms"><b>Предлагаем:</b> <span>{{ direction.offer }}</span></p>
-          <p class="partners__terms"><b>Ждём:</b> <span>{{ direction.expect }}</span></p>
+          <p class="partners__terms"><b>Ждём:</b> <span>{% for line in direction.expect_lines %}{% if not forloop.first %}<br class="partner-reference-break"> {% endif %}{{ line }}{% endfor %}</span></p>
           <a class="btn btn--primary" href="?direction={{ direction.title|urlencode }}#partner-form">{{ direction.cta }}</a>
         </li>
         {% endfor %}
@@ -75,7 +81,7 @@
 </section>
 <section class="section partner-faq"><div class="container">
   <h2 class="section__title section__title--center">Ответы на вопросы</h2>
-  {% include "includes/faq_items.html" with faq=partner_faq %}
+  {% include "includes/faq_items.html" with faq=partner_faq faq_multiple=True %}
   <a class="btn btn--primary partner-faq__cta" href="#partner-form">Уточнить детали</a>
 </div></section>
 {% endblock %}

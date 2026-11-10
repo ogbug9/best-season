@@ -12,7 +12,7 @@
   это важно для доступности и для резервного сценария п. 5.6.
 {% endcomment %}
 
-<form class="form" method="post" action="{% url 'forms:submit' form_type %}" data-request-form{% if form_success_type and form_success_type == form_type %} data-confirmed-success{% endif %} novalidate>
+<form class="form" method="post"{% if form.is_multipart %} enctype="multipart/form-data"{% endif %} action="{% url 'forms:submit' form_type %}" data-request-form{% if form_success_type and form_success_type == form_type %} data-confirmed-success{% endif %} novalidate>
   {% csrf_token %}
 
   {% if title %}<h2 class="form__title">{% if title_prefix %}{{ title_prefix }}<br>{% endif %}{{ title }}</h2>{% endif %}
@@ -63,6 +63,13 @@
               {% endwith %}{% if site_legal.marketing %}Условия рассылки — <a href="{% pageurl site_legal.marketing %}">согласие на рассылку</a>.{% endif %}
             </span>
           </label>
+          {% if field.errors %}<p class="form__error">{{ field.errors|join:" " }}</p>{% endif %}
+        </div>
+      {% elif field.name == "attachments" %}
+        <div class="form__field partner-upload">
+          {{ field }}
+          <label class="btn btn--primary" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          <span class="partner-upload__status" role="status"></span>
           {% if field.errors %}<p class="form__error">{{ field.errors|join:" " }}</p>{% endif %}
         </div>
       {% elif field.field.widget.input_type == "hidden" %}

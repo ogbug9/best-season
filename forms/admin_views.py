@@ -7,11 +7,24 @@
 """
 
 import csv
+from io import BytesIO
 
-from django.http import HttpResponse
+from django.core.exceptions import PermissionDenied
+from django.http import FileResponse, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from .models import FormSubmission
+from .models import FormSubmission, PartnerAttachment
+
+
+def download_attachment(request, pk):
+    if not any(request.user.has_perm(f"forms.{action}_formsubmission") for action in ("view", "change")):
+        raise PermissionDenied
+    attachment = get_object_or_404(PartnerAttachment, pk=pk)
+    response = FileResponse(BytesIO(attachment.content), as_attachment=True, filename=attachment.name,
+                            content_type="application/octet-stream")
+    response["Cache-Control"] = "private, no-store"
+    return response
 
 COLUMNS = [
     ("created_at", "Получена"),

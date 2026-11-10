@@ -1,13 +1,26 @@
+from django.db.models import Prefetch
 from django.urls import path, reverse
+from django.utils.html import format_html_join
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 
-from .admin_views import export_csv
+from .admin_views import download_attachment, export_csv
 
-from .models import FormSubmission
+from .models import FormSubmission, PartnerAttachment
+
+
+def attachment_links(submission):
+    return format_html_join(
+        ", ", '<a href="{}">{}</a>',
+        ((reverse("forms_download_attachment", args=[attachment.pk]), attachment.name)
+         for attachment in submission.attachments.all()),
+    )
+
+
+attachment_links.short_description = "Файлы"
 
 
 class FormSubmissionViewSet(SnippetViewSet):
@@ -24,10 +37,15 @@ class FormSubmissionViewSet(SnippetViewSet):
     menu_order = 200
     add_to_admin_menu = True
 
-    list_display = ["created_at", "form_type", "topic", "name", "phone", "status"]
+    list_display = ["created_at", "form_type", "topic", "name", "phone", "status", attachment_links]
     list_filter = ["form_type", "status", "created_at"]
     search_fields = ["name", "phone", "email", "topic", "message"]
     ordering = ["-created_at"]
+
+    def get_queryset(self, request):
+        return FormSubmission.objects.prefetch_related(
+            Prefetch("attachments", queryset=PartnerAttachment.objects.only("submission_id", "name")),
+        )
 
     panels = [
         MultiFieldPanel(
@@ -83,7 +101,10 @@ register_snippet(FormSubmissionViewSet)
 
 @hooks.register("register_admin_urls")
 def forms_admin_urls():
-    return [path("zayavki/export/", export_csv, name="forms_export_csv")]
+    return [
+        path("zayavki/export/", export_csv, name="forms_export_csv"),
+        path("zayavki/attachment/<int:pk>/", download_attachment, name="forms_download_attachment"),
+    ]
 
 
 @hooks.register("register_admin_menu_item")

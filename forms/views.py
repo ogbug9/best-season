@@ -110,12 +110,12 @@ def submit(request, form_type):
         return redirect(outcome_url("rate"))
 
     form_class = FORM_CLASSES[form_type]
-    form = form_class(request.POST)
+    form = form_class(request.POST, request.FILES)
 
     if not form.is_valid():
         if wants_json:
             return JsonResponse({"ok": False, "errors": form.errors}, status=400)
-        if form_type == FormType.FALLBACK:
+        if form_type in (FormType.FALLBACK, FormType.PARTNER):
             return fallback_response(form, 400)
         return redirect(outcome_url("error"))
 

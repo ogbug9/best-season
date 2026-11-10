@@ -89,3 +89,9 @@ class FormSubmission(models.Model):
 
     def __str__(self):
         return f"{self.get_form_type_display()} — {self.name} ({self.created_at:%d.%m.%Y %H:%M})"
+
+
+class PartnerAttachment(models.Model):
+    submission = models.ForeignKey(FormSubmission, on_delete=models.CASCADE, related_name="attachments")
+    name = models.CharField(max_length=255)
+    content = models.BinaryField()

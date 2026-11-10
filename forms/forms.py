@@ -12,11 +12,12 @@
 import re
 
 from django import forms
+from django.db import transaction
 from django.utils import timezone
 
 from core.dop_pages import PARTNER_DIRECTIONS
 
-from .models import FormSubmission, FormType
+from .models import FormSubmission, FormType, PartnerAttachment
 
 
 class BaseRequestForm(forms.ModelForm):
@@ -264,6 +265,10 @@ class GroupForm(BaseRequestForm):
         }
 
 
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
 class PartnerForm(BaseRequestForm):
     """Сотрудничество — «Партнёрам». Направление — в теме заявки."""
 
@@ -272,8 +277,37 @@ class PartnerForm(BaseRequestForm):
         label="Направление", choices=_choices([title for title, *_ in PARTNER_DIRECTIONS]), required=False,
     )
 
+    attachments = forms.Field(
+        required=False, label="Загрузить файлы",
+        widget=MultipleFileInput(attrs={"accept": ".pdf,.png,.jpg,.jpeg", "class": "visually-hidden"}),
+    )
+
     class Meta(BaseRequestForm.Meta):
+        fields = [*BaseRequestForm.Meta.fields[:-1], "attachments", "consent_given"]
         labels = {**BaseRequestForm.Meta.labels, "message": "Расскажите о себе и идее"}
+
+    def clean_attachments(self):
+        uploads = self.cleaned_data.get("attachments") or []
+        if len(uploads) > 3 or sum(upload.size for upload in uploads) > 5 * 1024 * 1024:
+            raise forms.ValidationError("Выберите до трёх файлов общим размером до 5 МБ.")
+        attachments = []
+        for upload in uploads:
+            signature = upload.read(8)
+            if not signature.startswith((b"%PDF-", b"\x89PNG\r\n\x1a\n", b"\xff\xd8\xff")):
+                raise forms.ValidationError("Можно приложить файлы PDF, PNG или JPEG.")
+            upload.seek(0)
+            attachments.append(PartnerAttachment(name=upload.name, content=upload.read()))
+        return attachments
+
+    @transaction.atomic
+    def save(self, commit=True, request=None, consent_version=""):
+        submission = super().save(commit=commit, request=request, consent_version=consent_version)
+        if commit:
+            attachments = self.cleaned_data["attachments"]
+            for attachment in attachments:
+                attachment.submission = submission
+            PartnerAttachment.objects.bulk_create(attachments)
+        return submission
 
 
 class EventForm(BaseRequestForm):
