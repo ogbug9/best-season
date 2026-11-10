@@ -38,7 +38,7 @@
       button.addEventListener('click', function () {
         var item = button.closest('.faq__item');
         var open = button.getAttribute('aria-expanded') !== 'true';
-        if (open && !faq.hasAttribute("data-faq-multiple")) faq.querySelectorAll('.faq__item.is-open').forEach(function (other) { if (other !== item) set(other, false); });
+        if (open) faq.querySelectorAll('.faq__item.is-open').forEach(function (other) { if (other !== item) set(other, false); });
         set(item, open);
       });
     });

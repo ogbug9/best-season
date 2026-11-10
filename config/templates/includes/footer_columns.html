@@ -16,8 +16,8 @@
       {% if column.links %}
         <ul>
           {% if forloop.counter == 2 %}
-            {% if partner_activities_page or page.slug == "dnevnik" and footer_activities_page or page.content_type.model == "diaryentrypage" and footer_activities_page or page.slug == "territoriya" and footer_activities_page or page.slug == "chem-zanyatsya" and footer_activities_page or page.slug == "akcii" and footer_activities_page or page.slug == "meropriyatiya" and footer_activities_page or page.content_type.model == "housepage" and footer_activities_page %}
-              <li><a href="{% pageurl partner_activities_page|default:footer_activities_page %}#scenarios">Развлечения</a></li>
+            {% if footer_activities_page %}
+              <li><a href="{% pageurl footer_activities_page %}#scenarios">Развлечения</a></li>
             {% endif %}
           {% endif %}
           {% for link in column.links %}

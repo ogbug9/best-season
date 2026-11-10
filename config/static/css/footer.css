@@ -1,23 +1,45 @@
-/* Общие интервалы подвала в макетах мероприятий, акций и домиков. */
+/* Один подвал для всех страниц. */
+.site .footer.footer--standard {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  margin-top: 0;
+  padding: 43px 0 13px;
+  background: none;
+}
 .footer.footer--standard .footer__brand .socials { margin-top: -21px; }
 
+@media (min-width: 900px) {
+  .site .footer.footer--standard {
+    background: url("../img/home-backgrounds/fon-footer.svg") calc(50% + 535.5px) 281.1px / 2069px auto no-repeat;
+  }
+  .footer.footer--standard .footer__legal { grid-template-columns: 1fr auto 1fr; min-height: 0; margin-top: 58px; }
+  .footer.footer--standard .footer__center { text-align: center; }
+}
 @media (min-width: 700px) and (max-width: 1199px) {
   .footer--standard .footer__top { grid-template-columns: 240px minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); }
   .footer--standard .footer__columns { gap: 24px 16px; }
   .footer--standard .footer__legal-links { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-flow: row; }
 }
-
-@media (min-width: 700px) and (max-width: 899px) {
-  :is(.page-events, .page-promotions, .page-house) .footer--standard { background: var(--footer-art) center bottom / min(100%, 520px) auto no-repeat; }
-  .page-house .footer--standard { --footer-art: url("../img/mobile-backgrounds/house-footer.webp"); }
-  .page-promotions .footer--standard { --footer-art: url("../img/mobile-backgrounds/promotions-footer.webp"); }
-  .page-events .footer--standard { --footer-art: url("../img/home-backgrounds/fon-events-footer.svg"); }
-}
-
 @media (max-width: 699px) {
-  .page-events .footer--standard { background-position: right bottom; background-size: 1100px auto; }
-  :is(.page-events, .page-partners) .footer--standard .footer__center::before {
-    content: "";
+  .site .footer.footer--standard { margin-top: 32px; padding: 22px 0 20px; }
+  .footer.footer--standard .footer__brand .socials { margin-top: -8px; }
+  .footer.footer--standard .footer__legal { position: relative; isolation: isolate; }
+  .footer.footer--standard .footer__legal::before {
+    content: '';
+    display: var(--bg-pattern-mobile-display);
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    left: calc(50% - 50vw);
+    top: -400px;
+    width: 100vw;
+    height: 1100px;
+    background: url("../img/mobile-backgrounds/home-footer.webp") center / 100% 100% no-repeat;
+    opacity: .84;
+  }
+  .footer.footer--standard .footer__center::before {
+    content: '';
     display: block;
     height: 1px;
     margin-bottom: 20px;

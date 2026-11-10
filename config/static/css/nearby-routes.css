@@ -1,6 +1,6 @@
 /* Страница «Интересное рядом» по макету 04.11.2026. */
 .page-nearby { background: var(--c-cream); }
-.page-nearby main { overflow: hidden; background: var(--c-cream); }
+.page-nearby main { overflow-x: clip; background: var(--c-cream); }
 .page-nearby .section { padding-block: 52px; }
 .page-nearby .section__title { margin: 0 0 12px; font-size: 40px; line-height: 1.12; font-weight: 400; color: var(--c-dark); }
 .page-nearby main .container { width: min(100% - 48px, 1250px); }
@@ -100,13 +100,14 @@
 .pn-ready-route li b { margin-bottom: 2px; font-weight: 500; }
 .pn-ready-route li span { color: var(--c-dark); }
 .pn-guide .guide__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
-@media (min-width: 901px) {
+@media (min-width: 1101px) {
   .pn-guide .guide__list--stacked { grid-auto-rows: 1px; row-gap: 0; }
   .pn-guide .guide__list--stacked .guide-card { grid-column: var(--guide-column); grid-row: var(--guide-row); }
 }
 .pn-guide .guide-card[hidden] { display: none; }
 .pn-guide .guide-card.is-closed { opacity: 1; }
 .pn-guide .guide-card { gap: 12px; padding: 20px; border-radius: 20px; background: var(--c-white); }
+.pn-guide .guide-card__head { flex-wrap: wrap; }
 .pn-guide .guide-card h3 { font-size: 16px; line-height: 1.2; font-weight: 500; }
 .pn-guide .guide-card__add { min-height: 29px; padding: 4px 9px; background: #e9d8ca; font-size: 12px; white-space: nowrap; }
 .pn-guide .guide-card__add input { margin: 0; accent-color: var(--c-olive); }
@@ -138,7 +139,6 @@
   .page-nearby .faq__item .faq__answer { padding: 20px 32px; font-size: 20px; line-height: 24px; }
 }
 .page-nearby .faq__reference-break { display: none; }
-.page-nearby .footer-address { display: none; }
 
 @media (min-width: 750px) {
   .pn-note .pn-reference-break { display: initial; }
@@ -147,7 +147,7 @@
   .pn-note h2 { font-size: 32px; margin-bottom: 12px; }
   .pn-note h3 { font-size: 24px; }
   .pn-note p { font-size: 20px; line-height: 24px; }
-  .pn-note--bee p, .pn-note--telegram p { font-size: 24px; line-height: 29px; }
+  .pn-note--telegram p { font-size: 24px; line-height: 29px; }
   .pn-note--bee .btn, .pn-note--telegram .btn { margin-top: 24px; }
 }
 
@@ -221,18 +221,19 @@
 }
 
 @media (min-width: 900px) {
-  .pn-hero {
-    background: url("../img/home-backgrounds/fon-nearby-top.svg") center top / 100% auto no-repeat;
+  .page-nearby main {
+    background-image: url("../img/home-backgrounds/fon-nearby-top.svg");
+    background-position: center top;
+    background-size: max(100%, 1440px) auto;
+    background-repeat: no-repeat;
   }
-  .page-nearby .faq-section:has(.faq__question[aria-expanded="true"]) {
-    background: url("../img/home-backgrounds/fon-nearby-faq.svg") center top / 100% auto no-repeat;
-  }
-  .page-nearby .footer {
-    background: url("../img/home-backgrounds/fon-nearby-footer.svg") center bottom / 100% auto no-repeat;
+  .page-nearby .faq-section {
+    background: url("../img/home-backgrounds/fon-nearby-faq.svg") center top / max(100%, 1440px) auto no-repeat;
   }
 }
 
 @media (max-width: 1100px) {
+  .pn-guide .guide__list { grid-template-columns: 1fr; }
   .page-nearby .pn-guide .pn-guide__layout { grid-template-columns: minmax(280px, .88fr) minmax(0, 1.62fr); gap: 22px; }
 }
 
@@ -284,7 +285,8 @@
   .pn-guide__filters h2 { font-size: 32px; }
   .pn-guide .guide__list { grid-template-columns: 1fr; }
   .pn-guide .guide-card { padding: 18px; }
-  .pn-guide .guide-card h3 { overflow-wrap: anywhere; }
+  .pn-guide .guide-card__head { flex-wrap: wrap; }
+.pn-guide .guide-card h3 { overflow-wrap: anywhere; }
   .page-nearby .faq-section .container--narrow { width: min(100% - 36px, 560px); max-width: 560px; }
   .page-nearby .faq-section .section__title { margin-bottom: 28px; }
   .page-nearby .faq__item .faq__question { min-height: 0; padding: 12px 16px; font-size: 22px; line-height: 1.22; }

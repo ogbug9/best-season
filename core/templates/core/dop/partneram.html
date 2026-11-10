@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block body_class %}page-dop page-partners{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/partners-page.css' %}?v=20261110-partners-media">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/partners-page.css' %}?v=20261110-partners-shoot">{% endblock %}
 
 {% block extra_js %}<script src="{% static 'js/partner-upload.js' %}" defer></script>{% endblock %}
 
@@ -37,7 +37,7 @@
     <p>Лес, река, терраса и поляна без заборов.<br class="partner-reference-break"> Мы ищем тех, кто делится, а не продаёт:<br class="partner-reference-break"> авторов, мастеров, соседей по округе.</p>
     <div class="partner-shoot__actions">
       <a class="btn btn--primary" href="#partner-form">Предложить сотрудничество</a>
-      <a class="btn btn--outline" href="?direction=Блогеры%20и%20медиа&amp;request=media-kit#partner-form">Запросить медиакит</a>
+      <a class="btn btn--outline" href="{% static 'press/best-season-media-kit.pdf' %}" download="best-season-media-kit.pdf">Скачать медиакит</a>
     </div>
   </div>
 </div></section>
@@ -81,7 +81,7 @@
 </section>
 <section class="section partner-faq"><div class="container">
   <h2 class="section__title section__title--center">Ответы на вопросы</h2>
-  {% include "includes/faq_items.html" with faq=partner_faq faq_multiple=True %}
+  {% include "includes/faq_items.html" with faq=partner_faq %}
   <a class="btn btn--primary partner-faq__cta" href="#partner-form">Уточнить детали</a>
 </div></section>
 {% endblock %}

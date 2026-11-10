@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags content_tags marketing_tags layout_tags %}
 {% block body_class %}page-dop page-scenarios{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261021-gazebo"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261110-things-media">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261021-gazebo"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261110-stay-actions">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261025-dice" defer></script>{% endblock %}
 
 {% comment %}
@@ -136,7 +136,7 @@
 <section class="section things-faq" aria-labelledby="things-faq-title">
   <div class="container">
     <h2 class="things-title things-title--dark" id="things-faq-title">Ответы на вопросы</h2>
-    {% include "includes/faq_items.html" with faq=things_faq faq_layout="things_faq" faq_multiple=True %}
+    {% include "includes/faq_items.html" with faq=things_faq faq_layout="things_faq" %}
   </div>
 </section>
 

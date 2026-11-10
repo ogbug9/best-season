@@ -1,4 +1,5 @@
 .page-events {
+  overflow-x: clip;
   background: #f7f0e6 url("../img/home-backgrounds/fon-nearby-top.svg") no-repeat center top / max(100%, 1440px) auto;
   color: #494949;
 }
@@ -88,7 +89,15 @@
 .season-calendar__current { margin: 0 0 6px; }
 .season-calendar__current::before { content: "●"; margin-right: 10px; color: #e3b646; }
 .season-calendar__month h3 { margin: 0; color: inherit; font-size: clamp(32px, 4vw, 54px); line-height: 1; }
-.season-calendar__highlights { font-size: 16px; }
+.season-calendar__highlights { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; font-size: 16px; }
+.season-calendar__highlights li { display: flex; align-items: flex-start; gap: 12px; }
+.season-calendar__highlights li::before {
+  content: "";
+  flex: 0 0 16px;
+  height: 16px;
+  margin-top: 2px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23e3b646' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M2 2c8-.6 12 3 12 12C5 14 1.4 10 2 2ZM2 2l5 5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 .season-calendar__weekends { margin: 0; padding: 12px 14px; border: 1px solid #847f57; border-radius: 20px; font-size: 15px; line-height: 1.15; }
 .season-calendar__weekends strong { display: block; margin-bottom: 5px; color: #e3b646; font: 400 54px/1 "Etude Noire", sans-serif; }
 .season-calendar__holiday, .season-calendar__activities { margin-top: 18px; padding-top: 18px; border-top: 1px dashed #847f57; }

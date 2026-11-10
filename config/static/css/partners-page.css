@@ -60,7 +60,7 @@
 }
 .partner-tags li:not(.partner-tags__lead) { padding: 10px 24px; border-radius: 10px; background: #e9d8ca; }
 .partner-tags__lead { margin-right: 4px; }
-.partner-shoot .partner-intro__grid { max-width: 948px; gap: 46px; grid-template-columns: minmax(0, 456px) minmax(0, 1fr); }
+.partner-shoot .partner-intro__grid { max-width: 1100px; gap: 40px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.27fr); }
 .page-partners main .partner-shoot h2 { font-size: clamp(30px, 2.78vw, 40px); }
 .partner-shoot__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14.5px; }
 .page-partners .partner-shoot .btn { min-height: 33px; padding: 5px 10px; font-size: 14px; line-height: 20px; font-weight: 400; }

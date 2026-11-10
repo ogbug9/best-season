@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags media_tags content_tags marketing_tags layout_tags %}
 {% block body_class %}page-dop page-events{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/events.css' %}?v=20261110-events-layout">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/events.css' %}?v=20261110-calendar-icons">{% endblock %}
 
 {% comment %}
   Мероприятия (docs/dop-stranicy/18-…). Ближайших дат пока нет — страница
@@ -9,7 +9,7 @@
   праздники и собирает контакты тех, кто хочет узнать первым.
 {% endcomment %}
 
-{% block extra_js %}<script defer src="{% static 'js/events.js' %}?v=20261110-events-layout"></script>{% endblock %}
+{% block extra_js %}<script defer src="{% static 'js/events.js' %}?v=20261110-calendar-icons"></script>{% endblock %}
 {% block content %}
 <section class="section page-head"><div class="container container--narrow">
   <h1>{{ page.title }}</h1><p class="section__lead">{% if page.intro|filled %}{{ page.intro }}{% else %}Поводы, ради которых точно стоит приехать.{% endif %}</p>
@@ -138,11 +138,11 @@
 </section>
 <section class="section events-faq"><div class="container">
   <h2 class="section__title section__title--center">Ответы на вопросы</h2>
-  <details><summary>Все ли мероприятия открыты для внешних гостей?</summary><p>Зависит от формата конкретного события.<br class="events-desktop-break"> В анонсе мы всегда указываем, кто может присоединиться и как записаться.</p></details>
-  <details><summary>Нужно ли заранее записываться на мероприятия?</summary><p>На некоторые встречи количество мест ограничено, поэтому мы рекомендуем<br class="events-desktop-break"> записываться заранее. Условия участия публикуем вместе с анонсом.</p></details>
-  <details><summary>Можно ли приехать на мероприятие с детьми?</summary><p>Во многих случаях — да. Возрастные ограничения и особенности программы указываем<br class="events-desktop-break"> в описании конкретного события.</p></details>
-  <details><summary>Можно ли остаться на ночь после мероприятия?</summary><p>Конечно, если событие предполагает проживание и на нужные даты есть свободные<br class="events-desktop-break"> домики. Рекомендуем бронировать заранее.</p></details>
-  <details><summary>Можно ли организовать собственное мероприятие в "Сезоне"?</summary><p>Да. Можно обсудить аренду отдельных площадок или всей территории — формат<br class="events-desktop-break"> зависит от количества гостей, даты и ваших пожеланий.</p></details>
-  <details class="events-faq__extra"><summary>Где узнавать о новых мероприятиях?</summary><p>Анонсы в первую очередь публикуем в нашем Telegram-канале. Подписывайтесь на<br class="events-desktop-break"> канал или оставьте почтовый адрес, чтобы не пропустить новые встречи.</p></details>
+  <details name="events-faq"><summary>Все ли мероприятия открыты для внешних гостей?</summary><p>Зависит от формата конкретного события.<br class="events-desktop-break"> В анонсе мы всегда указываем, кто может присоединиться и как записаться.</p></details>
+  <details name="events-faq"><summary>Нужно ли заранее записываться на мероприятия?</summary><p>На некоторые встречи количество мест ограничено, поэтому мы рекомендуем<br class="events-desktop-break"> записываться заранее. Условия участия публикуем вместе с анонсом.</p></details>
+  <details name="events-faq"><summary>Можно ли приехать на мероприятие с детьми?</summary><p>Во многих случаях — да. Возрастные ограничения и особенности программы указываем<br class="events-desktop-break"> в описании конкретного события.</p></details>
+  <details name="events-faq"><summary>Можно ли остаться на ночь после мероприятия?</summary><p>Конечно, если событие предполагает проживание и на нужные даты есть свободные<br class="events-desktop-break"> домики. Рекомендуем бронировать заранее.</p></details>
+  <details name="events-faq"><summary>Можно ли организовать собственное мероприятие в "Сезоне"?</summary><p>Да. Можно обсудить аренду отдельных площадок или всей территории — формат<br class="events-desktop-break"> зависит от количества гостей, даты и ваших пожеланий.</p></details>
+  <details class="events-faq__extra" name="events-faq"><summary>Где узнавать о новых мероприятиях?</summary><p>Анонсы в первую очередь публикуем в нашем Telegram-канале. Подписывайтесь на<br class="events-desktop-break"> канал или оставьте почтовый адрес, чтобы не пропустить новые встречи.</p></details>
 </div></section>
 {% endblock %}

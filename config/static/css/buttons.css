@@ -160,6 +160,11 @@
   background-color: #F7F0E6;
   border-radius: var(--radius-pill);
 }
+.site .equipment__toggle.btn--outline:not(:hover, :focus-visible, :active),
+.site .things-stay .btn.btn--outline:not(:hover, :focus-visible, :active),
+.site .partner-shoot .btn.btn--outline:not(:hover, :focus-visible, :active) {
+  background-color: transparent;
+}
 .site :is(button, summary, .btn, [role="button"], .socials__item)[data-button-type]:is(:active, .is-pressed):not(:disabled, [aria-disabled="true"]) {
   background-color: var(--button-pressed-bg); background-image: none;
   color: var(--button-pressed-text); border-color: var(--button-pressed-border);
