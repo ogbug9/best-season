@@ -14,6 +14,8 @@ import re
 from django import forms
 from django.utils import timezone
 
+from core.dop_pages import PARTNER_DIRECTIONS
+
 from .models import FormSubmission, FormType
 
 
@@ -233,7 +235,6 @@ class FallbackBookingForm(BaseRequestForm):
 
 
 GROUP_OCCASIONS = ["День рождения", "Выпускной", "Девичник", "Выезд команды", "Семейный праздник", "Другое"]
-PARTNER_DIRECTIONS = ["Съёмки и блогеры", "Ведущие мастер-классов", "Местные партнёры"]
 
 
 def _choices(values):
@@ -267,7 +268,9 @@ class PartnerForm(BaseRequestForm):
     """Сотрудничество — «Партнёрам». Направление — в теме заявки."""
 
     form_type = FormType.PARTNER
-    topic = forms.ChoiceField(label="Направление", choices=_choices(PARTNER_DIRECTIONS), required=False)
+    topic = forms.ChoiceField(
+        label="Направление", choices=_choices([title for title, *_ in PARTNER_DIRECTIONS]), required=False,
+    )
 
     class Meta(BaseRequestForm.Meta):
         labels = {**BaseRequestForm.Meta.labels, "message": "Расскажите о себе и идее"}
