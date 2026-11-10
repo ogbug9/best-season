@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags marketing_tags %}
+{% load static wagtailcore_tags %}
 {% comment %} «Дневник Сезона» — макет News (1440×2313), 20.10. Мобильная версия — по образцу блока «Дневник» на «О нас». {% endcomment %}
 {% block body_class %}page-diary page-diary-index{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/diary.css' %}?v=20261021-bg">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/diary.css' %}?v=20261110-diary-layout">{% endblock %}
 
 {% block canonical %}{{ canonical }}{% if page_obj and page_obj.number > 1 %}?page={{ page_obj.number }}{% elif show_all %}?page=all{% endif %}{% endblock %}
 {% block content %}
@@ -14,7 +14,7 @@
     {% if page.intro %}<p class="diary-index__lead">{{ page.intro }}</p>{% endif %}
     {% if entries %}
       <ul class="diary-grid">
-        {% for entry in entries %}{% if forloop.first %}{% include "core/includes/diary_card.html" with loading="eager" %}{% else %}{% include "core/includes/diary_card.html" %}{% endif %}{% endfor %}
+        {% for entry in entries %}{% if forloop.first %}{% include "core/includes/diary_card.html" with loading="eager" index_layout=True %}{% else %}{% include "core/includes/diary_card.html" with index_layout=True %}{% endif %}{% endfor %}
       </ul>
       {% if paginator.num_pages > 1 %}
         <nav class="diary-pages" aria-label="Страницы дневника">
@@ -33,30 +33,4 @@
     {% endif %}
   </div>
 </section>
-{% if channel_posts %}
-<section class="section"><div class="container">
-  <h2 class="section__title section__title--center">Новости канала</h2>
-  <ul class="diary-posts">{% for post in channel_posts %}
-    <li class="diary-posts__item"><a class="diary-posts__link" href="{{ post.url }}" rel="noopener" target="_blank">{% if post.local_image_url %}<img class="diary-posts__image" src="{{ post.local_image_url }}" alt="" loading="lazy">{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}<time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"j E Y" }}</time><span>{{ post.first_line }}</span></a></li>
-  {% endfor %}</ul>
-</div></section>
-{% endif %}
-{% if channel_rubrics %}
-<section class="section"><div class="container container--narrow"><h2 class="center">Рубрики</h2><ul class="rubrics">{% for tag, text in channel_rubrics %}<li><b>{{ tag }}</b><span>{{ text }}</span></li>{% endfor %}</ul></div></section>
-{% endif %}
-{% with s=settings.core.SiteSettings %}
-{% if newsletter_url or s.telegram_url or s.vk_url %}
-<section class="section"><div class="container center">
-  <h2>Новости «Лучшего сезона»</h2>
-  {% if newsletter_url %}<p><a href="{{ newsletter_url }}">Рубрики и новости наших каналов</a></p>{% endif %}
-  {% if s.telegram_url or s.vk_url %}
-  <p>Подписывайтесь, чтобы узнавать о новых записях и событиях.</p>
-  <p class="split__actions">
-    {% if s.telegram_url %}<a class="btn btn--primary" href="{% marketing_url s.telegram_url 'diary' %}" rel="noopener" target="_blank">Подписаться в Telegram</a>{% endif %}
-    {% if s.vk_url %}<a class="btn btn--outline" href="{% marketing_url s.vk_url 'diary' %}" rel="noopener" target="_blank">Мы во ВКонтакте</a>{% endif %}
-  </p>
-  {% endif %}
-</div></section>
-{% endif %}
-{% endwith %}
 {% endblock %}

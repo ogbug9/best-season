@@ -1232,11 +1232,6 @@ class DiaryIndexPage(InProgressMixin, Page):
         from django.http import Http404
         from core.templatetags.media_tags import rendition_plan
 
-        newsletter = ContentPage.objects.live().filter(slug="rassylka").first()
-        context["newsletter_url"] = newsletter.get_url(request) if newsletter else ""
-        from core import dop_content as dc
-        context["channel_posts"] = ChannelPost.objects.all()[:3]
-        context["channel_rubrics"] = dc.CHANNEL_RUBRICS
         paginator = Paginator(self.entries(), self.PER_PAGE)
         # prepare_site_images рендерит индекс без ?page — пусть видит все карточки.
         if request.GET.get("page") == "all" or rendition_plan.get() is not None:

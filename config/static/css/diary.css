@@ -4,7 +4,8 @@
    «Читать» 20 px + шеврон 9×12, пагинация 44 px с шагом 14.
    Мобильная версия — как блок «Дневник» на «О нас» (about.css, max-width 699). */
 
-.diary-index { padding: 202px 0 105px; }
+.diary-index { padding: 202px 0 102px; }
+.page-diary-index .header:not(.header--scrolled) .header__bar { box-shadow: none; }
 .diary-index__title { margin: 0; color: #847F57; font: 500 90px/95px var(--font-heading); text-align: center; }
 .diary-index__lead { max-width: 760px; margin: 21px auto 40px; color: #494949; font: 400 20px/24px var(--font-body); text-align: center; }
 .diary-index__empty { text-align: center; }
@@ -12,19 +13,19 @@
 .diary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 400px)); justify-content: center; gap: 40px 20px; margin: 0; padding: 0; list-style: none; }
 .diary-card { min-width: 0; }
 .diary-card__link { display: block; color: inherit; text-decoration: none; }
-.diary-card__photo { display: block; height: 240px; overflow: hidden; border-radius: 20px; background: #E5D0C0; }
+.diary-card__photo { display: block; aspect-ratio: 5 / 3; overflow: hidden; border-radius: 20px; background: #E5D0C0; }
 .diary-card__photo picture { display: block; height: 100%; }
 .diary-card__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, 50% 50%); transition: transform .4s ease; }
 .diary-card__title { margin: 20px 0 0; color: #847F57; font: 600 24px/29px var(--font-body); text-align: left; text-wrap: pretty; }
 /* В макете #494949 с прозрачностью 50 % (контраст 2,4:1). Для п. «контраст ≥ 4,5» — 80 % (4,7:1). */
-.diary-card__more { display: inline-flex; align-items: center; gap: 14px; margin-top: 20px; color: rgb(73 73 73 / 80%); font: 400 20px/24px var(--font-body); }
+.diary-card__more { display: flex; width: fit-content; align-items: center; gap: 14px; margin-top: 20px; color: rgb(73 73 73 / 80%); font: 400 20px/24px var(--font-body); }
 .diary-card__link:focus-visible { outline: 2px solid #9B5026; outline-offset: 4px; border-radius: 20px; }
 @media (hover: hover) and (pointer: fine) {
   .diary-card__link:hover .diary-card__photo img { transform: scale(1.03); }
   .diary-card__link:hover .diary-card__more { color: #9B5026; }
 }
 
-.diary-pages { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 57px; }
+.diary-pages { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 60px; }
 .diary-pages__step, .diary-pages__num { box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; height: 44px; border: 1px solid #9B5026; border-radius: 22px; color: #494949; font: 400 20px/24px var(--font-body); text-decoration: none; }
 .diary-pages__step { padding: 0 25px; }
 .diary-pages__num { width: 44px; }
@@ -67,19 +68,35 @@
 .diary-more { padding: 0 0 120px; }
 .diary-more__title { margin: 0 0 40px; color: #847F57; font: 500 56px/64px var(--font-heading); text-align: center; }
 
-/* Фон: контуры шапки из макета и общий слой подвала, как на «Акциях». */
+/* Контуры из News.svg, подвал и навигация остаются общими. */
+.page-diary-index .footer-address { display: none; }
+
 @media (min-width: 900px) {
   body.page-diary #main { position: relative; isolation: isolate; overflow: clip; }
   .page-diary .footer { position: relative; isolation: isolate; overflow: clip; }
+  .page-diary-index .footer { background: url("../img/home-backgrounds/fon-dnevnik-footer.svg") center bottom / max(100%, 1440px) auto no-repeat; }
   .page-diary .home-bg { display: block; position: absolute; inset: 0; pointer-events: none; user-select: none; }
   .page-diary .home-bg__layer { position: absolute; z-index: -1; left: calc(50% - 720px + var(--x)); top: var(--y); width: var(--w); height: var(--h); max-width: none; }
   .page-diary .home-bg__layer--diary-top { --x: -356px; --y: 0px; --w: 1919px; --h: 275px; }  /* весь узор макета: x −356…1563 */
   .page-diary .home-bg__layer--footer { --x: 221px; --y: 310.53px; --w: 2069px; --h: 1853px; }
+  .page-diary-index .footer .home-bg { display: none; }
+}
+
+@media (min-width: 1200px) {
+  .page-diary-index .footer { padding-bottom: 7px; }
+  .page-diary-index .footer__brand .socials { margin-top: -20px; }
+  .page-diary-index .footer__brand > p { margin: 0; }
+  .page-diary-index .footer__center { text-align: left; }
+  .page-diary-index .footer__center p { margin: 0 0 4px; }
+  .page-diary-index .footer__center p:last-child { margin-bottom: 0; font-size: 11px; }
+}
+
+@media (min-width: 1320px) {
+  .page-diary-index .diary-card__title { white-space: pre-line; letter-spacing: -.15px; }
 }
 
 @media (min-width: 700px) and (max-width: 1279px) {
   .diary-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-  .diary-card__photo { height: auto; aspect-ratio: 5 / 3; }
   .diary-index__title { font-size: 72px; line-height: 80px; }
 }
 @media (min-width: 700px) and (max-width: 999px) {
@@ -95,7 +112,7 @@
   .diary-index__title { font-size: 33px; line-height: 42px; text-align: left; }
   .diary-index__lead { margin: 8px 0 24px; font-size: 13px; line-height: 16px; text-align: left; }
   .diary-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
-  .diary-card__photo { height: auto; aspect-ratio: 350 / 210; border-radius: 18px; }
+  .diary-card__photo { border-radius: 18px; }
   .diary-card__title { margin-top: 16px; font-size: 21px; line-height: 28px; }
   .diary-card__more { gap: 10px; margin-top: 10px; font-size: 14px; line-height: 17px; }
   .diary-card__more svg { width: 7px; height: 10px; }

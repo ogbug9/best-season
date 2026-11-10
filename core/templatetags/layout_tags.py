@@ -131,6 +131,10 @@ def about_mobile_paragraphs(value, section):
     )) for paragraph in paragraphs))
 
 LINES = {
+    'diary_title': [
+        'История о маленьком\nжёлтом японском чуде',
+        'История о маленьком\nжёлтом июньском чуде',
+    ],
     'house_desktop': [
         'Уютный домик-лофт с собственной сауной\n'
         'и панорамным видом на лес для 2-4 гостей.\n'
