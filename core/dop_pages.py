@@ -42,7 +42,7 @@ ACTIVITY_FILTERS = [("free", "Бесплатно"), ("paid", "Платно"), ("
 
 # Архив событий из постов Telegram (даты постов: 15.12.2025, 26.06.2026, 18.01.2025).
 EVENT_ARCHIVE = [
-    ("new-year", "Новый год", "Глэмпинг готовится к праздникам заранее, а на новогоднюю ночь домики бронируют первыми.", ("image", "BS About diary-holidays")),
+    ("new-year", "Новый год", "Глэмпинг готовится к праздникам заранее, а на новогоднюю ночь домики бронируют первыми.", None),
     ("graduation", "Выпускной «Только свои»", "Весь глэмпинг для выпускников: поляна, костёр, беседка с печью и баня.", ("territory", "Костровая зона")),
     ("", "Крещенская купель", "Окунуться в речке, огибающей глэмпинг, и согреться в сауне с видом на лес.", ("territory", "Финская сауна")),
     ("creative", "Мастер-классы", "Живопись, флористика, йога-практики — летом и по праздникам.", ("territory", "Мастер-классы")),
@@ -187,6 +187,7 @@ def context_for(page, request):
                 "current_month": month}
     if slug == "meropriyatiya":
         from calendar import Calendar
+        from datetime import date
 
         from forms.forms import EventForm
         from core.models import _consent_page
@@ -202,18 +203,26 @@ def context_for(page, request):
         past = list(published.filter(_Q(end_date__lt=today) | _Q(end_date__isnull=True, date__lt=today)).order_by("-date")[:6])
         # Прошедшие события из админки идут первыми, затем архив из постов Telegram.
         archive = [{"title": event.title, "text": event.description, "image": event.image} for event in past]
-        archive += [{"title": title, "text": text, "image": _image(photo), "category": category}
+        archive += [{"title": title, "text": text, "image": _image(photo) if photo else None, "category": category}
                     for category, title, text, photo in EVENT_ARCHIVE]
         chosen = next((event for event in upcoming if request and str(event.pk) == request.GET.get("event")), None)
         topic = f"{chosen.title}, {chosen.date:%d.%m.%Y}" if chosen else "Ближайшие события"
         from core import dop_content as dc
 
+        november_year = today.year + (11 < today.month)
+        november_holiday = date(november_year, 11, 4).weekday() < 5
         calendar = [
             {
-                "num": n, "name": dc.MONTHS[n - 1], "items": dc.SEASON_CALENDAR[n],
+                "num": n, "name": dc.MONTHS[n - 1], "items": dc.SEASON_CALENDAR[n] if n != 11 else (
+                    "День народного единства в начале месяца",
+                    "Самый спокойный месяц в году: лес, тишина и никого вокруг",
+                ),
                 "days_off": sum(bool(day) for week in Calendar().monthdayscalendar(today.year + (n < today.month), n)
-                                for day in week[5:]),
-                "activities": [name for name, details in dc.ACTIVITY_DETAILS.items() if n in details["months"]],
+                                for day in week[5:]) + (n == 11 and november_holiday),
+                "activities": (
+                    ["Ферма", "Баня", "Финская сауна", "Костровая зона", "Беседки", "Фотосессии", "Спортивные игры", "Детская площадка"]
+                    if n == 11 else [name for name, details in dc.ACTIVITY_DETAILS.items() if n in details["months"]]
+                ),
             }
             for n in (*range(today.month, 13), *range(1, today.month))
         ]

@@ -15,6 +15,11 @@
   </video>
   {% if clip.title %}<figcaption class="visually-hidden">{{ clip.title }}</figcaption>{% endif %}
 </figure>
+{% elif compact_placeholder %}
+<figure class="video-slot video-slot--empty">
+  <span class="video-slot__play" aria-hidden="true"></span>
+  <figcaption class="visually-hidden">Видео «{{ title }}» пока недоступно.</figcaption>
+</figure>
 {% else %}
 {% with s=settings.core.SiteSettings %}
 <figure class="video-slot{% if poster %} video-slot--poster{% else %} video-slot--empty{% endif %}{% if ratio == '4x5' %} video-slot--tall{% endif %}">

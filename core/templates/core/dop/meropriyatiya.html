@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags media_tags content_tags marketing_tags layout_tags %}
 {% block body_class %}page-dop page-events{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/events.css' %}?v=20261110-events">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/events.css' %}?v=20261110-events-layout">{% endblock %}
 
 {% comment %}
   Мероприятия (docs/dop-stranicy/18-…). Ближайших дат пока нет — страница
@@ -9,16 +9,15 @@
   праздники и собирает контакты тех, кто хочет узнать первым.
 {% endcomment %}
 
-{% block extra_js %}<script defer src="{% static 'js/events.js' %}?v=20261110-events"></script>{% endblock %}
+{% block extra_js %}<script defer src="{% static 'js/events.js' %}?v=20261110-events-layout"></script>{% endblock %}
 {% block content %}
 <section class="section page-head"><div class="container container--narrow">
   <h1>{{ page.title }}</h1><p class="section__lead">{% if page.intro|filled %}{{ page.intro }}{% else %}Поводы, ради которых точно стоит приехать.{% endif %}</p>
-  {% include "includes/in_progress_note.html" %}
 </div></section>
 {% if page.body|filled %}<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>{% endif %}
 <section class="section events-intro"><div class="container events-intro__grid">
   <h2><span>Ежегодно мы</span> <span>собираемся</span> <span>все вместе</span></h2>
-  <div><p>Несколько раз в году мы собираемся в «Лучшем сезоне», чтобы встречать Масленицу, отмечать Осенины, смотреть кино под открытым небом и пробовать что-то новое на мастер-классах. Без строгого расписания и обязательной программы — с хорошей компанией, долгими разговорами и временем, которое приятно разделить друг с другом.</p>
+  <div><p>Несколько раз в году мы собираемся в «Лучшем сезоне», чтобы<br class="events-wide-break"> встречать Масленицу, отмечать Осенины, смотреть кино под<br class="events-wide-break"> открытым небом и пробовать что-то новое на мастер-классах.<br class="events-wide-break"> Без строгого расписания и обязательной программы — с хорошей<br class="events-wide-break"> компанией, долгими разговорами и временем, которое приятно<br class="events-wide-break"> разделить друг с другом.</p>
     <div class="events-intro__actions"><a class="btn btn--primary" href="#events-upcoming">Ближайшее событие</a><a class="btn btn--outline" href="#event-form">Подписаться на анонсы</a></div>
   </div>
 </div></section>
@@ -36,7 +35,7 @@
               {% if event.description %}<p class="events-card__description">{{ event.description|bind_short_words|linebreaksbr }}</p>{% endif %}
               <div class="events-actions">
                 <button type="button" class="btn btn--primary" data-booking-open data-entry-point="events">Забронировать на эти даты</button>
-                <a class="btn btn--outline" href="?event={{ event.pk }}#event-form">Записаться</a>
+                <a class="btn btn--outline" href="?event={{ event.pk }}#event-form">Уточнить детали</a>
               </div>
             </div>
             <div class="events-card__media">{% if event.image %}{% picture event.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
@@ -73,7 +72,7 @@
           <div class="season-calendar__overview">
             <div>{% if month.num == current_month %}<p class="season-calendar__current">сейчас</p>{% endif %}<h3>{{ month.name }}</h3></div>
             <ul class="season-calendar__highlights">{% for item in month.items %}<li>{{ item }}</li>{% endfor %}</ul>
-            <p class="season-calendar__weekends"><strong>{{ month.days_off }}</strong>суббот и воскресений</p>
+            <p class="season-calendar__weekends"><strong>{{ month.days_off }}</strong>{% if month.num == 11 %}выходных<br> в этом месяце{% else %}суббот и воскресений{% endif %}</p>
           </div>
           {% if month.num == 11 %}<div class="season-calendar__holiday"><span>Праздники</span><strong>День народного единства</strong></div>{% endif %}
           <div class="season-calendar__activities">
@@ -92,8 +91,8 @@
   <div class="container events-gallery__inner" data-events-gallery>
     <h2 class="section__title section__title--center">Как это бывает</h2>
     <p class="events-gallery__lead center">Галерея прошедших событий. Собрали некоторые из моментов,<br class="events-desktop-break"> которыми хочется поделиться.</p>
-    <div class="chips events-gallery__filters" data-chips="archive" role="group" aria-label="Категория событий">
-      {% for key, label in archive_categories %}<button type="button" class="filter-chip" data-chip="{{ key }}">{{ label }}</button>{% endfor %}
+    <div class="chips events-gallery__filters" data-chips="archive" data-chips-default="new-year" role="group" aria-label="Категория событий">
+      {% for key, label in archive_categories %}<button type="button" class="filter-chip{% if not key %} events-gallery__all{% endif %}" data-chip="{{ key }}">{{ label }}</button>{% endfor %}
     </div>
     <div class="events-gallery__track">
       <button type="button" class="events-gallery__arrow events-gallery__arrow--prev" data-events-prev aria-controls="events-gallery-list" aria-label="Предыдущие события">‹</button>
@@ -107,6 +106,8 @@
             </details>
           </li>
         {% endfor %}
+        <li class="events-archive__item events-archive__placeholder" data-tags="new-year" aria-hidden="true"><div class="events-archive__media"></div></li>
+        <li class="events-archive__item events-archive__placeholder" data-tags="new-year" aria-hidden="true"><div class="events-archive__media"></div></li>
       </ul>
       <button type="button" class="events-gallery__arrow events-gallery__arrow--next" data-events-next aria-controls="events-gallery-list" aria-label="Следующие события">›</button>
     </div>
@@ -119,10 +120,10 @@
   <div class="container events-new-year__grid">
     <div>
       <h2 id="events-new-year-title">Новогодне-Рождественское</h2>
-      <p>Подготовка к Новому году здесь начинается задолго до 31 декабря. Мы украшаем домики и территорию, готовимся к празднику, а гости бронируют любимые даты ещё осенью.</p>
+      <p>Подготовка к Новому году здесь начинается<br class="events-wide-break"> задолго до 31 декабря. Мы украшаем домики<br class="events-wide-break"> и территорию, готовимся к празднику,<br class="events-wide-break"> а гости бронируют любимые даты ещё осенью.</p>
       <a class="btn btn--primary" href="#event-form">Узнать о событии первыми</a>
     </div>
-    {% include "includes/video_slot.html" with slot="events-new-year" poster=None title="Новогодне-Рождественское" %}
+    {% include "includes/video_slot.html" with slot="events-new-year" poster=None title="Новогодне-Рождественское" compact_placeholder=True %}
   </div>
 </section>
 
@@ -141,7 +142,7 @@
   <details><summary>Нужно ли заранее записываться на мероприятия?</summary><p>На некоторые встречи количество мест ограничено, поэтому мы рекомендуем<br class="events-desktop-break"> записываться заранее. Условия участия публикуем вместе с анонсом.</p></details>
   <details><summary>Можно ли приехать на мероприятие с детьми?</summary><p>Во многих случаях — да. Возрастные ограничения и особенности программы указываем<br class="events-desktop-break"> в описании конкретного события.</p></details>
   <details><summary>Можно ли остаться на ночь после мероприятия?</summary><p>Конечно, если событие предполагает проживание и на нужные даты есть свободные<br class="events-desktop-break"> домики. Рекомендуем бронировать заранее.</p></details>
-  <details><summary>Можно ли организовать собственное мероприятие в «Сезоне»?</summary><p>Да. Можно обсудить аренду отдельных площадок или всей территории — формат<br class="events-desktop-break"> зависит от количества гостей, даты и ваших пожеланий.</p></details>
-  <details><summary>Где узнавать о новых мероприятиях?</summary><p>Анонсы в первую очередь публикуем в нашем Telegram-канале. Подписывайтесь на<br class="events-desktop-break"> канал или оставьте почтовый адрес, чтобы не пропустить новые встречи.</p></details>
+  <details><summary>Можно ли организовать собственное мероприятие в "Сезоне"?</summary><p>Да. Можно обсудить аренду отдельных площадок или всей территории — формат<br class="events-desktop-break"> зависит от количества гостей, даты и ваших пожеланий.</p></details>
+  <details class="events-faq__extra"><summary>Где узнавать о новых мероприятиях?</summary><p>Анонсы в первую очередь публикуем в нашем Telegram-канале. Подписывайтесь на<br class="events-desktop-break"> канал или оставьте почтовый адрес, чтобы не пропустить новые встречи.</p></details>
 </div></section>
 {% endblock %}
