@@ -106,6 +106,8 @@ HOUSE_REVIEWS = {
     ],
 }
 
+HOUSE_REVIEW_NUMBERS = {number for reviews in HOUSE_REVIEWS.values() for number, _, _ in reviews}
+
 HOME_GALLERY = [
     (0, "Кофе на террасе"),
     (2, "Керамика"),
@@ -151,6 +153,25 @@ class Command(BaseCommand):
             image.renditions.all().delete()
             self.stdout.write(f"Обновлена обложка домика: {number - 21}")
 
+        # Обновляем исходные импорты отзывов, сохраняя редакторские фото.
+        for number in sorted(HOUSE_REVIEW_NUMBERS):
+            image = get_image_model().objects.filter(title=f"BS Desktop review #{number:02d}").first()
+            if image is None:
+                continue
+            old_source = PHOTO_DIR / f"review-{number:02d}.webp"
+            try:
+                with image.file.open("rb") as current:
+                    current_hash = sha256(current.read()).digest()
+            except OSError:
+                continue
+            if current_hash != sha256(old_source.read_bytes()).digest():
+                continue
+            source = PHOTO_DIR / f"review-{number:02d}-hd.webp"
+            with source.open("rb") as file:
+                image.file.save(source.name, File(file), save=False)
+            image.save()
+            image.renditions.all().delete()
+
         # Весь импорт ниже проходит одной транзакцией. Последний номер
         # появляется в БД только после успешного завершения команды.
         if options["if_not_applied"] and get_image_model().objects.filter(
@@ -166,13 +187,11 @@ class Command(BaseCommand):
         used.update(SERVICE_PHOTOS.values())
         used.update(number for number, _ in HOME_GALLERY)
         used.update(number for numbers in HOUSE_PHOTOS.values() for number in numbers)
-        review_numbers = {number for reviews in HOUSE_REVIEWS.values()
-                          for number, _, _ in reviews}
         missing = [str(photo_source(number)) for number in used
                    if not photo_source(number).is_file()]
-        missing += [str(PHOTO_DIR / f"review-{number:02d}.webp")
-                    for number in review_numbers
-                    if not (PHOTO_DIR / f"review-{number:02d}.webp").is_file()]
+        missing += [str(PHOTO_DIR / f"review-{number:02d}-hd.webp")
+                    for number in HOUSE_REVIEW_NUMBERS
+                    if not (PHOTO_DIR / f"review-{number:02d}-hd.webp").is_file()]
         if missing:
             raise CommandError("Не найдены фотографии: " + ", ".join(missing))
 
@@ -205,11 +224,11 @@ class Command(BaseCommand):
                 images[number] = image
 
             review_images = {}
-            for number in sorted(review_numbers):
+            for number in sorted(HOUSE_REVIEW_NUMBERS):
                 title = f"BS Desktop review #{number:02d}"
                 image = image_model.objects.filter(title=title).first()
                 if image is None:
-                    source = PHOTO_DIR / f"review-{number:02d}.webp"
+                    source = PHOTO_DIR / f"review-{number:02d}-hd.webp"
                     image = image_model(title=title)
                     with source.open("rb") as file:
                         image.file.save(source.name, File(file), save=False)

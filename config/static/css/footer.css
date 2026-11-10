@@ -1,0 +1,26 @@
+/* Общие интервалы подвала в макетах мероприятий, акций и домиков. */
+.footer.footer--standard .footer__brand .socials { margin-top: -21px; }
+
+@media (min-width: 700px) and (max-width: 1199px) {
+  .footer--standard .footer__top { grid-template-columns: 240px minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); }
+  .footer--standard .footer__columns { gap: 24px 16px; }
+  .footer--standard .footer__legal-links { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-flow: row; }
+}
+
+@media (min-width: 700px) and (max-width: 899px) {
+  :is(.page-events, .page-promotions, .page-house) .footer--standard { background: var(--footer-art) center bottom / min(100%, 520px) auto no-repeat; }
+  .page-house .footer--standard { --footer-art: url("../img/mobile-backgrounds/house-footer.webp"); }
+  .page-promotions .footer--standard { --footer-art: url("../img/mobile-backgrounds/promotions-footer.webp"); }
+  .page-events .footer--standard { --footer-art: url("../img/home-backgrounds/fon-events-footer.svg"); }
+}
+
+@media (max-width: 699px) {
+  .page-events .footer--standard { background-position: right bottom; background-size: 1100px auto; }
+  .page-events .footer--standard .footer__center::before {
+    content: "";
+    display: block;
+    height: 1px;
+    margin-bottom: 20px;
+    background: url("../img/mobile-footer-line.png") center / 100% 1px no-repeat;
+  }
+}

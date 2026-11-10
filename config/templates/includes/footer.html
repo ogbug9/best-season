@@ -12,8 +12,8 @@
   группировка не такая, как в шапке, из дерева страниц её не вывести.
 {% endcomment %}
 
-<footer class="footer">
-  {% if page.slug != "partneram" and page.slug != "territoriya" and page.slug != "chem-zanyatsya" and page.slug != "akcii" and page.content_type.model != "housepage" and page.content_type.model != "diaryindexpage" and page.content_type.model != "diaryentrypage" %}
+<footer class="footer{% if page.slug == "meropriyatiya" or page.slug == "akcii" or page.content_type.model == "housepage" %} footer--standard{% endif %}">
+  {% if page.slug != "partneram" and page.slug != "territoriya" and page.slug != "chem-zanyatsya" and page.slug != "akcii" and page.slug != "meropriyatiya" and page.content_type.model != "housepage" and page.content_type.model != "diaryindexpage" and page.content_type.model != "diaryentrypage" %}
   <div class="container footer-address">
     <p>Тульская область, Заокский район, с. Страхово, ул. Заречная, 44</p>
     <a class="btn btn--outline" href="{{ s.yandex_map_url|default:'https://yandex.ru/maps/?text=Тульская%20область%2C%20Заокский%20район%2C%20село%20Страхово%2C%20улица%20Заречная%2C%2044' }}" target="_blank" rel="noopener">Мы на Картах</a>
@@ -62,21 +62,21 @@
           {% endif %}
           {% if s.tiktok_url %}
             <li><a class="socials__item" href="{% marketing_url s.tiktok_url 'footer' %}" rel="noopener" target="_blank">
-              <img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></a></li>
+              <img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></a></li>
           {% else %}
-            <li><span class="socials__item"><img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></span></li>
+            <li><span class="socials__item"><img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">TikTok</span></span></li>
           {% endif %}
           {% if s.whatsapp_url %}
             <li><a class="socials__item" href="{% marketing_url s.whatsapp_url 'footer' %}" rel="noopener" target="_blank">
-              <img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">WhatsApp</span></a><span class="socials__note" aria-hidden="true">*</span></li>
+              <img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">WhatsApp</span></a><span class="socials__note" aria-hidden="true">*</span></li>
           {% else %}
-            <li><span class="socials__item"><img src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">WhatsApp</span></span><span class="socials__note" aria-hidden="true">*</span></li>
+            <li><span class="socials__item"><img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">WhatsApp</span></span><span class="socials__note" aria-hidden="true">*</span></li>
           {% endif %}
           {% if s.instagram_url %}
             <li><a class="socials__item" href="{% marketing_url s.instagram_url 'footer' %}" rel="noopener" target="_blank">
-              <img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Instagram</span></a><span class="socials__note" aria-hidden="true">*</span></li>
+              <img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Instagram</span></a><span class="socials__note" aria-hidden="true">*</span></li>
           {% else %}
-            <li><span class="socials__item"><img src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Instagram</span></span><span class="socials__note" aria-hidden="true">*</span></li>
+            <li><span class="socials__item"><img src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="" aria-hidden="true"><span class="visually-hidden">Instagram</span></span><span class="socials__note" aria-hidden="true">*</span></li>
           {% endif %}
         </ul>
 

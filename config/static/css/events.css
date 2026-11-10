@@ -211,7 +211,6 @@
 }
 .events-faq details[open] summary::after { transform: translateY(-25%) rotate(225deg); }
 .events-faq details p { margin: 0; padding: 20px 32px; font-size: clamp(16px, 1.4vw, 20px); line-height: 1.2; }
-.page-events .footer-address { display: none; }
 .page-events .footer {
   padding-top: clamp(30px, 3.2vw, 46px);
   background: url("../img/home-backgrounds/fon-events-footer.svg") no-repeat center bottom / max(100%, 1440px) auto;

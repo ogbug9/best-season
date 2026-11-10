@@ -34,7 +34,7 @@
              data-gallery-item data-full="{% full_image_url image %}" data-caption="{{ page.title }}">
             {% comment %} Первая плитка — LCP страницы дома: без lazy браузер
                находит её сразу при разборе HTML (п. 1.2 ТЗ, LCP ≤ 2,5 с). {% endcomment %}
-            {% if forloop.first %}{% picture image preset="mosaic" alt=page.title loading="eager" %}{% else %}{% picture image preset="mosaic" alt=page.title %}{% endif %}
+            {% if forloop.first %}{% picture image preset="mosaic" sizes="(min-width: 1280px) 609px, calc(100vw - 40px)" alt=page.title loading="eager" %}{% else %}{% picture image preset="mosaic" sizes="(min-width: 1280px) 294px, (min-width: 700px) calc((100vw - 62px) / 2), calc(100vw - 40px)" alt=page.title %}{% endif %}
             {% if forloop.last %}
               <span class="house-mosaic__more">{% house_icon "camera" %}{% cms_text "house_page-7ac84107c129" %}</span>
             {% endif %}
