@@ -61,6 +61,7 @@ run("manage.py", "import_archive_photos", "--if-not-applied")
 run("manage.py", "initialize_site_content")
 run("manage.py", "apply_house_mosaic_20261102", "--apply")
 run("manage.py", "apply_about_photos_20261103", "--apply")
+run("manage.py", "apply_diary_covers")
 # Превью постов канала для «Рассылки». Без сети команда ничего не трогает.
 run("manage.py", "fetch_telegram_preview", required=False)
 # Исходники архива используются командой импорта, но не отдаются как static.

@@ -69,29 +69,28 @@
 .diary-more__title { margin: 0 0 40px; color: #847F57; font: 500 56px/64px var(--font-heading); text-align: center; }
 
 /* Контуры из News.svg, подвал и навигация остаются общими. */
-.page-diary-index .footer-address { display: none; }
+.page-diary .footer { background: url("../img/home-backgrounds/fon-dnevnik-footer.svg") right bottom / max(100%, 1050px) auto no-repeat; }
+.page-diary .footer .home-bg { display: none; }
 
 @media (min-width: 900px) {
   body.page-diary #main { position: relative; isolation: isolate; overflow: clip; }
   .page-diary .footer { position: relative; isolation: isolate; overflow: clip; }
-  .page-diary-index .footer { background: url("../img/home-backgrounds/fon-dnevnik-footer.svg") center bottom / max(100%, 1440px) auto no-repeat; }
+  .page-diary .footer { background-position: center bottom; background-size: max(100%, 1440px) auto; }
   .page-diary .home-bg { display: block; position: absolute; inset: 0; pointer-events: none; user-select: none; }
   .page-diary .home-bg__layer { position: absolute; z-index: -1; left: calc(50% - 720px + var(--x)); top: var(--y); width: var(--w); height: var(--h); max-width: none; }
   .page-diary .home-bg__layer--diary-top { --x: -356px; --y: 0px; --w: 1919px; --h: 275px; }  /* весь узор макета: x −356…1563 */
-  .page-diary .home-bg__layer--footer { --x: 221px; --y: 310.53px; --w: 2069px; --h: 1853px; }
-  .page-diary-index .footer .home-bg { display: none; }
 }
 
 @media (min-width: 1200px) {
-  .page-diary-index .footer { padding-bottom: 7px; }
-  .page-diary-index .footer__brand .socials { margin-top: -20px; }
-  .page-diary-index .footer__brand > p { margin: 0; }
-  .page-diary-index .footer__booking-link { display: block; height: 22px; min-height: 0; line-height: 22px; }
-  .page-diary-index .footer__legal { min-height: 88px; grid-template-columns: 1fr 336px 1fr; }
-  .page-diary-index .footer__pay { margin-top: 1.5px; }
-  .page-diary-index .footer__center { text-align: left; }
-  .page-diary-index .footer__center p { margin: 2px 0 4px; }
-  .page-diary-index .footer__center p:last-child { margin-bottom: 0; font-size: 11px; line-height: 12px; }
+  .page-diary .footer { padding-bottom: 7px; }
+  .page-diary .footer__brand .socials { margin-top: -20px; }
+  .page-diary .footer__brand > p { margin: 0; }
+  .page-diary .footer__booking-link { display: block; height: 22px; min-height: 0; line-height: 22px; }
+  .page-diary .footer__legal { min-height: 88px; grid-template-columns: 1fr 336px 1fr; }
+  .page-diary .footer__pay { margin-top: 1.5px; }
+  .page-diary .footer__center { text-align: left; }
+  .page-diary .footer__center p { margin: 2px 0 4px; }
+  .page-diary .footer__center p:last-child { margin-bottom: 0; font-size: 11px; line-height: 12px; }
 }
 
 @media (min-width: 1320px) {
