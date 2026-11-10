@@ -6,15 +6,37 @@
 .page-territory { --t-band: #E4D0C0; --t-band-light: #F3E3D6; --t-note: rgb(226 178 151 / 20%); }
 
 .t-field { text-align: center; }
-.t-field__lead { margin: 20px auto 28px; max-width: 700px; }
+.t-field__lead { margin: 20px auto 36px; max-width: 850px; font-size: 20px; line-height: 24px; }
 .t-field__figure { max-width: 1200px; margin: 0 auto; }
-.t-field__figure img { display: block; width: 100%; aspect-ratio: 2; object-fit: cover; border-radius: 40px; }
-.t-field__figure figcaption { max-width: 700px; margin: 14px auto 0; }
+.t-field__figure figcaption { margin: 20px auto 0; font-size: 20px; line-height: 24px; }
+.t-field__toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin: 0 32px 20px; }
+.t-field__toolbar .chips { gap: 10px; margin: 0; }
+.t-field__toolbar .filter-chip { min-height: 38px; padding-inline: 24px; }
+.t-field__seasons { display: flex; align-items: center; gap: 6px; padding: 2px 4px; border-radius: 24px; background: var(--c-white); }
+.t-field__seasons button { width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--c-terra); font-size: 26px; cursor: pointer; }
+.t-field__seasons button[aria-pressed="true"] { background: #c4b08c; }
+.t-field__board { position: relative; border-radius: 40px; background: #606246; }
+[data-territory-map][data-season="winter"] .t-field__board { background: #5c6570; }
+.t-field__surface { position: relative; width: 100%; aspect-ratio: 2; min-height: 440px; overflow: hidden; border-radius: inherit; }
+.t-field__surface svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.t-field__surface path { fill: none; stroke: var(--c-cream); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.t-field__pin { position: absolute; width: 50px; height: 50px; padding: 0; transform: translate(-50%, -50%); border: 0; border-radius: 50%; background: #e79a92; color: #494949; font: 400 13px var(--font-body); cursor: pointer; }
+.t-field__pin--forest { top: 14.8%; left: 6.4%; }
+.t-field__pin--river { top: 69%; left: 4.4%; }
+.t-field__pin--farm { top: 65%; left: 22%; width: 100px; height: 100px; background: #d9d9d9; }
+.t-field__pin[aria-pressed="true"]:not(.t-field__pin--farm) { outline: 2px solid var(--c-cream); outline-offset: 3px; }
+.t-field__callout, .t-field__detail { position: absolute; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; border-radius: 20px; background: var(--c-olive); color: var(--c-cream); font-size: 14px; line-height: 18px; text-align: left; }
+.t-field__callout { top: 36.83%; left: 19.92%; width: 218px; min-height: 152px; padding: 26px 24px; }
+.t-field__detail { inset: 8% 3.58% 8.67% auto; width: 26.92%; padding: 36px 38px 32px; }
+.t-field__callout p, .t-field__detail p { margin: 0; }
+.t-field__board .btn { align-self: flex-start; min-width: 0; min-height: 40px; padding: 0 20px; font-size: 14px; }
+.site .t-field__board .btn--outline { background: transparent; color: #242424; }
+.t-field__pin:focus-visible, .t-field__detail:focus { outline: 2px solid var(--c-cream); outline-offset: 3px; }
 .t-reference-break { display: none; }
 
 @media (min-width: 1300px) {
-  .t-field { padding-block: 0 66px; }
-  .t-field__lead { margin-bottom: 114.6px; }
+  .t-field { padding-block: 0 80px; }
+  .t-field__lead { margin-bottom: 30.5px; }
   .t-reference-break { display: initial; }
 }
 
@@ -69,6 +91,12 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 
 /* ---------- Еда ---------- */
 .t-food { padding-top: 83px; }
+.t-walk { position: relative; overflow: hidden; width: min(100%, 760px); margin: -3px auto 82.6px; border-radius: 20px; background: #3a3c15; color: var(--c-cream); }
+.t-walk img { display: block; width: 100%; height: auto; }
+@media (min-width: 700px) {
+  /* На десктопе подпись видна в исходном кадре. */
+  .t-walk figcaption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 .t-food .t-big-title { margin-bottom: 16.9px; }
 .t-food__lead { margin: 0 auto 40.4px; text-align: center; font-size: 20px; line-height: 24px; color: var(--c-dark); }
 .chips.t-food__tabs { gap: 10.8px; margin-bottom: 33px; padding-left: 0.4px; }
@@ -106,8 +134,8 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 
 /* ---------- Игра и «Одна просьба» ---------- */
 .page-territory .t-play .container--narrow { max-width: 950px; }
-.page-territory .t-play { padding-top: 20px; }
-.page-territory .t-game { padding: 40px 40px 39.8px; border-radius: 40px; box-shadow: none; }
+.page-territory .t-play { padding-top: 25.1px; }
+.page-territory .t-game { padding: 40px 40px 41.9px; border-radius: 40px; box-shadow: none; }
 .page-territory .t-bingo { max-width: 651px; gap: 8.5px 10.5px; }
 /* Бинго в макете — увеличенный снимок компонента: размеры сняты с растра макета. */
 .page-territory .t-play .t-kicker { margin-bottom: 13.1px; font-size: 16px; }
@@ -115,7 +143,6 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .page-territory .t-play .t-game__lead { max-width: 490px; margin-bottom: 27.7px; font-size: 20px; line-height: 26px; }
 .page-territory .t-bingo__cell { min-height: 109px; font-size: 18px; }
 .page-territory .t-bingo__cell[aria-pressed="false"] { border: 1px solid #D4CEBB; }
-.t-activity-placeholder { background: #77765a; }
 .page-territory .t-play .t-game__reset { margin-top: 19.8px; font-size: 17.4px; }
 /* Записка по макету: 626×216, поворот −3,5° вокруг левого верхнего угла (x 401), скотч не повёрнут. */
 .t-request-section { padding-top: 24px; }  /* 60 снизу у бинго + 24 = 84 до скотча, как в макете */
@@ -144,7 +171,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .page-territory .home-bg { display: block; position: absolute; inset: 0; pointer-events: none; user-select: none; }
   .page-territory .home-bg__layer { position: absolute; z-index: -1; left: calc(50% - 720px + var(--x)); top: var(--y); width: var(--w); height: var(--h); max-width: none; }
   .page-territory .home-bg__layer--territory-top { --x: 189px; --y: -981px; --w: 1866px; --h: 1866px; }
-  .page-territory .home-bg__layer--territory-food { --x: 830px; --y: -100px; --w: 1272px; --h: 1271px; }
+  .page-territory .home-bg__layer--territory-food { --x: 830px; --y: 138.6px; --w: 1272px; --h: 1271px; }
   .page-territory .footer .home-bg__layer--footer { display: none; }
   .page-territory .home-bg__layer--page-footer { --x: 7px; --y: -131.3px; --w: 1697px; --h: 1697px; }
 }
@@ -152,6 +179,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 /* ---------- Ответы на вопросы ---------- */
 .t-faq { padding: 5px 0 137.4px; }
 .t-faq .t-big-title { margin-bottom: 36.9px; }
+.t-faq .faq__answer p + p { margin-top: 0; }
 
 /* ---------- Планшет ---------- */
 @media (max-width: 1299px) {
@@ -164,6 +192,8 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .t-food__tips--1 { grid-template-columns: minmax(0, 575px); }
 }
 @media (max-width: 1099px) {
+  .t-field__toolbar { margin-inline: 0; }
+  .t-field__detail { padding: 22px; }
   .t-hero__word { font-size: 72px; line-height: 80px; }
   .t-hero__before, .t-hero__aside { font-size: 32px; line-height: 40px; }
   .t-hero__grid { grid-template-columns: 1fr; row-gap: 40px; }
@@ -191,7 +221,15 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .t-hero__photo--small { top: auto; bottom: 0; left: auto; right: 0; width: 56%; height: auto; aspect-ratio: 3 / 2; }
   .t-hero__grid { row-gap: 24px; }
   .t-hero__text { font-size: 16px; line-height: 22px; }
-  .t-field__figure img { border-radius: 20px; }
+  .t-field__lead, .t-field__figure figcaption { font-size: 15px; line-height: 21px; }
+  .t-field__toolbar .filter-chip { padding-inline: 12px; }
+  .t-field__board { border-radius: 20px; }
+  .t-field__surface { min-height: 290px; }
+  .t-field__pin--forest, .t-field__pin--river { left: 12%; }
+  .t-field__pin--farm { left: 28%; width: 64px; height: 64px; }
+  .t-field__callout { top: 28%; left: auto; right: 12px; width: min(52%, 218px); min-height: 0; padding: 14px; }
+  .t-field__detail { position: relative; width: auto; inset: auto; margin: 0 12px; transform: translateY(-12px); padding: 16px; }
+  .t-field__board .btn { padding-inline: 12px; }
 
   .t-care { padding: 28px 0; min-height: 0; }
   .t-care__grid { flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -213,6 +251,9 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 
   .site .t-big-title { margin-bottom: 16px; font-size: 44px; line-height: 48px; }
   .t-food { padding-top: 48px; }
+  .t-walk { margin: 0 auto 44px; }
+  .t-walk img { aspect-ratio: 760 / 350; object-fit: cover; object-position: top; }
+  .t-walk figcaption { padding: 6px 12px 12px; font-size: 13px; line-height: 17px; }
   .t-food__lead { margin-bottom: 24px; font-size: 15px; line-height: 21px; }
   .t-food__lead br { display: none; }
   .chips.t-food__tabs { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--s-4)); padding-inline: var(--s-4); margin-bottom: 20px; scrollbar-width: none; }

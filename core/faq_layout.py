@@ -129,6 +129,9 @@ class AnswerParser(HTMLParser):
         if tag in {'p', 'li', 'div'}:
             self.text += '\n'
 
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+
     def handle_data(self, data):
         self.parts.append(('data', data, len(self.text)))
         self.text += data
@@ -162,4 +165,7 @@ def format_answer(value, question):
                 output.extend((escape(data[start:end]), '<br class="faq__reference-break">'))
                 start = end
         output.append(escape(data[start:]))
-    return ''.join(output)
+    formatted = ''.join(output)
+    if question == 'Можно ли выходить к животным?':
+        return formatted.replace('познакомиться и фотографироваться', 'познакомиться и сфотографироваться', 1)
+    return formatted

@@ -1030,7 +1030,13 @@ class TerritoryPage(InProgressMixin, Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        items = list(TerritoryItem.objects.filter(is_published=True))
+        from core import territory_content as tc
+
+        published = {
+            item.title.casefold().replace('«', '"').replace('»', '"'): item
+            for item in TerritoryItem.objects.filter(is_published=True)
+        }
+        items = [published[title.casefold()] for title in tc.ACTIVITY_TITLES if title.casefold() in published]
         # Тот же запасной адрес, что и в блоке на главной: кнопка есть у
         # каждой карточки, даже если своя ссылка не заведена.
         own_url = self.get_url(request) or ""
@@ -1043,14 +1049,14 @@ class TerritoryPage(InProgressMixin, Page):
                     for service in Service.objects.filter(is_published=True)}
         house_one = Page.objects.live().filter(slug="domik-1").first()
         from core.temp_pages import tile_page_url
-        from core import territory_content as tc
-
         for item in items:
             # 09.10: у плитки есть своя временная страница — ведём туда, если в CMS нет ссылки.
             page_url = "" if item.link_url else tile_page_url(item.title)
             item.details_url = item.link_url or page_url or own_url
             item.details_label = ""
             item.filter_tags = tc.activity_tags(item.title, item.group)
+            if item.group == "water" or "events" in item.filter_tags.split():
+                item.filter_tags += " water-events"
             service = services.get(" ".join(item.title.split()).lower())
             item.service = service if service and service.price else None
             if "сауна" in item.title.lower() and house_one and not item.link_url and not page_url:
@@ -1061,13 +1067,6 @@ class TerritoryPage(InProgressMixin, Page):
                              if any(item.group == value for item in items)]
         # 25.10: остальное — по макету Territory.svg (core/territory_content.py).
         context["tc"] = tc
-        existing_titles = {" ".join(item.title.casefold().split()) for item in items}
-        context["extra_activities"] = [
-            {"title": title, "tags": tags,
-             "image": "img/house-mosaic-20261102/figma-81.webp" if title == "Вечер у камина" else ""}
-            for title, tags in tc.EXTRA_ACTIVITIES
-            if " ".join(title.casefold().split()) not in existing_titles
-        ]
         context["food_tabs"] = tc.food_tabs()
         faq = {item.question: item for item in FaqItem.objects.filter(is_published=True,
                                                                       question__in=tc.FAQ_QUESTIONS)}

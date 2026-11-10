@@ -3,13 +3,8 @@
 {% load wagtailcore_tags media_tags territory_tags layout_tags marketing_tags %}
 
 {% block body_class %}page-territory{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261110-territory">{% endblock %}
-
-{% comment %}
-  Территория по макету Territory.svg (25.10.2026, Desktop/Макет PNG SVG). Тексты —
-  core/territory_content.py. Вместо карты поляны временно показана фотография;
-  видео в макете помечено «пока скрыть». Мобильная версия — адаптация в territory.css.
-{% endcomment %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261110-territory-layout">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/territory-map.js' %}" defer></script>{% endblock %}
 
 {% block content %}
 {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
@@ -47,11 +42,8 @@
 <section class="section t-field" aria-labelledby="field-title">
   <div class="container">
     <h2 class="t-big-title" id="field-title">Вся поляна<br>на одной схеме</h2>
-    <p class="t-field__lead">От любого домика до бани, фермы или реки — несколько минут пешком.</p>
-    <figure class="t-field__figure">
-      <img src="{% static 'img/content-gallery/house-2/1d049b1b3bb1.webp' %}" alt="Зимняя поляна глэмпинга с домиком и огнями" loading="lazy" decoding="async">
-      <figcaption>Здесь будет карта территории. Сейчас она в процессе отрисовки, так что пока можете посмотреть на эту красивую фотографию :)</figcaption>
-    </figure>
+    <p class="t-field__lead">От любого домика до бани, фермы или реки — несколько минут пешком.<br>Нажмите на точку, чтобы посмотреть, что там.</p>
+    {% include "core/includes/territory_map.html" %}
   </div>
 </section>
 
@@ -68,6 +60,10 @@
 <section class="section t-food" aria-labelledby="food-title">
   <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-territory-food.svg' %}"><img class="home-bg__layer home-bg__layer--territory-food" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1272" height="1271" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
+    <figure class="t-walk">
+      <img src="{% static 'img/territory/walk-preview.webp' %}" width="760" height="428" alt="" loading="lazy">
+      <figcaption><strong>Видео «Прогулка по глэмпингу» скоро появится</strong><br>пока — кадр того же места</figcaption>
+    </figure>
     <h2 class="t-big-title" id="food-title">{{ tc.FOOD_TITLE }}</h2>
     <p class="t-food__lead">{{ tc.FOOD_LEAD|linebreaksbr }}</p>
     <div class="chips t-food__tabs" data-chips="food" data-chips-default="{{ food_tabs.0.code }}" role="group" aria-label="Где поесть">
@@ -127,10 +123,9 @@
     <h2 class="t-big-title" id="activities-title">{{ tc.ACTIVITIES_TITLE }}</h2>
       <div class="chips territory__chips" data-chips="group" role="group" aria-label="Что показать">
         <button type="button" class="filter-chip" data-chip="">Всё</button>
-        <button type="button" class="filter-chip" data-chip="active">Активный отдых</button>
-        <button type="button" class="filter-chip" data-chip="kids">С детьми</button>
+        <button type="button" class="filter-chip" data-chip="kids">С детьми и животными</button>
         <button type="button" class="filter-chip" data-chip="warm">Тепло и пар</button>
-        <button type="button" class="filter-chip" data-chip="events">События</button>
+        <button type="button" class="filter-chip" data-chip="water-events">Вода и события</button>
       </div>
     <ul class="mosaic" data-chips-for="group">
       {% comment %}
@@ -153,12 +148,6 @@
               {% endif %}
             </div>
           </div>
-        </li>
-      {% endfor %}
-      {% for item in extra_activities %}
-        <li class="mosaic__item territory-card t-activity-placeholder" data-tags="{{ item.tags }}" data-reveal>
-          {% if item.image %}<picture><img src="{% static item.image %}" alt="" loading="lazy" decoding="async"></picture>{% endif %}
-          <div class="mosaic__caption"><h3 class="mosaic__title">{{ item.title }}</h3></div>
         </li>
       {% endfor %}
     </ul>
