@@ -3,7 +3,7 @@
 {% load wagtailcore_tags media_tags territory_tags layout_tags marketing_tags %}
 
 {% block body_class %}page-territory{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261103-field">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261110-territory">{% endblock %}
 
 {% comment %}
   Территория по макету Territory.svg (25.10.2026, Desktop/Макет PNG SVG). Тексты —
@@ -24,7 +24,7 @@
         <img class="t-hero__photo t-hero__photo--big" src="{% static 'img/territory/hero-house-900.webp' %}" srcset="{% static 'img/territory/hero-house-600.webp' %} 600w, {% static 'img/territory/hero-house-900.webp' %} 900w" sizes="(max-width: 699px) 80vw, 450px" width="450" height="300" alt="" fetchpriority="high">
         <img class="t-hero__photo t-hero__photo--small" src="{% static 'img/territory/hero-field-600.webp' %}" srcset="{% static 'img/territory/hero-field-400.webp' %} 400w, {% static 'img/territory/hero-field-600.webp' %} 600w" sizes="(max-width: 699px) 55vw, 300px" width="300" height="200" alt="" loading="lazy">
       </div>
-      <p class="t-hero__text">{{ tc.HERO.text|linebreaksbr }}</p>
+      <p class="t-hero__text">{% for line in tc.HERO.text.splitlines %}{{ line }}{% if not forloop.last %} <br class="t-reference-break">{% endif %}{% endfor %}</p>
     </div>
   </div>
 </section>
@@ -95,7 +95,7 @@
             {% for tip in tab.tips %}
               <aside class="t-tip">
                 <h3 class="t-tip__title">{{ tip.title }}</h3>
-                <p class="t-tip__text">{{ tip.text|linebreaksbr }}{% if tip.accent %}<br><b class="t-tip__accent">{{ tip.accent }}</b><span class="t-tip__dot">.</span>{% endif %}</p>
+                <p class="t-tip__text">{% for line in tip.text.splitlines %}{{ line }}{% if not forloop.last %} <br class="t-reference-break">{% endif %}{% endfor %}{% if tip.accent %}<br><b class="t-tip__accent">{{ tip.accent }}</b><span class="t-tip__dot">.</span>{% endif %}</p>
                 {% if tip.after %}<p class="t-tip__text">{{ tip.after }}</p>{% endif %}
                 {% if tip.url %}<a class="btn btn--primary t-tip__link" href="{{ tip.url }}" rel="noopener" target="_blank">{{ tip.button }}</a>
                 {% elif telegram %}<a class="btn btn--primary t-tip__link" href="{% marketing_url telegram 'territory_food' tip.telegram_text %}" rel="noopener" target="_blank">{{ tip.button }}</a>{% endif %}
@@ -115,7 +115,7 @@
     <div class="t-request-wrap" data-reveal>
       <aside class="x-note t-request">
         <h2 class="x-note__title">{{ tc.REQUEST.title }}</h2>
-        <p class="x-note__text">{{ tc.REQUEST.text|linebreaksbr }}</p>
+        <p class="x-note__text">{% for line in tc.REQUEST.text.splitlines %}{{ line }}{% if not forloop.last %} <br class="t-reference-break">{% endif %}{% endfor %}</p>
       </aside>
     </div>
   </div>
@@ -162,6 +162,7 @@
         </li>
       {% endfor %}
     </ul>
+    <p class="t-activities__empty" data-chips-empty="group" role="status" hidden>В этой категории пока ничего нет. Выберите «Всё», чтобы увидеть все занятия.</p>
     {% if things_page %}<p class="t-activities__more"><a class="btn btn--outline" href="{% pageurl things_page %}">Подробнее <span aria-hidden="true">→</span></a></p>{% endif %}
   </div>
 </section>

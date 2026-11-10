@@ -3,13 +3,20 @@
    Мобильной версии в макете нет — правила ниже 700 px собраны по образцу
    остальных страниц (поля 20 px, колонки в одну). */
 
-.page-territory { --t-band: #E4D0C0; --t-band-light: #F3E3D6; --t-note: #F3E4D6; }
+.page-territory { --t-band: #E4D0C0; --t-band-light: #F3E3D6; --t-note: rgb(226 178 151 / 20%); }
 
 .t-field { text-align: center; }
 .t-field__lead { margin: 20px auto 28px; max-width: 700px; }
-.t-field__figure { max-width: 1240px; margin: 0 auto; }
-.t-field__figure img { display: block; width: 100%; max-height: 640px; aspect-ratio: 1.9; object-fit: cover; border-radius: 20px; }
+.t-field__figure { max-width: 1200px; margin: 0 auto; }
+.t-field__figure img { display: block; width: 100%; aspect-ratio: 2; object-fit: cover; border-radius: 40px; }
 .t-field__figure figcaption { max-width: 700px; margin: 14px auto 0; }
+.t-reference-break { display: none; }
+
+@media (min-width: 1300px) {
+  .t-field { padding-block: 0 66px; }
+  .t-field__lead { margin-bottom: 114.6px; }
+  .t-reference-break { display: initial; }
+}
 
 /* ---------- Первый экран ---------- */
 .t-hero { padding-bottom: 80px; }
@@ -84,7 +91,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .t-food__panel[data-tags="cafes"] .t-place__link.btn { margin-top: 0; }
 .t-food__panel[data-tags="delivery"] .t-food__tips--1 { grid-template-columns: 566px; }
 .site .t-food__panel[data-tags="cafes"] .t-tip__link.btn { height: 36.3px; padding: 0 16px 1.1px; border-radius: 18.15px; font-size: 14px; }
-.t-tip { position: relative; display: flex; flex-direction: column; padding: 38.4px 36px 40.3px 40.4px; border-radius: 5px; background: var(--t-note); box-shadow: 0 14px 30px rgb(58 60 21 / 12%); }
+.t-tip { position: relative; display: flex; flex-direction: column; padding: 38.4px 36px 40.3px 40.4px; border-radius: 6px; background: var(--t-note); }
 .t-tip::before { content: ""; position: absolute; top: -13.3px; left: 50%; width: 112px; height: 30px; margin-left: -57.2px; background: rgb(62 63 32 / 20%); }
 /* Заголовки советов и записок — h3/h2 (не абзацы), вид прежний: сбрасываем общие стили заголовков. */
 .site .t-tip__title { margin: 0 0 9.9px; font-family: var(--font-heading); font-size: 32px; line-height: 40px; font-weight: 400; color: var(--c-terra); text-wrap: wrap; hyphens: none; }
@@ -93,6 +100,9 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .t-tip__accent { display: inline-block; padding-top: 2.8px; font-size: 28px; line-height: 34px; font-weight: 600; color: var(--c-terra); }
 .t-tip__dot { font-size: 28px; }
 .site .t-tip__link.btn { width: calc(100% - 4.4px); min-height: 0; height: 41.3px; margin-top: auto; padding: 2.6px 16px 0; border-radius: 20.65px; font-size: 18px; font-weight: 500; }
+@media (min-width: 1100px) {
+  .site .t-tip:has(.t-tip__accent) .t-tip__link.btn { height: 36.3px; padding: 0 16px; border-radius: 18.15px; font-size: 14px; }
+}
 
 /* ---------- Игра и «Одна просьба» ---------- */
 .page-territory .t-play .container--narrow { max-width: 950px; }
@@ -102,8 +112,9 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 /* Бинго в макете — увеличенный снимок компонента: размеры сняты с растра макета. */
 .page-territory .t-play .t-kicker { margin-bottom: 13.1px; font-size: 16px; }
 .page-territory .t-play .t-game__title { margin-bottom: 12.1px; font-size: 50px; line-height: 52px; }
-.page-territory .t-play .t-game__lead { max-width: 570px; margin-bottom: 27.7px; font-size: 20px; line-height: 26px; }
+.page-territory .t-play .t-game__lead { max-width: 490px; margin-bottom: 27.7px; font-size: 20px; line-height: 26px; }
 .page-territory .t-bingo__cell { min-height: 109px; font-size: 18px; }
+.page-territory .t-bingo__cell[aria-pressed="false"] { border: 1px solid #D4CEBB; }
 .t-activity-placeholder { background: #77765a; }
 .page-territory .t-play .t-game__reset { margin-top: 19.8px; font-size: 17.4px; }
 /* Записка по макету: 626×216, поворот −3,5° вокруг левого верхнего угла (x 401), скотч не повёрнут. */
@@ -111,7 +122,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .t-request-wrap { position: relative; width: 626px; max-width: 100%; margin: 34.3px auto 0; }
 @media (min-width: 1300px) { .t-request-wrap { margin-left: 301px; } }
 .t-request-wrap::before { content: ""; position: absolute; z-index: 1; top: -34.3px; left: 263px; width: 112px; height: 30px; background: rgb(62 63 32 / 20%); }
-.page-territory .t-request { box-sizing: border-box; width: 100%; max-width: none; min-height: 216px; margin: 0; padding: 38.6px 40px 20px 40px; rotate: -3.5deg; transform-origin: 0 0; box-shadow: 0 14px 30px rgb(58 60 21 / 12%); background: rgb(226 178 151 / 20%); }
+.page-territory .t-request { box-sizing: border-box; width: 100%; max-width: none; min-height: 216px; margin: 0; padding: 38.6px 40px 20px 40px; rotate: -3.5deg; transform-origin: 0 0; box-shadow: none; background: var(--t-note); }
 .page-territory .t-request::before { content: none; }
 .page-territory .t-request .x-note__title { margin: 0 0 10.6px; font-size: 32px; line-height: 40px; }
 .page-territory .t-request .x-note__text { font-size: 24px; line-height: 29.25px; color: var(--c-dark); }
@@ -121,12 +132,11 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .t-activities .t-big-title { margin-bottom: 37px; }
 .t-activities .territory__chips { justify-content: center; margin-bottom: 20px; }
 .t-activities .mosaic { margin-bottom: 40px; }
+.t-activities__empty { margin: 0 0 40px; text-align: center; }
 .t-activities__more { margin: 0; text-align: center; }
 .site .t-activities__more .btn { width: 224px; min-width: 0; min-height: 52px; padding: 0; font-size: 20px; }
 
-/* ---------- Фон: контуры из макета (вырезаны из Territory.svg вместе с масками, 1:1) ----------
-   Шапка: слой от верха страницы. «Еда»: верх секции = низ скрытого видео в макете (y 3035,4),
-   слой обрезан по верху секции. Подвал — свой узор макета (fon-territoriya-footer, с маской): верх подвала в макете y 7303,3. */
+/* ---------- Контуры из макета, привязанные к секциям ---------- */
 @media (min-width: 900px) {
   body.page-territory #main { position: relative; isolation: isolate; overflow-x: clip; }
   .page-territory .footer { position: relative; isolation: isolate; overflow: clip; }
@@ -134,7 +144,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .page-territory .home-bg { display: block; position: absolute; inset: 0; pointer-events: none; user-select: none; }
   .page-territory .home-bg__layer { position: absolute; z-index: -1; left: calc(50% - 720px + var(--x)); top: var(--y); width: var(--w); height: var(--h); max-width: none; }
   .page-territory .home-bg__layer--territory-top { --x: 189px; --y: -981px; --w: 1866px; --h: 1866px; }
-  .page-territory .home-bg__layer--territory-food { --x: 830px; --y: -369.4px; --w: 1272px; --h: 1271px; }
+  .page-territory .home-bg__layer--territory-food { --x: 830px; --y: -100px; --w: 1272px; --h: 1271px; }
   .page-territory .footer .home-bg__layer--footer { display: none; }
   .page-territory .home-bg__layer--page-footer { --x: 7px; --y: -131.3px; --w: 1697px; --h: 1697px; }
 }
@@ -181,6 +191,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .t-hero__photo--small { top: auto; bottom: 0; left: auto; right: 0; width: 56%; height: auto; aspect-ratio: 3 / 2; }
   .t-hero__grid { row-gap: 24px; }
   .t-hero__text { font-size: 16px; line-height: 22px; }
+  .t-field__figure img { border-radius: 20px; }
 
   .t-care { padding: 28px 0; min-height: 0; }
   .t-care__grid { flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -219,7 +230,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .site .t-tip__link.btn, .site .t-food__panel[data-tags="cafes"] .t-tip__link.btn { width: 100%; height: auto; min-height: 44px; padding: 10px 16px; border-radius: 22px; font-size: 15px; }
 
   .page-territory .t-game { padding: 28px 16px 24px; border-radius: 24px; }
-  .page-territory .t-bingo__cell { min-height: 72px; font-size: 14px; }
+  .page-territory .t-bingo__cell { min-height: 72px; font-size: 14px; overflow-wrap: anywhere; }
   .t-request-wrap { width: auto; margin: 34px 0 0; }
   .t-request-wrap::before { top: -14px; left: 50%; margin-left: -56px; }
   .page-territory .t-request { width: auto; min-height: 0; padding: 36px 22px 26px; rotate: -2deg; transform-origin: 50% 50%; }
