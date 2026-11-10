@@ -2245,7 +2245,7 @@ body:not(.page-home) main > :first-child {
 .socials { display: flex; gap: 5px; margin: 0; padding: 0; list-style: none; }
 .socials li { position: relative; display: flex; align-items: flex-start; }
 .socials__item { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 100px; background: transparent; color: var(--c-cream); }
-.socials__item img { display: block; width: 40px; height: 40px; }
+.socials__item img { display: block; width: 40px; height: 40px; object-fit: contain; }
 
 @media (hover: hover) and (pointer: fine) {
 .socials__item:hover{ background: var(--c-olive); }
@@ -5397,7 +5397,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-house .footer { padding-top: 100px; }
   .page-houses .footer { padding-bottom: 15px; }
   :is(.page-promotions, .page-house) .footer { padding-bottom: 14px; }
-  :is(.page-home, .page-houses, .page-promotions, .page-house, .page-territory, .page-scenarios) .footer__brand .socials { margin-top: -21px; }
+  :is(.page-home, .page-houses, .page-promotions, .page-house, .page-territory, .page-scenarios, .page-nearby) .footer__brand .socials { margin-top: -21px; }
   :is(.page-houses, .page-promotions, .page-house, .page-territory, .page-scenarios) .footer__legal { margin-top: 58px; }
   /* «Территория», «Чем заняться»: нижняя строка подвала на 3,7 px выше (кадры 25.10). */
   :is(.page-territory, .page-scenarios) .footer__legal { margin-top: 54.3px; }

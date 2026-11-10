@@ -208,7 +208,6 @@
   .page-nearby .story__body p, .page-nearby .story__body .story__lead { font-size: 19px; line-height: 24px; }
   .page-nearby .faq-section { padding-bottom: 56px; }
   .page-nearby .faq-section .section__title { margin-bottom: 32px; }
-  .page-nearby .footer__brand .socials { margin-top: -16px; }
 }
 
 @media (min-width: 1320px) {
@@ -219,14 +218,17 @@
   .page-nearby .faq__reference-break { display: initial; }
   .page-nearby .story__facts div:nth-child(even) { min-height: 72px; }
   .page-nearby .story__facts div:nth-child(3) { min-height: 94px; }
+}
+
+@media (min-width: 900px) {
   .pn-hero {
-    background: url("../img/home-backgrounds/fon-nearby-top.svg") center top / max(100%, 1440px) auto no-repeat;
+    background: url("../img/home-backgrounds/fon-nearby-top.svg") center top / 100% auto no-repeat;
   }
   .page-nearby .faq-section:has(.faq__question[aria-expanded="true"]) {
-    background: url("../img/home-backgrounds/fon-nearby-faq.svg") center top / max(100%, 1440px) auto no-repeat;
+    background: url("../img/home-backgrounds/fon-nearby-faq.svg") center top / 100% auto no-repeat;
   }
   .page-nearby .footer {
-    background: url("../img/home-backgrounds/fon-nearby-footer.svg") center bottom / max(100%, 1440px) auto no-repeat;
+    background: url("../img/home-backgrounds/fon-nearby-footer.svg") center bottom / 100% auto no-repeat;
   }
 }
 
