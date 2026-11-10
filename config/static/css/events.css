@@ -252,21 +252,31 @@
 .page-events .page-head .section__lead { margin-inline: auto; }
 
 @media (min-width: 1200px) {
-  .page-events main .events-faq:not(:has(details:not([open]))) {
+  .page-events main .events-faq:has(details[open]) {
+    position: relative;
+    isolation: isolate;
     padding-block: 120px 100px;
+  }
+  .events-faq:has(details[open])::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     background: url("../img/home-backgrounds/fon-events-faq.svg") no-repeat center top / max(100%, 1440px) auto;
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
   }
 }
 
 @media (min-width: 1200px) {
-  .events-faq:not(:has(details:not([open]))) .section__title { margin-bottom: 59px; }
+  .events-faq:has(details[open]) .section__title { margin-bottom: 59px; }
   .events-intro h2 span { display: block; }
   .season-calendar__months { margin-bottom: 23px; }
   .page-events main .events-gallery { padding-top: 35px; }
   .page-events main #event-form { padding-top: 34px; }
   .page-events #event-form .form__grid { row-gap: 13px; }
   .page-events #event-form .form__actions { margin-top: 20px; }
-  .page-events main .events-faq:has(details:not([open])) { padding-top: 33px; }
+  .page-events main .events-faq:not(:has(details[open])) { padding-top: 33px; }
 }
 
 @media (min-width: 760px) and (max-width: 1199px) {

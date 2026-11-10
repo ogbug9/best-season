@@ -227,8 +227,15 @@
     background-size: max(100%, 1440px) auto;
     background-repeat: no-repeat;
   }
-  .page-nearby .faq-section {
+  .page-nearby .faq-section { position: relative; isolation: isolate; }
+  .page-nearby .faq-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     background: url("../img/home-backgrounds/fon-nearby-faq.svg") center top / max(100%, 1440px) auto no-repeat;
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
   }
 }
 

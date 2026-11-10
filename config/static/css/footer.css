@@ -31,11 +31,13 @@
     position: absolute;
     z-index: -1;
     pointer-events: none;
-    left: calc(50% - 50vw);
+    left: 50%;
     top: -400px;
-    width: 100vw;
-    height: 1100px;
-    background: url("../img/mobile-backgrounds/home-footer.webp") center / 100% 100% no-repeat;
+    width: max(390px, 100vw);
+    height: auto;
+    aspect-ratio: 390 / 1100;
+    transform: translateX(-50%);
+    background: url("../img/mobile-backgrounds/home-footer.webp") center / 100% auto no-repeat;
     opacity: .84;
   }
   .footer.footer--standard .footer__center::before {
