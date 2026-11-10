@@ -16,7 +16,7 @@
 
 @media (max-width: 699px) {
   .page-events .footer--standard { background-position: right bottom; background-size: 1100px auto; }
-  .page-events .footer--standard .footer__center::before {
+  :is(.page-events, .page-partners) .footer--standard .footer__center::before {
     content: "";
     display: block;
     height: 1px;

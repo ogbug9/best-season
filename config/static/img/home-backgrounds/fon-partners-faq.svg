@@ -1,4 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1794" fill="none"><mask id="mask0_3600_6210" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="39" y="1609" width="1640" height="1411">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1794" fill="none">
+<view id="top" viewBox="0 0 1440 590"/>
+<view id="bottom" viewBox="0 1580 1440 214"/>
+<mask id="mask0_3600_6210" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="39" y="1609" width="1640" height="1411">
 <path d="M39.7285 1893.77L1451.29 1609L1678.34 2734.43L266.777 3019.2L39.7285 1893.77Z" fill="white" />
 </mask>
 <g mask="url(#mask0_3600_6210)">

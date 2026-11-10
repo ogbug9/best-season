@@ -12,7 +12,7 @@
   группировка не такая, как в шапке, из дерева страниц её не вывести.
 {% endcomment %}
 
-<footer class="footer{% if page.slug == "meropriyatiya" or page.slug == "akcii" or page.content_type.model == "housepage" %} footer--standard{% endif %}">
+<footer class="footer{% if page.slug == "partneram" or page.slug == "meropriyatiya" or page.slug == "akcii" or page.slug == "territoriya" or page.slug == "chem-zanyatsya" or page.content_type.model == "housepage" %} footer--standard{% endif %}">
   {% if page.slug != "partneram" and page.slug != "territoriya" and page.slug != "chem-zanyatsya" and page.slug != "akcii" and page.slug != "meropriyatiya" and page.content_type.model != "housepage" and page.content_type.model != "diaryindexpage" and page.content_type.model != "diaryentrypage" %}
   <div class="container footer-address">
     <p>Тульская область, Заокский район, с. Страхово, ул. Заречная, 44</p>

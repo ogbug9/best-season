@@ -7,7 +7,7 @@
 .page-partners main > .section.page-head { padding-top: 194px; padding-bottom: 65.5px; text-align: center; }
 .page-partners .page-head h1 { margin: 0; }
 .page-partners .header:not(.header--scrolled) .header__bar { box-shadow: none; }
-.page-partners .page-head { background: url("../img/home-backgrounds/fon-partners-head.svg") center top / max(100%, 1440px) auto no-repeat; }
+.page-partners .page-head { background: url("../img/home-backgrounds/fon-partners-head.svg") right top / 100% auto no-repeat; }
 .page-partners main h2:not(.form__title) {
   margin: 0;
   color: inherit;
@@ -166,12 +166,13 @@
   font-weight: 400;
 }
 .page-partners .partner-faq:has(.faq__item.is-open) {
-  background: url("../img/home-backgrounds/fon-partners-faq.svg") center top / max(100%, 1440px) auto no-repeat;
+  background: url("../img/home-backgrounds/fon-partners-faq.svg#top") center top / 100% auto no-repeat,
+              url("../img/home-backgrounds/fon-partners-faq.svg#bottom") right bottom / 100% auto no-repeat;
 }
 
 .page-partners .footer {
   padding-top: 43px;
-  background: url("../img/home-backgrounds/fon-partners-footer.svg") center bottom / max(100%, 1440px) auto no-repeat;
+  background: url("../img/home-backgrounds/fon-partners-footer.svg") right bottom / 100% auto no-repeat;
 }
 
 @media (min-width: 1200px) {
@@ -191,16 +192,11 @@
   .page-partners #partner-form .container { transform: translateX(-6px); }
   .page-partners #partner-form .form { padding-bottom: 22.5px; }
   .page-partners .footer { padding-top: 59px; padding-bottom: 8px; }
-  .page-partners .footer__brand { gap: 29px; }
-  .page-partners .footer__contacts { margin-top: 9px; }
-  .page-partners .footer__brand .socials { margin-top: -7px; }
-  .page-partners .footer__brand > p { margin-top: 11px; }
-  .page-partners .footer__center p { margin-block: 0 4px; }
-  .page-partners .footer__center p:last-child { font-size: 11px; margin-bottom: 0; }
-  .page-partners .footer__brand .btn { font-weight: 400; }
 }
 
 @media (max-width: 899px) {
+  .page-partners .page-head { background-size: max(100%, 720px) auto; }
+  .page-partners .footer { background-size: max(100%, 600px) auto; }
   .page-partners main > .section.page-head { padding-top: 124px; padding-bottom: 32px; }
   .partner-intro__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
   .partner-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }

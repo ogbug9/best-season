@@ -186,9 +186,10 @@
 
   var heroGone = false;
   var inlineVisible = false;
+  var footerVisible = false;
   function updateSticky(gone) {
     heroGone = gone;
-    cta.setAttribute("data-visible", heroGone && !inlineVisible ? "true" : "false");
+    cta.setAttribute("data-visible", heroGone && !inlineVisible && !footerVisible ? "true" : "false");
   }
   var inlineCta = document.querySelector("[data-house-booking-cta]");
   if (inlineCta && "IntersectionObserver" in window) {
@@ -196,6 +197,14 @@
       inlineVisible = entries[0].isIntersecting;
       updateSticky(heroGone);
     }).observe(inlineCta);
+  }
+
+  var footer = document.querySelector(".footer");
+  if (footer && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      footerVisible = entries[0].isIntersecting;
+      updateSticky(heroGone);
+    }).observe(footer);
   }
 
   var hero =
