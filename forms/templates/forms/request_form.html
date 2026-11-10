@@ -15,7 +15,7 @@
 <form class="form" method="post" action="{% url 'forms:submit' form_type %}" data-request-form{% if form_success_type and form_success_type == form_type %} data-confirmed-success{% endif %} novalidate>
   {% csrf_token %}
 
-  {% if title %}<h2 class="form__title">{{ title }}</h2>{% endif %}
+  {% if title %}<h2 class="form__title">{% if title_prefix %}{{ title_prefix }}<br>{% endif %}{{ title }}</h2>{% endif %}
   {% if lead %}<p>{{ lead }}</p>{% endif %}
 
   {% comment %} Куда вернуть гостя и что записать в источник заявки {% endcomment %}

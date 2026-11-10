@@ -89,7 +89,7 @@ TREE = [
                 "core.ContentPage",
                 "meropriyatiya",
                 "Мероприятия",
-                {"intro": "Праздники, съёмки, корпоративные заезды.", "body": rich(PLACEHOLDER)},
+                {"intro": "Поводы, ради которых точно стоит приехать.", "body": rich(PLACEHOLDER)},
                 [],
             ),
         ],

@@ -42,10 +42,10 @@ ACTIVITY_FILTERS = [("free", "Бесплатно"), ("paid", "Платно"), ("
 
 # Архив событий из постов Telegram (даты постов: 15.12.2025, 26.06.2026, 18.01.2025).
 EVENT_ARCHIVE = [
-    ("Новый год", "Глэмпинг готовится к праздникам заранее, а на новогоднюю ночь домики бронируют первыми.", ("image", "BS About diary-holidays")),
-    ("Выпускной «Только свои»", "Весь глэмпинг для выпускников: поляна, костёр, беседка с печью и баня.", ("territory", "Костровая зона")),
-    ("Крещенская купель", "Окунуться в речке, огибающей глэмпинг, и согреться в сауне с видом на лес.", ("territory", "Финская сауна")),
-    ("Мастер-классы", "Живопись, флористика, йога-практики — летом и по праздникам.", ("territory", "Мастер-классы")),
+    ("new-year", "Новый год", "Глэмпинг готовится к праздникам заранее, а на новогоднюю ночь домики бронируют первыми.", ("image", "BS About diary-holidays")),
+    ("graduation", "Выпускной «Только свои»", "Весь глэмпинг для выпускников: поляна, костёр, беседка с печью и баня.", ("territory", "Костровая зона")),
+    ("", "Крещенская купель", "Окунуться в речке, огибающей глэмпинг, и согреться в сауне с видом на лес.", ("territory", "Финская сауна")),
+    ("creative", "Мастер-классы", "Живопись, флористика, йога-практики — летом и по праздникам.", ("territory", "Мастер-классы")),
 ]
 
 GROUP_FACTS = [("4 домика", "до 16 гостей на ночь"), ("до 50", "гостей в беседке с русской печью"),
@@ -186,6 +186,8 @@ def context_for(page, request):
         return {"tiles": tiles, "filters": ACTIVITY_FILTERS, "months": list(enumerate(dc.MONTHS, start=1)),
                 "current_month": month}
     if slug == "meropriyatiya":
+        from calendar import Calendar
+
         from forms.forms import EventForm
         from core.models import _consent_page
 
@@ -200,14 +202,27 @@ def context_for(page, request):
         past = list(published.filter(_Q(end_date__lt=today) | _Q(end_date__isnull=True, date__lt=today)).order_by("-date")[:6])
         # Прошедшие события из админки идут первыми, затем архив из постов Telegram.
         archive = [{"title": event.title, "text": event.description, "image": event.image} for event in past]
-        archive += [{"title": title, "text": text, "image": _image(photo)} for title, text, photo in EVENT_ARCHIVE]
+        archive += [{"title": title, "text": text, "image": _image(photo), "category": category}
+                    for category, title, text, photo in EVENT_ARCHIVE]
         chosen = next((event for event in upcoming if request and str(event.pk) == request.GET.get("event")), None)
         topic = f"{chosen.title}, {chosen.date:%d.%m.%Y}" if chosen else "Ближайшие события"
         from core import dop_content as dc
 
-        calendar = [{"num": n, "name": name, "items": dc.SEASON_CALENDAR[n]} for n, name in enumerate(dc.MONTHS, start=1)]
+        calendar = [
+            {
+                "num": n, "name": dc.MONTHS[n - 1], "items": dc.SEASON_CALENDAR[n],
+                "days_off": sum(bool(day) for week in Calendar().monthdayscalendar(today.year + (n < today.month), n)
+                                for day in week[5:]),
+                "activities": [name for name, details in dc.ACTIVITY_DETAILS.items() if n in details["months"]],
+            }
+            for n in (*range(today.month, 13), *range(1, today.month))
+        ]
+        archive_categories = [
+            ("new-year", "Новый год"), ("graduation", "Выпускные"), ("birthday", "Дни рождения"),
+            ("wedding", "Свадьбы"), ("creative", "Творчество"), ("sport", "Спорт"), ("", "Все"),
+        ]
         return {"calendar": calendar, "current_month": today.month,
-                "upcoming": upcoming, "archive": archive[:8],
+                "upcoming": upcoming, "archive": archive, "archive_categories": archive_categories,
                 "event_form": EventForm(auto_id="event_%s", initial={"topic": topic}),
                 "chosen_event": chosen, "consent_page": _consent_page()}
     if slug == "vyezdy-kompaniy":

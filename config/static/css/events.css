@@ -1,19 +1,249 @@
-.events-intro__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 48px; border-block: 1px dashed var(--c-olive); padding-block: 32px; }
-.events-intro__grid > * { min-width: 0; overflow-wrap: anywhere; }
-.events-intro__grid h2, .events-intro__grid p { margin: 0; }
-.events-intro__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
-.events-faq details { margin-bottom: 10px; border-radius: 8px; overflow: hidden; }
-.events-faq summary { position: relative; padding: 18px 48px 18px 22px; list-style: none; background: #202020; color: #f7f0e6; cursor: pointer; }
+.page-events {
+  background: #f7f0e6 url("../img/home-backgrounds/fon-nearby-top.svg") no-repeat right top / min(850px, 100%) auto;
+  color: #494949;
+}
+
+.page-events main .section { padding-block: clamp(24px, 3.2vw, 46px); }
+.page-events main > .page-head:first-child {
+  padding-top: max(calc(var(--header-h) + 56px), 13.9vw);
+  padding-bottom: clamp(32px, 4.2vw, 60px);
+  text-align: center;
+}
+
+.page-events .page-head h1 { font-size: clamp(29px, 6.25vw, 90px); line-height: 1; margin: 0 0 26px; }
+.page-events .page-head .section__lead { margin: 0; font-size: clamp(16px, 1.67vw, 24px); line-height: 1.2; }
+.page-events .section__title,
+.events-next h2 { font-size: clamp(30px, 3vw, 42px); line-height: 1.02; color: #494949; margin: 0 0 20px; }
+.page-events .btn { white-space: normal; text-align: center; }
+.page-events main [id] { scroll-margin-top: 126px; }
+
+.page-events main .events-intro {
+  border-block: 1px dashed #847f57;
+  padding-block: 32px;
+}
+.events-intro__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
+  gap: clamp(20px, 3.45vw, 50px);
+  max-width: 1220px;
+}
+.events-intro h2 { font-size: clamp(32px, 4vw, 54px); line-height: 1; color: #494949; margin: 0; }
+.events-intro p, .events-next__copy, .events-gallery__lead, .season-calendar .center {
+  font-size: clamp(16px, 1.4vw, 20px);
+  line-height: 1.2;
+}
+.events-intro p { margin: 10px 0 0; }
+.events-intro__actions, .events-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+.events-intro__actions { margin-top: 14px; }
+.events-intro__actions .btn, .events-actions .btn, .events-new-year .btn {
+  min-height: 44px;
+  padding: 8px 24px;
+  font-size: clamp(15px, 1.4vw, 20px);
+  font-weight: 400;
+}
+.page-events main .events-upcoming { padding-top: clamp(42px, 5.55vw, 80px); padding-bottom: clamp(28px, 2.8vw, 40px); }
+.events-next { max-width: 710px; }
+.events-next__label {
+  margin: 0 0 20px;
+  color: inherit;
+  font-size: 16px;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.events-next__copy { margin: 0 auto 20px; }
+.events-next .events-actions { justify-content: center; }
+
+.events-upcoming .events-list { display: grid; gap: 24px; max-width: 996px; margin: 0 auto; padding: 0; list-style: none; }
+.events-card {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 24px 32px;
+  align-items: stretch;
+  padding: 32px;
+  border-radius: 20px;
+  background: #fff;
+}
+.events-card h3 { margin: 24px 0 16px; font-size: clamp(26px, 3vw, 34px); line-height: 1; color: #494949; text-wrap: balance; }
+.events-card__date {
+  display: inline-block;
+  margin: 0;
+  padding: 10px 24px;
+  border-radius: 10px;
+  background: #847f57;
+  color: #fff;
+  font-size: 24px;
+  line-height: 29px;
+}
+.events-card__description { margin: 0 0 24px; font-size: 18px; line-height: 22px; }
+.events-card .btn { min-height: 40px; font-size: 16px; }
+.events-card__media { position: relative; min-height: 331px; overflow: hidden; border-radius: 20px; background: #d9d9d9; }
+.events-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.events-card__meta { grid-column: 1 / -1; margin: 0; padding: 10px 16px; border-radius: 10px; background: #e8d7c7; font-size: 16px; line-height: 20px; text-align: center; }
+
+.season-calendar__inner { max-width: 1143px; }
+.season-calendar__months { max-width: 770px; margin: 38px auto 20px; }
+.page-events .filter-chip { min-height: 42px; padding: 8px 23px; font-size: 16px; font-weight: 400; }
+.season-calendar__month { padding: 32px; border-radius: 40px; color: #f7f0e6; background: #463c19; }
+.season-calendar__overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr) 148px; align-items: center; gap: 20px; min-height: 130px; }
+.season-calendar__current { margin: 0 0 6px; }
+.season-calendar__current::before { content: "●"; margin-right: 10px; color: #e3b646; }
+.season-calendar__month h3 { margin: 0; color: inherit; font-size: clamp(32px, 4vw, 54px); line-height: 1; }
+.season-calendar__highlights { font-size: 16px; }
+.season-calendar__weekends { margin: 0; padding: 12px 14px; border: 1px solid #847f57; border-radius: 20px; font-size: 15px; line-height: 1.15; }
+.season-calendar__weekends strong { display: block; margin-bottom: 5px; color: #e3b646; font: 400 54px/1 "Etude Noire", sans-serif; }
+.season-calendar__holiday, .season-calendar__activities { margin-top: 18px; padding-top: 18px; border-top: 1px dashed #847f57; }
+.season-calendar__holiday { display: flex; flex-wrap: wrap; gap: 8px clamp(24px, 15vw, 220px); align-items: center; }
+.season-calendar__holiday strong { color: #e3b646; font: 400 clamp(22px, 2.4vw, 34px)/1.1 "Etude Noire", sans-serif; }
+.season-calendar__activities p { margin: 0 0 12px; }
+.season-calendar__activities ul { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; padding: 0; }
+.season-calendar__activities li { margin: 0; padding: 9px 22px; border: 1px solid #847f57; border-radius: 24px; font-size: 16px; }
+.season-calendar__note { margin: 20px 0 0; }
+
+.events-gallery__inner, .events-new-year__grid { max-width: 1120px; }
+.events-gallery__filters { justify-content: center; margin: 38px 0 32px; }
+.events-gallery__track { position: relative; }
+.events-gallery .events-archive {
+  display: grid;
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 40px) / 3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.events-archive__item { position: relative; scroll-snap-align: start; min-width: 0; opacity: 1; overflow-wrap: anywhere; }
+.events-archive__caption {
+  position: absolute;
+  inset: auto 0 0;
+  max-height: 100%;
+  overflow: auto;
+  border-radius: 0 0 20px 20px;
+  background: #232323;
+  color: #fff;
+  font-size: 16px;
+}
+.events-archive__caption summary { padding: 8px 14px; cursor: pointer; }
+.events-archive__caption summary:focus-visible { outline-offset: -3px; }
+.events-archive__caption p { margin: 0; padding: 4px 14px 12px; }
+.events-gallery .events-archive__media { aspect-ratio: 9 / 5; border-radius: 20px; background: #d9d9d9; }
+.events-card__media .ph, .events-archive__media .ph { display: block; width: 100%; height: 100%; background: #d9d9d9; }
+.events-gallery__arrow {
+  position: absolute;
+  top: clamp(18px, 5.4vw, 80px);
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: #847f57;
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+.events-gallery__arrow:disabled { opacity: .55; cursor: default; }
+.events-gallery__arrow--prev { left: -30px; }
+.events-gallery__arrow--next { right: -30px; }
+.events-gallery__empty { margin: 24px 0 0; }
+
+.page-events main .events-gallery { padding-bottom: 16px; }
+.page-events main .events-new-year { padding-top: 16px; }
+.events-new-year__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 461px); gap: 42px; }
+.events-new-year h2 { margin: 0 0 14px; font-size: clamp(27px, 2.4vw, 32px); line-height: 1; color: #494949; overflow-wrap: anywhere; }
+.events-new-year p { margin: 0 0 28px; font-size: clamp(17px, 1.7vw, 24px); line-height: 1.2; }
+.events-new-year .video-slot { aspect-ratio: 461 / 240; border-radius: 20px; background: #d9d9d9; }
+
+.page-events #event-form .container { max-width: 714px; }
+.page-events #event-form .form { border-radius: 20px; padding: clamp(20px, 2.22vw, 32px); }
+.page-events #event-form .form__title { font-size: clamp(30px, 3vw, 42px); line-height: 1; }
+.page-events #event-form .form > p { font-size: 16px; line-height: 1.25; }
+.page-events #event-form .form__grid { gap: 16px 20px; margin-top: 20px; }
+.page-events #event-form .form__field { min-width: 0; }
+.page-events #event-form .form__consent { font-size: 16px; line-height: 20px; }
+.page-events #event-form .form__label { font-size: 14px; }
+.page-events #event-form .form__field textarea { min-height: 108px; }
+
+.events-faq .container { max-width: 1000px; }
+.events-faq .section__title { margin-bottom: clamp(24px, 3vw, 40px); }
+.events-faq details + details { margin-top: 20px; }
+.events-faq summary {
+  position: relative;
+  padding: 12px 74px 12px 32px;
+  border-radius: 10px;
+  list-style: none;
+  background: #232323;
+  color: #f7f0e6;
+  font-size: clamp(17px, 1.67vw, 24px);
+  font-weight: 500;
+  line-height: 29px;
+  cursor: pointer;
+}
 .events-faq details:nth-of-type(even) summary { background: #847f57; }
 .events-faq summary::-webkit-details-marker { display: none; }
-.events-faq summary::after { content: '⌄'; position: absolute; right: 20px; font-size: 22px; top: 8px; }
-.events-faq details[open] summary::after { transform: rotate(180deg); }
-.events-faq details p { margin: 0; padding: 18px 22px; }
-.events-new-year__grid { display: grid; gap: 24px; align-items: start; }
-.events-new-year h2 { overflow-wrap: anywhere; }
-@media (min-width: 900px) {
-  .events-new-year__grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; }
+.events-faq summary::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 32px;
+  width: 16px;
+  height: 16px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-72%) rotate(45deg);
 }
-.page-events .section__title { font-size: 48px; line-height: 1.15; margin-bottom: 20px; }
-@media (max-width: 699px) { .events-intro__grid { grid-template-columns: 1fr; gap: 18px; } }
-@media (max-width: 699px) { .page-events .section__title { font-size: 32px; line-height: 1.15; } }
+.events-faq details[open] summary::after { transform: translateY(-25%) rotate(225deg); }
+.events-faq details p { margin: 0; padding: 20px 32px; font-size: clamp(16px, 1.4vw, 20px); line-height: 1.2; }
+.page-events .footer {
+  padding-top: clamp(30px, 3.2vw, 46px);
+  background: url("../img/home-backgrounds/fon-nearby-footer.svg") no-repeat right bottom / min(740px, 100%) auto;
+}
+
+@media (min-width: 1200px) {
+  .page-events main .season-calendar { padding-top: 40px; }
+  .season-calendar__month:has(.season-calendar__holiday) { min-height: 444px; }
+  .events-faq:has(details[open]) { padding-block: 120px 100px; }
+}
+
+@media (max-width: 1199px) {
+  .events-desktop-break { display: none; }
+  .events-intro__grid { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+  .events-gallery__arrow--prev { left: 5px; }
+  .events-gallery__arrow--next { right: 5px; }
+}
+
+@media (max-width: 759px) {
+  .events-intro__grid, .events-card, .events-new-year__grid, .season-calendar__overview { grid-template-columns: minmax(0, 1fr); }
+  .events-card, .season-calendar__month { padding: 20px; }
+  .events-card__media { min-height: 0; aspect-ratio: 360 / 331; }
+  .season-calendar__weekends { max-width: 148px; }
+  .season-calendar__months, .events-gallery__filters { margin-top: 24px; }
+  .events-gallery .events-archive { grid-auto-columns: min(100%, 360px); }
+  .events-faq summary { padding: 12px 52px 12px 16px; line-height: 1.25; }
+  .events-faq summary::after { right: 19px; width: 12px; height: 12px; }
+  .events-faq details p { padding-inline: 16px; }
+}
+
+.page-events .page-head .section__lead { margin-inline: auto; }
+.page-events .page-head .dev-strip { margin: 12px auto 0; }
+.page-events main > .page-head:has(.dev-strip):first-child { padding-bottom: clamp(14px, 1.4vw, 20px); }
+
+@media (min-width: 1200px) {
+  .events-faq:has(details[open]) {
+    background: url("../img/home-backgrounds/fon-faq-left.svg") no-repeat left top / 350px auto,
+                url("../img/home-backgrounds/fon-faq-right.svg") no-repeat right top / 430px auto;
+  }
+}
+
+@media (min-width: 1200px) {
+  .events-intro h2 span { display: block; }
+  .season-calendar__months { margin-bottom: 23px; }
+  .page-events main .events-gallery { padding-top: 35px; }
+  .page-events main #event-form { padding-top: 34px; }
+  .page-events #event-form .form__grid { row-gap: 13px; }
+  .page-events #event-form .form__actions { margin-top: 20px; }
+  .page-events main .events-faq:not(:has(details[open])) { padding-top: 33px; }
+}
+
+@media (min-width: 760px) and (max-width: 1199px) {
+  .events-new-year__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 41%); gap: 24px; }
+}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags media_tags content_tags marketing_tags %}
+{% load static wagtailcore_tags media_tags content_tags marketing_tags layout_tags %}
 {% block body_class %}page-dop page-events{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/events.css' %}?v=20261103-visual">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/events.css' %}?v=20261110-events">{% endblock %}
 
 {% comment %}
   Мероприятия (docs/dop-stranicy/18-…). Ближайших дат пока нет — страница
@@ -9,54 +9,60 @@
   праздники и собирает контакты тех, кто хочет узнать первым.
 {% endcomment %}
 
+{% block extra_js %}<script defer src="{% static 'js/events.js' %}?v=20261110-events"></script>{% endblock %}
 {% block content %}
 <section class="section page-head"><div class="container container--narrow">
-  {% include "includes/in_progress_note.html" %}
   <h1>{{ page.title }}</h1><p class="section__lead">{% if page.intro|filled %}{{ page.intro }}{% else %}Поводы, ради которых точно стоит приехать.{% endif %}</p>
+  {% include "includes/in_progress_note.html" %}
 </div></section>
 {% if page.body|filled %}<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>{% endif %}
-<section class="section events-intro"><div class="container container--narrow events-intro__grid">
-  <h2>Ежегодно мы собираемся все вместе</h2>
-  <div><p>Несколько раз в году мы собираемся в «Лучшем сезоне», чтобы встречать Масленицу, отмечать Осенины, смотреть кино под открытым небом и пробовать что-то новое на мастер-классах. Без строгого расписания и обязательной программы — с хорошей компанией и временем, которое приятно разделить друг с другом.</p>
+<section class="section events-intro"><div class="container events-intro__grid">
+  <h2><span>Ежегодно мы</span> <span>собираемся</span> <span>все вместе</span></h2>
+  <div><p>Несколько раз в году мы собираемся в «Лучшем сезоне», чтобы встречать Масленицу, отмечать Осенины, смотреть кино под открытым небом и пробовать что-то новое на мастер-классах. Без строгого расписания и обязательной программы — с хорошей компанией, долгими разговорами и временем, которое приятно разделить друг с другом.</p>
     <div class="events-intro__actions"><a class="btn btn--primary" href="#events-upcoming">Ближайшее событие</a><a class="btn btn--outline" href="#event-form">Подписаться на анонсы</a></div>
   </div>
 </div></section>
 
-{% if upcoming %}
-<section class="section" id="events-upcoming">
-  <div class="container">
-    <h2 class="section__title section__title--center">Ближайшие события</h2>
-    <ul class="events-list">
-      {% for event in upcoming %}
-        <li class="events-list__item" data-reveal>
-          <p class="events-list__date">{{ event.date|date:"j" }}<span>{{ event.date|date:"E" }}{% if event.end_date and event.end_date != event.date %} — {{ event.end_date|date:"j E" }}{% endif %}</span></p>
-          <div class="events-list__body">
-            <h3>{{ event.title }}</h3>
-            {% if event.description %}<p>{{ event.description }}</p>{% endif %}
-            <p class="events-list__meta">{% if event.time_label %}{{ event.time_label }} · {% endif %}{% if event.price %}{{ event.price }} ₽{% else %}стоимость по запросу{% endif %}{% if event.places %} · мест: {{ event.places }}{% endif %}</p>
-          </div>
-          <a class="btn btn--primary" href="?event={{ event.pk }}#event-form">Записаться</a>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
+<section class="section events-upcoming" id="events-upcoming">
+  {% if upcoming %}
+    <div class="container">
+      <h2 class="section__title section__title--center">Ближайшие события</h2>
+      <ul class="events-list">
+        {% for event in upcoming %}
+          <li class="events-card">
+            <div>
+              <p class="events-card__date">{{ event.date|date:"j b" }}{% if event.end_date and event.end_date != event.date %} — {{ event.end_date|date:"j b" }}{% endif %}</p>
+              <h3>{{ event.title|bind_short_words }}</h3>
+              {% if event.description %}<p class="events-card__description">{{ event.description|bind_short_words|linebreaksbr }}</p>{% endif %}
+              <div class="events-actions">
+                <button type="button" class="btn btn--primary" data-booking-open data-entry-point="events">Забронировать на эти даты</button>
+                <a class="btn btn--outline" href="?event={{ event.pk }}#event-form">Записаться</a>
+              </div>
+            </div>
+            <div class="events-card__media">{% if event.image %}{% picture event.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+            <p class="events-card__meta">{% if event.time_label %}{{ event.time_label }} · {% endif %}{% if event.price %}{{ event.price }} ₽{% else %}стоимость по запросу{% endif %}{% if event.places %} · мест: {{ event.places }}{% endif %}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% else %}
+    <div class="container center events-next">
+      <p class="events-next__label">Ближайшие события</p>
+      <h2>Следующее событие<br class="events-desktop-break"> мы уже готовим</h2>
+      <p class="events-next__copy">Анонсы выходят сначала в Telegram-канале — подпишитесь или оставьте свою почту, чтобы узнавать первыми о наших событиях. Обычно информируем за 2–3 недели до мероприятия.</p>
+      <div class="events-actions">
+        {% with s=settings.core.SiteSettings %}{% if s.telegram_url %}
+          <a class="btn btn--primary" href="{% marketing_url s.telegram_url 'meropriyatiya' %}" rel="noopener" target="_blank">Подписаться на Telegram</a>
+        {% endif %}{% endwith %}
+        <a class="btn btn--outline" href="#event-form">Оставить почту</a>
+      </div>
+    </div>
+  {% endif %}
 </section>
-{% else %}
-<section class="section" id="events-upcoming">
-  <div class="container container--narrow center events-next" data-reveal>
-    <p class="events-next__label">Ближайшие события</p>
-    <h2>Следующее событие мы уже готовим</h2>
-    <p>Анонсы выходят сначала в Telegram-канале — подпишитесь или оставьте контакт, и мы напишем первыми.</p>
-    {% with s=settings.core.SiteSettings %}{% if s.telegram_url %}
-      <p><a class="btn btn--outline" href="{% marketing_url s.telegram_url 'meropriyatiya' %}" rel="noopener" target="_blank">Анонсы в Telegram</a></p>
-    {% endif %}{% endwith %}
-  </div>
-</section>
-{% endif %}
 
 <section class="section season-calendar">
-  <div class="container container--narrow">
-    <h2 class="section__title section__title--center">Календарь сезона</h2>
+  <div class="container season-calendar__inner">
+    <h2 class="section__title section__title--center">Календарь Сезона</h2>
     <p class="center">Что происходит у нас и у наших соседей в каждом месяце.</p>
     <div class="chips season-calendar__months" data-chips="month" data-chips-default="m{{ current_month }}" role="group" aria-label="Месяц">
       {% for month in calendar %}<button type="button" class="filter-chip" data-chip="m{{ month.num }}">{{ month.name }}</button>{% endfor %}
@@ -64,27 +70,47 @@
     <div data-chips-for="month">
       {% for month in calendar %}
         <div class="season-calendar__month" data-tags="m{{ month.num }}">
-          <h3>{{ month.name }}</h3>
-          <ul>{% for item in month.items %}<li>{{ item }}</li>{% endfor %}</ul>
+          <div class="season-calendar__overview">
+            <div>{% if month.num == current_month %}<p class="season-calendar__current">сейчас</p>{% endif %}<h3>{{ month.name }}</h3></div>
+            <ul class="season-calendar__highlights">{% for item in month.items %}<li>{{ item }}</li>{% endfor %}</ul>
+            <p class="season-calendar__weekends"><strong>{{ month.days_off }}</strong>суббот и воскресений</p>
+          </div>
+          {% if month.num == 11 %}<div class="season-calendar__holiday"><span>Праздники</span><strong>День народного единства</strong></div>{% endif %}
+          <div class="season-calendar__activities">
+            <p>Работает:</p>
+            <ul>{% for activity in month.activities %}<li>{{ activity }}</li>{% endfor %}</ul>
+          </div>
         </div>
       {% endfor %}
     </div>
+    <p class="season-calendar__note center">Точные даты объявляем заранее — самая актуальная информация в нашем Telegram.<br class="events-desktop-break"> Некоторые события плавающие — Масленица каждый год сдвигается.</p>
   </div>
 </section>
 
 {% if archive %}
-<section class="section">
-  <div class="container">
+<section class="section events-gallery">
+  <div class="container events-gallery__inner" data-events-gallery>
     <h2 class="section__title section__title--center">Как это бывает</h2>
-    <ul class="events-archive">
-      {% for event in archive %}
-        <li class="events-archive__item" data-reveal>
-          <div class="events-archive__media">{% if event.image %}{% picture event.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
-          <h3>{{ event.title }}</h3>
-          <p>{{ event.text }}</p>
-        </li>
-      {% endfor %}
-    </ul>
+    <p class="events-gallery__lead center">Галерея прошедших событий. Собрали некоторые из моментов,<br class="events-desktop-break"> которыми хочется поделиться.</p>
+    <div class="chips events-gallery__filters" data-chips="archive" role="group" aria-label="Категория событий">
+      {% for key, label in archive_categories %}<button type="button" class="filter-chip" data-chip="{{ key }}">{{ label }}</button>{% endfor %}
+    </div>
+    <div class="events-gallery__track">
+      <button type="button" class="events-gallery__arrow events-gallery__arrow--prev" data-events-prev aria-controls="events-gallery-list" aria-label="Предыдущие события">‹</button>
+      <ul class="events-archive" id="events-gallery-list" data-chips-for="archive" tabindex="0" aria-label="Прошедшие события">
+        {% for event in archive %}
+          <li class="events-archive__item" data-tags="{{ event.category }}">
+            <div class="events-archive__media">{% if event.image %}{% picture event.image preset="card" alt="" %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}</div>
+            <details class="events-archive__caption">
+              <summary>{{ event.title }}</summary>
+              <p>{{ event.text }}</p>
+            </details>
+          </li>
+        {% endfor %}
+      </ul>
+      <button type="button" class="events-gallery__arrow events-gallery__arrow--next" data-events-next aria-controls="events-gallery-list" aria-label="Следующие события">›</button>
+    </div>
+    <p class="events-gallery__empty center" data-chips-empty="archive" role="status" hidden>В этой категории пока нет событий.</p>
   </div>
 </section>
 {% endif %}
@@ -100,23 +126,22 @@
   </div>
 </section>
 
-<div class="events-new-year-card" style="margin: 40px auto 60px; max-width: 1100px; background: #FFFFFF; border-radius: 24px; padding: 36px 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 24px;"><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 36px; align-items: center;"><div><div style="display: inline-block; background: #68725E; color: #FFFFFF; border-radius: 6px; padding: 6px 14px; font-size: 15px; font-weight: 500; margin-bottom: 16px;">31 дек — 2 янв</div><h3 style="font-size: 32px; font-weight: 500; color: #2B2E28; margin: 0 0 14px;">Новогодняя ночь в ”Лучшем сезоне”</h3><p style="font-size: 15px; line-height: 1.6; color: #555950; margin: 0 0 24px;">Пусть в этот Новый год у вас будет вид на заснеженный сказочный лес, в доме — тепло и уют, а за праздничным настроением не придётся никуда ехать. Мы приготовили небольшие сюрпризы для гостей и обещаем заглянуть с визитом самого главного Новогоднего Волшебника.</p><div style="display: flex; flex-wrap: wrap; gap: 12px;"><button type="button" class="btn btn--primary" data-booking-open data-entry-point="new-year" style="background: #8E4322; color: #FFFFFF; border-radius: 100px; padding: 12px 24px; font-weight: 500; border: none; cursor: pointer;">Забронировать на эти даты</button><button type="button" class="btn btn--secondary" data-promotion-request-open data-topic="Новогодняя ночь" style="border: 1px solid #8E4322; color: #8E4322; background: transparent; border-radius: 100px; padding: 12px 24px; font-weight: 500; cursor: pointer;">Уточнить детали</button></div></div><div style="width: 100%; aspect-ratio: 4/3; background: #D6D9D2; border-radius: 18px; overflow: hidden; display: flex; align-items: center; justify-content: center;"><img src="/static/img/events/new-year-night.jpg" alt="Новогодняя ночь" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.parentElement.style.background='#CCD1C8'; this.parentElement.innerHTML='<div style=\'color: #555950; font-size: 15px; text-align: center; font-weight: 500;\'>НОВОГОДНЯЯ НОЧЬ</div>';"></div></div><div style="background: #E5D5C5; border-radius: 12px; padding: 14px 20px; font-size: 14px; color: #4A3E37; text-align: center; font-weight: 500;">От 2-х ночей · Подарок каждому домику · Визит Деда Мороза · Скидка за длительное проживание</div></div>
 <section class="section" id="event-form">
   <div class="container container--narrow">
     {% if chosen_event %}
       {% include "forms/request_form.html" with form=event_form form_type="event" title="Запись: "|add:chosen_event.title lead="Оставьте контакт — подтвердим место и расскажем детали." submit_label="Записаться" %}
     {% else %}
-      {% include "forms/request_form.html" with form=event_form form_type="event" title="Узнать о событиях первыми" lead="Напишем, когда откроется запись на ближайший праздник или мастер-класс." submit_label="Хочу узнать первым" %}
+      {% include "forms/request_form.html" with form=event_form form_type="event" title_prefix="Узнать о" title="событиях первыми" lead="Напишем, когда откроется запись на ближайший праздник или мастер-класс." submit_label="Хочу узнать первым" %}
     {% endif %}
   </div>
 </section>
-<section class="section events-faq"><div class="container container--narrow">
+<section class="section events-faq"><div class="container">
   <h2 class="section__title section__title--center">Ответы на вопросы</h2>
-  <details><summary>Все ли мероприятия открыты для внешних гостей?</summary><p>Зависит от формата конкретного события. В анонсе мы всегда указываем, кто может присоединиться и как записаться.</p></details>
-  <details><summary>Нужно ли заранее записываться на мероприятия?</summary><p>На некоторые встречи количество мест ограничено, поэтому мы рекомендуем записываться заранее. Условия участия публикуем вместе с анонсом.</p></details>
-  <details><summary>Можно ли приехать на мероприятие с детьми?</summary><p>Во многих случаях — да. Возрастные ограничения и особенности программы указываем в описании конкретного события.</p></details>
-  <details><summary>Можно ли остаться на ночь после мероприятия?</summary><p>Конечно, если событие предполагает проживание и на нужные даты есть свободные домики. Рекомендуем бронировать заранее.</p></details>
-  <details><summary>Можно ли организовать собственное мероприятие в «Сезоне»?</summary><p>Да. Можно обсудить аренду отдельных площадок или всей территории — формат зависит от количества гостей, даты и ваших пожеланий.</p></details>
-  <details><summary>Где узнавать о новых мероприятиях?</summary><p>Анонсы в первую очередь публикуем в нашем Telegram-канале. Подписывайтесь на канал или оставьте почтовый адрес, чтобы не пропустить новые встречи.</p></details>
+  <details><summary>Все ли мероприятия открыты для внешних гостей?</summary><p>Зависит от формата конкретного события.<br class="events-desktop-break"> В анонсе мы всегда указываем, кто может присоединиться и как записаться.</p></details>
+  <details><summary>Нужно ли заранее записываться на мероприятия?</summary><p>На некоторые встречи количество мест ограничено, поэтому мы рекомендуем<br class="events-desktop-break"> записываться заранее. Условия участия публикуем вместе с анонсом.</p></details>
+  <details><summary>Можно ли приехать на мероприятие с детьми?</summary><p>Во многих случаях — да. Возрастные ограничения и особенности программы указываем<br class="events-desktop-break"> в описании конкретного события.</p></details>
+  <details><summary>Можно ли остаться на ночь после мероприятия?</summary><p>Конечно, если событие предполагает проживание и на нужные даты есть свободные<br class="events-desktop-break"> домики. Рекомендуем бронировать заранее.</p></details>
+  <details><summary>Можно ли организовать собственное мероприятие в «Сезоне»?</summary><p>Да. Можно обсудить аренду отдельных площадок или всей территории — формат<br class="events-desktop-break"> зависит от количества гостей, даты и ваших пожеланий.</p></details>
+  <details><summary>Где узнавать о новых мероприятиях?</summary><p>Анонсы в первую очередь публикуем в нашем Telegram-канале. Подписывайтесь на<br class="events-desktop-break"> канал или оставьте почтовый адрес, чтобы не пропустить новые встречи.</p></details>
 </div></section>
 {% endblock %}
