@@ -357,6 +357,7 @@ class FormTypesTests(FormTestCase):
             set(FORM_CLASSES),
         )
 
+
 class PartnerAttachmentTests(FormTestCase):
     def test_saved_attachments_are_downloadable_only_with_submission_access(self):
         from django.core.files.uploadedfile import SimpleUploadedFile
@@ -374,6 +375,8 @@ class PartnerAttachmentTests(FormTestCase):
         self.assertEqual(self.client.get(url).status_code, 302)
         editor = get_user_model().objects.create_superuser(username="partner-editor")
         self.client.force_login(editor)
+        listing = self.client.get(reverse("wagtailsnippets_forms_formsubmission:list"))
+        self.assertContains(listing, "project.pdf")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertIn("attachment", response["Content-Disposition"])

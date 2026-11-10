@@ -4,6 +4,7 @@ from django.utils.html import format_html_join
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.ui.tables import Column
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 
@@ -20,9 +21,6 @@ def attachment_links(submission):
     )
 
 
-attachment_links.short_description = "Файлы"
-
-
 class FormSubmissionViewSet(SnippetViewSet):
     """Список заявок в админке — п. 7.5 ТЗ.
 
@@ -37,7 +35,10 @@ class FormSubmissionViewSet(SnippetViewSet):
     menu_order = 200
     add_to_admin_menu = True
 
-    list_display = ["created_at", "form_type", "topic", "name", "phone", "status", attachment_links]
+    list_display = [
+        "created_at", "form_type", "topic", "name", "phone", "status",
+        Column("attachments", label="Файлы", accessor=attachment_links),
+    ]
     list_filter = ["form_type", "status", "created_at"]
     search_fields = ["name", "phone", "email", "topic", "message"]
     ordering = ["-created_at"]
