@@ -144,7 +144,7 @@ body.page-house main > .house-title:first-child { padding: 112px 0 24px; }
 .page-house .equipment__column { width: 100%; gap: 24px; }
 .page-house .equipment__group { gap: 16px; }
 .page-house .equipment__title { font-size: 18px; line-height: 22px; }
-.page-house .equipment__list { gap: 10px; }
+.page-house .equipment__list { gap: 0; }
 .page-house .equipment__list li { font-size: 16px; line-height: 20px; }
 .page-house .equipment__switch:not(:checked) ~ .equipment__columns { max-height: 178px; }
 .page-house .equipment__switch:checked ~ .equipment__columns { min-height: 0; }

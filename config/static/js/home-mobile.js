@@ -150,7 +150,6 @@
     const originalHeight = track.style.height;
     const heads = slides.map(slide => slide.querySelector('.place__head')).filter(Boolean);
     const originalHeadHeights = heads.map(head => head.style.minHeight);
-    const loop = track.classList.contains('photo-mosaic__tiles') ? makeLoop(track, slides) : null;
     const dots = document.createElement('div');
     dots.className = 'mobile-carousel-dots';
     dots.setAttribute('role', 'group');
@@ -201,9 +200,7 @@
     }
     function onScroll() { if (!frame) frame = requestAnimationFrame(update); }
     track.addEventListener('scroll', onScroll, { passive: true });
-    if (loop) loop.start(); else if (track.classList.contains('photo-mosaic__tiles')) {
-      track.scrollLeft = slides[1].getBoundingClientRect().left - track.getBoundingClientRect().left - (track.clientWidth - slides[1].clientWidth) / 2;
-    }
+    if (track.classList.contains('photo-mosaic__tiles')) track.scrollLeft = 0;
     fixHeight();
     update();
     let active = true;
@@ -220,87 +217,13 @@
       track.style.height = originalHeight;
       heads.forEach((head, index) => { head.style.minHeight = originalHeadHeights[index]; });
       dots.remove();
-      if (loop) loop.stop();
     });
-  }
-
-  /* Бесконечная прокрутка фотогалереи: с последнего кадра свайп идёт на
-     первый и наоборот. Библиотеки нет, поэтому по краям ряда лежат
-     копии крайних кадров, а когда прокрутка на них останавливается,
-     позиция без анимации переставляется на настоящий кадр.
-     Лишние кадры (в мобильном макете их прячет nth-child) на время
-     вынимаем из разметки: иначе копии сдвинули бы нумерацию правил. */
-  function makeLoop(track, slides) {
-    if (slides.length < 2) return null;
-    const hidden = Array.from(track.children).filter(item => !slides.includes(item));
-    const marks = hidden.map(item => {
-      const mark = document.createComment('');
-      item.replaceWith(mark);
-      return mark;
-    });
-    const head = slides[0].cloneNode(true);
-    const tail = slides[slides.length - 1].cloneNode(true);
-    [head, tail].forEach(clone => {
-      clone.setAttribute('aria-hidden', 'true');
-      clone.dataset.clone = 'true';
-    });
-    track.prepend(tail);
-    track.append(head);
-    track.classList.add('is-loop');
-
-    function offsetOf(slide) {
-      return track.scrollLeft + slide.getBoundingClientRect().left - track.getBoundingClientRect().left
-        - (track.clientWidth - slide.clientWidth) / 2;
-    }
-    function jump(slide) {
-      const behavior = track.style.scrollBehavior;
-      const snap = track.style.scrollSnapType;
-      // Снятый snap обязателен: с ним браузер возвращает прокрутку
-      // обратно на копию, и переход выглядит как рывок туда-обратно.
-      track.style.scrollSnapType = 'none';
-      track.style.scrollBehavior = 'auto';
-      track.scrollLeft = offsetOf(slide);
-      track.style.scrollBehavior = behavior;
-      track.style.scrollSnapType = snap;
-    }
-    let timer = 0;
-    function onScroll() {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        const box = track.getBoundingClientRect();
-        const center = box.left + box.width / 2;
-        const near = item => Math.abs(item.getBoundingClientRect().left + item.getBoundingClientRect().width / 2 - center) < item.clientWidth / 2;
-        if (near(head)) jump(slides[0]);
-        else if (near(tail)) jump(slides[slides.length - 1]);
-      }, 120);
-    }
-    return {
-      start() {
-        track.addEventListener('scroll', onScroll, { passive: true });
-        jump(slides[0]);
-      },
-      stop() {
-        clearTimeout(timer);
-        track.removeEventListener('scroll', onScroll);
-        track.classList.remove('is-loop');
-        head.remove();
-        tail.remove();
-        marks.forEach((mark, index) => mark.replaceWith(hidden[index]));
-      }
-    };
   }
 
   function sync() {
     cleanups.splice(0).reverse().forEach(cleanup => cleanup());
     if (!mobile.matches) return;
     setupEquipment();
-    const photoTrack = document.querySelector('.photo-mosaic__tiles');
-    const firstPhoto = photoTrack?.querySelector('[data-mobile-gallery-first]');
-    if (firstPhoto) {
-      const originalPhotos = Array.from(photoTrack.children);
-      photoTrack.prepend(firstPhoto);
-      cleanups.push(() => photoTrack.replaceChildren(...originalPhotos));
-    }
     document.querySelectorAll('.amenity-tags').forEach(tags => {
       const items = Array.from(tags.children);
       const columns = [0, 1].map(() => {

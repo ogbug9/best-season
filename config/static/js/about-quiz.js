@@ -27,6 +27,10 @@
       book.setAttribute("data-booking-open", "");
       book.setAttribute("data-entry-point", "7");
       content.appendChild(book);
+      var reset = element("button", "Начать заново", "btn btn--outline");
+      reset.type = "button";
+      reset.addEventListener("click", function () { index = 0; score = 0; render(true); });
+      content.appendChild(reset);
       if (moveFocus) book.focus();
       return;
     }
@@ -38,7 +42,10 @@
       var button = element("button", label, "btn btn--outline");
       button.type = "button";
       button.addEventListener("click", function () {
+        if (button.disabled) return;
         if (i === question[2]) score++;
+        button.className += i === question[2] ? " about-quiz__answer--correct" : " about-quiz__answer--incorrect";
+        button.setAttribute("aria-label", label + (i === question[2] ? " — верно" : " — неверно"));
         options.querySelectorAll("button").forEach(function (b) { b.disabled = true; });
         content.appendChild(element("p", question[3], "about-quiz__story"));
         var next = element("button", index === questions.length - 1 ? "Узнать результат" : "Следующий вопрос", "btn btn--primary");

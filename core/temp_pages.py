@@ -126,8 +126,8 @@ SERVICES = {
     },
     "malaya-besedka": {
         "service": "malaya-besedka", "tile": "", "kicker": "Для своих",
-        # Кадр утвердила Софья 16.10 (комментарий в макете «Pop-up Бронь 2 шаг»).
-        "photo": ("BS service malaya-besedka", "img/services/malaya-besedka.jpg"),
+        # Новый кадр малой арочной беседки передан владельцем 12.11; старый оригинал сохранён.
+        "photo": ("BS service malaya-besedka 20261112", "img/services/malaya-besedka-20261112.webp"),
         "chips": ["камерно", "вдвоём или семьёй", "ужин на воздухе"],
         "steps": [("Напишите нам", "Расскажите, на сколько человек и когда хотите посидеть."),
                   ("Уточним детали", "Назовём цену и свободное время."),

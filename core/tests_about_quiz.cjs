@@ -32,6 +32,7 @@ for (const [name, correctCount, expected] of [
   ['четыре правильных', 4, 'Почти свой'],
   ['три правильных', 3, 'Почти свой'],
   ['два правильных', 2, 'Самое время приехать и всё увидеть'],
+  ['один правильный', 1, 'Самое время приехать и всё увидеть'],
   ['без правильных', 0, 'Самое время приехать и всё увидеть'],
 ]) {
   test('викторина: ' + name, () => {
@@ -44,6 +45,9 @@ for (const [name, correctCount, expected] of [
       options[selected].click();
       assert.equal(quiz.content.children[3].className, 'about-quiz__story');
       assert.ok(options.every(option => option.disabled));
+      assert.ok(options[selected].className.includes(i < correctCount ? 'about-quiz__answer--correct' : 'about-quiz__answer--incorrect'));
+      options[selected].click();
+      assert.equal(quiz.content.children.length, 5);
       const next = quiz.content.children[4];
       assert.equal(quiz.focused, next);
       next.click();
@@ -54,5 +58,7 @@ for (const [name, correctCount, expected] of [
     assert.ok(Object.hasOwn(book.attrs, 'data-booking-open'));
     assert.equal(book.attrs['data-entry-point'], '7');
     assert.equal(quiz.focused, book);
+    quiz.content.children[2].click();
+    assert.equal(quiz.content.children[0].textContent, 'Вопрос 1 из 6');
   });
 }

@@ -307,3 +307,8 @@
   .about-quiz__options .btn { padding-inline: 12px; font-size: 16px; }
   .about-quiz__question { font-size: 20px; line-height: 1.35; }
 }
+
+.site .about-quiz__options .about-quiz__answer--correct:disabled { opacity: 1; border-color: #777B4B; background: #E5D0C0; animation: quiz-answer-in 220ms ease-out; }
+.site .about-quiz__options .about-quiz__answer--incorrect:disabled { opacity: 1; border-color: #9B5026; background: #EAD8C9; animation: quiz-answer-in 180ms ease-out; }
+@keyframes quiz-answer-in { from { opacity: .65; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .site .about-quiz__options .btn:is(.about-quiz__answer--correct, .about-quiz__answer--incorrect):disabled { animation: none; transition: none; } }

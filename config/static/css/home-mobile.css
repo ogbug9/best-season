@@ -201,11 +201,7 @@
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .photo-mosaic__text .section__lead { order: 1; width: calc(100% - 40px); margin: 0 20px 24px; font-size: 14px; line-height: 17px; text-align: left; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .photo-mosaic__tiles { order: 2; display: flex; gap: 10px; padding: 0 45px; width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .photo-mosaic__item:nth-child(n) { position: static; display: block; flex: 0 0 min(300px, calc(100vw - 90px)); width: 300px; height: 200px; aspect-ratio: auto; border-radius: 10px; scroll-snap-align: center; }
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .photo-mosaic__item:nth-child(n + 4) { display: none; }
-/* В режиме бесконечной прокрутки лишние кадры скрипт вынимает из
-   разметки, а по краям ряда добавляет копии крайних: правило по
-   порядковому номеру спрятало бы копию и последний настоящий кадр. */
-:is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .photo-mosaic__tiles.is-loop .photo-mosaic__item { display: block; }
+/* Все исходные кадры доступны по порядку, без скрытия и клонов. */
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .photo-mosaic > .mobile-carousel-dots { order: 3; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .photo-mosaic__text > p:last-child { order: 4; margin: 24px auto 0; }
 :is(.page-home, .page-houses, .page-promotions, .page-house, .page-nearby, .page-reviews, .page-services, .page-territory) .photo-mosaic__text .btn { width: 177px; min-height: 48px; height: 48px; padding: 14px 40px; font-size: 16px; line-height: 20px; }

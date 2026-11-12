@@ -1,9 +1,11 @@
-{% load content_tags marketing_tags %}
+{% load static content_tags marketing_tags %}
 {% load wagtailcore_tags media_tags %}
 <li class="house service-card" id="service-{{ service.slug }}">
   <div class="house__media">
     {% with slides=service.card_slides %}
-      {% if slides %}
+      {% if service.slug == "malaya-besedka" %}
+        <img src="{% static 'img/services/malaya-besedka-20261112.webp' %}" width="1160" height="1012" alt="Маленькая арочная беседка среди деревьев" loading="lazy" style="width:100%;height:100%;object-fit:contain">
+      {% elif slides %}
         <div class="house__slides" data-house-slider>
           {% for image in slides %}<div class="house__slide{% if forloop.first %} is-active{% endif %}"{% if not forloop.first %} aria-hidden="true"{% endif %}>{% picture image preset="house_card" alt=service.name %}</div>{% endfor %}
         </div>

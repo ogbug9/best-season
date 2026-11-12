@@ -171,7 +171,12 @@ def context_for(page, request):
             phrase = "сообщить о своих планах заранее"
             link = format_html('<a href="{}">{}</a>', marketing_url(chat_url, 'chem_zanyatsya'), phrase)
             faq[2]["answer"] = faq[2]["answer"].replace(phrase, link)
+        from core.territory_content import EXTRA_ACTIVITIES
+        published = {item.title.casefold(): item for item in TerritoryItem.objects.filter(is_published=True).select_related("image")}
+        extra_activities = [{"title": title, "tags": tags, "item": published.get(title.casefold())}
+                            for title, tags in EXTRA_ACTIVITIES]
         return {"things": things, "scenarios": scenarios, "stay_panels": stay_panels,
+                "extra_activities": extra_activities,
                 "things_faq": faq,
                 "nearby_page": Page.objects.live().filter(slug="interesnoe-ryadom").first(),
                 "activities_page": Page.objects.live().filter(slug="territoriya").first(),

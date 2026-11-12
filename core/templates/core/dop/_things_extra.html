@@ -1,0 +1,21 @@
+{% load media_tags %}
+<section class="section things-extra" aria-labelledby="things-extra-title">
+  <div class="container">
+    <h2 class="things-title" id="things-extra-title">Чем заняться</h2>
+    <div class="chips" data-chips="extra" role="group" aria-label="Дополнительные занятия">
+      <button type="button" class="filter-chip" data-chip="">Всё</button>
+      <button type="button" class="filter-chip" data-chip="active">Активный отдых</button>
+      <button type="button" class="filter-chip" data-chip="kids">С детьми</button>
+      <button type="button" class="filter-chip" data-chip="warm">Тепло и пар</button>
+      <button type="button" class="filter-chip" data-chip="events">События</button>
+    </div>
+    <ul class="mosaic" data-chips-for="extra">
+      {% for activity in extra_activities %}
+      <li class="mosaic__item territory-card territory-card--static" data-tags="{{ activity.tags }}">
+        {% if activity.item.image %}{% picture activity.item.image preset="card" alt=activity.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+        <div class="mosaic__caption"><h3 class="mosaic__title">{{ activity.title }}</h3></div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>

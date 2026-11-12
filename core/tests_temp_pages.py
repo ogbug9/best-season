@@ -129,7 +129,7 @@ class ServicePhotoTests(TestCase):
         self.addCleanup(shutil.rmtree, media, ignore_errors=True)
         with override_settings(MEDIA_ROOT=media):
             call_command("seed_pages", "--create-only", stdout=StringIO(), stderr=StringIO())
-            self.assertIsNotNone(image_titled("BS service malaya-besedka"))
+            self.assertIsNotNone(image_titled("BS service malaya-besedka 20261112"))
             self.assertEqual(ensure_service_photos(log=lambda *_: None), 0)
             html = self.client.get(Page.objects.get(slug="malaya-besedka").url).content.decode()
             self.assertNotIn("t-mosaic--empty", html)
