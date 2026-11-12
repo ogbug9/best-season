@@ -61,6 +61,37 @@
     {% else %}
     <p>{% cms_text "promotions_page-3535fea44523" %}</p>
     {% endif %}
+
+    {% if certificate %}
+    <section class="promo-certificate-wide" aria-labelledby="promo-certificate-title">
+      <div class="promo-certificate-wide__photo" role="img" aria-label="Здесь будет фотография сертификата в конверте на дереве">
+        <span>Фото сертификата<br>в конверте на дереве</span>
+      </div>
+      <div class="promo-certificate-wide__copy">
+        <h2 id="promo-certificate-title">Подарочный сертификат</h2>
+        <p>Два дня тишины вместо очередной вещи. Электронный — пришлём на почту за час, бумажный — отдадим в конверте при встрече.</p>
+        <ul class="promo-certificate-wide__details">
+          <li>Номинал уточняйте при заказе</li>
+          <li>Срок действия уточняйте при заказе</li>
+          <li>Электронный и бумажный</li>
+        </ul>
+        <a class="btn promo-certificate-wide__cta" href="?promotion=podarochnyy-sertifikat#promotion-request" data-promotion-request-open data-form-type="certificate" data-topic="Подарочный сертификат">Заказать сертификат</a>
+      </div>
+    </section>
+    {% endif %}
+
+    {% if duration_discounts %}
+    <section class="duration-discounts" aria-labelledby="duration-discounts-title">
+      <h2 id="duration-discounts-title">Шкала скидки за длительность</h2>
+      <p>Чем больше ночей, тем ниже цена каждой из них.</p>
+      <ul>
+        <li><span>1–2 суток</span><span class="duration-discounts__bar" aria-hidden="true"><i></i></span><strong>Без скидки</strong></li>
+        {% for nights, discount in duration_discounts %}
+        <li><span>От {{ nights }} суток</span><span class="duration-discounts__bar duration-discounts__bar--{% cycle 'three' 'five' 'seven' %}" aria-hidden="true"><i></i></span><strong>−{{ discount }}%</strong></li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
   </div>
 </section>
 {% include "includes/faq_section.html" with promotion_faq=True %}

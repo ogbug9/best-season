@@ -208,7 +208,7 @@ class HouseCardSliderTests(TestCase):
     """Карусель фотографий в карточке домика на главной.
 
     В макете под фото стоят три точки — карточка листается. Слайды
-    собираются из обложки и первых кадров галереи, дубли не берём.
+    собираются из обложки и первых уникальных кадров галереи.
     """
 
     @staticmethod
@@ -253,6 +253,23 @@ class HouseCardSliderTests(TestCase):
     def test_dubli_ne_povtoryayutsya(self):
         slides = self.house.card_slides
         self.assertEqual(len(slides), len(set(s.pk for s in slides)))
+
+    def test_prohodit_dalshe_pervyh_treh_zapisey_pri_dublyah(self):
+        from houses.models import HouseGalleryImage
+
+        rows = list(self.house.gallery_images.order_by("sort_order", "pk"))
+        for row in rows[:3]:
+            row.image = self.house.hero_image
+            row.save(update_fields=["image"])
+        last = HouseGalleryImage.objects.create(
+            page=self.house, image=self._image("posle-dubley"), sort_order=999
+        )
+
+        slides = self.house.card_slides
+        self.assertEqual(
+            [image.pk for image in slides],
+            [self.house.hero_image_id, rows[3].image_id, last.image_id],
+        )
 
     def test_bez_fotografiy_slaydov_net(self):
         self.assertEqual(self.pustoy.card_slides, [])

@@ -18,6 +18,26 @@ class PromotionRequestTests(TestCase):
         self.page = root.add_child(instance=PromotionsPage(title='Акции', slug='akcii'))
         self.page.save_revision().publish()
 
+    def test_certificate_visibility_and_seasonal_scale_follow_cms(self):
+        Promotion.objects.filter(slug__in=['may-sentyabr', 'oktyabr-aprel']).update(is_visible=False)
+        certificate, _ = Promotion.objects.update_or_create(slug='podarochnyy-sertifikat',
+            defaults={'title': 'Подарочный сертификат', 'is_visible': True})
+        season, _ = Promotion.objects.update_or_create(slug='oktyabr-aprel', defaults={
+            'title': 'Сезон', 'is_visible': True, 'season_start': '', 'season_end': '',
+            'short_description': 'От 3 суток — 10%\nОт 5 суток — 15%\nОт 7 суток — 20%'})
+        response = self.client.get(self.page.url)
+        self.assertContains(response, 'id="promo-certificate-title"')
+        self.assertContains(response, '−15%')
+        self.assertNotContains(response, '−25%')
+        certificate.is_visible = False
+        certificate.save()
+        season.short_description = 'Условия уточняйте'
+        season.save()
+        cache.clear()
+        response = self.client.get(self.page.url)
+        self.assertNotContains(response, 'id="promo-certificate-title"')
+        self.assertNotContains(response, 'id="duration-discounts-title"')
+
     def test_hidden_card_not_rendered_and_request_has_topic_and_form(self):
         Promotion.objects.create(title='Hidden card', slug='hidden', is_visible=False)
         Promotion.objects.create(title='Visible card', slug='visible', cta_type='request')

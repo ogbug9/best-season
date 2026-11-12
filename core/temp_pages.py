@@ -125,7 +125,7 @@ SERVICES = {
         "season": "Работает круглый год: летом — открытый вечер, зимой — тепло русской печи.",
     },
     "malaya-besedka": {
-        "service": "", "tile": "", "kicker": "Для своих",
+        "service": "malaya-besedka", "tile": "", "kicker": "Для своих",
         # Кадр утвердила Софья 16.10 (комментарий в макете «Pop-up Бронь 2 шаг»).
         "photo": ("BS service malaya-besedka", "img/services/malaya-besedka.jpg"),
         "chips": ["камерно", "вдвоём или семьёй", "ужин на воздухе"],

@@ -170,6 +170,10 @@ class PromotionsPage(Page):
 
         context = super().get_context(request)
         context["promotions"] = [p for p in Promotion.objects.all() if p.is_active]
+        context["certificate"] = next((p for p in context["promotions"]
+                                       if p.slug == "podarochnyy-sertifikat"), None)
+        context["duration_discounts"] = next((p.duration_discounts for p in context["promotions"]
+                                              if p.duration_discounts), [])
         from forms.forms import FeedbackForm, CertificateForm
         selected = next((p for p in context['promotions'] if p.slug == request.GET.get('promotion')), None)
         topic = f'Акция: {selected.title}' if selected else ''

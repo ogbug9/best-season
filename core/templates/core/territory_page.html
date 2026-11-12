@@ -3,8 +3,7 @@
 {% load wagtailcore_tags media_tags territory_tags layout_tags marketing_tags %}
 
 {% block body_class %}page-territory{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261110-territory-media">{% endblock %}
-{% block extra_js %}<script src="{% static 'js/territory-map.js' %}" defer></script>{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261112-territory-photo">{% endblock %}
 
 {% block content %}
 {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
@@ -41,8 +40,8 @@
 
 <section class="section t-field" aria-labelledby="field-title">
   <div class="container">
-    <h2 class="t-big-title" id="field-title">Вся поляна<br>на одной схеме</h2>
-    <p class="t-field__lead">От любого домика до бани, фермы или реки — несколько минут пешком.<br>Нажмите на точку, чтобы посмотреть, что там.</p>
+    <h2 class="t-big-title" id="field-title">Резюме: что есть на территории</h2>
+    <p class="t-field__lead">От любого домика до бани, фермы или реки — несколько минут пешком.</p>
     {% include "core/includes/territory_map.html" %}
   </div>
 </section>
@@ -123,9 +122,10 @@
     <h2 class="t-big-title" id="activities-title">{{ tc.ACTIVITIES_TITLE }}</h2>
       <div class="chips territory__chips" data-chips="group" role="group" aria-label="Что показать">
         <button type="button" class="filter-chip" data-chip="">Всё</button>
-        <button type="button" class="filter-chip" data-chip="kids">С детьми и животными</button>
+        <button type="button" class="filter-chip" data-chip="active">Активный отдых</button>
+        <button type="button" class="filter-chip" data-chip="kids">С детьми</button>
         <button type="button" class="filter-chip" data-chip="warm">Тепло и пар</button>
-        <button type="button" class="filter-chip" data-chip="water-events">Вода и события</button>
+        <button type="button" class="filter-chip" data-chip="events">События</button>
       </div>
     <ul class="mosaic" data-chips-for="group">
       {% comment %}
@@ -134,19 +134,21 @@
         на тач-устройствах его включает нажатие — см. site.js.
       {% endcomment %}
       {% for item in territory %}
-        <li class="mosaic__item territory-card" tabindex="0" data-tags="{{ item.filter_tags }}" data-reveal>
-          {% picture item.image preset="card" alt=item.title %}
+        <li class="mosaic__item territory-card{% if not item.description and not item.service and not item.details_url %} territory-card--static{% endif %}"{% if item.description or item.service or item.details_url %} tabindex="0"{% endif %} data-tags="{{ item.filter_tags }}" data-reveal>
+          {% if item.image %}{% picture item.image preset="card" alt=item.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
           {% if item.service %}<span class="card__badge territory-card__price">от {{ item.service.price_display }} ₽ {{ item.service.get_price_unit_display|lower }}</span>{% endif %}
           <div class="mosaic__caption">
             <h3 class="mosaic__title">{{ item.title|territory_lines|linebreaksbr }}</h3>
-            <div class="territory-card__details">
-              {% if item.description %}<p><span class="home-desktop-copy">{{ item.description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ item.description }}</span></p>{% endif %}
-              {% if item.service %}
-                <button type="button" class="btn btn--primary territory-card__link" data-booking-open data-entry-point="7" data-entry-page="territory">Забронировать</button>
-              {% elif item.details_url %}
-                <a class="btn btn--primary territory-card__link" href="{{ item.details_url }}">{% if item.details_label %}{{ item.details_label }}{% else %}{% cms_text "territory_page-59589fe2a549" %}{% endif %}</a>
-              {% endif %}
-            </div>
+            {% if item.description or item.service or item.details_url %}
+              <div class="territory-card__details">
+                {% if item.description %}<p><span class="home-desktop-copy">{{ item.description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ item.description }}</span></p>{% endif %}
+                {% if item.service %}
+                  <button type="button" class="btn btn--primary territory-card__link" data-booking-open data-entry-point="7" data-entry-page="territory">Забронировать</button>
+                {% elif item.details_url %}
+                  <a class="btn btn--primary territory-card__link" href="{{ item.details_url }}">{% if item.details_label %}{{ item.details_label }}{% else %}{% cms_text "territory_page-59589fe2a549" %}{% endif %}</a>
+                {% endif %}
+              </div>
+            {% endif %}
           </div>
         </li>
       {% endfor %}

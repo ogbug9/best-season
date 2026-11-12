@@ -8,6 +8,7 @@
   background: none;
 }
 .footer.footer--standard .footer__brand .socials { margin-top: -21px; }
+.footer.footer--standard .footer__map { min-height: 36px; padding: 8px 18px; font-size: 14px; line-height: 20px; }
 
 @media (min-width: 900px) {
   .site .footer.footer--standard {

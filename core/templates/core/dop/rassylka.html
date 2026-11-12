@@ -16,6 +16,7 @@
   <div class="container container--narrow center" data-reveal>
     <h2>Дневник Сезона</h2>
     <p>Что у нас происходит: новые постройки, сезонные акции, наши рубрики и места по соседству, куда стоит съездить.</p>
+    {% if diary_page %}<a class="btn btn--outline" href="{% pageurl diary_page %}">Читать Дневник Сезона</a>{% endif %}
   </div>
 </section>
 

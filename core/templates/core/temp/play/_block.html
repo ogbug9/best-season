@@ -17,7 +17,7 @@
 
   {% elif b.type == "dice" %}
     <div class="t-dice" data-dice>
-      <span class="t-dice__cube" data-dice-cube aria-hidden="true">⚄</span>
+      <span class="t-dice__cube" data-dice-cube aria-hidden="true">{{ b.initial_face|default:"⚄" }}</span>
       <div class="t-dice__result" aria-live="polite"><b data-dice-title>{% if b.initial %}{{ b.initial.0 }}{% else %}Бросьте кубик{% endif %}</b><span data-dice-text>{% if b.initial %}{{ b.initial.1|linebreaksbr }}{% endif %}</span></div>
     </div>
     <button type="button" class="btn btn--primary" data-dice-roll{% if b.again %} data-again="{{ b.again }}"{% endif %}>{{ b.button|default:"Бросить кубик" }}</button>

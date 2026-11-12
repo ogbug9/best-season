@@ -5,6 +5,14 @@ from django.templatetags.static import static
 
 register = template.Library()
 
+
+@register.filter
+def complete_legal_domain(value, slug):
+    """Complete known blank addresses without changing stored editorial copy."""
+    from core.legal_domain import fill_legal_domain
+
+    return fill_legal_domain(slug, [{"value": str(value)}])[0]["value"]
+
 LEGAL_PDFS = {
     "oferta": "legal/booking-offer.pdf",
     "politika-konfidencialnosti": "legal/privacy-policy.pdf",

@@ -296,9 +296,12 @@ class HousePage(Page):
         if not self.pk:
             return []
         slides = [self.hero_image] if self.hero_image else []
-        for item in self.gallery_images.all()[: self.CARD_SLIDES]:
-            if item.image and item.image not in slides:
-                slides.append(item.image)
+        seen = {image.pk for image in slides if image.pk}
+        for item in self.gallery_images.select_related("image").all():
+            image = item.image
+            if image and image.pk not in seen:
+                slides.append(image)
+                seen.add(image.pk)
             if len(slides) >= self.CARD_SLIDES:
                 break
         return slides

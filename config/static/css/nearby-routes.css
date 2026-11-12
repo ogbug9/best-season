@@ -40,7 +40,7 @@
 .pn-travel__list b { font-size: 16px; font-weight: 600; }
 .pn-travel__track { height: 12px; overflow: hidden; border-radius: 999px; background: #e6e3df; }
 .pn-travel__track i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--c-olive), var(--c-terra)); }
-.pn-note { position: relative; width: min(100% - 48px, 681px) !important; margin-block: 42px 72px; padding: 36px 40px; border-radius: 6px; background: #f3e2d4; }
+.pn-note { position: relative; width: min(100% - 48px, 681px) !important; margin-block: 42px 72px; padding: 36px 40px; border-radius: 6px; background: #f3e2d4; box-shadow: 0 14px 30px rgb(58 60 21 / 12%); }
 .pn-note::before { position: absolute; top: -12px; left: calc(50% - 56px); width: 112px; height: 30px; background: rgb(132 127 87 / 30%); content: ""; }
 .pn-note h2 { margin: 0 0 8px; color: var(--c-terra); font: 400 30px/1.1 var(--font-heading); }
 .pn-note h3 { margin: 0 0 10px; color: var(--c-dark); font-size: 21px; font-weight: 400; }

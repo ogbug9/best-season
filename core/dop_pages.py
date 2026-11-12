@@ -301,5 +301,6 @@ def context_for(page, request):
         highlights = [{"date": datetime.date.fromisoformat(d), "title": t, "text": x, "url": u}
                       for d, t, x, u in dc.CHANNEL_HIGHLIGHTS]
         return {"channel_posts": ChannelPost.objects.all()[:3], "highlights": highlights,
-                "rubrics": dc.CHANNEL_RUBRICS}
+                "rubrics": dc.CHANNEL_RUBRICS,
+                "diary_page": Page.objects.live().filter(slug="dnevnik").first()}
     return {}

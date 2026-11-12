@@ -227,7 +227,11 @@ class HomePage(Page):
 
         from core.models import FaqItem, NearbyPlace, TerritoryItem, TerritoryPage
 
-        context["territory"] = list(TerritoryItem.objects.filter(is_published=True))
+        from core import territory_content as territory_content
+        extra_activity_titles = [title for title, _ in territory_content.EXTRA_ACTIVITIES]
+        context["territory"] = list(
+            TerritoryItem.objects.filter(is_published=True).exclude(title__in=extra_activity_titles)
+        )
         from core.temp_pages import tile_page_url
         from wagtail.models import Page
 

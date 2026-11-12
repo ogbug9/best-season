@@ -553,6 +553,7 @@
   }
 
   cards.forEach(function (card) {
+    if (card.classList.contains("territory-card--static")) return;
     card.setAttribute("aria-expanded", "false");
 
     card.addEventListener("click", function (event) {

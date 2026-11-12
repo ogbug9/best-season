@@ -8,6 +8,7 @@
 .t-field { text-align: center; }
 .t-field__lead { margin: 20px auto 36px; max-width: 850px; font-size: 20px; line-height: 24px; }
 .t-field__figure { max-width: 1200px; margin: 0 auto; }
+.t-field__photo { display: block; width: 100%; height: auto; border-radius: 40px; }
 .t-field__figure figcaption { margin: 20px auto 0; font-size: 20px; line-height: 24px; }
 .t-field__toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin: 0 32px 20px; }
 .t-field__toolbar .chips { gap: 10px; margin: 0; }
@@ -140,7 +141,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 /* Бинго в макете — увеличенный снимок компонента: размеры сняты с растра макета. */
 .page-territory .t-play .t-kicker { margin-bottom: 13.1px; font-size: 16px; }
 .page-territory .t-play .t-game__title { margin-bottom: 12.1px; font-size: 50px; line-height: 52px; }
-.page-territory .t-play .t-game__lead { max-width: 490px; margin-bottom: 27.7px; font-size: 20px; line-height: 26px; }
+.page-territory .t-play .t-game__lead { max-width: 490px; margin-bottom: 27.7px; font-size: 18px; line-height: 24px; }
 .page-territory .t-bingo__cell { min-height: 109px; font-size: 18px; }
 .page-territory .t-bingo__cell[aria-pressed="false"] { border: 1px solid #D4CEBB; }
 .page-territory .t-play .t-game__reset { margin-top: 19.8px; font-size: 17.4px; }
@@ -149,7 +150,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .t-request-wrap { position: relative; width: 626px; max-width: 100%; margin: 34.3px auto 0; }
 @media (min-width: 1300px) { .t-request-wrap { margin-left: 301px; } }
 .t-request-wrap::before { content: ""; position: absolute; z-index: 1; top: -34.3px; left: 263px; width: 112px; height: 30px; background: rgb(62 63 32 / 20%); }
-.page-territory .t-request { box-sizing: border-box; width: 100%; max-width: none; min-height: 216px; margin: 0; padding: 38.6px 40px 20px 40px; rotate: -3.5deg; transform-origin: 0 0; box-shadow: none; background: var(--t-note); }
+.page-territory .t-request { box-sizing: border-box; width: 100%; max-width: none; min-height: 216px; margin: 0; padding: 38.6px 40px 20px 40px; rotate: -3.5deg; transform-origin: 0 0; box-shadow: 0 14px 30px rgb(58 60 21 / 12%); background: var(--t-note); }
 .page-territory .t-request::before { content: none; }
 .page-territory .t-request .x-note__title { margin: 0 0 10.6px; font-size: 32px; line-height: 40px; }
 .page-territory .t-request .x-note__text { font-size: 24px; line-height: 29.25px; color: var(--c-dark); }
@@ -158,6 +159,14 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .t-activities { padding-top: 22.7px; }
 .t-activities .t-big-title { margin-bottom: 37px; }
 .t-activities .territory__chips { justify-content: center; margin-bottom: 20px; }
+.page-territory .territory-card--static { cursor: default; }
+@media (hover: hover) and (pointer: fine) {
+  .page-territory .territory-card--static:hover::after { opacity: 0; }
+  .page-territory .territory-card--static:hover .mosaic__caption {
+    justify-content: flex-end;
+    padding: 217px 38px 20px 39px;
+  }
+}
 .t-activities .mosaic { margin-bottom: 40px; }
 .t-activities__empty { margin: 0 0 40px; text-align: center; }
 .t-activities__more { margin: 0; text-align: center; }
@@ -224,6 +233,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .t-field__lead, .t-field__figure figcaption { font-size: 15px; line-height: 21px; }
   .t-field__toolbar .filter-chip { padding-inline: 12px; }
   .t-field__board { border-radius: 20px; }
+  .t-field__photo { border-radius: 20px; }
   .t-field__surface { min-height: 290px; }
   .t-field__pin--forest, .t-field__pin--river { left: 12%; }
   .t-field__pin--farm { left: 28%; width: 64px; height: 64px; }
@@ -271,7 +281,10 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
   .site .t-tip__link.btn, .site .t-food__panel[data-tags="cafes"] .t-tip__link.btn { width: 100%; height: auto; min-height: 44px; padding: 10px 16px; border-radius: 22px; font-size: 15px; }
 
   .page-territory .t-game { padding: 28px 16px 24px; border-radius: 24px; }
-  .page-territory .t-bingo__cell { min-height: 72px; font-size: 14px; overflow-wrap: anywhere; }
+  .page-territory .t-play .t-game__lead { margin-bottom: 20px; font-size: 15px; line-height: 21px; }
+  .page-territory .t-play .t-game__title { font-size: clamp(28px, 9vw, 50px); line-height: 1.1; hyphens: none; overflow-wrap: normal; word-break: normal; }
+  .page-territory .t-bingo { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .page-territory .t-bingo__cell { min-height: 72px; padding: 8px 2px; font-size: clamp(11px, 3.4vw, 14px); overflow-wrap: normal; word-break: normal; hyphens: none; }
   .t-request-wrap { width: auto; margin: 34px 0 0; }
   .t-request-wrap::before { top: -14px; left: 50%; margin-left: -56px; }
   .page-territory .t-request { width: auto; min-height: 0; padding: 36px 22px 26px; rotate: -2deg; transform-origin: 50% 50%; }

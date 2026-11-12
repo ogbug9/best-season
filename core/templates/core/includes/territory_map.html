@@ -1,35 +1,5 @@
-<figure class="t-field__figure" data-territory-map>
-  <div class="t-field__toolbar">
-    <div class="chips" role="group" aria-label="Точки на схеме">
-      <button type="button" class="filter-chip" data-map-filter="" aria-pressed="true">Все</button>
-      <button type="button" class="filter-chip" data-map-filter="activity" aria-pressed="false">Активности</button>
-      <button type="button" class="filter-chip" data-map-filter="animals" aria-pressed="false">Животные</button>
-      <button type="button" class="filter-chip" data-map-filter="nature" aria-pressed="false">Лес и река</button>
-    </div>
-    <div class="t-field__seasons" role="group" aria-label="Сезон">
-      <button type="button" data-map-season="summer" aria-label="Лето" aria-pressed="true">☼</button>
-      <button type="button" data-map-season="winter" aria-label="Зима" aria-pressed="false">❄</button>
-    </div>
-  </div>
-  <div class="t-field__board">
-    <div class="t-field__surface">
-      <svg viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M254 0C214 30 175 96 147 124S94 201 56 220L0 254M0 374C19 405 68 412 117 451S163 502 212 528C249 548 269 574 310 600" />
-      </svg>
-      <button class="t-field__pin t-field__pin--forest" type="button" data-map-point="forest" data-map-category="nature" data-map-summary="Лес окружает поляну с трёх сторон." aria-pressed="false">Лес</button>
-      <button class="t-field__pin t-field__pin--river" type="button" data-map-point="river" data-map-category="nature" data-map-summary="Вдоль территории течёт Скнижка." aria-pressed="false">Река</button>
-      <button class="t-field__pin t-field__pin--farm" type="button" data-map-point="farm" data-map-category="animals activity" data-map-summary="Познакомьтесь с животными на ферме." aria-pressed="true">Ферма</button>
-      <div class="t-field__callout">
-        <p data-map-summary-text>Познакомьтесь с животными на ферме.</p>
-        <button class="btn btn--outline" type="button" data-map-expand>Развернуть</button>
-      </div>
-    </div>
-    <div class="t-field__detail" tabindex="-1" aria-live="polite">
-      <p data-map-detail="farm">Ферма находится на территории глэмпинга. Можно познакомиться с животными и сфотографироваться.</p>
-      <p data-map-detail="forest" hidden>С трёх сторон поляну окружает лес.</p>
-      <p data-map-detail="river" hidden>Река Скнижка течёт вдоль территории глэмпинга.</p>
-      <a class="btn btn--primary" href="#activities-title">Подробнее</a>
-    </div>
-  </div>
-  <figcaption>Схема условная — пропорции приблизительные</figcaption>
+{% load static %}
+<figure class="t-field__figure">
+  <img class="t-field__photo" src="{% static 'img/territory/winter-map-preview-1200.webp' %}" srcset="{% static 'img/territory/winter-map-preview-600.webp' %} 600w, {% static 'img/territory/winter-map-preview-1200.webp' %} 1200w" sizes="(max-width: 1239px) calc(100vw - 40px), 1200px" width="1200" height="600" alt="Зимний вечер на территории глэмпинга: домик, детская площадка и праздничная подсветка" loading="lazy" decoding="async">
+  <figcaption>Здесь будет карта территории. Сейчас она в процессе отрисовки, так что пока можете посмотреть на эту красивую фотографию :)</figcaption>
 </figure>

@@ -148,16 +148,30 @@ EXTRA_ACTIVITIES = [
     ("Кинопоказы", "events"),
 ]
 
+ACTIVITY_TITLES += tuple(title for title, _ in EXTRA_ACTIVITIES)
+
+_ACTIVITY_FILTERS = {
+    "контактная ферма": "kids",
+    "батут и детская площадка": "kids",
+    "костровая зона": "warm",
+    "спортивные игры": "active",
+    "русская баня": "warm",
+    "финская сауна": "warm",
+    "фотосессии": "events",
+    'река "скнижка"': "active",
+    "большая беседка": "events",
+    "мастер-классы": "events",
+    **{title.casefold(): tags for title, tags in EXTRA_ACTIVITIES},
+}
+
 
 def activity_tags(title, group):
-    """Разделяем прежний смешанный фильтр воды и событий."""
-    name = title.casefold()
+    """Теги пяти фильтров, заданных для блока «Чем заняться»."""
+    name = title.casefold().replace("ё", "е").replace("«", '"').replace("»", '"')
+    tags = _ACTIVITY_FILTERS.get(name)
+    if tags is not None:
+        return " ".join(tags.split())
     tags = set() if group == "water" else {group or "other"}
-    tags.update(next((value for label, value in EXTRA_ACTIVITIES if label.casefold() == name), "").split())
-    if any(word in name for word in ("спортивн", "велосипед", "сап", "река")):
-        tags.add("active")
-    if any(word in name for word in ("мастер-класс", "кинопоказ", "мероприят")):
-        tags.add("events")
     return " ".join(sorted(tags))
 
 # Вопросы блока «Ответы на вопросы» в том порядке, как в макете (FAQ TERRITORY.svg).

@@ -32,6 +32,8 @@
         <div class="footer__contacts">
           <p><a class="footer__phone" href="tel:{{ s.phone|default:'+79912550837' }}">{{ s.phone_display|default:s.phone|default:'+7 (991) 255-08-37' }}</a></p>
           <p><a href="mailto:{{ s.email|default:'bestseasonst@gmail.com' }}">{{ s.email|default:'bestseasonst@gmail.com' }}</a></p>
+          <p class="footer__address">{{ s.address|default:"Тульская область, Заокский район, с. Страхово, ул. Заречная, 44" }}</p>
+          <p><a class="btn btn--outline footer__map" href="{% marketing_url s.yandex_map_url|default:'https://yandex.ru/maps/?oid=3306085141' 'footer' %}" target="_blank" rel="noopener">Мы на Картах</a></p>
           <p class="footer__hours">{{ s.work_hours|default:'10:00 - 22:00' }}</p>
         </div>
 

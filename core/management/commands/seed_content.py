@@ -233,6 +233,7 @@ SERVICES = [
     # с карточки домика и для почасового объекта неверна.
     ("Русская баня", "russkaya-banya", True, "Баня на дровах в лучших традициях парного искусства.", 1500),
     ("Большая беседка", "bolshaya-besedka", True, "Идеальное решение для большой компании.", 4000),
+    ("Маленькая беседка", "malaya-besedka", True, "Для небольшой компании.", None),
     # В каталоге макет показывает сапы, мастер-классы, фотосессии и велосипеды.
     ("Аренда сапов", "arenda-sapov", False,
      "Берег отсюда выглядит совсем иначе. Если не шуметь, то можно увидеть гнездо аистов, диких уток или бобровую хатку.", None),
@@ -560,6 +561,7 @@ class Command(BaseCommand):
 
     def fill_snippets(self):
         from core.models import FaqItem, NearbyPlace, TerritoryItem
+        from core import territory_content as tc
 
         for old_title, new_title in TERRITORY_RENAMES.items():
             stale = TerritoryItem.objects.filter(title=old_title).first()
@@ -601,6 +603,29 @@ class Command(BaseCommand):
                     sort_order=order * 10, is_published=True,
                 )
             self.mark(f"территория: {title}")
+
+        for order, (title, tags) in enumerate(tc.EXTRA_ACTIVITIES, start=len(TERRITORY) + 1):
+            existing = TerritoryItem.objects.filter(title=title).first()
+            group = tags.split()[0]
+            if existing:
+                updates = []
+                if existing.sort_order != order * 10:
+                    existing.sort_order = order * 10
+                    updates.append("sort_order")
+                if not existing.group:
+                    existing.group = group
+                    updates.append("group")
+                if updates:
+                    if not self.dry:
+                        existing.save(update_fields=updates)
+                    self.mark(f"территория, новая раскладка: {title}")
+                continue
+            if not self.dry:
+                TerritoryItem.objects.create(
+                    title=title, group=group, sort_order=order * 10,
+                    is_published=True,
+                )
+            self.mark(f"территория, дополнительная карточка: {title}")
 
         for old_title, new_title in NEARBY_RENAMES.items():
             stale = NearbyPlace.objects.filter(title=old_title).first()

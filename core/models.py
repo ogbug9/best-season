@@ -451,7 +451,13 @@ class TerritoryItem(models.Model):
                   "оставлены пустыми. Отметьте, чтобы сдвинуть этот блок "
                   "на одну ячейку вправо.",
     )
-    GROUPS = [("kids", "С детьми и животными"), ("warm", "Тепло и пар"), ("water", "Вода и события")]
+    GROUPS = [
+        ("active", "Активный отдых"),
+        ("kids", "С детьми"),
+        ("warm", "Тепло и пар"),
+        ("events", "События"),
+        ("water", "Вода и события"),  # legacy CMS value; public filter uses separate categories
+    ]
     group = models.CharField("Группа на странице «Территория»", max_length=8, choices=GROUPS, blank=True)
     is_published = models.BooleanField("Показывать на сайте", default=True)
     sort_order = models.PositiveSmallIntegerField("Порядок", default=100)
@@ -1040,6 +1046,7 @@ class TerritoryPage(InProgressMixin, Page):
         # Тот же запасной адрес, что и в блоке на главной: кнопка есть у
         # каждой карточки, даже если своя ссылка не заведена.
         own_url = self.get_url(request) or ""
+        preview_titles = {title.casefold() for title, _ in tc.EXTRA_ACTIVITIES}
         # Страница (docs/dop-stranicy/10-territoriya.md): цена-флажок из услуг
         # с тем же названием, у сауны — переход на Домик №1.
         from services.models import Service
@@ -1052,7 +1059,9 @@ class TerritoryPage(InProgressMixin, Page):
         for item in items:
             # 09.10: у плитки есть своя временная страница — ведём туда, если в CMS нет ссылки.
             page_url = "" if item.link_url else tile_page_url(item.title)
-            item.details_url = item.link_url or page_url or own_url
+            item.details_url = item.link_url or page_url or (
+                "" if item.title.casefold() in preview_titles else own_url
+            )
             item.details_label = ""
             item.filter_tags = tc.activity_tags(item.title, item.group)
             if item.group == "water" or "events" in item.filter_tags.split():
