@@ -337,7 +337,12 @@ class HousePage(Page):
     @property
     def remaining_gallery_images(self):
         shown = {image.pk for image in self.mosaic_images}
-        return [item for item in self.gallery_images.all() if item.image_id not in shown]
+        remaining = []
+        for item in self.gallery_images.all():
+            if item.image_id not in shown:
+                remaining.append(item)
+                shown.add(item.image_id)
+        return remaining
 
     @property
     def featured_amenities(self):

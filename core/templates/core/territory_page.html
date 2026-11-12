@@ -3,7 +3,7 @@
 {% load wagtailcore_tags media_tags territory_tags layout_tags marketing_tags %}
 
 {% block body_class %}page-territory{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261112-territory-photo">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261112-cards-faq-fixes">{% endblock %}
 
 {% block content %}
 {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}

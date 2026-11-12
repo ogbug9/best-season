@@ -252,12 +252,12 @@
 .page-events .page-head .section__lead { margin-inline: auto; }
 
 @media (min-width: 1200px) {
-  .page-events main .events-faq:has(details[open]) {
+  .page-events main .events-faq {
     position: relative;
     isolation: isolate;
     padding-block: 120px 100px;
   }
-  .events-faq:has(details[open])::before {
+  .events-faq::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -269,14 +269,14 @@
 }
 
 @media (min-width: 1200px) {
-  .events-faq:has(details[open]) .section__title { margin-bottom: 59px; }
+  .events-faq .section__title { margin-bottom: 59px; }
   .events-intro h2 span { display: block; }
   .season-calendar__months { margin-bottom: 23px; }
   .page-events main .events-gallery { padding-top: 35px; }
   .page-events main #event-form { padding-top: 34px; }
   .page-events #event-form .form__grid { row-gap: 13px; }
   .page-events #event-form .form__actions { margin-top: 20px; }
-  .page-events main .events-faq:not(:has(details[open])) { padding-top: 33px; }
+  
 }
 
 @media (min-width: 760px) and (max-width: 1199px) {

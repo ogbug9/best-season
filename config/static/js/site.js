@@ -329,6 +329,7 @@
   if (!dialog || !items.length || typeof dialog.showModal !== "function") return;
 
   var image = dialog.querySelector("[data-lightbox-image]");
+  image.draggable = false;
   var caption = dialog.querySelector("[data-lightbox-caption]");
   // Галерея (docs/dop-stranicy/14-galereya.md): счётчик «3 / 18» и переход
   // на домик; листаются только фото, не скрытые фильтром.

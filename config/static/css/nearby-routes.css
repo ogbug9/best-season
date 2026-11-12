@@ -231,11 +231,11 @@
   .page-nearby .faq-section::before {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: -60px 0 -100px;
     z-index: -1;
     pointer-events: none;
     background: url("../img/home-backgrounds/fon-nearby-faq.svg") center top / max(100%, 1440px) auto no-repeat;
-    mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 60px, #000 calc(100% - 100px), transparent);
   }
 }
 
@@ -300,3 +300,5 @@
   .page-nearby .faq__item .faq__answer { padding: 20px 16px; font-size: 18px; line-height: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .pn-guide .guide-card { transition: none; } }
+
+@media(min-width:900px) { .page-nearby main { background-size: 1440px auto; } }

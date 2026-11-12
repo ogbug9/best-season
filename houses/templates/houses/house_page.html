@@ -6,7 +6,7 @@
 
 {% block body_class %}page-house page-house--{{ page.slug }}{% endblock %}
 {% block body_attributes %}data-house-slug="{{ page.slug }}"{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/house-equipment.css' %}?v=20261103">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/house-equipment.css' %}?v=20261112-native-groups">{% endblock %}
 
 
 {% block structured_data %}{% accommodation_schema %}{% endblock %}
@@ -118,35 +118,27 @@
 </section>
 {% endif %}
 
-{% comment %} ---------- 6. Развёрнутое описание ----------
-   Переключатель на чекбоксе, а не на <details>: закрытый <details>
-   прячет содержимое целиком, а в макете свёрнутый блок показывает
-   начало колонок с затуханием. Чекбокс работает без JS так же. {% endcomment %}
+{# Каждая категория раскрывается независимо, включая desktop. #}
 {% if page.equipment_groups %}
 <section class="equipment-section">
   <div class="container">
-    <div class="equipment">
-      <input type="checkbox" id="equipment-toggle" class="equipment__switch visually-hidden">
-
+    <div class="equipment" data-native-equipment>
       <div class="equipment__columns">
         {% for column in page.equipment_columns %}
           <div class="equipment__column">
             {% for group, items in column %}
-              <div class="equipment__group">
-                <h3 class="equipment__title">{{ group.name }}</h3>
+              <details class="equipment__group">
+                <summary class="equipment__title">{{ group.name }}</summary>
                 <ul class="equipment__list">
                   {% for item in items %}<li>{{ item.name|layout_lines:"equipment"|linebreaksbr }}</li>{% endfor %}
                 </ul>
-              </div>
+              </details>
             {% endfor %}
           </div>
         {% endfor %}
       </div>
 
-      <label class="btn btn--outline equipment__toggle" for="equipment-toggle">
-        <span class="equipment__toggle-more">{% cms_text "house_page-59589fe2a549" %}</span>
-        <span class="equipment__toggle-less">{% cms_text "house_page-36c25d9ffcfd" %}</span>
-      </label>
+
     </div>
   </div>
 </section>

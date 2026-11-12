@@ -103,7 +103,7 @@
 
   // На широком экране комплектация открывается целиком, на узком — по группам.
   function setupEquipment() {
-    document.querySelectorAll('.equipment').forEach((equipment, index) => {
+    document.querySelectorAll('.equipment:not([data-native-equipment])').forEach((equipment, index) => {
       equipment.classList.add('equipment--accordion');
       cleanups.push(() => equipment.classList.remove('equipment--accordion'));
       equipment.querySelectorAll('.equipment__title').forEach((title, group) => {

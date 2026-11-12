@@ -1,4 +1,4 @@
-{% load media_tags %}
+{% load static media_tags %}
 <section class="section things-extra" aria-labelledby="things-extra-title">
   <div class="container">
     <h2 class="things-title" id="things-extra-title">Чем заняться</h2>
@@ -11,9 +11,17 @@
     </div>
     <ul class="mosaic" data-chips-for="extra">
       {% for activity in extra_activities %}
-      <li class="mosaic__item territory-card territory-card--static" data-tags="{{ activity.tags }}">
-        {% if activity.item.image %}{% picture activity.item.image preset="card" alt=activity.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
-        <div class="mosaic__caption"><h3 class="mosaic__title">{{ activity.title }}</h3></div>
+      <li class="mosaic__item territory-card {% if not activity.item.description and not activity.item.details_url and not activity.item.service %}territory-card--static{% endif %}" data-tags="{{ activity.tags }}"{% if activity.item.description or activity.item.details_url or activity.item.service %} tabindex="0"{% endif %}>
+        {% if activity.item.image %}{% picture activity.item.image preset="card" alt=activity.title %}{% elif activity.photo %}<img src="{% static 'img/things/'|add:activity.photo|add:'.webp' %}" width="885" height="600" alt="{{ activity.title }}" loading="lazy">{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+        {% if activity.item.service %}<span class="card__badge territory-card__price">от {{ activity.item.service.price_display }} ₽ {{ activity.item.service.get_price_unit_display|lower }}</span>{% endif %}
+        <div class="mosaic__caption"><h3 class="mosaic__title">{{ activity.title }}</h3>
+          {% if activity.item.description or activity.item.details_url or activity.item.service %}
+          <div class="territory-card__details">
+            {% if activity.item.description %}<p>{{ activity.item.description }}</p>{% endif %}
+            {% if activity.item.service %}<button type="button" class="btn btn--primary territory-card__link" data-booking-open data-entry-point="7" data-entry-page="territory">Забронировать</button>
+            {% elif activity.item.details_url %}<a class="btn btn--primary territory-card__link" href="{{ activity.item.details_url }}">{% firstof activity.item.details_label "Подробнее" %}</a>{% endif %}
+          </div>{% endif %}
+        </div>
       </li>
       {% endfor %}
     </ul>

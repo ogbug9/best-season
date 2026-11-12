@@ -233,7 +233,7 @@ body.page-scenarios main > .things-head { padding-top: calc(var(--s-4) + var(--h
   .things-stay__chips .filter-chip:nth-child(3) { width: 221.27px; }
 }
 @media (min-width: 900px) {
-  .things-faq:has(.is-open) {
+  .things-faq {
     background: url("../img/things/faq-top.svg") center -62px / 1440px 780px no-repeat,
                 url("../img/things/faq-bottom.svg") center bottom / 1440px 208px no-repeat;
     padding-bottom: 100px;

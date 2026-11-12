@@ -171,10 +171,20 @@ def context_for(page, request):
             phrase = "сообщить о своих планах заранее"
             link = format_html('<a href="{}">{}</a>', marketing_url(chat_url, 'chem_zanyatsya'), phrase)
             faq[2]["answer"] = faq[2]["answer"].replace(phrase, link)
-        from core.territory_content import EXTRA_ACTIVITIES
+        from core.territory_content import EXTRA_ACTIVITIES, activity_tags
         published = {item.title.casefold(): item for item in TerritoryItem.objects.filter(is_published=True).select_related("image")}
-        extra_activities = [{"title": title, "tags": tags, "item": published.get(title.casefold())}
-                            for title, tags in EXTRA_ACTIVITIES]
+        from core.models import TerritoryPage
+        territory_page = TerritoryPage.objects.live().first()
+        existing = territory_page.get_context(request)["territory"] if territory_page else list(published.values())
+        new_titles = {title.casefold() for title, _ in EXTRA_ACTIVITIES}
+        extra_activities = [{"title": item.title, "tags": getattr(item, "filter_tags", activity_tags(item.title, item.group)), "item": item}
+                            for item in existing if item.title.casefold() not in new_titles]
+        photos = {"Теннисный корт": "active-2", "Йога-практики": "events-4-20261112",
+                  "Настольные игры": "rain-photo-games", "Любимая книга": "rain-photo-book",
+                  "Вечер у камина": "pet-3", "Культурный досуг": "nearby-1",
+                  "Кинопоказы": "events-3-20261112"}
+        extra_activities += [{"title": title, "tags": tags, "item": published.get(title.casefold()),
+                              "photo": photos.get(title)} for title, tags in EXTRA_ACTIVITIES]
         return {"things": things, "scenarios": scenarios, "stay_panels": stay_panels,
                 "extra_activities": extra_activities,
                 "things_faq": faq,

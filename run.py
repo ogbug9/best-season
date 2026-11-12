@@ -60,6 +60,7 @@ run("manage.py", "apply_desktop_reference", "--if-not-applied")
 run("manage.py", "import_archive_photos", "--if-not-applied")
 run("manage.py", "initialize_site_content")
 run("manage.py", "apply_house_mosaic_20261102", "--apply")
+run("manage.py", "apply_clean_house_photos")
 run("manage.py", "apply_about_photos_20261103", "--apply")
 run("manage.py", "apply_diary_covers")
 # Превью постов канала для «Рассылки». Без сети команда ничего не трогает.

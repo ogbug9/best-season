@@ -5520,7 +5520,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   background: #F7F0E6; color: #494949; overflow: hidden;
 }
 .site .lightbox[open] { display: flex; flex-direction: column; gap: 40px; }
-.site .lightbox::backdrop { background: rgba(43, 49, 67, .7); }
+.site .lightbox::backdrop { background: rgba(35, 35, 35, .65); }
 .site .lightbox__image {
   display: block; flex: 1 1 0; min-height: 0; width: 100%; max-height: none;
   border-radius: 23px; background: #D9D9D9; object-fit: contain;
@@ -6369,3 +6369,7 @@ html:has(.lightbox[open]) { overflow: hidden; }
 .page-promotions .promo-certificate-wide__copy > p { color: var(--c-dark); }
 .page-promotions .promo-certificate-wide__details li { background: var(--c-sand); color: var(--c-dark); }
 .page-promotions .promo-certificate-wide__photo { background: var(--c-sand); border-color: var(--c-olive); color: var(--c-olive); }
+
+.site .lightbox { user-select: none; -webkit-tap-highlight-color: transparent; }
+.site .lightbox__caption { user-select: text; }
+.site .lightbox .lightbox__nav:focus-visible { outline: 2px solid #847f57; outline-offset: 4px; }

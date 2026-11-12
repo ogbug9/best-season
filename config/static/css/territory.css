@@ -300,3 +300,8 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 @media (max-width: 374px) {
   .t-hero__word { font-size: 34px; line-height: 42px; }
 }
+
+/* Исходник содержит чёрные 4 из 1200 колонок слева; оригинал сохранён. */
+.t-field__frame { aspect-ratio: 2 / 1; overflow: hidden; border-radius: 40px; }
+.t-field__frame .t-field__photo { width: 100.4%; max-width: none; margin-left: -.4%; height: auto; border-radius: 0; }
+@media(max-width:699px) { .t-field__frame { border-radius: 20px; } }

@@ -165,7 +165,7 @@
   line-height: 20px;
   font-weight: 400;
 }
-.page-partners .partner-faq:has(.faq__item.is-open) {
+.page-partners .partner-faq {
   background: url("../img/home-backgrounds/fon-partners-faq.svg#top") center top / 100% auto no-repeat,
               url("../img/home-backgrounds/fon-partners-faq.svg#bottom") right bottom / 100% auto no-repeat;
 }
@@ -186,8 +186,8 @@
   .page-partners .partner-support .btn--primary { width: 219px; }
   .page-partners .partner-support .btn--outline { width: 210px; }
   .page-partners .partners { margin-top: 45px; }
-  .page-partners .partner-faq:has(.faq__item.is-open) { padding-block: 120px; }
-  .page-partners .partner-faq:has(.faq__item.is-open) .section__title { margin-bottom: 58px; }
+  .page-partners .partner-faq { padding-block: 120px; }
+  .page-partners .partner-faq .section__title { margin-bottom: 58px; }
   .page-partners main > #partner-form { padding-top: 40px; padding-bottom: 42px; }
   .page-partners #partner-form .container { transform: translateX(-6px); }
   .page-partners #partner-form .form { padding-bottom: 22.5px; }
@@ -229,3 +229,9 @@
   .page-partners .partner-faq .faq__item .faq__question { min-height: 44px; padding: 10px 14px; font-size: 16px; line-height: 21px; }
   .page-partners .partner-faq .faq__item .faq__answer { padding: 16px 14px; font-size: 15px; line-height: 20px; }
 }
+
+/* Декор принадлежит блоку FAQ, а не состоянию отдельного ответа. */
+.page-partners .partner-faq { position: relative; isolation: isolate; background: none; }
+.page-partners .partner-faq::before { content: ""; position: absolute; inset: -60px 0; z-index: -1; pointer-events: none; background: url("../img/home-backgrounds/fon-partners-faq.svg#top") center top / 1440px auto no-repeat, url("../img/home-backgrounds/fon-partners-faq.svg#bottom") center bottom / 1440px auto no-repeat; mask-image: linear-gradient(transparent, #000 60px, #000 calc(100% - 60px), transparent); }
+.page-partners .page-head { background-size: 1440px auto; background-position: center top; }
+@media(max-width:899px) { .page-partners .partner-faq::before { background-size: 900px auto; } }
