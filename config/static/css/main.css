@@ -6246,7 +6246,13 @@ html:has(.lightbox[open]) { overflow: hidden; }
   .review-themes li { grid-template-columns: 1fr 60px; }
   .review-themes__bar { grid-column: 1 / -1; grid-row: 2; }
   .rubrics li { grid-template-columns: 1fr; gap: 4px; }
-  .weekend-calc { grid-template-columns: 1fr 1fr; padding: 18px; }
+  .weekend-calc { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 18px; }
+  .weekend-calc > *, .weekend-calc input, .weekend-calc select { min-width: 0; }
+  .weekend-calc input, .weekend-calc select { width: 100%; }
+  .weekend-calc .weekend-calc__book { max-width: 100%; padding-inline: 16px; white-space: normal; }
+}
+@media (max-width: 399px) {
+  .weekend-calc { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) { .guide-card, .highlights__item a { transition: none; } }
 

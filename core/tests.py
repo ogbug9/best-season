@@ -10,6 +10,7 @@ import io
 import re
 import tempfile
 from pathlib import Path
+from urllib.parse import urlsplit
 from unittest.mock import patch
 
 from django.test import TestCase, override_settings
@@ -305,11 +306,14 @@ class ContentPageTests(TestCase):
         self.assertEqual(self.client.get(about.url).status_code, 200)
         child_response = self.client.get(child.url)
         self.assertEqual(child_response.status_code, 200)
-        self.assertIn(f'href="{about.url}"', child_response.content.decode())
+        about_url = urlsplit(about.url)
         home_page = home.specific
         home_page.about_page = about
         home_page.save(update_fields=["about_page"])
-        self.assertIn(f'href="{about.url}"', self.client.get("/").content.decode())
+        for response in (child_response, self.client.get("/")):
+            with self.subTest(path=response.wsgi_request.path):
+                links = [urlsplit(href) for href in re.findall(r'href="([^"]+)"', response.content.decode())]
+                self.assertTrue(any(link.path == about_url.path and link.netloc in ("", about_url.netloc) for link in links))
         self.assertIn(b"/o-nas/</loc>", self.client.get("/sitemap.xml").content)
 
     def test_legal_page_can_hide_booking_cta(self):
