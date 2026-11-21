@@ -6,10 +6,10 @@
 {% block content %}
 <section class="section page-head reviews-rating">
   <div class="container container--narrow center">
-    {% include "includes/in_progress_note.html" %}
-    <h1>Лучше всего о нас расскажете вы.<br>Ниже — то, что пишут наши гости.</h1>
-    <p class="reviews-rating__value">{% if page.yandex_rating %}{{ page.yandex_rating|floatformat:1 }}{% else %}5,0{% endif %}</p>
-    <p class="reviews-rating__count">оценка на Яндекс Картах</p>
+    <h1>Лучше всего о нас расскажете вы.</h1>
+    <p class="section__lead">Ниже — то, что пишут наши гости.</p>
+    {% if page.yandex_rating %}<p class="reviews-rating__value">{{ page.yandex_rating|floatformat:1 }}</p>
+    <p class="reviews-rating__count">оценка на Яндекс Картах</p>{% endif %}
     <p>Мы понимаем, что доверять нужно, но проверить — всегда можно, для надёжности. Поэтому мы даём вам ссылки на площадки, где их больше всего. Проверьте сами — там видно даты и авторов.</p>
     <div class="split__actions reviews__links">
       {% if page.yandex_url %}<a class="btn btn--outline" href="{% marketing_url page.yandex_url 'reviews_page' %}" rel="noopener" target="_blank">Отзывы на Яндекс.Картах</a>{% endif %}
@@ -33,7 +33,7 @@
       {% for theme in review_themes %}<button type="button" class="filter-chip" data-chip="{{ theme.key }}" hidden>{{ theme.label }}</button>{% endfor %}
     </div>
     <div class="guest-filter-status">
-      <p role="status"><span data-chips-count="reviews">{{ reviews_total }}</span> отзывов</p>
+      <p role="status"><span data-chips-count="reviews">{{ reviews_total }}</span> <span data-forms="отзыв|отзыва|отзывов">отзывов</span></p>
       <button type="button" class="filter-chip" data-chips-reset="topic house">Показать все</button>
     </div>
     <p class="center" data-chips-empty="reviews"{% if reviews %} hidden{% endif %}>На это сочетание отзывов пока нет. Снимите один из фильтров или {% if page.yandex_url %}<a href="{% marketing_url page.yandex_url 'reviews_page' %}" rel="noopener" target="_blank">посмотрите все на Яндекс.Картах</a>{% else %}посмотрите все на Яндекс.Картах{% endif %}.</p>
@@ -48,11 +48,11 @@
 <section class="section">
   <div class="container container--narrow center">
     <h2>Расскажите, как съездили</h2>
-    <p>Нам это правда важно: отзывы — почти единственный способ для новых гостей понять, стоит ли ехать. Если напишете развёрнуто, подарим скидку в 500 р на следующую бронь.</p>
+    <p>Нам это правда важно: отзывы — почти единственный способ для новых гостей понять, стоит ли ехать. Если напишете развёрнуто, подарим скидку в 500 ₽ на следующую бронь.</p>
     <div class="split__actions reviews__links">
       {% comment %}Пока отдельная ссылка на форму Яндекса не подтверждена, используем существующую страницу отзывов организации.{% endcomment %}
       {% if page.yandex_url %}<a class="btn btn--outline" href="{% marketing_url page.yandex_url 'reviews_page_add' %}" rel="noopener" target="_blank">Написать на Яндекс.Картах</a>{% endif %}
-      <a class="btn btn--outline" href="{{ page.two_gis_review_url|default:'https://2gis.ru/ru_tula_oblast_rwop/geo/70000001101888577/37.277633,54.726804' }}" rel="noopener" target="_blank">Написать нам в 2ГИС</a>
+      <a class="btn btn--outline" href="{{ page.two_gis_review_url|default:'https://2gis.ru/ru_tula_oblast_rwop/geo/70000001101888577/37.277633,54.726804' }}" rel="noopener" target="_blank">Оставить отзыв в 2ГИС</a>
       {% if review_telegram_url %}<a class="btn btn--outline" href="{% marketing_url review_telegram_url 'reviews_page_add' %}" rel="noopener" target="_blank">Написать нам в Telegram</a>{% endif %}
     </div>
   </div>

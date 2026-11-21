@@ -5,7 +5,7 @@
 
 {% block content %}
 {% with s=settings.core.SiteSettings %}
-{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+{% firstof s.telegram_chat_url as telegram %}
 <section class="section page-head faq-page__hero">
   <div class="container">
     <h1>{{ page.title|heading_breaks }}</h1>
@@ -49,7 +49,7 @@
           </section>
         {% endfor %}
       </div>
-      <p class="faq-page__empty" data-chips-empty="topic" hidden>Такого вопроса пока нет — спросите нас, ответим сами.</p>
+      <p class="faq-page__empty" data-chips-empty="topic" hidden>По вашему запросу ничего не найдено. <button type="button" class="filter-chip" data-chips-reset="topic">Сбросить поиск</button> {% if telegram or s.whatsapp_url %}<a href="#faq-contacts">Спросить нас</a>{% endif %}</p>
     </div>
   </div>
 </section>
@@ -78,7 +78,7 @@
 
 <section class="section faq-page__booking">
   <div class="container container--narrow center">
-    <h2>Всё понятно — можно<br>выбирать даты</h2>
+    <h2>Всё понятно — можно выбирать даты</h2>
     <button type="button" class="btn btn--primary btn--pill" data-booking-open data-entry-point="7" data-entry-page="faq">{% cms_text "booking_cta-5d9d7f118153" %}</button>
   </div>
 </section>

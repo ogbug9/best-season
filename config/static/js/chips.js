@@ -18,9 +18,25 @@
   "use strict";
   var FADE_MS = 200;
   var state = {};
+  var galleryLimit = 24;
+  var morePhotos = document.querySelector("[data-more-photos]");
+  if (morePhotos) morePhotos.addEventListener("click", function () {
+    galleryLimit += 24;
+    apply("season", true);
+  });
 
   function norm(text) {
     return (text || "").toLowerCase().replace(/ё/g, "е").replace(/\s+/g, " ").trim();
+  }
+
+  function matchesQuery(item, query) {
+    if (!query) return true;
+    var text = norm(item.textContent);
+    if (text.includes(query)) return true;
+    if (!item.classList.contains("faq__item")) return false;
+    if (/^(собак|питом|животн)/.test(query)) return /с животными|с питомцем/.test(text);
+    if (query === "отмена") return text.includes("отмен");
+    return false;
   }
 
   function apply(name, instant) {
@@ -40,9 +56,13 @@
         var tags = item.getAttribute("data-tags-" + key);
         if (tags === null) tags = item.getAttribute("data-tags");
         return (!filter.chip || tags.split(/\s+/).indexOf(filter.chip) !== -1) &&
-          (!filter.query || norm(item.textContent).indexOf(filter.query) !== -1);
+          matchesQuery(item, filter.query);
       });
       clearTimeout(item._chipTimer);
+      if (morePhotos && item.closest('[data-chips-result="gallery"]')) {
+        item.toggleAttribute("data-filtered-out", !match);
+        item.toggleAttribute("data-next-batch", match && shown >= galleryLimit);
+      }
       if (match) {
         // Пункты FAQ чередуют тёмный и оливковый фон — пересчитываем по видимым.
         if (item.classList.contains("faq__item")) {
@@ -75,7 +95,19 @@
     var empty = document.querySelector('[data-chips-empty="' + result + '"]');
     if (empty) empty.hidden = shown > 0;
     var count = document.querySelector('[data-chips-count="' + result + '"]');
-    if (count) count.textContent = shown;
+    if (result === "gallery" && morePhotos) morePhotos.hidden = shown <= galleryLimit;
+    if (count) {
+      count.textContent = shown;
+      var noun = count.nextElementSibling;
+      if (noun && noun.dataset.forms) {
+        var forms = noun.dataset.forms.split("|");
+        var plural = new Intl.PluralRules("ru").select(shown);
+        noun.textContent = forms[plural === "one" ? 0 : plural === "few" ? 1 : 2];
+      }
+    }
+    if (list) list.querySelectorAll(".faq-page__group").forEach(function (section) {
+      section.hidden = !section.querySelector("[data-tags]:not([hidden]):not(.is-fading)");
+    });
   }
 
   function remember(name, value) {
@@ -97,6 +129,7 @@
     group.addEventListener("click", function (event) {
       var chip = event.target.closest("[data-chip]");
       if (!chip || !group.contains(chip)) return;
+      galleryLimit = 24;
       state[name].chip = chip.getAttribute("data-chip");
       apply(name, false);
       remember(name, state[name].chip);
@@ -114,9 +147,13 @@
 
   Array.prototype.forEach.call(document.querySelectorAll("[data-chips-reset]"), function (button) {
     button.addEventListener("click", function () {
+      galleryLimit = 24;
       var names = button.getAttribute("data-chips-reset").split(/\s+/);
       names.forEach(function (name) {
         state[name].chip = "";
+        state[name].query = "";
+        var input = document.querySelector('[data-chips-search="' + name + '"]');
+        if (input) input.value = "";
         remember(name, "");
       });
       names.forEach(function (name) { apply(name, false); });

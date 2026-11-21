@@ -4,12 +4,21 @@
             <div class="reviews__media">
               {% picture review.image preset="review" alt=review.author_name %}
             </div>
-          {% else %}
+          {% elif not review_filter %}
             <div class="reviews__media" aria-hidden="true"></div>
           {% endif %}
-          <blockquote class="reviews__text"><p>{{ review.text|review_quote }}</p></blockquote>
+          {% if not review_filter %}<blockquote class="reviews__text"><p>{{ review.text|review_quote }}</p></blockquote>{% endif %}
           <p class="reviews__author">{{ review.author_name }}</p>
           {% if review_filter and review.house or review_filter and review.source != "site" %}
             <p class="reviews__meta">{% if review.house %}{{ review.house.title }}{% endif %}{% if review.house and review.source != "site" %} · {% endif %}{% if review.source != "site" %}{{ review.get_source_display }}{% endif %}</p>
+          {% endif %}
+          {% if review_filter %}
+            {% if review.visit_date %}<p class="reviews__meta">{{ review.visit_date|date:"F Y" }}</p>{% endif %}
+            {% if review.text|length > 440 %}
+              <details class="guest-review">
+                <summary><span class="guest-review__preview">{{ review.text|truncatechars:320 }}</span><span class="guest-review__action">Читать полностью</span></summary>
+                <blockquote class="reviews__text">{{ review.text|linebreaks }}</blockquote>
+              </details>
+            {% else %}<blockquote class="reviews__text">{{ review.text|linebreaks }}</blockquote>{% endif %}
           {% endif %}
         </li>

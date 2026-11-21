@@ -5,7 +5,7 @@
 
 {% block content %}
 {% with s=settings.core.SiteSettings greeting="Здравствуйте! Хочу забронировать домик" %}
-{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+{% firstof s.telegram_chat_url as telegram %}
 <section class="contacts-hero">
   {% comment %}Слот BS Contacts hero: требуется согласованный кадр для первого экрана.{% endcomment %}
   {% if contacts_hero %}
@@ -14,13 +14,12 @@
     <div class="contacts-hero__photo"><img src="{% static 'video/about-hero-poster.webp' %}" alt="" fetchpriority="high"></div>
   {% endif %}
   <div class="container center">
-    {% include "includes/in_progress_note.html" %}
     <h1>Контакты</h1>
     <p class="section__lead">Свяжитесь с нами любым удобным способом</p>
     <nav class="split__actions guest-actions" aria-label="Разделы контактов">
-      <a class="btn btn--outline" href="#contact-methods">Как связаться</a>
-      <a class="btn btn--outline" href="#contact-directions">Как добраться</a>
-      <a class="btn btn--outline" href="#contact-map">Карта</a>
+      <a class="btn btn--primary" href="tel:{{ s.phone|default:'+79912550837' }}">{{ s.phone_display|default:"+7 (991) 255-08-37" }}</a>
+      {% if s.telegram_chat_url %}<a class="btn btn--outline" href="{{ s.telegram_chat_url }}">Написать в Telegram</a>{% endif %}
+      <a class="btn btn--outline" href="https://yandex.ru/maps/?rtext=~54.726804,37.277633&amp;rtt=auto">Построить маршрут</a>
     </nav>
   </div>
 </section>
@@ -62,10 +61,10 @@
   <div class="container">
     <h2>Связаться с нами</h2>
     <ul class="contact-tiles">
-      <li><a class="contact-tile" href="tel:{{ s.phone|default:'+79912550837' }}" data-copy="{{ s.phone_display|default:'+7 (991) 255-08-37' }}" data-copy-desktop>
+      <li><a class="contact-tile" href="tel:{{ s.phone|default:'+79912550837' }}">
         <span class="contact-tile__icon contact-tile__icon--phone" aria-hidden="true"></span>
-        <b class="contact-tile__name">{{ s.phone_display|default:"+7 (991) 255-08-37" }}</b><span class="contact-tile__hint" data-copy-label="Номер скопирован">Позвонить</span>
-      </a></li>
+        <b class="contact-tile__name">{{ s.phone_display|default:"+7 (991) 255-08-37" }}</b><span class="contact-tile__hint">Позвонить</span>
+      </a><button type="button" class="filter-chip" data-copy="{{ s.phone_display|default:'+7 (991) 255-08-37' }}" data-copy-label="Номер скопирован">Скопировать номер</button></li>
       {% if telegram %}
       <li><a class="contact-tile" href="{% marketing_url telegram 'contacts_page' greeting %}" rel="noopener" target="_blank">
         <img class="contact-tile__icon" src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="">
@@ -137,7 +136,7 @@
       <article class="prose">
         <h3>Электричка + такси</h3>
         <p>Доехать на электричке по Курскому направлению до <a href="https://rasp.yandex.ru/search/?fromName=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0&amp;toName=%D0%A2%D0%B0%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B0%D1%8F&amp;fromId=c213&amp;toId=s9601668&amp;when=%D1%81%D0%B5%D0%B3%D0%BE%D0%B4%D0%BD%D1%8F">станции Тарусская</a> (пос. Заокский). Билеты можно купить на <a href="http://www.rzd.ru/">сайте РЖД</a> или в кассах и билетных автоматах на Курском вокзале (−1 этаж).</p>
-        <p>Время в пути: 1.2-2.5 ч</p>
+        <p>Время в пути: от 1,2 до 2,5 часа</p>
         <p>Расписание электричек Курского направления — <a href="https://www.tutu.ru/rasp.php?st1=20000&amp;st2=43806">подробнее</a></p>
         <p>От ст. Тарусская до глэмпинга можно заказать такси: Яндекс.Такси, Такси Maxim, частники, либо заказать трансфер через нас.</p>
         <p>Время в пути: 10 мин</p>
@@ -152,6 +151,7 @@
     <h2>Мы на картах</h2>
     {% if s.address %}<p>{{ s.address }}</p>{% endif %}
     {% comment %}Резервная точка совпадает с картой страницы «О нас». Отдельный embed из CMS имеет приоритет.{% endcomment %}
+    <p class="guest-map-links"><a href="https://yandex.com/maps/-/CPsvELJx">Яндекс Карты</a> · <a href="https://2gis.ru/ru_tula_oblast_rwop/geo/70000001101888577/37.277633,54.726804">2ГИС</a> · <button class="filter-chip" type="button" data-copy="54.726804, 37.277633" data-copy-label="Координаты скопированы">54.726804, 37.277633</button></p>
     <div class="map" data-map data-map-src="{{ page.map_embed_url|default:'https://yandex.ru/map-widget/v1/?ol=biz&oid=3306085141&z=18' }}">
       {% if page.map_image %}{% picture page.map_image preset="gallery" alt="Карта проезда" %}{% endif %}
       <button type="button" class="btn btn--primary map__button" data-map-load>{% cms_text "contacts_page-90457f42f688" %}</button>

@@ -148,3 +148,9 @@
     column-gap: var(--s-4);
   }
 }
+
+.faq-page__hero .section__lead { text-align: center; }
+.faq-page__layout .faq-page__search { width: 100%; max-width: none; }
+.faq-page__group, #faq-questions, #faq-contacts { scroll-margin-top: 7rem; }
+.faq-page__group[hidden] { display: none; }
+.faq-page__booking h2 { text-wrap: balance; }

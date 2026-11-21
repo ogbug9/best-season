@@ -341,7 +341,7 @@
   var opener = null;
 
   function visible() {
-    return items.filter(function (item) { return !item.closest("[hidden]"); });
+    return items.filter(function (item) { return !item.closest("[hidden], [data-filtered-out]"); });
   }
 
   function show(index) {

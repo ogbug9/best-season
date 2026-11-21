@@ -1226,31 +1226,53 @@ class GalleryPage(InProgressMixin, Page):
     class Meta:
         verbose_name = "Страница «Галерея»"
 
-    HOUSE_PHOTOS = 6
-
     def get_context(self, request, *args, **kwargs):
-        """Фото галереи и по шесть фото каждого домика (docs/dop-stranicy/14-galereya.md)."""
         from houses.models import HouseIndexPage, HousePage
+        from services.models import Service
         from .dop_content import SRC
-        from .gallery_content import HOUSE_FILTERS, LOCATION_FILTERS, SEASONS, add_illustrations, sections
+        from .gallery_content import HOUSE_FILTERS, LOCATION_FILTERS, SEASONS, add_archive, add_illustrations, sections
 
         context = super().get_context(request, *args, **kwargs)
-        items = [{"image": photo.image, "alt": photo.alt, "large": photo.is_large,
-                  "category": photo.category or ("houses" if photo.house_id else "territory"),
-                  "season": photo.season, "house": photo.house}
-                 for photo in self.photos.select_related("image", "house")]
-        linked = {(item["house"].pk, item["image"].pk) for item in items if item["house"]}
-        for house in HousePage.objects.live().order_by("path"):
-            winter = house.winter_mosaic_images.select_related("image").first()
-            if winter and (house.pk, winter.image_id) not in linked:
-                items.append({"image": winter.image, "alt": house.title, "large": False,
-                              "category": "houses", "season": "winter", "house": house})
-                linked.add((house.pk, winter.image_id))
-            for item in house.gallery_images.select_related("image")[: self.HOUSE_PHOTOS]:
-                if (house.pk, item.image_id) in linked:
-                    continue
-                items.append({"image": item.image, "alt": house.title, "large": False,
-                              "category": "houses", "season": "", "house": house})
+        photos = {}
+
+        def include(image, alt, category, season="", house=None, large=False):
+            item = photos.setdefault(image.pk, {
+                "image": image, "alt": alt, "category": category, "season": season,
+                "large": large, "house": house, "tags": {"season": [], "what": [], "house": []},
+            })
+            for key, value in (("season", season), ("what", category), ("house", house.slug if house else "")):
+                if value and value not in item["tags"][key]:
+                    item["tags"][key].append(value)
+            if not item["season"]:
+                item["season"] = season
+            if not item["alt"]:
+                item["alt"] = alt
+
+        for photo in self.photos.select_related("image", "house"):
+            include(photo.image, photo.alt, photo.category or ("houses" if photo.house_id else "territory"),
+                    photo.season, photo.house, photo.is_large)
+        houses = list(HousePage.objects.live().public().order_by("path"))
+        for house in houses:
+            for photo in house.gallery_images.select_related("image"):
+                title = photo.image.title.lower()
+                season = "winter" if "зимний сезон" in title else "summer" if "летний сезон" in title else ""
+                include(photo.image, photo.caption or house.title, "houses", season, house)
+            for photo in house.winter_mosaic_images.select_related("image"):
+                include(photo.image, house.title, "houses", "winter", house)
+        for service in Service.objects.filter(is_published=True).prefetch_related("gallery_images"):
+            category = {"russkaya-banya": "banya", "bolshaya-besedka": "gazebo",
+                        "malaya-besedka": "gazebo"}.get(service.slug, "territory")
+            for image in service.gallery_images.all():
+                include(image, service.name, category)
+        items = list(photos.values())
+        archive = ArchivePhotoImport.objects.filter(image_id__in=photos).values_list("source_key", "image_id")
+        archive_images = {item["image"].title.removeprefix("BS archive "): item for item in items}
+        archive_images.update({key: photos[image_id] for key, image_id in archive})
+        house_by_number = {number: house for number in range(1, 5) for house in houses
+                           if house.slug == f"domik-{number}"}
+        removed = set(ArchivePhotoImport.objects.filter(image__isnull=True, source_key__contains="/originals/")
+                      .values_list("source_key", flat=True))
+        add_archive(items, house_by_number, archive_images, removed)
         used = {item["category"] for item in items}
         context["gallery_items"] = items
         context["gallery_categories"] = [(v, l) for v, l in GalleryPhoto.CATEGORIES if v in used]
@@ -1264,7 +1286,7 @@ class GalleryPage(InProgressMixin, Page):
             ("what", "Локации", LOCATION_FILTERS),
             ("house", "Дома", HOUSE_FILTERS),
         ]
-        add_illustrations(items)
+        add_illustrations(items, archive_images)
         context["gallery_sections"] = sections(items)
         for slot in ("hero", "archive", "today"):
             context[f"gallery_{slot}"] = image_titled(f"BS Gallery {slot}")

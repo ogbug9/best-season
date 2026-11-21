@@ -40,7 +40,8 @@
     copy(target.getAttribute("data-copy")).then(function (ok) {
       if (!ok) return;
       var label = target.querySelector("[data-copy-label]") || (target.hasAttribute("data-copy-label") ? target : null);
-      var previous = label ? label.textContent : "";
+      var previous = target._copyOriginal || (label ? label.textContent : "");
+      target._copyOriginal = previous;
       if (label) label.textContent = label.getAttribute("data-copy-label");
       target.classList.add("is-success");
       clearTimeout(target._copyTimer);
