@@ -132,6 +132,7 @@
   font: 22px/1 var(--font-body);
   cursor: pointer;
 }
+.about-values__arrow > span { transform: translateY(-1px); }
 .about-values__arrow:hover { background: #EAE2D3; }
 .about-carousel.swiper-initialized { position: relative; overflow: hidden; touch-action: pan-y; min-width: 0; }
 .swiper-initialized .about-track { display: flex; gap: 0; width: 100%; overflow: visible; scroll-snap-type: none; transition-property: transform; box-sizing: content-box; }

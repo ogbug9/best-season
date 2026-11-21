@@ -4163,6 +4163,10 @@ body.page-promotions main > .offers-section { padding-top: 226px; padding-bottom
     border-radius: 20px;
     background: transparent;
   }
+  /* Frame 2087327056: у карточек услуг кнопка «Подробнее» поднята
+     относительно строки заголовка; на карточках домиков оставляем
+     общую позицию из их макета. */
+  .page-houses .cards--services .house__more { top: -9px; }
   .house__book { margin: 0; }
 }
 
@@ -5173,6 +5177,7 @@ body.page-house main > .house-title:first-child { padding-top: 198.91px; }
   .page-home .quote { grid-template-columns: 693px 455px; gap: 92px; align-items: start; }
   .page-home .quote__body { padding-top: 44px; }
   .page-home .quote__media { align-self: start; }
+  .page-home .quote__media :is(picture, img, .ph) { width: 455px; height: 455px; }
 }
 @media (min-width: 900px) and (max-width: 1279px) {
   /* Доли, а не 1fr против 455fr: при 1fr текст получал одну долю из 456

@@ -13,7 +13,7 @@
 {% block content %}
 {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
 
-<div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-territory-top.svg' %}"><img class="home-bg__layer home-bg__layer--territory-top" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1866" height="1866" alt="" decoding="async"></picture></div>
+<div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-territory-top.svg' %}?v=20261121-vector-clip"><img class="home-bg__layer home-bg__layer--territory-top" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1866" height="1866" alt="" decoding="async"></picture></div>
 <section class="section page-head things-head">
   <div class="container container--narrow">
     <h1>{{ page.title|heading_breaks }}</h1>

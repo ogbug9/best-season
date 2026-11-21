@@ -92,6 +92,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 
 /* ---------- Еда ---------- */
 .t-food { padding-top: 83px; }
+.page-territory .t-walk { display: none; }
 .t-walk { position: relative; overflow: hidden; width: min(100%, 760px); margin: -3px auto 82.6px; border-radius: 20px; background: #3a3c15; color: var(--c-cream); }
 .t-walk img { display: block; width: 100%; height: auto; }
 @media (min-width: 700px) {
@@ -120,7 +121,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .t-food__panel[data-tags="cafes"] .t-place__link.btn { margin-top: 0; }
 .t-food__panel[data-tags="delivery"] .t-food__tips--1 { grid-template-columns: 566px; }
 .site .t-food__panel[data-tags="cafes"] .t-tip__link.btn { height: 36.3px; padding: 0 16px 1.1px; border-radius: 18.15px; font-size: 14px; }
-.t-tip { position: relative; display: flex; flex-direction: column; padding: 38.4px 36px 40.3px 40.4px; border-radius: 6px; background: var(--t-note); }
+.t-tip { position: relative; display: flex; flex-direction: column; padding: 38.4px 36px 40.3px 40.4px; border-radius: 6px; background: var(--t-band-light); }
 .t-tip::before { content: ""; position: absolute; top: -13.3px; left: 50%; width: 112px; height: 30px; margin-left: -57.2px; background: rgb(62 63 32 / 20%); }
 /* Заголовки советов и записок — h3/h2 (не абзацы), вид прежний: сбрасываем общие стили заголовков. */
 .site .t-tip__title { margin: 0 0 9.9px; font-family: var(--font-heading); font-size: 32px; line-height: 40px; font-weight: 400; color: var(--c-terra); text-wrap: wrap; hyphens: none; }
@@ -150,7 +151,7 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .t-request-wrap { position: relative; width: 626px; max-width: 100%; margin: 34.3px auto 0; }
 @media (min-width: 1300px) { .t-request-wrap { margin-left: 301px; } }
 .t-request-wrap::before { content: ""; position: absolute; z-index: 1; top: -34.3px; left: 263px; width: 112px; height: 30px; background: rgb(62 63 32 / 20%); }
-.page-territory .t-request { box-sizing: border-box; width: 100%; max-width: none; min-height: 216px; margin: 0; padding: 38.6px 40px 20px 40px; rotate: -3.5deg; transform-origin: 0 0; box-shadow: 0 14px 30px rgb(58 60 21 / 12%); background: var(--t-note); }
+.page-territory .t-request { box-sizing: border-box; width: 100%; max-width: none; min-height: 216px; margin: 0; padding: 38.6px 40px 20px 40px; rotate: -3.5deg; transform-origin: 0 0; box-shadow: 0 14px 30px rgb(58 60 21 / 12%); background: var(--t-band-light); }
 .page-territory .t-request::before { content: none; }
 .page-territory .t-request .x-note__title { margin: 0 0 10.6px; font-size: 32px; line-height: 40px; }
 .page-territory .t-request .x-note__text { font-size: 24px; line-height: 29.25px; color: var(--c-dark); }
@@ -173,14 +174,36 @@ body.page-territory main > .t-hero { padding-top: calc(var(--s-4) + var(--header
 .site .t-activities__more .btn { width: 224px; min-width: 0; min-height: 52px; padding: 0; font-size: 20px; }
 
 /* ---------- Контуры из макета, привязанные к секциям ---------- */
+.page-territory .t-food__pattern { display: none; }
 @media (min-width: 900px) {
-  body.page-territory #main { position: relative; isolation: isolate; overflow-x: clip; }
+  body.page-territory #main { isolation: isolate; }
   .page-territory .footer { position: relative; isolation: isolate; overflow: clip; }
-  .page-territory .t-food { position: relative; isolation: isolate; overflow: visible clip; }
-  .page-territory .home-bg { display: block; position: absolute; inset: 0; pointer-events: none; user-select: none; }
-  .page-territory .home-bg__layer { position: absolute; z-index: -1; left: calc(50% - 720px + var(--x)); top: var(--y); width: var(--w); height: var(--h); max-width: none; }
-  .page-territory .home-bg__layer--territory-top { --x: 189px; --y: -981px; --w: 1866px; --h: 1866px; }
-  .page-territory .home-bg__layer--territory-food { --x: 830px; --y: 138.6px; --w: 1272px; --h: 1271px; }
+  .page-territory :is(.t-hero, .t-food) { position: relative; }
+  .page-territory .t-hero::before,
+  .page-territory .t-food__pattern {
+    display: block;
+    position: absolute;
+    z-index: -1;
+    inset-inline: 0;
+    pointer-events: none;
+    background-repeat: no-repeat;
+  }
+  .page-territory .t-hero::before {
+    content: "";
+    top: 0;
+    height: 885px;
+    background-image: url("../img/home-backgrounds/territory-hero-pattern.svg");
+    background-position: min(calc(50% + 402px), calc(100% + 615px)) -981px;
+    background-size: 1866px 1866px;
+  }
+  .page-territory .t-food__pattern {
+    /* Позиция по потоку привязана к заголовку, даже когда видео скрыто. */
+    margin-top: -452px;
+    height: 1271px;
+    background-image: url("../img/home-backgrounds/territory-food-pattern.svg");
+    background-position: min(calc(50% + 746px), calc(100% + 662px)) 0;
+    background-size: 1272px 1271px;
+  }
   .page-territory .footer .home-bg__layer--footer { display: none; }
   .page-territory .home-bg__layer--page-footer { --x: 7px; --y: -131.3px; --w: 1697px; --h: 1697px; }
 }

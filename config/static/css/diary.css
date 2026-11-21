@@ -16,13 +16,14 @@
 .diary-card__photo { display: block; aspect-ratio: 5 / 3; overflow: hidden; border-radius: 20px; background: #E5D0C0; }
 .diary-card__photo picture { display: block; height: 100%; }
 .diary-card__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, 50% 50%); transition: transform .4s ease; }
-.diary-card__title { margin: 20px 0 0; color: #847F57; font: 600 24px/29px var(--font-body); text-align: left; text-wrap: pretty; }
+.diary-card__title { margin: 20px 0 0; color: #847F57; font: 600 24px/29px var(--font-body); text-align: left; text-wrap: pretty; text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: .2em; transition: text-decoration-color 220ms ease; }
 /* В макете #494949 с прозрачностью 50 % (контраст 2,4:1). Для п. «контраст ≥ 4,5» — 80 % (4,7:1). */
 .diary-card__more { display: flex; width: fit-content; align-items: center; gap: 14px; margin-top: 20px; color: rgb(73 73 73 / 80%); font: 400 20px/24px var(--font-body); }
 .diary-card__link:focus-visible { outline: 2px solid #9B5026; outline-offset: 4px; border-radius: 20px; }
 @media (hover: hover) and (pointer: fine) {
   .diary-card__link:hover .diary-card__photo img { transform: scale(1.03); }
   .diary-card__link:hover .diary-card__more { color: #9B5026; }
+  .diary-card__link:is(:hover, :focus-visible) .diary-card__title { text-decoration-color: currentColor; }
 }
 
 .diary-pages { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 60px; }

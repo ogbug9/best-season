@@ -4,16 +4,12 @@
   --faq-left-pattern: url("../img/home-backgrounds/fon-nearby-faq.svg");
   --faq-bottom-pattern: url("../img/home-backgrounds/fon-nearby-faq-bottom-4x.webp");
   --faq-bottom-size: 310px;
-  --footer-pattern: url("../img/home-backgrounds/fon-nearby-footer-4x.webp");
-  --footer-pattern-size: 620px;
 }
 
 .page-events {
   --faq-left-pattern: url("../img/home-backgrounds/fon-events-faq.svg");
   --faq-bottom-pattern: url("../img/home-backgrounds/fon-events-faq-bottom-4x.webp");
   --faq-bottom-size: 464px;
-  --footer-pattern: url("../img/home-backgrounds/fon-events-footer-4x.webp");
-  --footer-pattern-size: 632px;
 }
 
 :is(.page-nearby, .page-events) #main {
@@ -50,14 +46,9 @@
   background-repeat: no-repeat;
 }
 
-.site:is(.page-nearby, .page-events) .footer.footer--standard {
-  background: var(--footer-pattern) right bottom / min(var(--footer-pattern-size), 72vw) auto no-repeat;
-}
-
 @media (max-width: 699px) {
   :is(.page-nearby, .page-events) #main {
     background-position: right calc(var(--header-h) - 12px);
     background-size: 88vw auto;
   }
-  .site:is(.page-nearby, .page-events) .footer.footer--standard .footer__legal::before { content: none; }
 }
