@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags content_tags marketing_tags layout_tags %}
 {% block body_class %}page-dop page-scenarios{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261112-cards-faq-fixes"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261112-cards-faq-fixes">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/temp-pages.css' %}?v=20261112-cards-faq-fixes"><link rel="stylesheet" href="{% static 'css/things.css' %}?v=20261121-stay-tabs">{% endblock %}
 {% block extra_js %}<script src="{% static 'js/temp-pages.js' %}?v=20261112-cards-faq-fixes" defer></script>{% endblock %}
 
 {% comment %}
@@ -132,7 +132,6 @@
 </section>
 
 {% include "core/dop/_things_stay.html" %}
-{% include "core/dop/_things_extra.html" %}
 
 <section class="section things-faq" aria-labelledby="things-faq-title">
   <div class="container">

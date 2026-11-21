@@ -2,7 +2,7 @@ from django.db import models
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.fields import RichTextField
-from wagtail.models import Orderable, Page
+from wagtail.models import Orderable, Page, Site
 
 BODY_FEATURES = ["bold", "italic", "link", "ul", "ol"]
 
@@ -208,6 +208,8 @@ class HomePage(Page):
         verbose_name = "Главная страница"
 
     def get_context(self, request):
+        from django.utils import timezone
+
         from houses.models import HouseIndexPage, HousePage
         from promotions.models import Promotion
         from reviews.models import Review
@@ -225,10 +227,21 @@ class HomePage(Page):
         context["promotions"] = [p for p in Promotion.objects.all() if p.is_active][:3]
         context["reviews"] = Review.objects.filter(is_published=True)[:3]
 
-        from core.models import FaqItem, NearbyPlace, TerritoryItem, TerritoryPage
+        from core.models import ContentPage, Event, FaqItem, NearbyPlace, TerritoryItem, TerritoryPage
+
+        site = Site.find_for_request(request)
+        if site:
+            events_page = ContentPage.objects.live().public().descendant_of(site.root_page).filter(
+                slug="meropriyatiya",
+            ).first()
+            if events_page:
+                context["events_page"] = events_page
+                context["home_event"] = Event.upcoming(timezone.localdate()).filter(
+                    show_on_home=True,
+                ).order_by("date", "pk").first()
 
         from core import territory_content as territory_content
-        extra_activity_titles = [title for title, _ in territory_content.EXTRA_ACTIVITIES]
+        extra_activity_titles = list(territory_content.EXTRA_ACTIVITIES)
         context["territory"] = list(
             TerritoryItem.objects.filter(is_published=True).exclude(title__in=extra_activity_titles)
         )

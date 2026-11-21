@@ -1,0 +1,20 @@
+{% load static i18n wagtailcore_tags media_tags %}
+<aside class="home-event" data-home-event="{{ event.pk }}:{{ event.date|date:'Y-m-d' }}" aria-label="Ближайшее событие">
+  {% if event.image or event.banner_photo == "new-year" %}
+    <div class="home-event__photo">
+      {% if event.image %}
+        {% picture event.image preset="card" alt="" %}
+      {% else %}
+        <img src="{% static 'img/events/new-year-upcoming.webp' %}" alt="" width="720" height="662" loading="lazy" decoding="async">
+      {% endif %}
+    </div>
+  {% endif %}
+  <div class="home-event__body">
+    {% language "ru" %}
+      <p>Ближайшее событие · <time datetime="{{ event.date|date:'Y-m-d' }}">{{ event.date|date:"j b" }}</time>{% if event.end_date and event.end_date != event.date %} – <time datetime="{{ event.end_date|date:'Y-m-d' }}">{{ event.end_date|date:"j b" }}</time>{% endif %}</p>
+    {% endlanguage %}
+    <h2>{{ event.title }}</h2>
+    <a class="home-event__link" href="{% pageurl events_page %}#event-{{ event.pk }}">Подробнее<span class="visually-hidden"> о событии «{{ event.title }}»</span></a>
+  </div>
+  <button class="home-event__close" type="button" aria-label="Скрыть анонс" hidden>×</button>
+</aside>

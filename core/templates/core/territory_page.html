@@ -3,7 +3,7 @@
 {% load wagtailcore_tags media_tags territory_tags layout_tags marketing_tags %}
 
 {% block body_class %}page-territory{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261121-section-patterns">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/territory.css' %}?v=20261121-activity-cards">{% endblock %}
 
 {% block content %}
 {% with s=settings.core.SiteSettings %}{% firstof s.telegram_chat_url s.telegram_url as telegram %}
@@ -134,13 +134,13 @@
       {% endcomment %}
       {% for item in territory %}
         <li class="mosaic__item territory-card{% if not item.description and not item.service and not item.details_url %} territory-card--static{% endif %}"{% if item.description or item.service or item.details_url %} tabindex="0"{% endif %} data-tags="{{ item.filter_tags }}" data-reveal>
-          {% if item.image %}{% picture item.image preset="card" alt=item.title %}{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
+          {% if item.image %}{% picture item.image preset="card" alt=item.title %}{% elif item.activity_photo %}<picture><img src="{% static item.activity_photo %}" alt="{{ item.title }}" loading="lazy" decoding="async"></picture>{% else %}<span class="ph" aria-hidden="true"></span>{% endif %}
           {% if item.service %}<span class="card__badge territory-card__price">от {{ item.service.price_display }} ₽ {{ item.service.get_price_unit_display|lower }}</span>{% endif %}
           <div class="mosaic__caption">
             <h3 class="mosaic__title">{{ item.title|territory_lines|linebreaksbr }}</h3>
             {% if item.description or item.service or item.details_url %}
               <div class="territory-card__details">
-                {% if item.description %}<p><span class="home-desktop-copy">{{ item.description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ item.description }}</span></p>{% endif %}
+                {% if item.description %}<p{% if item.activity_photo %} class="territory-card__activity-copy"{% endif %}><span class="home-desktop-copy">{{ item.description|layout_lines:"territory_description"|linebreaksbr }}</span><span class="home-mobile-copy">{{ item.description }}</span></p>{% endif %}
                 {% if item.service %}
                   <button type="button" class="btn btn--primary territory-card__link" data-booking-open data-entry-point="7" data-entry-page="territory">Забронировать</button>
                 {% elif item.details_url %}

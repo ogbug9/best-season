@@ -7,7 +7,7 @@
       <h2 class="story__title">{{ story.title }}</h2>
       {% if story.facts %}
         <dl class="story__facts">
-          {% for number, label in story.facts %}<div><dt>{{ number }}</dt><dd>{{ label }}</dd></div>{% endfor %}
+          {% for number, label in story.facts %}<div><dt>{% if number|slice:":2" == "~ " %}<span class="story__approx">~</span>{{ number|slice:"1:" }}{% else %}{{ number }}{% endif %}</dt><dd>{{ label }}</dd></div>{% endfor %}
         </dl>
       {% endif %}
     </div>

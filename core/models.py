@@ -1081,15 +1081,27 @@ class TerritoryPage(InProgressMixin, Page):
         context = super().get_context(request)
         from core import territory_content as tc
 
-        published = {
+        by_title = {
             item.title.casefold().replace('«', '"').replace('»', '"'): item
-            for item in TerritoryItem.objects.filter(is_published=True)
+            for item in TerritoryItem.objects.select_related("image").order_by("is_published", "sort_order", "title")
         }
-        items = [published[title.casefold()] for title in tc.ACTIVITY_TITLES if title.casefold() in published]
+        items = []
+        for title in tc.ACTIVITY_TITLES:
+            item = by_title.get(title.casefold())
+            extra = tc.EXTRA_ACTIVITIES.get(title)
+            if extra:
+                tags, description, photo = extra
+                if item is None:
+                    item = TerritoryItem(title=title, group=tags.split()[0])
+                if not item.description.strip():
+                    item.description = description
+                item.activity_photo = f"img/{photo}"
+            if item is not None and item.is_published:
+                items.append(item)
         # Тот же запасной адрес, что и в блоке на главной: кнопка есть у
         # каждой карточки, даже если своя ссылка не заведена.
         own_url = self.get_url(request) or ""
-        preview_titles = {title.casefold() for title, _ in tc.EXTRA_ACTIVITIES}
+        preview_titles = {title.casefold() for title in tc.EXTRA_ACTIVITIES}
         # Страница (docs/dop-stranicy/10-territoriya.md): цена-флажок из услуг
         # с тем же названием, у сауны — переход на Домик №1.
         from services.models import Service

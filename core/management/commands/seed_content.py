@@ -604,7 +604,7 @@ class Command(BaseCommand):
                 )
             self.mark(f"территория: {title}")
 
-        for order, (title, tags) in enumerate(tc.EXTRA_ACTIVITIES, start=len(TERRITORY) + 1):
+        for order, (title, (tags, _, _)) in enumerate(tc.EXTRA_ACTIVITIES.items(), start=len(TERRITORY) + 1):
             existing = TerritoryItem.objects.filter(title=title).first()
             group = tags.split()[0]
             if existing:

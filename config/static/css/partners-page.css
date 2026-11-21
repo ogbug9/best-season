@@ -27,7 +27,8 @@
 .page-partners main > .partner-intro { padding-block: 32px;
   background: repeating-linear-gradient(to right, #847f57 0 6px, transparent 6px 12px) top / 100% 1px no-repeat,
               repeating-linear-gradient(to right, #847f57 0 6px, transparent 6px 12px) bottom / 100% 1px no-repeat; }
-.partner-placeholder { aspect-ratio: 8 / 5; border-radius: 20px; background: #d9d9d9; }
+.partner-placeholder { overflow: hidden; aspect-ratio: 8 / 5; margin: 0; border-radius: 20px; background: #d9d9d9; }
+.partner-placeholder img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .page-partners main .partner-intro h2 { font-size: clamp(36px, 3.75vw, 54px); }
 .page-partners :is(.partner-intro, .partner-support, .partner-friends, .partner-shoot, .partner-numbers, .partner-formats) {
   font-size: 20px;
@@ -106,7 +107,8 @@
   font-size: 16px;
   line-height: 20px;
 }
-.page-partners .partners__media { aspect-ratio: 5 / 2; min-height: 0; border-radius: 20px; background: #d9d9d9; }
+.page-partners .partners__media { overflow: hidden; aspect-ratio: 5 / 2; min-height: 0; margin: 0; border-radius: 20px; background: #d9d9d9; }
+.page-partners .partners__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .page-partners .partners__title { margin: 10px 0 0; color: inherit; font: 400 34px/1 var(--font-heading); text-wrap: wrap; }
 .page-partners .partners__terms {
   display: grid;
@@ -130,8 +132,11 @@
 .page-partners #partner-form .form__label { font-size: 12px; }
 .page-partners #partner-form input:not([type="checkbox"]) { min-height: 33px; padding-block: 4px; }
 .page-partners #partner-form textarea { min-height: 84px; height: 84px; }
-.page-partners #partner-form select { min-width: 0; width: 100%; max-width: 100%; height: 18px; font-size: 14px; }
+.page-partners #partner-form select { min-width: 0; width: 100%; max-width: 100%; height: 24px; padding-block: 1px; font-size: 14px; line-height: normal; }
 .page-partners #partner-form .form__consent { font-size: 14px; line-height: 17px; }
+.page-partners #partner-form .form__checkbox { align-items: flex-start; gap: 8px; }
+.page-partners #partner-form .form__checkbox input { width: 16px; height: 16px; margin: 3px 4px 0 7px; flex: 0 0 16px; }
+.page-partners #partner-form .form__checkbox span { min-width: 0; flex: 1; overflow-wrap: anywhere; }
 .page-partners #partner-form .form__actions { margin-top: 12px; }
 .page-partners #partner-form .btn { min-height: 40px; padding-block: 6px; }
 
@@ -222,7 +227,8 @@
   .partner-facts li { padding: 14px; overflow-wrap: anywhere; }
   .partner-facts b { font-size: 21px; }
   .partners__column { gap: 24px; }
-  .page-partners #partner-form .form__grid { grid-template-columns: minmax(0, 1fr); }
+  .page-partners #partner-form .form { padding: 16px; }
+  .page-partners #partner-form .form__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .page-partners #partner-form .form__title { font-size: 28px; }
   .partner-upload { justify-items: start; }
   .page-partners .partner-faq .faq { gap: 10px; }

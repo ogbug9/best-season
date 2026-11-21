@@ -1,9 +1,11 @@
 from home.models import HomePage
 
 import importlib
+from datetime import timedelta
 from types import SimpleNamespace
 from django.apps import apps
 from django.db import connection
+from django.utils import timezone
 
 from wagtail.models import Page, Site
 from wagtail.test.utils import WagtailPageTestCase
@@ -47,6 +49,24 @@ class HomeTests(WagtailPageTestCase):
     def test_homepage_template_used(self):
         response = self.client.get(self.homepage.url)
         self.assertTemplateUsed(response, "home/home_page.html")
+
+    def test_event_banner_links_to_the_same_upcoming_event(self):
+        from core.models import ContentPage, Event
+
+        events_page = ContentPage(title="Мероприятия", slug="meropriyatiya")
+        self.homepage.add_child(instance=events_page)
+        today = timezone.localdate()
+        Event.objects.update(show_on_home=False)
+        Event.objects.create(title="Прошедшее событие", date=today - timedelta(days=1), show_on_home=True)
+        Event.objects.create(title="Событие без анонса на главной", date=today)
+        event = Event.objects.create(title="Выходные в лесу", date=today + timedelta(days=1), show_on_home=True)
+
+        self.assertContains(self.client.get(self.homepage.url), f'{events_page.url}#event-{event.pk}')
+        self.assertContains(self.client.get(events_page.url), f'id="event-{event.pk}"')
+
+        event.is_published = False
+        event.save(update_fields=["is_published"])
+        self.assertNotContains(self.client.get(self.homepage.url), "data-home-event")
 
 
 class ApprovedAboutCopyTests(WagtailPageTestCase):

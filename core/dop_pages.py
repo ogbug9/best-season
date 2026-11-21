@@ -84,6 +84,14 @@ PARTNER_DIRECTIONS = [
      "идею, формат публикации и даты.", "Предложить коллаборацию"),
 ]
 
+PARTNER_IMAGES = {
+    "Компании и команды": ("partner-companies.jpg", "Гости собрались за общим столом в беседке"),
+    "Ретриты и выездные программы": ("partner-retreats.jpg", "Группа занимается йогой на поляне"),
+    "Коммерческие съёмки": ("partner-commercial-shoot.jpg", "Съёмка с домашней птицей на территории глэмпинга"),
+    "Ведущие мастер-классов и местные партнёры": ("partner-workshops.jpg", "Участники мастер-класса собирают цветочную композицию"),
+    "Блогеры и медиа": ("partner-bloggers.jpg", "Гостья у домика на заснеженной территории"),
+}
+
 PARTNER_FAQ = [
     {"pk": "partner-1", "question": "Сколько человек помещается?", "answer": "<p>С ночёвкой в домиках до 16, если приехать с палатками ~ 150 человек. На дневном мероприятии в крытой беседке помещается до 100 чел. Если людей больше, чем спальных мест, часть группы можно разместить в соседнем глэмпинге — в 4 мин. от нас.</p>"},
     {"pk": "partner-2", "question": "Можно ли арендовать глэмпинг целиком?", "answer": "<p>Да, это основной формат для выездных мероприятий и корпоративов. На время аренды посторонних на территории нет.</p>"},
@@ -171,22 +179,7 @@ def context_for(page, request):
             phrase = "сообщить о своих планах заранее"
             link = format_html('<a href="{}">{}</a>', marketing_url(chat_url, 'chem_zanyatsya'), phrase)
             faq[2]["answer"] = faq[2]["answer"].replace(phrase, link)
-        from core.territory_content import EXTRA_ACTIVITIES, activity_tags
-        published = {item.title.casefold(): item for item in TerritoryItem.objects.filter(is_published=True).select_related("image")}
-        from core.models import TerritoryPage
-        territory_page = TerritoryPage.objects.live().first()
-        existing = territory_page.get_context(request)["territory"] if territory_page else list(published.values())
-        new_titles = {title.casefold() for title, _ in EXTRA_ACTIVITIES}
-        extra_activities = [{"title": item.title, "tags": getattr(item, "filter_tags", activity_tags(item.title, item.group)), "item": item}
-                            for item in existing if item.title.casefold() not in new_titles]
-        photos = {"Теннисный корт": "active-2", "Йога-практики": "events-4-20261112",
-                  "Настольные игры": "rain-photo-games", "Любимая книга": "rain-photo-book",
-                  "Вечер у камина": "pet-3", "Культурный досуг": "nearby-1",
-                  "Кинопоказы": "events-3-20261112"}
-        extra_activities += [{"title": title, "tags": tags, "item": published.get(title.casefold()),
-                              "photo": photos.get(title)} for title, tags in EXTRA_ACTIVITIES]
         return {"things": things, "scenarios": scenarios, "stay_panels": stay_panels,
-                "extra_activities": extra_activities,
                 "things_faq": faq,
                 "nearby_page": Page.objects.live().filter(slug="interesnoe-ryadom").first(),
                 "activities_page": Page.objects.live().filter(slug="territoriya").first(),
@@ -290,6 +283,7 @@ def context_for(page, request):
             {
                 "title": title, "paragraphs": [part.split("|") for part in text.split("\n\n")],
                 "offer": offer, "expect_lines": expect.split("|"), "cta": cta,
+                "image": PARTNER_IMAGES[title][0], "image_alt": PARTNER_IMAGES[title][1],
             }
             for title, text, offer, expect, cta in PARTNER_DIRECTIONS
         ]

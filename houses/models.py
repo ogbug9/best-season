@@ -315,6 +315,7 @@ class HousePage(Page):
     # справа, у последнего оверлей «Смотреть». Остальная галерея
     # открывается просмотрщиком.
     MOSAIC_IMAGES = 5
+    SEASONAL_MOSAIC_HOUSES = {"domik-1", "domik-2", "domik-3", "domik-4"}
 
     @property
     def mosaic_images(self):
@@ -459,8 +460,9 @@ class HousePage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        mosaic = self.mosaic_images
-        if self.pk and timezone.localdate().month in (11, 12, 1, 2):
+        season = "winter" if timezone.localdate().month in (11, 12, 1, 2) else "summer"
+        mosaic = []
+        if self.pk and season == "winter":
             winter = {
                 item.image_id: item.image
                 for item in self.winter_mosaic_images.select_related("image").all()
@@ -468,6 +470,15 @@ class HousePage(Page):
             }
             if len(winter) >= self.MOSAIC_IMAGES:
                 mosaic = list(winter.values())[:self.MOSAIC_IMAGES]
+        if not mosaic and self.slug in self.SEASONAL_MOSAIC_HOUSES:
+            context["house_mosaic_files"] = [
+                f"img/house-mosaic/{self.slug}/{season}/{position}.webp"
+                for position in range(1, self.MOSAIC_IMAGES + 1)
+            ]
+            # The winter export for house 3 is flattened, including the last tile's label.
+            context["house_mosaic_has_label"] = self.slug == "domik-3" and season == "winter"
+        elif not mosaic:
+            mosaic = self.mosaic_images
         context["house_mosaic"] = mosaic
         context["house_gallery_rest"] = self.gallery_after_mosaic(mosaic) if self.pk else []
         return context

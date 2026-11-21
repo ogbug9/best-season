@@ -4,7 +4,7 @@
     <h2 class="things-title" id="things-stay-title">Если остаётесь подольше</h2>
     <p class="things-lead">Активности на территории, наши праздники и мастер-классы, места в округе.<br> За два дня всё это не успеть — и это лучший довод остаться подольше.</p>
     <div class="chips things-stay__chips" data-chips="stay" data-chips-default="active" role="group" aria-label="Занятия для долгого отдыха">
-      {% for panel in stay_panels %}<button class="filter-chip" type="button" data-chip="{{ panel.code }}">{{ panel.title }}</button>{% endfor %}
+      {% for panel in stay_panels %}<button class="filter-chip" type="button" data-chip="{{ panel.code }}"><span>{{ panel.title }}</span></button>{% endfor %}
     </div>
     <div data-chips-for="stay">
       {% for panel in stay_panels %}

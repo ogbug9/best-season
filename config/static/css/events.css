@@ -86,7 +86,7 @@
 .season-calendar__activities p { margin: 0 0 12px; }
 .season-calendar__activities ul { display: flex; flex-wrap: wrap; gap: 10.5px; list-style: none; padding: 0; }
 .season-calendar__activities li { margin: 0; padding: 9px 22px; border: 1px solid #847f57; border-radius: 24px; font-size: 16px; }
-.season-calendar__note { margin: 20px 0 0; color: #75716b; }
+.season-calendar__note { margin: 20px 0 0; color: #75716b; font: 400 20px/1 var(--font-body); text-align: center; }
 
 .events-gallery__inner { max-width: 1120px; }
 .events-gallery__filters { justify-content: center; margin: 38px 0 32px; }

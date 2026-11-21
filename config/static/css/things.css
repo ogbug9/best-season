@@ -228,9 +228,11 @@ body.page-scenarios main > .things-head { padding-top: calc(var(--s-4) + var(--h
 .things-faq { padding-bottom: 0; }
 @media (min-width: 1300px) {
   .things-stay .things-title { margin-bottom: 18.36px; }
-  .things-stay__chips .filter-chip:nth-child(1) { width: 201.27px; padding-inline: 48px; line-height: 1.2; }
-  .things-stay__chips .filter-chip:nth-child(2) { width: 179.27px; }
-  .things-stay__chips .filter-chip:nth-child(3) { width: 221.27px; }
+  .things-stay__chips .filter-chip { display: inline-grid; place-items: center; text-align: center; line-height: 22px; }
+  .things-stay__chips [data-chip="active"] { width: 201.27px; }
+  .things-stay__chips [data-chip="events"] { width: 179.27px; }
+  .things-stay__chips [data-chip="nearby"] { width: 221.27px; }
+  .things-stay__chips :is([data-chip="active"], [data-chip="nearby"]) span { max-width: 112px; }
 }
 @media (min-width: 900px) {
   .things-faq {

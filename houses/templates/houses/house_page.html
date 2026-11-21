@@ -30,20 +30,29 @@
    Пять кадров по макету: крупный слева, четыре справа. Клик открывает
    просмотрщик; без JS каждое фото остаётся ссылкой на полный размер,
    поэтому галерея работает и со снятым скриптом. {% endcomment %}
-{% with mosaic=house_mosaic %}
+{% with mosaic=house_mosaic_files|default:house_mosaic %}
 {% if mosaic %}
 <section class="house-mosaic-section">
   <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}"><img class="home-bg__layer home-bg__layer--house-gallery" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1172" height="1199" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container">
     <ul class="house-mosaic gallery" data-gallery>
       {% for image in mosaic %}
+        {% if house_mosaic_files %}{% static image as photo_url %}{% endif %}
         <li class="house-mosaic__item gallery__item">
-          <a class="house-mosaic__link gallery__link" href="{% full_image_url image 'jpeg' %}"
-             data-gallery-item data-full="{% full_image_url image %}" data-caption="{{ page.title }}">
+          <a class="house-mosaic__link gallery__link"
+             href="{% if house_mosaic_files %}{{ photo_url }}{% else %}{% full_image_url image 'jpeg' %}{% endif %}"
+             data-gallery-item data-full="{% if house_mosaic_files %}{{ photo_url }}{% else %}{% full_image_url image %}{% endif %}"
+             data-caption="{{ page.title }}">
             {% comment %} Первая плитка — LCP страницы дома: без lazy браузер
                находит её сразу при разборе HTML (п. 1.2 ТЗ, LCP ≤ 2,5 с). {% endcomment %}
-            {% if forloop.first %}{% picture image preset="mosaic" sizes="(min-width: 1280px) 609px, calc(100vw - 40px)" alt=page.title loading="eager" %}{% else %}{% picture image preset="mosaic" sizes="(min-width: 1280px) 294px, (min-width: 700px) calc((100vw - 62px) / 2), calc(100vw - 40px)" alt=page.title %}{% endif %}
-            {% if forloop.last %}
+            {% if house_mosaic_files %}
+              <img src="{{ photo_url }}" alt="{{ page.title }}" decoding="async"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %}>
+            {% elif forloop.first %}
+              {% picture image preset="mosaic" sizes="(min-width: 1280px) 609px, calc(100vw - 40px)" alt=page.title loading="eager" %}
+            {% else %}
+              {% picture image preset="mosaic" sizes="(min-width: 1280px) 294px, (min-width: 700px) calc((100vw - 62px) / 2), calc(100vw - 40px)" alt=page.title %}
+            {% endif %}
+            {% if forloop.last and not house_mosaic_has_label %}
               <span class="house-mosaic__more">{% house_icon "camera" %}{% cms_text "house_page-7ac84107c129" %}</span>
             {% endif %}
           </a>

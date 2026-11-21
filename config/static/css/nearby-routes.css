@@ -34,6 +34,7 @@
 .page-nearby .story__facts { gap: 14px; }
 .page-nearby .story__facts div { min-height: 53px; padding: 12px 18px; border-radius: 10px; background: #e5d0c0; }
 .page-nearby .story__facts dt { color: var(--c-dark); font: 400 22px/1.1 var(--font-heading); }
+.page-nearby .story__approx { position: relative; top: .25em; }
 .page-nearby .story__facts dd { font-size: 16px; line-height: 1.25; }
 .page-nearby .story__facts div:nth-child(2) dd { max-width: 260px; }
 .page-nearby .story__facts div:nth-child(3) dd { max-width: 240px; }
@@ -159,7 +160,7 @@
 .pn-guide .guide-card.is-closed { opacity: 1; }
 .pn-guide .guide-card { gap: 12px; padding: 20px; border-radius: 20px; background: var(--c-white); }
 .pn-guide .guide-card__head { flex-wrap: wrap; }
-.pn-guide .guide-card h3 { color: var(--c-dark); font: 500 16px/20px var(--font-body); }
+.pn-guide .guide-card__head h3 { color: var(--c-dark); font: 500 16px/20px var(--font-body); letter-spacing: 0; }
 .pn-guide .guide-card__add { box-sizing: border-box; min-height: 29px; gap: 8px; padding: 4px 9px; background: #e9d8ca; color: var(--c-dark); font: 400 12px/17px var(--font-body); }
 .pn-guide .guide-card__add input {
   display: grid;
@@ -189,7 +190,7 @@
 .pn-guide .guide-card__facts br { display: none; }
 .pn-guide .guide-card__facts div { grid-template-columns: 54px minmax(0, 1fr); gap: 6px; }
 .pn-guide .guide-card__facts div:first-child { grid-template-columns: 50px minmax(0, 1fr); }
-.pn-guide .guide-card__facts dt { color: var(--c-terra); }
+.pn-guide .guide-card__facts dt { color: var(--c-terra); font: 500 14px/17px var(--font-body); letter-spacing: 0; }
 .pn-guide .guide-card p { color: var(--c-dark); font-size: 16px; line-height: 1.25; }
 .pn-guide .guide-card p br { display: none; }
 .pn-guide .guide-card .guide-card__closed { color: var(--c-terra); font-size: 14px; }
