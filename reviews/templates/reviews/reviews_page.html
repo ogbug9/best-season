@@ -1,101 +1,71 @@
 {% extends "base.html" %}
-{% load content_tags marketing_tags media_tags houses_tags %}
-{% load wagtailcore_tags layout_tags %}
-
+{% load static marketing_tags %}
 {% block body_class %}page-reviews{% endblock %}
-
-{% comment %}
-  Отзывы (docs/dop-stranicy/15-otzyvy.md): независимый рейтинг первым,
-  крупная цитата, фильтр по домику (Д10, ?house=domik-1).
-{% endcomment %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/guest-pages.css' %}">{% endblock %}
 
 {% block content %}
-<section class="section page-head">
-  <div class="container container--narrow">
+<section class="section page-head reviews-rating">
+  <div class="container container--narrow center">
     {% include "includes/in_progress_note.html" %}
-    <h1>{{ page.title|heading_breaks }}</h1>
-    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    <h1>Лучше всего о нас расскажете вы.<br>Ниже — то, что пишут наши гости.</h1>
+    <p class="reviews-rating__value">{% if page.yandex_rating %}{{ page.yandex_rating|floatformat:1 }}{% else %}5,0{% endif %}</p>
+    <p class="reviews-rating__count">оценка на Яндекс Картах</p>
+    <p>Мы понимаем, что доверять нужно, но проверить — всегда можно, для надёжности. Поэтому мы даём вам ссылки на площадки, где их больше всего. Проверьте сами — там видно даты и авторов.</p>
+    <div class="split__actions reviews__links">
+      {% if page.yandex_url %}<a class="btn btn--outline" href="{% marketing_url page.yandex_url 'reviews_page' %}" rel="noopener" target="_blank">Отзывы на Яндекс.Картах</a>{% endif %}
+      <a class="btn btn--outline" href="{{ page.sutochno_url|default:'https://sutochno.ru/front/searchapp/detail/1947357?utm_source=app&utm_campaign=ios&utm_medium=sharing' }}" rel="noopener" target="_blank">Отзывы на Суточно</a>
+    </div>
   </div>
 </section>
-{% page_extras "reviews" "top" %}
-{% page_story "reviews" %}
-{% page_extras "reviews" %}
 
-{% if page.yandex_rating %}
-<section class="section reviews-rating">
-  <div class="container container--narrow center" data-reveal>
-    <p class="reviews-rating__value">{{ page.yandex_rating|floatformat:1 }}</p>
-    <p class="reviews-rating__count">{% if page.yandex_ratings_count %}{{ page.yandex_ratings_count }} оценок{% endif %}{% if page.yandex_ratings_count and page.yandex_reviews_count %} · {% endif %}{% if page.yandex_reviews_count %}{{ page.yandex_reviews_count }} отзывов{% endif %} на Яндекс Картах</p>
-    {% if page.yandex_tag_list %}<ul class="reviews-rating__tags">{% for tag in page.yandex_tag_list %}<li>{{ tag }}</li>{% endfor %}</ul>{% endif %}
-  </div>
-</section>
-{% endif %}
-
-{% if review_themes %}
-<section class="section">
-  <div class="container container--narrow">
-    <h2 class="center">О чём пишут гости</h2>
-    <ul class="review-themes">
-      {% for theme in review_themes %}
-        <li data-reveal><span class="review-themes__label">{{ theme.label }}</span>
-          <span class="review-themes__bar"><span style="width: {% widthratio theme.count reviews_total 100 %}%"></span></span>
-          <span class="review-themes__count">{{ theme.count }} из {{ reviews_total }}</span></li>
-      {% endfor %}
-    </ul>
-    <p class="center review-themes__note">Посчитано по словам в опубликованных отзывах на этой странице.</p>
-  </div>
-</section>
-{% endif %}
-
-{% if page.body|filled %}
-<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
-{% endif %}
-
-{% if quote %}
-<section class="section reviews-quote">
-  <div class="container split" data-reveal>
-    <div class="split__media">{% picture quote.image preset="card" alt=quote.author_name %}</div>
-    <figure class="split__text reviews-quote__text">
-      <blockquote><p>{{ quote.text|review_quote }}</p></blockquote>
-      <figcaption>{{ quote.author_name }}{% if quote.house %} · {{ quote.house.title }}{% endif %}</figcaption>
-    </figure>
-  </div>
-</section>
-{% endif %}
-
-{% if reviews %}
-<section class="section">
+<section class="section" aria-label="Отзывы гостей">
   <div class="container">
-    {% if review_houses|length > 1 or review_themes %}
-      <div class="chips reviews__chips" data-chips="house" role="group" aria-label="Отзывы о домике">
-        <button type="button" class="filter-chip" data-chip="">Все</button>
-        {% for house in review_houses %}<button type="button" class="filter-chip" data-chip="{{ house.slug }}">{{ house.title }}</button>{% endfor %}
-        {% for theme in review_themes %}<button type="button" class="filter-chip filter-chip--soft" data-chip="{{ theme.key }}">{{ theme.label }}</button>{% endfor %}
-      </div>
-    {% endif %}
-    <ul class="reviews" data-chips-for="house">
+    {% comment %}Блок читает опубликованные Review из CMS. Для подключения внешнего источника нужен отдельно согласованный доступ к данным отзывов.{% endcomment %}
+    <p class="center">Отзывы, опубликованные на сайте</p>
+    <div class="chips reviews__chips" data-chips="topic" role="group" aria-label="Темы отзывов">
+      <button type="button" class="filter-chip" data-chip="" aria-pressed="true">Всё</button>
+      {% for value, label in review_categories %}<button type="button" class="filter-chip" data-chip="{{ value }}" aria-pressed="false">{{ label }}</button>{% endfor %}
+    </div>
+    <div class="chips reviews__chips" data-chips="house" role="group" aria-label="Отзывы о домике"{% if not review_houses %} hidden{% endif %}>
+      <button type="button" class="filter-chip" data-chip="" aria-pressed="true">Все дома</button>
+      {% for house in review_houses %}<button type="button" class="filter-chip" data-chip="{{ house.slug }}">{{ house.title }}</button>{% endfor %}
+      {% comment %}Старые ссылки ?house=clean и другие тематические значения продолжают работать.{% endcomment %}
+      {% for theme in review_themes %}<button type="button" class="filter-chip" data-chip="{{ theme.key }}" hidden>{{ theme.label }}</button>{% endfor %}
+    </div>
+    <div class="guest-filter-status">
+      <p role="status"><span data-chips-count="reviews">{{ reviews_total }}</span> отзывов</p>
+      <button type="button" class="filter-chip" data-chips-reset="topic house">Показать все</button>
+    </div>
+    <p class="center" data-chips-empty="reviews"{% if reviews %} hidden{% endif %}>На это сочетание отзывов пока нет. Снимите один из фильтров или {% if page.yandex_url %}<a href="{% marketing_url page.yandex_url 'reviews_page' %}" rel="noopener" target="_blank">посмотрите все на Яндекс.Картах</a>{% else %}посмотрите все на Яндекс.Картах{% endif %}.</p>
+    <ul class="reviews" data-chips-for="topic house" data-chips-result="reviews">
       {% for review in reviews %}
         {% include "reviews/_review_card.html" with review_filter=True %}
       {% endfor %}
     </ul>
   </div>
 </section>
-{% else %}
+
 <section class="section">
-  <div class="container container--narrow"><p>{% cms_text "reviews_page-d30ae9e0714b" %}</p></div>
+  <div class="container container--narrow center">
+    <h2>Расскажите, как съездили</h2>
+    <p>Нам это правда важно: отзывы — почти единственный способ для новых гостей понять, стоит ли ехать. Если напишете развёрнуто, подарим скидку в 500 р на следующую бронь.</p>
+    <div class="split__actions reviews__links">
+      {% comment %}Пока отдельная ссылка на форму Яндекса не подтверждена, используем существующую страницу отзывов организации.{% endcomment %}
+      {% if page.yandex_url %}<a class="btn btn--outline" href="{% marketing_url page.yandex_url 'reviews_page_add' %}" rel="noopener" target="_blank">Написать на Яндекс.Картах</a>{% endif %}
+      <a class="btn btn--outline" href="{{ page.two_gis_review_url|default:'https://2gis.ru/ru_tula_oblast_rwop/geo/70000001101888577/37.277633,54.726804' }}" rel="noopener" target="_blank">Написать нам в 2ГИС</a>
+      {% if review_telegram_url %}<a class="btn btn--outline" href="{% marketing_url review_telegram_url 'reviews_page_add' %}" rel="noopener" target="_blank">Написать нам в Telegram</a>{% endif %}
+    </div>
+  </div>
 </section>
-{% endif %}
 
 <section class="section section--deep">
   <div class="container container--narrow center">
-    {% if page.yandex_url %}
-      <p class="split__actions reviews__links">
-        <a class="btn btn--outline" href="{% marketing_url page.yandex_url 'reviews_page' %}" rel="noopener" target="_blank">Все отзывы на Яндекс Картах</a>
-        <a class="btn btn--outline" href="{% marketing_url page.yandex_url 'reviews_page_add' %}" rel="noopener" target="_blank">Оставить отзыв</a>
-      </p>
-    {% endif %}
     <h2>Приезжайте за своими впечатлениями</h2>
-    <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="reviews">{% cms_text "booking_cta-5d9d7f118153" %}</button></p>
+    <p>Если вы дочитали досюда, вы уже почти до нас добрались. Посмотрите свободные даты и приезжайте в гости.</p>
+    <div class="split__actions reviews__links">
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="reviews">Свободные даты</button>
+      {% if review_telegram_url %}<a class="btn btn--outline" href="{% marketing_url review_telegram_url 'reviews_page' %}" rel="noopener" target="_blank">Написать в Telegram</a>{% endif %}
+    </div>
   </div>
 </section>
 {% endblock %}

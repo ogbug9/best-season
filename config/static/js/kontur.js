@@ -340,6 +340,12 @@
       Object.keys(previous).forEach(function (name) { form.elements[name].value = previous[name]; });
       return;
     }
+    if (form && button.dataset.bookingDateFrom) {
+      // HotelWidget не принимает даты при открытии. Передаём их в памятку
+      // гостю и в резервную заявку, чтобы даты были видны в обоих сценариях.
+      form.elements.date_from.value = button.dataset.bookingDateFrom;
+      form.elements.date_to.value = button.dataset.bookingDateTo || "";
+    }
     showSelection(button, panel, form, houseId);
     state.contextHouse = houseId;
     state.entryPoint = button.getAttribute("data-entry-point") || "";
@@ -434,6 +440,13 @@
 
   function closeModal() {
     if (layers && !layers.close()) return;
+    if (state.opener && state.opener.dataset.bookingDateFrom) {
+      var eventForm = modal.querySelector("[data-fallback-form] form");
+      if (eventForm) {
+        eventForm.elements.date_from.value = "";
+        eventForm.elements.date_to.value = "";
+      }
+    }
     if (fallback && !state.failed) fallback.hidden = true;
     clearTimeout(state.timer);
     var offset = Math.abs(parseInt(document.body.style.top || "0", 10)) || 0;

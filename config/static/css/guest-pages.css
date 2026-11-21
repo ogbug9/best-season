@@ -1,0 +1,138 @@
+/* Layout shared by the gallery, reviews and contacts pages. */
+.guest-intro {
+  margin: 0 auto var(--s-5);
+}
+
+.guest-photo {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--c-olive-soft, #e4dfcf);
+}
+
+.guest-photo--wide {
+  aspect-ratio: 2.4;
+  margin-top: var(--s-5);
+  border-radius: 0;
+}
+
+.guest-photo picture,
+.guest-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+}
+
+.guest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: var(--s-5) var(--s-4);
+}
+
+.guest-grid--pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.guest-grid figure { margin: 0; }
+.guest-grid figcaption,
+.guest-card h3 { margin: var(--s-2) 0 0; }
+.guest-card p { margin: var(--s-1) 0 0; }
+
+.guest-filter,
+.guest-filter-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 16px;
+  margin-bottom: var(--s-3);
+}
+
+.guest-filter p,
+.guest-filter .chips,
+.guest-filter-status p { margin: 0; }
+
+.page-reviews .reviews-rating__value { margin-top: var(--s-4); }
+.page-reviews .reviews__links,
+.guest-actions { justify-content: center; }
+.page-gallery [data-chips-for] [hidden],
+.page-reviews [data-chips-for] [hidden],
+.page-reviews .chips[hidden],
+.guest-filter [hidden],
+.page-reviews .chips [hidden] { display: none; }
+
+.contacts-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  padding-block: var(--s-8);
+  color: var(--c-cream);
+  background: var(--c-deep);
+}
+
+.contacts-hero__photo,
+.contacts-hero__photo img,
+.contacts-hero::before {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.contacts-hero__photo { z-index: -2; }
+.contacts-hero__photo img { object-fit: cover; }
+.contacts-hero::before {
+  z-index: -1;
+  content: "";
+  background: rgb(0 0 0 / 52%);
+}
+
+.contacts-hero h1,
+.contacts-hero .section__lead,
+.contacts-hero .btn--outline { color: inherit; }
+.contacts-hero .btn--outline { border-color: currentColor; }
+.contacts-hero .btn--outline:hover { color: var(--c-deep); background: var(--c-cream); }
+
+.page-contacts [id^="contact-"] { scroll-margin-top: 100px; }
+.page-contacts .contact-tile__name { overflow-wrap: anywhere; }
+.page-contacts .contact-tile--text { grid-template-columns: minmax(0, 1fr); }
+.page-contacts .contact-tiles > li { min-width: 0; }
+.page-contacts .contact-tile { height: 100%; }
+
+.contacts-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: var(--s-3) 0 var(--s-5);
+  list-style: none;
+}
+
+.contacts-badges li {
+  padding: 8px 16px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+}
+
+.contacts-comparison { margin-bottom: 0; }
+.contacts-comparison div {
+  display: grid;
+  grid-template-columns: minmax(9em, 1fr) 2fr;
+  gap: 12px 24px;
+  padding-block: var(--s-2);
+  border-bottom: 1px solid rgb(255 255 255 / 25%);
+}
+.contacts-comparison dd { margin: 0; }
+
+.contacts-hours { background: var(--c-olive-soft, #e4dfcf); }
+.contacts-hours .contacts-now { margin-top: 0; }
+
+@media (max-width: 650px) {
+  .guest-grid--pair { grid-template-columns: 1fr; }
+  .guest-photo--wide { aspect-ratio: 16 / 9; }
+  .contacts-comparison div { grid-template-columns: 1fr; gap: 4px; }
+}

@@ -105,12 +105,13 @@ class HousePageStructureTests(WagtailPageTestCase):
             self.assertEqual(accommodation['floorSize']['value'], 54.0)
 
     def test_block_order_matches_layout(self):
-        """Календарь и рабочая кнопка брони находятся перед галереей."""
+        """Кнопка брони находится перед галереей."""
         html = self.client.get(self.house.url).content.decode()
+        self.assertNotIn("data-booking-panel", html)
 
         markers = [
             "class=\"house-title\"",
-            "data-booking-panel",
+            "house-booking-cta",
             "house-mosaic",         # 3. мозаика фото
             "house-facts",          # 4. вместимость и спальные места
             "О домике",             # 5. описание и удобства
@@ -141,7 +142,7 @@ class HousePageStructureTests(WagtailPageTestCase):
         """Таблица п. 5.1: кнопка брони несёт номер точки входа,
         иначе в Метрику уходит пустой параметр вместо цели."""
         html = self.client.get(self.house.url).content.decode()
-        self.assertRegex(html, r'class="btn btn--primary booking-submit"\s+[^>]*data-entry-point="4"')
+        self.assertRegex(html, r'data-booking-open data-house-id="[^"]+"[^>]*data-entry-point="4"')
         self.assertNotIn('В форме бронирования выберите', html)
         self.assertRegex(html, r'data-booking-open data-house-id="%s"' % self.house.pk)
 

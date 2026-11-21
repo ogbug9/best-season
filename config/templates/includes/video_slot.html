@@ -1,4 +1,4 @@
-{% load wagtailimages_tags content_tags marketing_tags media_tags %}
+{% load static wagtailimages_tags content_tags marketing_tags media_tags %}
 {% comment %}
   Место под будущее видео (docs/dop-stranicy/01-komponenty.md, K3).
   Видео не встраиваем: пока ролика нет, показываем заглушку.
@@ -16,7 +16,8 @@
   {% if clip.title %}<figcaption class="visually-hidden">{{ clip.title }}</figcaption>{% endif %}
 </figure>
 {% elif compact_placeholder %}
-<figure class="video-slot video-slot--empty">
+<figure class="video-slot {% if static_poster %}video-slot--poster{% else %}video-slot--empty{% endif %}">
+  {% if static_poster %}<img src="{% static static_poster %}" alt="" width="920" height="480" loading="lazy" decoding="async">{% endif %}
   <span class="video-slot__play" aria-hidden="true"></span>
   <figcaption class="visually-hidden">Видео «{{ title }}» пока недоступно.</figcaption>
 </figure>

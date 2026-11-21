@@ -1,0 +1,22 @@
+{% load static i18n media_tags layout_tags %}
+<article class="events-card">
+  <div class="events-card__body">
+    {% language "ru" %}<p class="events-card__date"><time datetime="{{ event.date|date:'Y-m-d' }}">{{ event.date|date:"j b" }}</time>{% if event.end_date and event.end_date != event.date %} — <time datetime="{{ event.end_date|date:'Y-m-d' }}">{{ event.end_date|date:"j b" }}</time>{% endif %}</p>{% endlanguage %}
+    <h3>{% if event.title == "Новогодняя ночь в «Лучшем сезоне»" %}Новогодняя ночь<br>в&nbsp;«Лучшем сезоне»{% else %}{{ event.title|bind_short_words }}{% endif %}</h3>
+    {% if event.description %}<p class="events-card__description">{{ event.description|bind_short_words|linebreaksbr }}</p>{% endif %}
+    <div class="events-card__actions">
+      {% if event.date >= event_today or event.end_date > event_today %}
+        <button type="button" class="btn btn--primary" data-booking-open data-entry-point="events"
+          data-booking-date-from="{% if event.date >= event_today %}{{ event.date|date:'Y-m-d' }}{% else %}{{ event_today|date:'Y-m-d' }}{% endif %}"
+          {% if event.end_date > event_today and event.end_date > event.date %}data-booking-date-to="{{ event.end_date|date:'Y-m-d' }}"{% endif %}>Забронировать на эти даты</button>
+      {% endif %}
+      <a class="btn btn--outline" href="{{ events_url }}?event={{ event.pk }}#event-form">Уточнить детали</a>
+    </div>
+  </div>
+  <div class="events-card__media">
+    {% if event.image %}{% picture event.image preset="card" alt="" %}
+    {% elif event.banner_photo == "new-year" %}<img src="{% static 'img/events/new-year-upcoming.webp' %}" alt="Домик в заснеженном лесу" width="720" height="662" loading="lazy" decoding="async">
+    {% endif %}
+  </div>
+  <p class="events-card__meta">{% if event.highlights %}{{ event.highlights }}{% else %}{% if event.time_label %}{{ event.time_label }} · {% endif %}{% if event.price %}{{ event.price }} ₽{% else %}стоимость по запросу{% endif %}{% if event.places %} · мест: {{ event.places }}{% endif %}{% endif %}</p>
+</article>

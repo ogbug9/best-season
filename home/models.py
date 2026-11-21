@@ -208,6 +208,8 @@ class HomePage(Page):
         verbose_name = "Главная страница"
 
     def get_context(self, request):
+        from django.utils import timezone
+
         from houses.models import HouseIndexPage, HousePage
         from promotions.models import Promotion
         from reviews.models import Review
@@ -225,7 +227,7 @@ class HomePage(Page):
         context["promotions"] = [p for p in Promotion.objects.all() if p.is_active][:3]
         context["reviews"] = Review.objects.filter(is_published=True)[:3]
 
-        from core.models import FaqItem, NearbyPlace, TerritoryItem, TerritoryPage
+        from core.models import ContentPage, Event, FaqItem, NearbyPlace, TerritoryItem, TerritoryPage
 
         from core import territory_content as territory_content
         extra_activity_titles = [title for title, _ in territory_content.EXTRA_ACTIVITIES]
@@ -245,6 +247,12 @@ class HomePage(Page):
             item.details_url = item.link_url or target or territory_url
         context["nearby"] = NearbyPlace.objects.filter(is_published=True)[:3]
         context["faq"] = FaqItem.objects.filter(is_published=True, show_on_home=True)
+        today = timezone.localdate()
+        home_event = Event.upcoming(today).filter(show_on_home=True).first()
+        if home_event:
+            events_page = ContentPage.objects.live().filter(slug="meropriyatiya").first()
+            if events_page:
+                context.update(home_event=home_event, events_url=events_page.get_url(request), event_today=today)
         return context
 
 

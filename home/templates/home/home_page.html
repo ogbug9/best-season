@@ -34,6 +34,7 @@
     {% endif %}
   {% endwith %}
   <link rel="stylesheet" href="{% static 'css/nearby-dialog.css' %}?v=20261102">
+  {% if home_event and events_url %}<link rel="stylesheet" href="{% static 'css/upcoming-event.css' %}?v=20261121-reference">{% endif %}
 {% endblock %}
 
 {% block extra_js %}<script src="{% static 'js/nearby-dialog.js' %}?v=20261102" defer></script>{% endblock %}
@@ -105,6 +106,12 @@
 <div class="home-after-hero">
 {# Фон главной: слои из Desktop Main.svg, каждый привязан к своей секции — см. main.css «Фон главной». #}
 <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-about.svg' %}"><img class="home-bg__layer home-bg__layer--about" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="2124" height="1827" alt="" loading="lazy" decoding="async"></picture></div>
+
+{% if home_event and events_url %}
+<section class="section home-upcoming-event" aria-label="Ближайшее событие">
+  <div class="container">{% include "core/includes/upcoming_event.html" with event=home_event event_today=event_today events_url=events_url only %}</div>
+</section>
+{% endif %}
 
 {% comment %} 2. О ферме — фото слева, текст справа {% endcomment %}
 {% if page.about_text or page.about_title %}

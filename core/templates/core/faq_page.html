@@ -1,64 +1,85 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags layout_tags marketing_tags content_tags %}
+{% load static wagtailcore_tags layout_tags marketing_tags content_tags %}
 {% block body_class %}page-faq{% endblock %}
-
-{% comment %}
-  Ответы на вопросы (docs/dop-stranicy/17-faq.md): поиск и темы (Д10),
-  у каждого ответа ссылка #q-<id>, аккордеон прежний (Д4). Без JS видны все.
-{% endcomment %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/faq-page.css' %}?v=20261121-layout">{% endblock %}
 
 {% block content %}
-<section class="section page-head">
+{% with s=settings.core.SiteSettings %}
+{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+<section class="section page-head faq-page__hero">
   <div class="container">
-    {% include "includes/in_progress_note.html" %}
     <h1>{{ page.title|heading_breaks }}</h1>
     {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    {% if faq or telegram or s.whatsapp_url %}
+      <div class="faq-page__actions faq-page__actions--center">
+        {% if faq %}<a class="btn btn--primary btn--pill" href="#faq-questions">К вопросам</a>{% endif %}
+        {% if telegram or s.whatsapp_url %}<a class="btn btn--outline btn--pill" href="#faq-contacts">Контакты</a>{% endif %}
+      </div>
+    {% endif %}
   </div>
 </section>
 {% page_extras "faq" "top" %}
 
 {% if faq %}
-<section class="section faq-page">
-  <div class="container">
-    <div class="faq-page__tools">
-      <label class="faq-page__search">
-        <span class="visually-hidden">Найти ответ</span>
-        <input type="search" placeholder="Найти ответ: собака, баня, отмена…" data-chips-search="topic" autocomplete="off">
-      </label>
-      <div class="chips" data-chips="topic" role="group" aria-label="Темы вопросов">
-        <button type="button" class="filter-chip" data-chip="">Все</button>
-        {% for value, label in topics %}<button type="button" class="filter-chip" data-chip="{{ value }}">{{ label }}</button>{% endfor %}
+{% comment %}
+  Отдельные разделы референса про питание и жизнь на территории требуют
+  подтверждённых вопросов и ответов, если их нужно выделить в CMS.
+{% endcomment %}
+<section class="section faq-page" id="faq-questions" aria-label="Вопросы и ответы">
+  <div class="container faq-page__layout">
+    <nav class="faq-page__nav" aria-label="Темы вопросов">
+      <ul>
+        {% for value, label, items in faq_groups %}
+          <li><a href="#faq-topic-{{ value }}">{{ label }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+    <div class="faq-page__content">
+      <div class="faq-page__tools">
+        <label class="faq-page__search">
+          <span class="visually-hidden">Найти ответ</span>
+          <input type="search" placeholder="Найти ответ: собака, баня, отмена…" data-chips-search="topic" autocomplete="off">
+        </label>
       </div>
+      <div class="faq faq-page__groups" data-chips-for="topic">
+        {% for value, label, items in faq_groups %}
+          <section class="faq-page__group" id="faq-topic-{{ value }}" aria-labelledby="faq-title-{{ value }}">
+            <h2 id="faq-title-{{ value }}">{{ label }}</h2>
+            {% include "includes/faq_items.html" with faq=items faq_filter=True faq_answer_scope=value %}
+          </section>
+        {% endfor %}
+      </div>
+      <p class="faq-page__empty" data-chips-empty="topic" hidden>Такого вопроса пока нет — спросите нас, ответим сами.</p>
     </div>
-    <div data-chips-for="topic">
-      {% include "includes/faq_items.html" with faq_filter=True %}
-    </div>
-    <p class="faq-page__empty" data-chips-empty="topic" hidden>Такого вопроса пока нет — спросите нас, ответим сами.</p>
-    {% ask_chips "faq" "Спросите в один клик" %}
   </div>
 </section>
 {% endif %}
 
-{% with s=settings.core.SiteSettings %}
-{% firstof s.telegram_chat_url s.telegram_url as telegram %}
 {% if telegram or s.whatsapp_url %}
-<section class="section section--deep">
-  <div class="container container--narrow center">
-    <h2>Не нашли ответ?</h2>
-    <p>Напишите — ответим в мессенджере.</p>
-    <p class="split__actions faq-page__ask">
-      {% if telegram %}<a class="btn btn--primary" href="{% marketing_url telegram 'faq_page' 'Здравствуйте! У меня вопрос' %}" rel="noopener" target="_blank">{% cms_text "channel-telegram" %}</a>{% endif %}
-      {% if s.whatsapp_url %}<a class="btn btn--outline" href="{% marketing_url s.whatsapp_url 'faq_page' 'Здравствуйте! У меня вопрос' %}" rel="noopener" target="_blank">{% cms_text "channel-whatsapp" %}</a>{% endif %}
-    </p>
+<section class="section faq-page__contact" id="faq-contacts">
+  <div class="container">
+    <div class="faq-page__contact-card">
+      <div class="faq-page__contact-copy">
+        <h2>Остались вопросы?</h2>
+        <p>Напишите нам в удобном мессенджере. Поможем с бронированием и подскажем, как подготовиться к поездке.</p>
+        <div class="faq-page__actions">
+          {% if telegram %}<a class="btn btn--primary btn--pill" href="{% marketing_url telegram 'faq_page' 'Здравствуйте! У меня вопрос' %}" rel="noopener" target="_blank">{% cms_text "channel-telegram" %}</a>{% endif %}
+          {% if s.whatsapp_url %}<a class="btn btn--outline btn--pill" href="{% marketing_url s.whatsapp_url 'faq_page' 'Здравствуйте! У меня вопрос' %}" rel="noopener" target="_blank">{% cms_text "channel-whatsapp" %}</a>{% endif %}
+        </div>
+        {% ask_chips "faq" "Спросите в один клик" %}
+      </div>
+      {# Временный кадр из раздела «Территория», можно заменить. #}
+      <img class="faq-page__contact-photo" src="{% static 'img/territory/hero-field-600.webp' %}" width="600" height="400" alt="" loading="lazy">
+    </div>
   </div>
 </section>
 {% endif %}
 {% endwith %}
 
-<section class="section">
+<section class="section faq-page__booking">
   <div class="container container--narrow center">
-    <h2>Всё понятно — можно выбирать даты</h2>
-    <p><button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="faq">{% cms_text "booking_cta-5d9d7f118153" %}</button></p>
+    <h2>Всё понятно — можно<br>выбирать даты</h2>
+    <button type="button" class="btn btn--primary btn--pill" data-booking-open data-entry-point="7" data-entry-page="faq">{% cms_text "booking_cta-5d9d7f118153" %}</button>
   </div>
 </section>
 {% endblock %}

@@ -1,0 +1,29 @@
+{% load static media_tags %}
+<div class="events-gallery__track">
+  <button type="button" class="events-gallery__arrow events-gallery__arrow--prev" data-events-prev aria-controls="events-photos-{{ panel.key }}" aria-label="Предыдущие фотографии" disabled></button>
+  <ul class="events-archive" id="events-photos-{{ panel.key }}" tabindex="0" aria-label="Фотографии: {{ panel.label }}">
+    {% for photo in panel.photos %}
+      <li class="events-archive__item"{% if not photo %} aria-hidden="true"{% endif %}>
+        <div class="events-archive__media">
+          {% if photo.image %}{% picture photo.image preset="card" alt=photo.title|default:panel.label %}
+          {% elif photo.static_image %}<img src="{% static photo.static_image %}" alt="{{ panel.label }}" width="720" height="400" loading="lazy" decoding="async">
+          {% endif %}
+        </div>
+        {% if photo.title %}
+          <details class="events-archive__caption"><summary>{{ photo.title }}</summary>{% if photo.text %}<p>{{ photo.text }}</p>{% endif %}</details>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+  <button type="button" class="events-gallery__arrow events-gallery__arrow--next" data-events-next aria-controls="events-photos-{{ panel.key }}" aria-label="Следующие фотографии" disabled></button>
+</div>
+<div class="events-archive__feature">
+  <div>
+    <h3>{{ panel.title }}</h3>
+    {% for paragraph in panel.paragraphs %}
+      <p>{{ paragraph|linebreaksbr }}</p>
+    {% endfor %}
+    <a class="btn btn--primary" href="#event-form">Узнать о событии первыми</a>
+  </div>
+  {% include "includes/video_slot.html" with slot=panel.video_slot static_poster=panel.poster title=panel.title compact_placeholder=True %}
+</div>

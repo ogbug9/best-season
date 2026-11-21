@@ -1,0 +1,63 @@
+/* Слои привязаны к краям секций. Тонкие линии SVG сведены в прозрачный
+   WebP в масштабе 4×, чтобы они оставались непрерывными при DPR 1. */
+.page-nearby {
+  --faq-left-pattern: url("../img/home-backgrounds/fon-nearby-faq.svg");
+  --faq-bottom-pattern: url("../img/home-backgrounds/fon-nearby-faq-bottom-4x.webp");
+  --faq-bottom-size: 310px;
+  --footer-pattern: url("../img/home-backgrounds/fon-nearby-footer-4x.webp");
+  --footer-pattern-size: 620px;
+}
+
+.page-events {
+  --faq-left-pattern: url("../img/home-backgrounds/fon-events-faq.svg");
+  --faq-bottom-pattern: url("../img/home-backgrounds/fon-events-faq-bottom-4x.webp");
+  --faq-bottom-size: 464px;
+  --footer-pattern: url("../img/home-backgrounds/fon-events-footer-4x.webp");
+  --footer-pattern-size: 632px;
+}
+
+:is(.page-nearby, .page-events) #main {
+  background-image: url("../img/home-backgrounds/fon-nearby-top-4x.webp");
+  background-position: right top;
+  background-size: min(856px, 59.45vw) auto;
+  background-repeat: no-repeat;
+}
+
+:is(.page-nearby .faq-section, .page-events .events-faq) {
+  position: relative;
+  isolation: isolate;
+  --faq-bleed: min(100px, 6.945vw);
+}
+
+:is(.page-nearby .faq-section:has(.faq__item.is-open), .page-events .events-faq:has(details[open]))::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset: calc(-1 * var(--faq-bleed)) 0 auto;
+  height: min(682px, 47.36vw);
+  background:
+    var(--faq-left-pattern) left top / min(374px, 25.97vw) auto no-repeat,
+    url("../img/home-backgrounds/fon-nearby-events-faq-right.svg") right top / min(432px, 30vw) auto no-repeat;
+  /* Растушёвка только над FAQ, где SVG выходит за верх макета. */
+  mask-image: linear-gradient(transparent, black var(--faq-bleed));
+}
+
+:is(.page-nearby .faq-section:has(.faq__item.is-open), .page-events .events-faq:has(details[open])) {
+  background-image: var(--faq-bottom-pattern);
+  background-position: right bottom;
+  background-size: min(var(--faq-bottom-size), 32.23vw) auto;
+  background-repeat: no-repeat;
+}
+
+.site:is(.page-nearby, .page-events) .footer.footer--standard {
+  background: var(--footer-pattern) right bottom / min(var(--footer-pattern-size), 72vw) auto no-repeat;
+}
+
+@media (max-width: 699px) {
+  :is(.page-nearby, .page-events) #main {
+    background-position: right calc(var(--header-h) - 12px);
+    background-size: 88vw auto;
+  }
+  .site:is(.page-nearby, .page-events) .footer.footer--standard .footer__legal::before { content: none; }
+}

@@ -1,98 +1,163 @@
 {% extends "base.html" %}
-{% load static marketing_tags %}
-{% load content_tags %}
-{% load wagtailcore_tags media_tags layout_tags %}
+{% load static marketing_tags content_tags wagtailcore_tags media_tags %}
 {% block body_class %}page-contacts{% endblock %}
-
-{% comment %}
-  Контакты (docs/dop-stranicy/16-kontakty.md): связаться одним нажатием.
-  Контакты и реквизиты берутся из настроек сайта, а не дублируются полями
-  страницы: иначе они разойдутся с подвалом, а реквизиты ИП обязаны
-  совпадать (раздел 11 ТЗ). Незаполненная плитка не выводится.
-{% endcomment %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/guest-pages.css' %}">{% endblock %}
 
 {% block content %}
 {% with s=settings.core.SiteSettings greeting="Здравствуйте! Хочу забронировать домик" %}
-<section class="section page-head">
-  <div class="container container--narrow">
+{% firstof s.telegram_chat_url s.telegram_url as telegram %}
+<section class="contacts-hero">
+  {% comment %}Слот BS Contacts hero: требуется согласованный кадр для первого экрана.{% endcomment %}
+  {% if contacts_hero %}
+    {% picture contacts_hero preset="hero" alt="" loading="eager" picture_class="contacts-hero__photo" %}
+  {% else %}
+    <div class="contacts-hero__photo"><img src="{% static 'video/about-hero-poster.webp' %}" alt="" fetchpriority="high"></div>
+  {% endif %}
+  <div class="container center">
     {% include "includes/in_progress_note.html" %}
-    <h1>{{ page.title|heading_breaks }}</h1>
-    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    <h1>Контакты</h1>
+    <p class="section__lead">Свяжитесь с нами любым удобным способом</p>
+    <nav class="split__actions guest-actions" aria-label="Разделы контактов">
+      <a class="btn btn--outline" href="#contact-methods">Как связаться</a>
+      <a class="btn btn--outline" href="#contact-directions">Как добраться</a>
+      <a class="btn btn--outline" href="#contact-map">Карта</a>
+    </nav>
   </div>
 </section>
-{% page_extras "contacts" "top" %}
-{% page_story "contacts" %}
-{% page_extras "contacts" %}
 
 <section class="section">
   <div class="container">
+    <h2>На звонки и сообщения отвечаем сами</h2>
+    <ul class="contacts-badges">
+      <li><b>14:00</b> заезд</li>
+      <li><b>12:00</b> выезд</li>
+      <li><b>Лично</b> встречаем каждого гостя</li>
+    </ul>
+    <div class="split contacts-hosts">
+      {% comment %}Слот BS Contacts hosts: подключить фото из задания, когда будет доступно.{% endcomment %}
+      <div class="split__media guest-photo">
+        {% if contacts_hosts %}{% picture contacts_hosts preset="card" alt="" %}
+        {% else %}<img src="{% static 'img/about-20261103/story-terrace.webp' %}" alt="" loading="lazy">{% endif %}
+      </div>
+      <div class="split__text prose">
+        <p>Быстрее всего — написать в Telegram: спросить про свободные даты, баню, питомца или поздний заезд. Если вопрос срочный — позвоните.</p>
+        <p>При заезде мы встречаем лично. Если задерживаетесь в дороге — просто сообщите, мы подождём и продумаем, как вас встретить.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--deep">
+  <div class="container">
+    <h2>Мы не классический отель — и это хорошо</h2>
+    <dl class="contacts-comparison">
+      <div><dt><s>Ресепшен</s></dt><dd>встречаем каждого гостя лично</dd></div>
+      <div><dt><s>Колл-центр</s></dt><dd>на звонки и сообщения отвечаем сами</dd></div>
+      <div><dt><s>Очередь у стойки</s></dt><dd>покажем территорию и домик, отдадим ключи</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section" id="contact-methods">
+  <div class="container">
+    <h2>Связаться с нами</h2>
     <ul class="contact-tiles">
-      {% firstof s.telegram_chat_url s.telegram_url as telegram %}
+      <li><a class="contact-tile" href="tel:{{ s.phone|default:'+79912550837' }}" data-copy="{{ s.phone_display|default:'+7 (991) 255-08-37' }}" data-copy-desktop>
+        <span class="contact-tile__icon contact-tile__icon--phone" aria-hidden="true"></span>
+        <b class="contact-tile__name">{{ s.phone_display|default:"+7 (991) 255-08-37" }}</b><span class="contact-tile__hint" data-copy-label="Номер скопирован">Позвонить</span>
+      </a></li>
       {% if telegram %}
-        <li data-reveal><a class="contact-tile" href="{% marketing_url telegram 'contacts_page' greeting %}" rel="noopener" target="_blank">
-          <img class="contact-tile__icon" src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="" aria-hidden="true">
-          <b class="contact-tile__name">Telegram</b><span class="contact-tile__hint">Напишите — ответим в чате</span></a></li>
+      <li><a class="contact-tile" href="{% marketing_url telegram 'contacts_page' greeting %}" rel="noopener" target="_blank">
+        <img class="contact-tile__icon" src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="">
+        <b class="contact-tile__name">Telegram</b><span class="contact-tile__hint">Написать по всем вопросам</span>
+      </a></li>
       {% endif %}
       {% if s.whatsapp_url %}
-        {% comment %} Имена файлов иконок перепутаны: social-tiktok.png — это WhatsApp (как в шапке и подвале). {% endcomment %}
-        <li data-reveal><a class="contact-tile" href="{% marketing_url s.whatsapp_url 'contacts_page' greeting %}" rel="noopener" target="_blank">
-          <img class="contact-tile__icon" src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="" aria-hidden="true">
-          <b class="contact-tile__name">WhatsApp<span class="socials__note" aria-hidden="true">*</span></b><span class="contact-tile__hint">Сообщение уже набрано</span></a></li>
+      <li><a class="contact-tile" href="{% marketing_url s.whatsapp_url 'contacts_page' greeting %}" rel="noopener" target="_blank">
+        <img class="contact-tile__icon" src="{% static 'img/social-whatsapp.png' %}" width="40" height="40" alt="">
+        <b class="contact-tile__name">WhatsApp<span class="socials__note" aria-hidden="true">*</span></b><span class="contact-tile__hint">Написать</span>
+      </a></li>
       {% endif %}
-      {% if s.phone %}
-        <li data-reveal><a class="contact-tile" href="tel:{{ s.phone }}" data-copy="{{ s.phone_display|default:s.phone }}" data-copy-desktop>
-          <span class="contact-tile__icon contact-tile__icon--phone" aria-hidden="true"></span>
-          <b class="contact-tile__name">{{ s.phone_display|default:s.phone }}</b><span class="contact-tile__hint" data-copy-label="Номер скопирован">Позвонить</span></a></li>
-      {% endif %}
-      {% if s.vk_url %}
-        <li data-reveal><a class="contact-tile" href="{% marketing_url s.vk_url 'contacts_page' %}" rel="noopener" target="_blank">
-          <img class="contact-tile__icon" src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="" aria-hidden="true">
-          <b class="contact-tile__name">{% cms_text "contacts_page-125394ee160a" %}</b><span class="contact-tile__hint">Новости и отзывы гостей</span></a></li>
-      {% endif %}
+      {% with email=s.email|default:"bestseasonst@gmail.com" %}
+      <li><a class="contact-tile contact-tile--text" href="mailto:{{ email }}">
+        <b class="contact-tile__name">{{ email }}</b><span class="contact-tile__hint">Сотрудничество, предложения</span>
+      </a></li>
+      {% endwith %}
     </ul>
-    {% if s.email %}<p class="contact-tiles__email">{% cms_text "contacts_page-9acc3fbe2040" %} <a href="mailto:{{ s.email }}">{{ s.email }}</a></p>{% endif %}
-    <div class="contacts-now" data-reveal>
-      <p class="contacts-now__hours"><span class="contacts-now__dot" aria-hidden="true"></span>На связи каждый день, {{ s.work_hours|default:'10:00 - 22:00' }}</p>
-      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="contacts">{% cms_text "booking_cta-5d9d7f118153" %}</button>
-    </div>
-    {% ask_chips "contacts" %}
   </div>
 </section>
 
-{% guest_quote "радушной встречей" "Гости о встрече" %}
+<section class="section contacts-hours" aria-label="Часы работы">
+  <div class="container contacts-now">
+    <p class="contacts-now__hours"><span class="contacts-now__dot" aria-hidden="true"></span>На связи каждый день с 10:00 до 22:00</p>
+    <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="contacts">Забронировать</button>
+  </div>
+</section>
 
-{% if checkin_answer %}
+{% if telegram %}<section class="section">
+  <div class="container">{% ask_chips "contacts" %}</div>
+</section>{% endif %}
+
 <section class="section">
-  <div class="container split contacts-hosts">
-    {% if hosts_image %}<div class="split__media" data-reveal>{% picture hosts_image preset="card" alt="Терраса домика" %}</div>{% endif %}
-    <div class="split__text" data-reveal>
-      <h2>Встретим вас лично</h2>
-      <div class="prose">{{ checkin_answer|richtext }}</div>
-    </div>
+  <div class="container">
+    <h2>Наши соцсети</h2>
+    {% comment %}Ссылки берём из настроек сайта; уточнить и заполнить отсутствующие URL перед публикацией.{% endcomment %}
+    <ul class="contact-tiles">
+      {% if s.instagram_url %}<li><a class="contact-tile" href="{% marketing_url s.instagram_url 'contacts_socials' %}" rel="noopener" target="_blank">
+        <img class="contact-tile__icon" src="{% static 'img/social-instagram.png' %}" width="40" height="40" alt="">
+        <b class="contact-tile__name">Instagram<span class="socials__note" aria-hidden="true">*</span></b><span class="contact-tile__hint">Жизнь в Сезоне, отзывы, анонсы</span>
+      </a></li>{% endif %}
+      <li><a class="contact-tile" href="{% marketing_url contacts_channel 'contacts_socials' %}" rel="noopener" target="_blank">
+        <img class="contact-tile__icon" src="{% static 'img/social-telegram.png' %}" width="40" height="40" alt="">
+        <b class="contact-tile__name">Telegram-канал</b><span class="contact-tile__hint">Узнавать обо всём первым</span>
+      </a></li>
+      <li><a class="contact-tile" href="{% marketing_url contacts_vk 'contacts_socials' %}" rel="noopener" target="_blank">
+        <img class="contact-tile__icon" src="{% static 'img/social-vk.png' %}" width="40" height="40" alt="">
+        <b class="contact-tile__name">ВКонтакте</b><span class="contact-tile__hint">Новости и истории гостей</span>
+      </a></li>
+      {% if s.tiktok_url %}<li><a class="contact-tile" href="{% marketing_url s.tiktok_url 'contacts_socials' %}" rel="noopener" target="_blank">
+        <img class="contact-tile__icon" src="{% static 'img/social-tiktok.png' %}" width="40" height="40" alt="">
+        <b class="contact-tile__name">Tik-Tok</b><span class="contact-tile__hint">Даже тут мы с вами</span>
+      </a></li>{% endif %}
+    </ul>
+    <p class="contact-tiles__email"><small>Оставаться в курсе всех обновлений и событий, подглядывать за процессом, просто быть с нами ближе</small></p>
   </div>
 </section>
-{% endif %}
 
-{% if s.address or page.map_embed_url %}
-<section class="section">
-  <div class="container split">
-    <div class="split__text">
-      <h2>Где мы</h2>
-      {% if s.address %}<p>{{ s.address }}</p>{% endif %}
-      {% if s.directions_page %}<p><a class="btn btn--outline" href="{% pageurl s.directions_page %}">Как добраться</a></p>{% endif %}
-      {% if page.body|filled %}<div class="prose">{{ page.body|richtext }}</div>{% endif %}
+<section class="section" id="contact-directions">
+  <div class="container">
+    <h2>Как добраться</h2>
+    <div class="guest-grid guest-grid--pair">
+      <article class="prose">
+        <h3>На машине</h3>
+        <p>От МКАД 110 км по Симферопольскому шоссе (М2). Поворот на пос. Заокский после въезда в Тульскую область.</p>
+        <p>Если едете со стороны Малахово, то перед д. Страхово будет небольшой перекрёсток: налево — поворот на «Лучший Сезон» и питомник «Долина Роз», направо — д. Кошкино. Поворачивайте налево и проезжайте до двух шлагбаумов. Наш шлагбаум справа — сворачивайте к нему и проезжайте вдоль аллеи туй до открытой парковки в конце аллеи.</p>
+        <p>Время поездки ~1,5 часа — <a href="https://yandex.com/maps/-/CPsvELJx">точный адрес и прямая ссылка на Яндекс.Карты</a></p>
+      </article>
+      <article class="prose">
+        <h3>Электричка + такси</h3>
+        <p>Доехать на электричке по Курскому направлению до <a href="https://rasp.yandex.ru/search/?fromName=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0&amp;toName=%D0%A2%D0%B0%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B0%D1%8F&amp;fromId=c213&amp;toId=s9601668&amp;when=%D1%81%D0%B5%D0%B3%D0%BE%D0%B4%D0%BD%D1%8F">станции Тарусская</a> (пос. Заокский). Билеты можно купить на <a href="http://www.rzd.ru/">сайте РЖД</a> или в кассах и билетных автоматах на Курском вокзале (−1 этаж).</p>
+        <p>Время в пути: 1.2-2.5 ч</p>
+        <p>Расписание электричек Курского направления — <a href="https://www.tutu.ru/rasp.php?st1=20000&amp;st2=43806">подробнее</a></p>
+        <p>От ст. Тарусская до глэмпинга можно заказать такси: Яндекс.Такси, Такси Maxim, частники, либо заказать трансфер через нас.</p>
+        <p>Время в пути: 10 мин</p>
+      </article>
     </div>
-    {% if page.map_embed_url %}
-      <div class="split__media">
-        <div class="map" data-map data-map-src="{{ page.map_embed_url }}">
-          {% if page.map_image %}{% picture page.map_image preset="gallery" alt="Карта проезда" %}{% endif %}
-          <button type="button" class="btn btn--primary map__button" data-map-load>{% cms_text "contacts_page-90457f42f688" %}</button>
-        </div>
-      </div>
-    {% endif %}
+    {% if page.body|filled %}<div class="prose">{{ page.body|richtext }}</div>{% endif %}
   </div>
 </section>
-{% endif %}
+
+<section class="section" id="contact-map">
+  <div class="container">
+    <h2>Мы на картах</h2>
+    {% if s.address %}<p>{{ s.address }}</p>{% endif %}
+    {% comment %}Резервная точка совпадает с картой страницы «О нас». Отдельный embed из CMS имеет приоритет.{% endcomment %}
+    <div class="map" data-map data-map-src="{{ page.map_embed_url|default:'https://yandex.ru/map-widget/v1/?ol=biz&oid=3306085141&z=18' }}">
+      {% if page.map_image %}{% picture page.map_image preset="gallery" alt="Карта проезда" %}{% endif %}
+      <button type="button" class="btn btn--primary map__button" data-map-load>{% cms_text "contacts_page-90457f42f688" %}</button>
+    </div>
+  </div>
+</section>
 
 <section class="section">
   <div class="container container--narrow">

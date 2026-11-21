@@ -1,79 +1,121 @@
 {% extends "base.html" %}
-{% load content_tags marketing_tags %}
-{% load wagtailcore_tags media_tags layout_tags %}
+{% load static wagtailcore_tags media_tags marketing_tags %}
 {% block body_class %}page-gallery{% endblock %}
-
-{% comment %}
-  Галерея (docs/dop-stranicy/14-galereya.md): «у нас нет любимого времени
-  года». Два фильтра (что на фото, сезон; Д10), лайтбокс по видимым фото
-  (Д5), у фото домика — переход на домик. Места под ролики «Утреннее» —
-  заглушки, видео не встраиваем.
-{% endcomment %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/guest-pages.css' %}">{% endblock %}
 
 {% block content %}
 <section class="section page-head">
-  <div class="container container--narrow">
+  <div class="container container--narrow center">
     {% include "includes/in_progress_note.html" %}
-    <h1>{{ page.title|heading_breaks }}</h1>
-    {% if page.intro|filled %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
+    <h1>Так это выглядит.<br>Без декораций и улучшений.</h1>
+  </div>
+  {% comment %}Слот Gallery hero: подтвердить горизонтальный кадр поляны в золотой час.{% endcomment %}
+  <div class="guest-photo guest-photo--wide">
+    {% if gallery_hero %}
+      {% picture gallery_hero preset="gallery" alt="Поляна с домами" loading="eager" %}
+    {% else %}
+      <img src="{% static 'img/about/aerial.webp' %}" alt="Территория глэмпинга с высоты" fetchpriority="high">
+    {% endif %}
   </div>
 </section>
-{% page_extras "gallery" "top" %}
 
-{% if page.body|filled %}
-<section class="section"><div class="container container--narrow prose">{{ page.body|richtext }}</div></section>
-{% endif %}
-
-{% if gallery_items %}
 <section class="section">
   <div class="container">
-    <p class="gallery-page__motto">У нас нет любимого времени года — каждый сезон по-своему прекрасен.</p>
-    <div class="gallery-page__filters">
-      <div class="chips" data-chips="what" role="group" aria-label="Что на фото">
-        <button type="button" class="filter-chip" data-chip="">Всё</button>
-        {% for value, label in gallery_categories %}<button type="button" class="filter-chip" data-chip="{{ value }}">{{ label }}</button>{% endfor %}
-      </div>
+    <div class="container--narrow center guest-intro">
+      <h2>С чего всё началось</h2>
+      <p>Морские контейнеры. Они успели поездить по всему свету, прежде чем остановиться на этой поляне. Мы утеплили их, вставили окна во всю стену и пристроили террасы — и теперь изнутри ни за что не догадаться, с чего всё начиналось.</p>
     </div>
-    <ul class="mosaic mosaic--photos gallery" data-gallery data-chips-for="what">
+    {% comment %}Слоты Gallery archive и Gallery today: нужны подтверждённые снимки одного контейнера.{% endcomment %}
+    <div class="guest-grid guest-grid--pair">
+      <figure>
+        <div class="guest-photo">
+          {% if gallery_archive %}{% picture gallery_archive preset="gallery" alt="" %}
+          {% else %}<img src="{% static 'img/territory/hero-field-600.webp' %}" alt="" loading="lazy">{% endif %}
+        </div>
+        <figcaption>{% if gallery_archive %}Контейнер на поляне, 2024 г.{% else %}Поляна зимой{% endif %}</figcaption>
+      </figure>
+      <figure>
+        <div class="guest-photo">
+          {% if gallery_today %}{% picture gallery_today preset="gallery" alt="" %}
+          {% else %}<img src="{% static 'img/territory/hero-house-900.webp' %}" alt="" loading="lazy">{% endif %}
+        </div>
+        <figcaption>{% if gallery_archive and gallery_today %}Он же сегодня{% else %}Домик глэмпинга{% endif %}</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Фотографии галереи">
+  <div class="container">
+    <div class="gallery-page__filters">
+      {% for name, label, options in gallery_filters %}
+        <div class="guest-filter">
+          <p id="filter-{{ name }}">{{ label }}</p>
+          <div class="chips" data-chips="{{ name }}" role="group" aria-labelledby="filter-{{ name }}">
+            <button type="button" class="filter-chip" data-chip="" aria-pressed="true">Все</button>
+            {% for value, option in options %}<button type="button" class="filter-chip" data-chip="{{ value }}" aria-pressed="false">{{ option }}</button>{% endfor %}
+            {% if name == "what" %}{% for value, option in gallery_legacy_categories %}<button type="button" class="filter-chip" data-chip="{{ value }}" hidden>{{ option }}</button>{% endfor %}{% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="guest-filter-status">
+      <p role="status"><span data-chips-count="gallery">{{ gallery_items|length }}</span> фотографий</p>
+      <button type="button" class="filter-chip" data-chips-reset="season what house">Показать всё</button>
+    </div>
+    <p class="center" data-chips-empty="gallery"{% if gallery_items %} hidden{% endif %}>На это сочетание кадров пока нет. Попробуйте снять один из фильтров</p>
+    <ul class="mosaic mosaic--photos gallery" data-gallery data-chips-for="season what house" data-chips-result="gallery">
       {% for item in gallery_items %}
-        <li class="mosaic__item{% if item.large %} mosaic__item--large{% endif %}" data-tags="{{ item.category }}" data-reveal>
+        <li class="mosaic__item{% if item.large %} mosaic__item--large{% endif %}" data-tags="" data-tags-season="{{ item.season }}" data-tags-what="{{ item.category }}" data-tags-house="{{ item.house.slug }}" data-reveal>
+          {% if item.static_image %}
+            {% static item.static_image as photo_url %}
+            <a class="gallery__link" href="{{ photo_url }}" data-gallery-item data-full="{{ photo_url }}" data-caption="{{ item.alt }}">
+              <img src="{{ photo_url }}" alt="{{ item.alt }}" loading="lazy">
+            </a>
+          {% else %}
           <a class="gallery__link" href="{% full_image_url item.image 'jpeg' %}" data-gallery-item data-full="{% full_image_url item.image %}"
              data-caption="{{ item.alt }}"{% if item.house %} data-link="{% pageurl item.house %}" data-link-label="Смотреть {{ item.house.title }}"{% endif %}>
             {% picture item.image preset="gallery" alt=item.alt %}
           </a>
+          {% endif %}
         </li>
       {% endfor %}
     </ul>
   </div>
 </section>
-{% endif %}
 
-{% comment %}Ролики временно скрыты до готовности материалов.{% endcomment %}
-{% comment %}
+{% for title, lead, cards in gallery_sections %}
 <section class="section">
   <div class="container">
-    <h2 class="section__title section__title--center">Утреннее</h2>
-    <p class="center gallery-page__lead">Короткие ролики о том, как начинается день в «Лучшем сезоне».</p>
-    <ul class="gallery-videos">
-      {% for item in gallery_items|slice:":3" %}
-        {% cycle "gallery-morning-1" "gallery-morning-2" "gallery-morning-3" as morning_slot silent %}
-        <li data-reveal>{% include "includes/video_slot.html" with slot=morning_slot poster=item.image title="Утреннее" ratio="4x5" %}</li>
-      {% empty %}
-        <li>{% include "includes/video_slot.html" with poster=None title="Здесь будут ролики «Утреннее»" ratio="4x5" %}</li>
+    <div class="guest-intro container--narrow center">
+      <h2>{{ title }}</h2>
+      <p>{{ lead }}</p>
+    </div>
+    <div class="guest-grid">
+      {% for name, description, photo in cards %}
+        <article class="guest-card">
+          <div class="guest-photo">
+            {% if photo.static_image %}<img src="{% static photo.static_image %}" alt="" loading="lazy">
+            {% else %}{% picture photo.image preset="card" alt="" %}{% endif %}
+          </div>
+          <h3>{{ name }}</h3>
+          <p>{{ description }}</p>
+        </article>
       {% endfor %}
-    </ul>
+    </div>
   </div>
 </section>
-{% endcomment %}
+{% endfor %}
 
 <section class="section section--deep">
   <div class="container container--narrow center">
-    <h2>Осенние и зимние кадры мы ещё снимаем</h2>
-    <p>Свежие фото появляются сначала в нашем Telegram.</p>
-    <p class="split__actions gallery-page__actions">
-      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="gallery">{% cms_text "booking_cta-5d9d7f118153" %}</button>
-      {% if telegram_url %}<a class="btn btn--outline" href="{% marketing_url telegram_url 'gallery_page' %}" rel="noopener" target="_blank">Свежие кадры в Telegram</a>{% endif %}
-    </p>
+    <h2>Остальное лучше посмотреть вживую.</h2>
+    <p>Мы показали всё, что помещается в кадр. Запах сена, треск дров и вечерние разговоры у костра в объектив не лезут — за ними придётся приехать.</p>
+    <div class="split__actions gallery-page__actions">
+      <button type="button" class="btn btn--primary" data-booking-open data-entry-point="7" data-entry-page="gallery">Свободные даты</button>
+      {% if houses_index %}<a class="btn btn--outline" href="{% pageurl houses_index %}">Посмотреть домики</a>{% endif %}
+      {% if telegram_url %}<a class="btn btn--outline" href="{% marketing_url telegram_url 'gallery_page' %}" rel="noopener" target="_blank">Больше фото в Telegram</a>{% endif %}
+    </div>
   </div>
 </section>
 

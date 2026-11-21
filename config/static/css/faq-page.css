@@ -1,0 +1,150 @@
+.page-faq main {
+  hyphens: none;
+  word-break: normal;
+}
+
+.page-faq main :is(h1, h2, h3, h4, h5, h6) {
+  hyphens: none;
+}
+
+.faq-page__hero h1 {
+  text-align: center;
+}
+
+.faq-page__hero .section__lead {
+  width: min(100%, 60ch);
+  margin-inline: auto;
+}
+
+.faq-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.faq-page__actions--center {
+  justify-content: center;
+}
+
+.faq-page__layout {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(0, 3fr);
+  align-items: start;
+  gap: var(--s-4);
+}
+
+.faq-page__nav {
+  border-inline-start: 1px solid var(--c-olive-soft);
+  padding-inline-start: var(--s-3);
+}
+
+.faq-page__nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.faq-page__nav a {
+  display: block;
+  padding-block: 8px;
+  font-size: 1rem;
+  text-underline-offset: 4px;
+}
+
+.faq-page__layout .faq-page__tools {
+  align-items: flex-start;
+}
+
+.faq.faq-page__groups {
+  row-gap: var(--s-5);
+}
+
+.faq-page__items {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.faq-page__group h2 {
+  margin: 0 0 var(--s-3);
+  font-size: clamp(32px, 3.5vw, 48px);
+}
+
+.faq-page__group:not(:has(.faq__item:not([hidden]))) {
+  display: none;
+}
+
+.page-faq .faq-page__items .faq__item--olive > .faq__question {
+  background: var(--c-olive-dark);
+}
+
+.faq-page__group:target {
+  scroll-margin-top: calc(var(--header-h, 96px) + 16px);
+}
+
+.faq-page__contact {
+  padding-bottom: var(--s-6);
+}
+
+.faq-page__contact-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: var(--s-3);
+}
+
+.faq-page__contact-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(24px, 4vw, 60px);
+  border-radius: var(--radius-lg);
+  background: var(--c-blush);
+}
+
+.faq-page__contact-copy > p {
+  max-width: 42ch;
+  margin: 0 0 var(--s-5);
+  line-height: 1.55;
+}
+
+.faq-page__contact-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+}
+
+.faq-page__contact-copy .ask-chips {
+  margin: var(--s-5) 0 0;
+  text-align: left;
+}
+
+.faq-page__contact-copy .ask-chips__list {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.faq-page__booking h2 {
+  margin-bottom: var(--s-4);
+}
+
+@media (max-width: 767px) {
+  .faq-page__layout,
+  .faq-page__contact-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .faq-page__contact-photo {
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
+
+  .faq-page__nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--s-4);
+  }
+}

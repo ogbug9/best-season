@@ -6,7 +6,7 @@
 
 {% block body_class %}page-house page-house--{{ page.slug }}{% endblock %}
 {% block body_attributes %}data-house-slug="{{ page.slug }}"{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/house-equipment.css' %}?v=20261112-native-groups">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/house-equipment.css' %}?v=20261120-equipment">{% endblock %}
 
 
 {% block structured_data %}{% accommodation_schema %}{% endblock %}
@@ -16,13 +16,21 @@
   <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-top.svg' %}"><img class="home-bg__layer home-bg__layer--house-top" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1111" height="872" alt="" loading="lazy" decoding="async"></picture></div>
   <div class="container"><h1>{{ page.title }}</h1></div>
 </section>
-{% include "houses/_booking_panel.html" %}
+<div class="house-booking-cta">
+  <div class="container">
+    <button type="button" class="btn btn--primary"
+            data-booking-open data-house-id="{{ page.pk }}" data-house-title="{{ page.title }}"
+            data-pms-name="{{ page.pms_name }}" data-entry-point="4">
+      {% cms_text "_booking_panel-5d9d7f118153" %}
+    </button>
+  </div>
+</div>
 
 {% comment %} ---------- 3. Мозаика фото ----------
    Пять кадров по макету: крупный слева, четыре справа. Клик открывает
    просмотрщик; без JS каждое фото остаётся ссылкой на полный размер,
    поэтому галерея работает и со снятым скриптом. {% endcomment %}
-{% with mosaic=page.mosaic_images %}
+{% with mosaic=house_mosaic %}
 {% if mosaic %}
 <section class="house-mosaic-section">
   <div class="home-bg" aria-hidden="true"><picture class="desktop-background"><source media="(min-width: 900px)" srcset="{% static 'img/home-backgrounds/fon-house-gallery.svg' %}"><img class="home-bg__layer home-bg__layer--house-gallery" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" width="1172" height="1199" alt="" loading="lazy" decoding="async"></picture></div>
@@ -46,7 +54,7 @@
     {% comment %} Остальные кадры нужны просмотрщику, но на странице их не
        видно: показывать 15 плиток макет не просит. {% endcomment %}
     <ul class="house-mosaic__rest" hidden>
-      {% for item in page.remaining_gallery_images %}
+      {% for item in house_gallery_rest %}
         <li class="gallery__item gallery__item--rest">
           <a class="gallery__link" href="{% full_image_url item.image 'jpeg' %}" data-gallery-item
              data-full="{% full_image_url item.image %}" data-caption="{{ item.caption|default:page.title }}">

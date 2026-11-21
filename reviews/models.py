@@ -114,6 +114,8 @@ class ReviewsPage(InProgressMixin, Page):
     yandex_reviews_count = models.PositiveIntegerField("Отзывов", null=True, blank=True)
     yandex_tags = models.CharField("Что хвалят", max_length=160, blank=True, help_text="Через запятую, из сводки Яндекса.")
     yandex_url = models.URLField("Страница отзывов на Яндекс Картах", blank=True)
+    sutochno_url = models.URLField("Страница отзывов на Суточно", blank=True)
+    two_gis_review_url = models.URLField("Ссылка для отзыва в 2ГИС", blank=True)
 
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
@@ -121,7 +123,8 @@ class ReviewsPage(InProgressMixin, Page):
         MultiFieldPanel([
             FieldPanel("yandex_rating"), FieldPanel("yandex_ratings_count"), FieldPanel("yandex_reviews_count"),
             FieldPanel("yandex_tags"), FieldPanel("yandex_url"),
-        ], heading="Рейтинг на Яндекс Картах"),
+            FieldPanel("sutochno_url"), FieldPanel("two_gis_review_url"),
+        ], heading="Рейтинг и площадки отзывов"),
     ]
     max_count = 1
 
@@ -142,17 +145,35 @@ class ReviewsPage(InProgressMixin, Page):
         context["quote"] = next((review for review in reviews if review.image), None)
         # О чём пишут гости: темы по словам в текстах опубликованных отзывов.
         from core.dop_content import REVIEW_THEMES
+        from core.models import SiteSettings
 
+        # Карточки фильтруются по локальным опубликованным отзывам. Виджет
+        # Яндекс.Карт не передаёт содержимое iframe фильтру сайта.
+        categories = (
+            ("nature", "Атмосфера", ("атмосфер",)),
+            ("clean", "Чистота", ()),
+            ("location", "Расположение", ("располож", "добрат", "местополож", "дорог")),
+            ("cozy", "Уют", ()),
+            ("hosts", "Отношение", ("отношени", "отзывчив", "забот", "гостеприим")),
+            ("photo", "Соответствие фото", ("на фото", "фотограф", "на снимк", "соответств")),
+        )
+        stems_by_key = {key: stems for key, _, stems in REVIEW_THEMES}
+        for key, _, stems in categories:
+            stems_by_key[key] = stems_by_key.get(key, ()) + stems
         themes = []
-        for key, label, stems in REVIEW_THEMES:
+        labels = {key: label for key, label, _ in REVIEW_THEMES}
+        for key, stems in stems_by_key.items():
             count = 0
             for review in reviews:
                 text = review.text.lower()
                 if any(stem in text for stem in stems):
                     review.theme_keys = getattr(review, "theme_keys", []) + [key]
                     count += 1
-            if count:
-                themes.append({"key": key, "label": label, "count": count})
+            if count and key in labels:
+                themes.append({"key": key, "label": labels[key], "count": count})
         context["review_themes"] = sorted(themes, key=lambda item: -item["count"])
         context["reviews_total"] = len(reviews)
+        context["review_categories"] = [(key, label) for key, label, _ in categories]
+        settings = SiteSettings.for_request(request)
+        context["review_telegram_url"] = settings.telegram_chat_url or settings.telegram_url
         return context

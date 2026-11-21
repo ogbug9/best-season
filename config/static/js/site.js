@@ -259,6 +259,7 @@
     if (!selected) return;
     event.preventDefault();
     opener = button;
+    modal.classList.toggle('promotion-request-modal--certificate', type === 'certificate');
     var topic = button.getAttribute('data-topic') || '';
     panel.querySelector('[data-promotion-request-title]').textContent = topic;
     panel.querySelectorAll('[data-promotion-form]').forEach(function (form) {

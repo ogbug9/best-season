@@ -35,6 +35,7 @@
     // 06.10: «Наши ценности» листаются сами раз в 3 с — только в поле зрения,
     // без наведения мыши, касания и prefers-reduced-motion.
     var auto = !!carousel.closest('.about-values');
+    var valuesNavigation = carousel.querySelector('[data-values-navigation]');
     var visible = !('IntersectionObserver' in window), hovered = false, touching = false;
     var instance = null;
     function run() {
@@ -52,6 +53,7 @@
         button.setAttribute('aria-current', String(button.classList.contains('swiper-pagination-bullet-active')));
       });
       dots.hidden = swiper.isLocked;
+      if (valuesNavigation) valuesNavigation.hidden = swiper.isLocked;
     }
     function setup() {
       if (instance) { instance.destroy(true, true); instance = null; }
@@ -88,6 +90,10 @@
       run();
     }
     if (auto) {
+      if (valuesNavigation) {
+        valuesNavigation.querySelector('[data-values-prev]').addEventListener('click', function () { instance.slidePrev(); });
+        valuesNavigation.querySelector('[data-values-next]').addEventListener('click', function () { instance.slideNext(); });
+      }
       carousel.addEventListener('pointerenter', function (event) { if (event.pointerType === 'mouse') { hovered = true; run(); } });
       carousel.addEventListener('pointerleave', function (event) { if (event.pointerType === 'mouse') { hovered = false; run(); } });
       if ('IntersectionObserver' in window) {

@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% load content_tags %}
 {% load static wagtailcore_tags media_tags legal_docs layout_tags %}
-{% block extra_css %}{% legal_pdf_url page.slug as legal_pdf %}{% if legal_pdf %}<link rel="stylesheet" href="{% static 'css/legal.css' %}?v=20261020">{% endif %}{% endblock %}
+{% block extra_css %}{% legal_pdf_url page.slug as legal_pdf %}{% if legal_pdf %}<link rel="stylesheet" href="{% static 'css/legal.css' %}?v=20261120-paragraphs">{% endif %}{% endblock %}
 
 {% block content %}
 {% legal_pdf_url page.slug as legal_pdf %}
-<section class="section page-head{% if legal_pdf %} legal-page-head{% endif %}">
+{% if legal_pdf %}{% legal_document_layout page.slug page.legal_body as legal_layout %}{% endif %}
+<section class="section page-head{% if legal_pdf %} legal-page-head{% endif %}{% if legal_layout.title %} legal-page-head--full{% endif %}">
   <div class="container container--narrow">
     {% include "includes/in_progress_note.html" %}
-    <h1>{% if legal_pdf %}{{ page.title }}{% else %}{{ page.title|heading_breaks }}{% endif %}</h1>
+    <h1>{% if legal_pdf %}{{ legal_layout.title|default:page.title }}{% else %}{{ page.title|heading_breaks }}{% endif %}</h1>
     {% if page.intro %}<p class="section__lead">{{ page.intro }}</p>{% endif %}
   </div>
 </section>
@@ -19,15 +20,20 @@
 </section>
 {% endif %}
 
-{% legal_pdf_url page.slug as legal_pdf %}
 {% if legal_pdf %}
 <section class="section">
-  <div class="container container--narrow prose legal-document">
-    <p><a href="{{ legal_pdf }}" download>{% cms_text "content_page-a859d91f587f" %}</a></p>
+  <div class="container container--narrow prose legal-document{% if page.slug == 'soglasie-na-rassylku' %} legal-document--marketing{% endif %}">
+    <p{% if legal_layout.revision %} class="legal-document__meta"{% endif %}>
+      <a href="{{ legal_pdf }}" download>{% cms_text "content_page-a859d91f587f" %}</a>
+      {% if legal_layout.revision %}<span>{{ legal_layout.revision }}</span>{% endif %}
+    </p>
     {% if page.legal_body %}
-      {% for block in page.legal_body %}
+      {% for block in legal_layout.blocks %}
         {% if block.block_type == 'heading' %}<h2>{{ block.value }}</h2>
-        {% elif block.block_type == 'paragraph' %}<p>{{ block.value|complete_legal_domain:page.slug|urlize }}</p>
+        {% elif block.block_type == 'paragraph' %}
+          {% for part in block.value|legal_paragraph_parts:page.slug %}
+            <p>{{ part|urlize }}</p>
+          {% endfor %}
         {% elif block.block_type == 'list' %}<ul class="legal-list">{% for item in block.value %}<li>{{ item|urlize }}</li>{% endfor %}</ul>
         {% elif block.block_type == 'table' %}{% legal_table block.value %}{% endif %}
       {% endfor %}

@@ -1,26 +1,29 @@
 .page-events {
+  --events-rule: repeating-linear-gradient(90deg, var(--c-olive) 0 3px, transparent 3px 9px, var(--c-olive) 9px 12px);
+  --events-gold: #d7ab40;
   overflow-x: clip;
-  background: #f7f0e6 url("../img/home-backgrounds/fon-nearby-top.svg") no-repeat center top / max(100%, 1440px) auto;
+  background: var(--c-cream);
   color: #494949;
 }
 
 .page-events main .section { padding-block: clamp(24px, 3.2vw, 46px); }
 .page-events main > .page-head:first-child {
-  padding-top: max(calc(var(--header-h) + 56px), 13.9vw);
-  padding-bottom: clamp(32px, 4.3vw, 62px);
+  padding-top: max(calc(var(--header-h) + 56px), min(14.17vw, 204px));
+  padding-bottom: clamp(32px, 4.05vw, 58.2px);
   text-align: center;
 }
 
 .page-events .page-head h1 { font-size: clamp(29px, 6.25vw, 90px); line-height: 1; margin: 0 0 26px; }
 .page-events .page-head .section__lead { margin: 0; font-size: clamp(16px, 1.67vw, 24px); line-height: 1.2; }
-.page-events .section__title,
-.events-next h2 { font-size: clamp(30px, 3vw, 42px); line-height: 1.02; color: #494949; margin: 0 0 20px; }
+.page-events main .section__title,
+.events-next h2 { margin: 0 0 20px; color: var(--c-dark); font: 400 clamp(30px, 2.78vw, 40px)/1.05 var(--font-heading); }
 .page-events .btn { white-space: normal; text-align: center; }
 .page-events main [id] { scroll-margin-top: 126px; }
 
 .page-events main .events-intro {
-  border-block: 1px dashed #847f57;
-  padding-block: 32px;
+  padding-block: 33px;
+  background: var(--events-rule) top / 100% 1px no-repeat,
+    var(--events-rule) bottom / 100% 1px no-repeat;
 }
 .events-intro__grid {
   display: grid;
@@ -36,12 +39,14 @@
 .events-intro p { margin: 10px 0 0; }
 .events-intro__actions, .events-actions { display: flex; flex-wrap: wrap; gap: 14px; }
 .events-intro__actions { margin-top: 14px; }
-.events-intro__actions .btn, .events-actions .btn, .events-new-year .btn {
+.events-intro__actions .btn, .events-actions .btn, .events-archive__feature .btn {
   min-height: 44px;
   padding: 8px 24px;
   font-size: clamp(15px, 1.4vw, 20px);
   font-weight: 400;
 }
+.page-events .events-intro__actions .btn--outline,
+.page-events .events-actions .btn--outline { background: transparent; }
 .page-events main .events-upcoming { padding-top: clamp(42px, 5.55vw, 80px); padding-bottom: clamp(28px, 2.8vw, 40px); }
 .events-next { max-width: 710px; }
 .events-next__label {
@@ -55,67 +60,38 @@
 .events-next .events-actions { justify-content: center; }
 
 .events-upcoming .events-list { display: grid; gap: 24px; max-width: 996px; margin: 0 auto; padding: 0; list-style: none; }
-.events-card {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  gap: 24px 32px;
-  align-items: stretch;
-  padding: 32px;
-  border-radius: 20px;
-  background: #fff;
-}
-.events-card h3 { margin: 24px 0 16px; font-size: clamp(26px, 3vw, 34px); line-height: 1; color: #494949; text-wrap: balance; }
-.events-card__date {
-  display: inline-block;
-  margin: 0;
-  padding: 10px 24px;
-  border-radius: 10px;
-  background: #847f57;
-  color: #fff;
-  font-size: 24px;
-  line-height: 29px;
-}
-.events-card__description { margin: 0 0 24px; font-size: 18px; line-height: 22px; }
-.events-card .btn { min-height: 40px; font-size: 16px; }
-.events-card__media { position: relative; min-height: 331px; overflow: hidden; border-radius: 20px; background: #d9d9d9; }
-.events-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.events-card__meta { grid-column: 1 / -1; margin: 0; padding: 10px 16px; border-radius: 10px; background: #e8d7c7; font-size: 16px; line-height: 20px; text-align: center; }
-
 .season-calendar__inner { max-width: 1143px; }
 .season-calendar__months { max-width: 770px; margin: 38px auto 20px; }
-.page-events .filter-chip { min-height: 42px; padding: 8px 23px; font-size: 16px; font-weight: 400; }
-.season-calendar__month { padding: 32px; border-radius: 40px; color: #f7f0e6; background: #463c19; }
+.page-events .filter-chip { min-height: 42px; padding: 8px 23px; border-color: var(--c-olive); font-family: var(--font-body); font-size: 16px; font-weight: 400; }
+.season-calendar__month { padding: 32px; border-radius: 40px; color: var(--c-white); background: #463c19; }
 .season-calendar__overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr) 148px; align-items: center; gap: 20px; min-height: 130px; }
-.season-calendar__current { margin: 0 0 6px; }
-.season-calendar__current::before { content: "●"; margin-right: 10px; color: #e3b646; }
-.season-calendar__month h3 { margin: 0; color: inherit; font-size: clamp(32px, 4vw, 54px); line-height: 1; }
-.season-calendar__highlights { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; font-size: 16px; }
-.season-calendar__highlights li { display: flex; align-items: flex-start; gap: 12px; }
+.season-calendar__current { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; font-size: clamp(16px, 1.4vw, 20px); }
+.season-calendar__current::before { width: 14px; height: 14px; border-radius: 50%; background: var(--events-gold); content: ""; }
+.season-calendar__month h3 { margin: 0; color: inherit; font: 400 clamp(32px, 4vw, 54px)/1 var(--font-heading); }
+.season-calendar__month .season-calendar__highlights { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 20px; }
+.season-calendar__highlights li { display: flex; align-items: flex-start; gap: 12px; margin: 0; }
 .season-calendar__highlights li::before {
   content: "";
   flex: 0 0 16px;
   height: 16px;
   margin-top: 2px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23e3b646' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M2 2c8-.6 12 3 12 12C5 14 1.4 10 2 2ZM2 2l5 5'/%3E%3C/svg%3E") center / contain no-repeat;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23d7ab40' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M2 2c8-.6 12 3 12 12C5 14 1.4 10 2 2ZM2 2l5 5'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-.season-calendar__weekends { margin: 0; padding: 12px 14px; border: 1px solid #847f57; border-radius: 20px; font-size: 15px; line-height: 1.15; }
-.season-calendar__weekends strong { display: block; margin-bottom: 5px; color: #e3b646; font: 400 54px/1 "Etude Noire", sans-serif; }
-.season-calendar__holiday, .season-calendar__activities { margin-top: 18px; padding-top: 18px; border-top: 1px dashed #847f57; }
+.season-calendar__weekends { margin: 0; padding: 13px 14px; border: 1px solid var(--c-olive); border-radius: 20px; font-size: 15px; line-height: 20px; }
+.season-calendar__weekends strong { display: block; margin-bottom: 8px; color: var(--events-gold); font: 400 54px/1 var(--font-heading); }
+.season-calendar__holiday, .season-calendar__activities { margin-top: 20px; padding-top: 18px; background: var(--events-rule) top / 100% 1px no-repeat; }
 .season-calendar__holiday { display: flex; flex-wrap: wrap; gap: 8px clamp(24px, 15vw, 220px); align-items: center; }
-.season-calendar__holiday strong { color: #e3b646; font: 400 clamp(22px, 2.4vw, 34px)/1.1 "Etude Noire", sans-serif; }
+.season-calendar__holiday strong { color: var(--events-gold); font: 400 clamp(22px, 2.4vw, 34px)/1.1 var(--font-heading); }
+.season-calendar__holiday > span, .season-calendar__activities p { font-size: clamp(16px, 1.4vw, 20px); }
 .season-calendar__activities p { margin: 0 0 12px; }
-.season-calendar__activities ul { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; padding: 0; }
+.season-calendar__activities ul { display: flex; flex-wrap: wrap; gap: 10.5px; list-style: none; padding: 0; }
 .season-calendar__activities li { margin: 0; padding: 9px 22px; border: 1px solid #847f57; border-radius: 24px; font-size: 16px; }
-.season-calendar__note { margin: 20px 0 0; }
+.season-calendar__note { margin: 20px 0 0; color: #75716b; }
 
-.events-gallery__inner, .events-new-year__grid { max-width: 1120px; }
+.events-gallery__inner { max-width: 1120px; }
 .events-gallery__filters { justify-content: center; margin: 38px 0 32px; }
 .events-gallery__track { position: relative; }
-.events-gallery__inner:has([data-chip="new-year"][aria-pressed="true"]) .events-gallery__all:not(:focus-visible) {
-  position: absolute;
-  clip-path: inset(50%);
-}
-.events-gallery__inner:not(:has([data-chip="new-year"][aria-pressed="true"])) .events-archive__placeholder { display: none; }
+[data-events-panel][hidden] { display: none; }
 .events-gallery .events-archive {
   display: grid;
   grid-template-columns: none;
@@ -143,10 +119,10 @@
 .events-archive__caption summary:focus-visible { outline-offset: -3px; }
 .events-archive__caption p { margin: 0; padding: 4px 14px 12px; }
 .events-gallery .events-archive__media { aspect-ratio: 9 / 5; border-radius: 20px; background: #d9d9d9; }
-.events-card__media .ph, .events-archive__media .ph { display: block; width: 100%; height: 100%; background: #d9d9d9; }
+.events-archive__media > img { position: absolute; inset: 0; display: block; }
 .events-gallery__arrow {
   position: absolute;
-  top: clamp(18px, 5.4vw, 80px);
+  top: 50%;
   z-index: 1;
   width: 40px;
   height: 40px;
@@ -154,44 +130,79 @@
   border-radius: 50%;
   background: #847f57;
   color: #fff;
-  font-size: 26px;
-  line-height: 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  transform: translateY(-50%);
   cursor: pointer;
 }
+.events-gallery__arrow::before {
+  width: 9px;
+  height: 9px;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  content: "";
+}
+.events-gallery__arrow--prev::before { transform: rotate(-135deg); }
 .events-gallery__arrow:disabled { cursor: default; }
 .events-gallery__arrow--prev { left: -30px; }
 .events-gallery__arrow--next { right: -30px; }
-.events-gallery__empty { margin: 24px 0 0; }
+.events-gallery__arrow:disabled { opacity: .5; }
+.events-gallery__track.is-static .events-gallery__arrow { visibility: hidden; }
 
-.page-events main .events-gallery { padding-bottom: 16px; }
-.page-events main .events-new-year { padding-top: 16px; }
-.events-new-year__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 461px); gap: 42px; }
-.events-new-year h2 { margin: 0 0 14px; font-size: clamp(27px, 2.4vw, 32px); line-height: 1; color: #494949; overflow-wrap: anywhere; }
-.events-new-year p { margin: 0 0 28px; font-size: clamp(17px, 1.7vw, 24px); line-height: 1.2; }
-.events-new-year .video-slot { aspect-ratio: 461 / 240; border-radius: 20px; background: #d9d9d9; }
-.events-new-year .video-slot--empty { border: 0; }
-.events-new-year .video-slot__play {
-  width: 78px;
-  height: 78px;
-  margin: -39px 0 0 -39px;
-  border: 0;
-  background: #fff;
-  box-shadow: 0 0 60px 16px rgb(70 60 25 / 30%);
+.events-archive__feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 461px);
+  gap: 42px;
+  align-items: start;
+  margin-top: 32px;
 }
-.events-new-year .video-slot__play::after { border-left-color: #73736a; }
+.events-archive__feature h3 {
+  margin: 0 0 14px;
+  color: #494949;
+  font: 400 clamp(27px, 2.4vw, 32px)/1 var(--font-heading);
+  overflow-wrap: anywhere;
+}
+.events-archive__feature p { margin: 0 0 16px; font-size: clamp(17px, 1.7vw, 24px); line-height: 1.2; }
+.events-archive__feature .btn { margin-top: 12px; }
+.events-archive__feature .video-slot { aspect-ratio: 461 / 240; margin: 0; border: 0; border-radius: 20px; background: #d9d9d9; }
+.events-archive__feature .video-slot--poster::before { content: none; }
+.events-archive__feature .video-slot > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.events-archive__feature .video-slot__play {
+  inset: 50% auto auto 50%;
+  width: clamp(50px, 5.4vw, 78px);
+  height: clamp(50px, 5.4vw, 78px);
+  margin: 0;
+  border: 0;
+  background: linear-gradient(160deg, white 15%, rgb(255 255 255 / 70%) 65%);
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+.events-archive__feature .video-slot__play::after {
+  margin: -13px 0 0 -8px;
+  border-width: 13px 0 13px 22px;
+  border-left-color: #5c544d;
+}
 
 .page-events #event-form .container { max-width: 714px; }
-.page-events #event-form .form { border-radius: 20px; padding: clamp(20px, 2.22vw, 32px); }
-.page-events #event-form .form__title { font-size: clamp(30px, 3vw, 42px); line-height: 1; }
+.page-events #event-form .form { border-radius: 20px; padding: clamp(20px, 2.1vw, 30px); }
+.page-events #event-form .form__title { font-size: clamp(30px, 2.64vw, 38px); line-height: 1; }
 .page-events #event-form .form > p { font-size: 16px; line-height: 1.25; }
 .page-events #event-form .form__grid { gap: 16px 20px; margin-top: 20px; }
 .page-events #event-form .form__field { min-width: 0; }
 .page-events #event-form .form__consent { font-size: 16px; line-height: 20px; }
 .page-events #event-form .form__label { font-size: 14px; }
-.page-events #event-form .form__field textarea { min-height: 108px; }
+.page-events #event-form .form__field textarea { min-height: 105px; }
+.page-events #event-form .form__checkbox input { width: 22px; height: 22px; }
+.page-events #event-form .form__actions .btn {
+  width: min(100%, 272px);
+  min-height: 50px;
+  padding: 10px 16px;
+}
 
 .events-faq .container { max-width: 1000px; }
-.events-faq .section__title { margin-bottom: clamp(24px, 3vw, 40px); }
+.page-events main .events-faq .section__title { margin-bottom: clamp(24px, 3vw, 40px); }
 .events-faq details + details { margin-top: 20px; }
 .events-faq summary {
   position: relative;
@@ -212,22 +223,31 @@
   position: absolute;
   top: 50%;
   right: 32px;
-  width: 16px;
-  height: 16px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-  transform: translateY(-72%) rotate(45deg);
+  width: 24px;
+  height: 12px;
+  background: url("../img/faq-chevron.svg") center / contain no-repeat;
+  transform: translateY(-50%);
 }
-.events-faq details[open] summary::after { transform: translateY(-25%) rotate(225deg); }
+.events-faq details[open] summary::after { transform: translateY(-50%) rotate(180deg); }
 .events-faq details p { margin: 0; padding: 20px 32px; font-size: clamp(16px, 1.4vw, 20px); line-height: 1.2; }
 .page-events .footer {
   padding-top: clamp(30px, 3.2vw, 46px);
-  background: url("../img/home-backgrounds/fon-events-footer.svg") no-repeat center bottom / max(100%, 1440px) auto;
 }
 
 @media (min-width: 1200px) {
   .page-events main .season-calendar { padding-top: 40px; }
   .season-calendar__month:has(.season-calendar__holiday) { min-height: 444px; }
+  .season-calendar__overview { grid-template-columns: minmax(0, 1fr) minmax(0, 1.57fr) 148px; }
+  .season-calendar__overview:has(.season-calendar__current) > div { transform: translateY(10px); }
+  .season-calendar__month .season-calendar__highlights { align-self: end; gap: 20px; margin-bottom: 16px; }
+  .season-calendar__highlights li::before { margin-top: 0; }
+  .season-calendar__months { gap: 10px 10.5px; }
+  .page-events .filter-chip,
+  .season-calendar__activities li { min-height: 42.46px; font-size: 18px; }
+  .season-calendar__activities li { padding: 9px 23px; }
+  .season-calendar__activities p { margin-bottom: 18px; }
+  .season-calendar__holiday { display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 1fr); gap: 8px 0; }
+  .season-calendar__holiday strong { font-size: 32px; line-height: 36px; }
 }
 
 @media (max-width: 1199px) {
@@ -238,14 +258,14 @@
 }
 
 @media (max-width: 759px) {
-  .events-intro__grid, .events-card, .events-new-year__grid, .season-calendar__overview { grid-template-columns: minmax(0, 1fr); }
-  .events-card, .season-calendar__month { padding: 20px; }
-  .events-card__media { min-height: 0; aspect-ratio: 360 / 331; }
+  .events-intro__grid, .events-archive__feature, .season-calendar__overview { grid-template-columns: minmax(0, 1fr); }
+  .season-calendar__month { padding: 20px; }
+  .events-archive__feature { gap: 20px; }
   .season-calendar__weekends { max-width: 148px; }
   .season-calendar__months, .events-gallery__filters { margin-top: 24px; }
   .events-gallery .events-archive { grid-auto-columns: min(100%, 360px); }
   .events-faq summary { padding: 12px 52px 12px 16px; line-height: 1.25; }
-  .events-faq summary::after { right: 19px; width: 12px; height: 12px; }
+  .events-faq summary::after { right: 19px; width: 18px; height: 9px; }
   .events-faq details p { padding-inline: 16px; }
 }
 
@@ -253,49 +273,36 @@
 
 @media (min-width: 1200px) {
   .page-events main .events-faq {
-    position: relative;
-    isolation: isolate;
-    padding-block: 120px 100px;
+    padding-block: 34px 58px;
   }
-  .events-faq::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: url("../img/home-backgrounds/fon-events-faq.svg") no-repeat center top / max(100%, 1440px) auto;
-    mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
-  }
-}
 
-@media (min-width: 1200px) {
-  .events-faq .section__title { margin-bottom: 59px; }
+  .events-intro h2 { line-height: 57px; }
   .events-intro h2 span { display: block; }
-  .season-calendar__months { margin-bottom: 23px; }
-  .page-events main .events-gallery { padding-top: 35px; }
+  .season-calendar__months { margin-block: 40.5px 20px; }
+  .page-events main .events-gallery { padding-top: 36px; }
   .page-events main #event-form { padding-top: 34px; }
-  .page-events #event-form .form__grid { row-gap: 13px; }
-  .page-events #event-form .form__actions { margin-top: 20px; }
-  
+  .page-events #event-form .form__grid { row-gap: 19px; margin-top: 24px; }
+  .page-events #event-form .form__field > input:not([type=hidden]) { min-height: 41px; height: 41px; }
+  .page-events #event-form .form__field textarea { height: 105px; }
+  .page-events #event-form .form__actions { margin-top: 23px; }
 }
 
 @media (min-width: 760px) and (max-width: 1199px) {
-  .events-new-year__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 41%); gap: 24px; }
+  .events-archive__feature { grid-template-columns: minmax(0, 1fr) minmax(0, 41%); gap: 24px; }
 }
 
 @media (max-width: 1359px) {
-  .events-wide-break { display: none; }
+  .events-wide-break, .events-archive__feature p br { display: none; }
 }
 
 @media (min-width: 1200px) {
-  .events-intro__actions .btn--primary { min-width: 268px; }
-  .events-intro__actions .btn--outline { min-width: 298px; }
-  .events-next .btn--primary { min-width: 314px; }
-  .events-next .btn--outline { min-width: 207px; }
-  .events-new-year .btn { min-width: 350px; }
-  .events-card .btn--primary { min-width: 278px; }
-  .events-card .btn--outline { min-width: 187px; }
-  .events-gallery__filters { gap: 11px; }
+  .events-intro__actions .btn--primary { width: 268px; padding-inline: 16px; }
+  .events-intro__actions .btn--outline { width: 299px; padding-inline: 16px; }
+  .events-next .btn--primary { width: 314px; padding-inline: 16px; }
+  .events-next .btn--outline { width: 208px; padding-inline: 16px; }
+  .events-archive__feature { margin-inline: 2px; }
+  .events-archive__feature .btn { min-width: 350px; margin-top: 19px; }
+  .events-gallery__filters { gap: 10.5px; }
   .events-gallery__filters [data-chip="new-year"] { min-width: 147px; }
   .events-gallery__filters [data-chip="graduation"],
   .events-gallery__filters [data-chip="creative"] { min-width: 155px; }
@@ -303,10 +310,5 @@
   .events-gallery__filters [data-chip="wedding"] { min-width: 130px; }
   .events-gallery__filters [data-chip="sport"] { min-width: 104px; }
   .season-calendar__month:has(.season-calendar__holiday) .season-calendar__activities ul { max-width: 960px; }
-}
-
-.events-faq:not(:has(details[open])) .events-faq__extra { display: none; }
-
-@media (min-width: 1200px) {
   .page-events .footer { padding-top: 55px; }
 }

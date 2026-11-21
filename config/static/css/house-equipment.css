@@ -44,5 +44,14 @@
 .page-house .equipment[data-native-equipment] summary::after { content: ""; width: 10px; height: 10px; border-right: 1.5px solid; border-bottom: 1.5px solid; rotate: 45deg; flex: none; margin-right: 4px; }
 .page-house .equipment[data-native-equipment] details[open] summary::after { rotate: 225deg; }
 .page-house .equipment[data-native-equipment] summary:focus-visible { outline: 2px solid #847f57; outline-offset: 4px; }
+.page-house .equipment[data-native-equipment] summary {
+  margin-inline: -20px;
+  padding-inline: 20px;
+  border-radius: 15px;
+}
+.page-house .equipment[data-native-equipment] details[open] summary { border-radius: 15px 15px 0 0; }
+@media (hover: hover) {
+  .page-house .equipment[data-native-equipment] summary:hover { background: #e4decf; }
+}
 .page-house .equipment[data-native-equipment] .equipment__list { padding-bottom: 16px; }
 @media(max-width:699px) { .page-house .equipment[data-native-equipment] .equipment__columns { grid-template-columns: minmax(0,1fr); gap: 12px; } .page-house .equipment[data-native-equipment] summary { font-size: 18px; min-height: 56px; } }

@@ -56,6 +56,7 @@ SNIPPET_PERMISSIONS = [
     ("core", "territoryitem", ["add", "change", "delete", "view"]),
     ("core", "nearbyplace", ["add", "change", "delete", "view"]),
     ("core", "event", ["add", "change", "delete", "view"]),
+    ("core", "eventarchive", ["add", "change", "delete", "view"]),
     ("core", "videoclip", ["add", "change", "delete", "view"]),
     # Заявки: смотреть и менять статус. Удаление недоступно — заявка
     # с согласием на обработку ПД должна оставаться в системе (раздел 11 ТЗ).

@@ -3,8 +3,8 @@
 {% load content_tags %}
 {% load static wagtailcore_tags layout_tags media_tags %}
 {% block body_class %}page-about{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261112-quiz-feedback">{% endblock %}
-{% block extra_js %}<script src="{% static 'js/vendor/swiper-12.0.3.min.js' %}" defer></script><script src="{% static 'js/about.js' %}?v=20261112-quiz-feedback" defer></script><script src="{% static 'js/about-quiz.js' %}?v=20261112-quiz-feedback" defer></script>{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/about.css' %}?v=20261121-about">{% endblock %}
+{% block extra_js %}<script src="{% static 'js/vendor/swiper-12.0.3.min.js' %}" defer></script><script src="{% static 'js/about.js' %}?v=20261121-about" defer></script><script src="{% static 'js/about-quiz.js' %}?v=20261121-about" defer></script>{% endblock %}
 {% block page_background %}
 <div class="about-background" aria-hidden="true" data-about-art="{% static 'img/about/about-art-desktop.svg' %}">
 {% include 'core/includes/about-art-mobile.svg' %}
@@ -42,7 +42,12 @@
   <div class="about-carousel" data-about-carousel>
     <ol class="about-track" tabindex="0" aria-label="Наши ценности" data-about-track>
       {% for item in about_values %}<li class="about-value about-value--{{ forloop.counter }}">{% include 'core/includes/about_photo.html' with photo=item value=True %}<div class="about-value__copy"><h3>{% if item.title == "Путешествовать" %}<span class="about-journey" aria-label="{{ item.title }}"><span aria-hidden="true">{% cms_text "about_page-278ffbae4550" %}</span><span aria-hidden="true">{% cms_text "about_page-659081f9a741" %}</span><span aria-hidden="true">{% cms_text "about_page-b662e72dc3fa" %}</span></span>{% else %}{{ item.title|linebreaksbr }}{% endif %}</h3><p class="about-value__lead">{{ item.lead|linebreaksbr }}</p><p>{{ item.text|linebreaksbr }}</p></div></li>{% endfor %}
-    </ol><div class="about-dots" data-about-dots hidden aria-label="Выбор ценности"></div>
+    </ol>
+    <div class="about-values__navigation" data-values-navigation hidden>
+      <button type="button" class="about-values__arrow" data-values-prev aria-label="Предыдущая ценность"><span aria-hidden="true">←</span></button>
+      <div class="about-dots" data-about-dots hidden aria-label="Выбор ценности"></div>
+      <button type="button" class="about-values__arrow" data-values-next aria-label="Следующая ценность"><span aria-hidden="true">→</span></button>
+    </div>
   </div>
 </section>
 <section class="container about-section about-pets" aria-labelledby="pets-title">

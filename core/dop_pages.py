@@ -219,17 +219,15 @@ def context_for(page, request):
         from datetime import date
 
         from forms.forms import EventForm
-        from core.models import _consent_page
+        from core.events_content import archive_panels
+        from core.models import Event, _consent_page
 
-        from django.db.models import Q as _Q
         from django.utils import timezone
-
-        from core.models import Event
 
         today = timezone.localdate()
         published = Event.objects.filter(is_published=True).select_related("image")
-        upcoming = list(published.filter(_Q(end_date__gte=today) | _Q(end_date__isnull=True, date__gte=today)))
-        past = list(published.filter(_Q(end_date__lt=today) | _Q(end_date__isnull=True, date__lt=today)).order_by("-date")[:6])
+        upcoming = list(Event.upcoming(today))
+        past = list(published.filter(Q(end_date__lt=today) | Q(end_date__isnull=True, date__lt=today)).order_by("-date")[:6])
         # Прошедшие события из админки идут первыми, затем архив из постов Telegram.
         archive = [{"title": event.title, "text": event.description, "image": event.image} for event in past]
         archive += [{"title": title, "text": text, "image": _image(photo) if photo else None, "category": category}
@@ -242,7 +240,7 @@ def context_for(page, request):
         november_holiday = date(november_year, 11, 4).weekday() < 5
         calendar = [
             {
-                "num": n, "name": dc.MONTHS[n - 1], "items": dc.SEASON_CALENDAR[n] if n != 11 else (
+                "num": n, "key": f"m{n}", "name": dc.MONTHS[n - 1], "items": dc.SEASON_CALENDAR[n] if n != 11 else (
                     "День народного единства в начале месяца",
                     "Самый спокойный месяц в году: лес, тишина и никого вокруг",
                 ),
@@ -255,12 +253,18 @@ def context_for(page, request):
             }
             for n in (*range(today.month, 13), *range(1, today.month))
         ]
-        archive_categories = [
-            ("new-year", "Новый год"), ("graduation", "Выпускные"), ("birthday", "Дни рождения"),
-            ("wedding", "Свадьбы"), ("creative", "Творчество"), ("sport", "Спорт"), ("", "Все"),
-        ]
+        active_archive = request.GET.get("archive", "new-year") if request else "new-year"
+        panels = archive_panels(archive, include_all=bool(past) or active_archive in ("", "all"))
+        if active_archive == "":
+            active_archive = "all"
+        if active_archive not in {panel["key"] for panel in panels}:
+            active_archive = "new-year"
+        active_month = request.GET.get("month") if request else None
+        if active_month not in {f"m{month['num']}" for month in calendar}:
+            active_month = f"m{today.month}"
         return {"calendar": calendar, "current_month": today.month,
-                "upcoming": upcoming, "archive": archive, "archive_categories": archive_categories,
+                "active_month": active_month, "upcoming": upcoming, "event_today": today,
+                "archive": archive, "archive_panels": panels, "active_archive": active_archive,
                 "event_form": EventForm(auto_id="event_%s", initial={"topic": topic}),
                 "chosen_event": chosen, "consent_page": _consent_page()}
     if slug == "vyezdy-kompaniy":

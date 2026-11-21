@@ -7,6 +7,7 @@ from wagtail.fields import RichTextField, StreamField
 from wagtail.models import Orderable, Page
 from wagtail.snippets.models import register_snippet
 from .content_blocks import AboutContentBlock, DIARY_BLOCKS, LEGAL_BLOCKS
+from .events_content import EVENT_CATEGORIES
 
 # Ограниченный набор форматирования: п. 8 ТЗ — редактор не должен иметь
 # возможности сломать вёрстку произвольной разметкой.
@@ -639,12 +640,16 @@ class Event(models.Model):
     places = models.PositiveSmallIntegerField("Мест", null=True, blank=True)
     image = models.ForeignKey("wagtailimages.Image", verbose_name="Фото", null=True, blank=True,
                               on_delete=models.SET_NULL, related_name="+")
+    banner_photo = models.CharField("Фото из макета", max_length=24, blank=True,
+                                    choices=[("new-year", "Зимний домик")])
+    highlights = models.CharField("Условия на плашке", max_length=240, blank=True)
+    show_on_home = models.BooleanField("Показывать баннер на главной", default=False)
     is_published = models.BooleanField("Показывать на сайте", default=True)
 
     panels = [
         FieldPanel("title"), FieldPanel("date"), FieldPanel("end_date"), FieldPanel("time_label"),
         FieldPanel("description"), FieldPanel("price"), FieldPanel("places"), FieldPanel("image"),
-        FieldPanel("is_published"),
+        FieldPanel("banner_photo"), FieldPanel("highlights"), FieldPanel("show_on_home"), FieldPanel("is_published"),
     ]
 
     class Meta:
@@ -658,6 +663,37 @@ class Event(models.Model):
     @property
     def last_day(self):
         return self.end_date or self.date
+
+    @classmethod
+    def upcoming(cls, today):
+        return cls.objects.filter(is_published=True).filter(
+            models.Q(end_date__gte=today) | models.Q(end_date__isnull=True, date__gte=today)
+        ).select_related("image")
+
+
+@register_snippet
+class EventArchive(models.Model):
+    category = models.CharField("Раздел", max_length=16, choices=EVENT_CATEGORIES, unique=True)
+    title = models.CharField("Заголовок", max_length=120, blank=True)
+    description = models.TextField("Текст", blank=True)
+    photo_1 = models.ForeignKey("wagtailimages.Image", verbose_name="Фото 1", null=True, blank=True,
+                                on_delete=models.SET_NULL, related_name="+")
+    photo_2 = models.ForeignKey("wagtailimages.Image", verbose_name="Фото 2", null=True, blank=True,
+                                on_delete=models.SET_NULL, related_name="+")
+    photo_3 = models.ForeignKey("wagtailimages.Image", verbose_name="Фото 3", null=True, blank=True,
+                                on_delete=models.SET_NULL, related_name="+")
+
+    panels = [
+        FieldPanel("category"), FieldPanel("title"), FieldPanel("description"),
+        FieldPanel("photo_1"), FieldPanel("photo_2"), FieldPanel("photo_3"),
+    ]
+
+    class Meta:
+        verbose_name = "Альбом мероприятий"
+        verbose_name_plural = "Альбомы мероприятий"
+
+    def __str__(self):
+        return self.get_category_display()
 
 
 @register_snippet
@@ -677,6 +713,7 @@ class VideoClip(models.Model):
         ("gallery-morning-3", "Галерея: «Утреннее» 3"),
         ("group-evening", "Выезды компаний: вечер в полном составе"),
         ("scenario-day", "Чем заняться: один день в «Лучшем сезоне»"),
+        *((f"events-{key}", f"Мероприятия: {label}") for key, label in [*EVENT_CATEGORIES, ("all", "Все")]),
     ]
     slot = models.CharField("Место на сайте", max_length=32, choices=SLOTS, unique=True)
     file = models.ForeignKey("wagtaildocs.Document", verbose_name="Файл видео (MP4)", on_delete=models.PROTECT, related_name="+")
@@ -854,7 +891,7 @@ class ContentPage(InProgressMixin, Page):
             # already linked by the site's FAQ and Yandex reviews.
             context["about_map_embed_url"] = (
                 getattr(contacts.specific, "map_embed_url", "") if contacts else ""
-            ) or "https://yandex.ru/map-widget/v1/?ol=biz&oid=3306085141&z=16"
+            ) or "https://yandex.ru/map-widget/v1/?ol=biz&oid=3306085141&z=18"
         return context
 
     class Meta:
@@ -1009,6 +1046,7 @@ class ContactsPage(InProgressMixin, Page):
         verbose_name = "Страница «Контакты»"
 
     def get_context(self, request):
+        from .dop_content import SRC
         from forms.forms import FeedbackForm
 
         context = super().get_context(request)
@@ -1018,6 +1056,11 @@ class ContactsPage(InProgressMixin, Page):
         context["checkin_answer"] = (FaqItem.objects.filter(is_published=True, question__startswith="Как проходит заселение")
                                      .values_list("answer", flat=True).first())
         context["hosts_image"] = image_titled("BS About story-terrace")
+        context["contacts_hero"] = image_titled("BS Contacts hero")
+        context["contacts_hosts"] = image_titled("BS Contacts hosts") or context["hosts_image"]
+        settings = SiteSettings.for_request(request)
+        context["contacts_channel"] = settings.telegram_url or SRC["tg"][1]
+        context["contacts_vk"] = settings.vk_url or SRC["vk"][1]
         return context
 
 
@@ -1127,12 +1170,12 @@ class NearbyPage(InProgressMixin, Page):
         for place in places:
             place.off_season = season not in place.season_codes
             place.best_label = ", ".join(label.lower() for code, label in NearbyPlace.SEASONS if code in place.season_codes)
-        from core import dop_content as dc
+        from core import dop_content as dc, nearby_content
 
         context.update(places=places, season=season, seasons=NearbyPlace.SEASONS,
                        place_facts=self._rows(self.facts, 2), route_points=self._rows(self.day_route, 3),
-                       travel_rows=__import__('core.nearby_content', fromlist=['travel_rows']).travel_rows(),
-                       guide=__import__('core.nearby_content', fromlist=['guide_cards']).guide_cards(), guide_kinds=dc.GUIDE_KINDS,
+                       travel_rows=nearby_content.travel_rows(), children_route=nearby_content.CHILDREN_ROUTE,
+                       guide=nearby_content.guide_cards(), guide_kinds=dc.GUIDE_KINDS,
                        nearby_faq=dc.NEARBY_FAQ,
                        weekdays=["пн", "вт", "ср", "чт", "пт", "сб", "вс"])
         return context
@@ -1153,8 +1196,17 @@ class FaqPage(InProgressMixin, Page):
     def get_context(self, request):
         context = super().get_context(request)
         context["faq"] = FaqItem.objects.filter(is_published=True)
-        used = set(context["faq"].values_list("topic", flat=True))
-        context["topics"] = [(value, label) for value, label in FaqItem.TOPICS if value in used]
+        groups = {value: [] for value, _ in FaqItem.TOPICS}
+        groups["other"] = []
+        for item in context["faq"]:
+            groups.get(item.topic, groups["other"]).append(item)
+
+        context["topics"] = [(value, label) for value, label in FaqItem.TOPICS if groups[value]]
+        context["faq_groups"] = [
+            (value, label, groups[value])
+            for value, label in [*FaqItem.TOPICS, ("other", "Другие вопросы")]
+            if groups[value]
+        ]
         return context
 
 
@@ -1178,21 +1230,46 @@ class GalleryPage(InProgressMixin, Page):
 
     def get_context(self, request, *args, **kwargs):
         """Фото галереи и по шесть фото каждого домика (docs/dop-stranicy/14-galereya.md)."""
-        from houses.models import HousePage
+        from houses.models import HouseIndexPage, HousePage
+        from .dop_content import SRC
+        from .gallery_content import HOUSE_FILTERS, LOCATION_FILTERS, SEASONS, add_illustrations, sections
 
         context = super().get_context(request, *args, **kwargs)
         items = [{"image": photo.image, "alt": photo.alt, "large": photo.is_large,
-                  "category": photo.category or "territory", "season": photo.season, "house": None}
-                 for photo in self.photos.select_related("image")]
+                  "category": photo.category or ("houses" if photo.house_id else "territory"),
+                  "season": photo.season, "house": photo.house}
+                 for photo in self.photos.select_related("image", "house")]
+        linked = {(item["house"].pk, item["image"].pk) for item in items if item["house"]}
         for house in HousePage.objects.live().order_by("path"):
+            winter = house.winter_mosaic_images.select_related("image").first()
+            if winter and (house.pk, winter.image_id) not in linked:
+                items.append({"image": winter.image, "alt": house.title, "large": False,
+                              "category": "houses", "season": "winter", "house": house})
+                linked.add((house.pk, winter.image_id))
             for item in house.gallery_images.select_related("image")[: self.HOUSE_PHOTOS]:
+                if (house.pk, item.image_id) in linked:
+                    continue
                 items.append({"image": item.image, "alt": house.title, "large": False,
                               "category": "houses", "season": "", "house": house})
         used = {item["category"] for item in items}
         context["gallery_items"] = items
         context["gallery_categories"] = [(v, l) for v, l in GalleryPhoto.CATEGORIES if v in used]
+        context["gallery_legacy_categories"] = [
+            (key, label) for key, label in context["gallery_categories"]
+            if key in {"territory", "animals", "around"}
+        ]
         context["gallery_seasons"] = NearbyPlace.SEASONS
-        context["telegram_url"] = SiteSettings.for_request(request).telegram_url if request else ""
+        context["gallery_filters"] = [
+            ("season", "Сезоны", [(key, label) for key, label, _ in SEASONS]),
+            ("what", "Локации", LOCATION_FILTERS),
+            ("house", "Дома", HOUSE_FILTERS),
+        ]
+        add_illustrations(items)
+        context["gallery_sections"] = sections(items)
+        for slot in ("hero", "archive", "today"):
+            context[f"gallery_{slot}"] = image_titled(f"BS Gallery {slot}")
+        context["houses_index"] = HouseIndexPage.objects.live().public().first()
+        context["telegram_url"] = (SiteSettings.for_request(request).telegram_url if request else "") or SRC["tg"][1]
         return context
 
 
@@ -1202,13 +1279,22 @@ class GalleryPhoto(Orderable):
         "wagtailimages.Image", verbose_name="Фото",
         on_delete=models.CASCADE, related_name="+",
     )
+    house = models.ForeignKey(
+        "houses.HousePage", verbose_name="Дом", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="+",
+    )
     alt = models.CharField("Описание фото", max_length=200, blank=True)
     is_large = models.BooleanField("Крупная плитка", default=False)
-    CATEGORIES = [("houses", "Домики"), ("territory", "Территория"), ("animals", "Животные"), ("around", "Окрестности")]
+    CATEGORIES = [
+        ("houses", "Домики"), ("territory", "Территория"), ("animals", "Животные"),
+        ("around", "Окрестности"), ("terrace", "Терраса"), ("banya", "Баня"),
+        ("gazebo", "Беседка"), ("farm", "Ферма"), ("river", "Река"), ("clearing", "Поляна"),
+    ]
     category = models.CharField("Что на фото", max_length=12, choices=CATEGORIES, blank=True)
     season = models.CharField("Сезон", max_length=8, choices=NearbyPlace.SEASONS, blank=True)
 
-    panels = [FieldPanel("image"), FieldPanel("alt"), FieldPanel("category"), FieldPanel("season"), FieldPanel("is_large")]
+    panels = [FieldPanel("image"), FieldPanel("alt"), FieldPanel("category"), FieldPanel("season"),
+              FieldPanel("house"), FieldPanel("is_large")]
 
     class Meta(Orderable.Meta):
         verbose_name = "Фото"

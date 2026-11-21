@@ -1,7 +1,8 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% load content_tags %}
 {% load static wagtailcore_tags promotion_tags media_tags %}
 {% block body_class %}page-promotions{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/certificate-modal.css' %}?v=20261120-certificate-photo">{% endblock %}
 {% block content %}
 <section class="section offers-section">
   <div class="home-bg" aria-hidden="true">
@@ -20,6 +21,20 @@
   </div>
   <div class="container container--wide">
     <h1 class="offers-title">{{ page.title }}</h1>
+    {% if certificate %}
+    <section class="promo-certificate-wide" aria-labelledby="promo-certificate-title">
+      <img class="promo-certificate-wide__photo" src="{% static 'img/gift-certificate.jpg' %}" width="768" height="1364" alt="Подарочный сертификат «Лучший сезон»">
+      <div class="promo-certificate-wide__copy">
+        <h2 id="promo-certificate-title">Подарочный сертификат</h2>
+        <p>Самый лучший подарок для близкого человека - это время, которое он может провести с любимыми или наедине с собой.</p>
+        <ul class="promo-certificate-wide__details">
+          <li>Номинал уточняйте при заказе</li>
+          <li>Электронный и бумажный</li>
+        </ul>
+        <a class="btn promo-certificate-wide__cta" href="?promotion=podarochnyy-sertifikat#promotion-request" data-promotion-request-open data-form-type="certificate" data-topic="Подарочный сертификат">Заказать сертификат</a>
+      </div>
+    </section>
+    {% endif %}
     {% if promotions %}
     <!-- Сетка обычных тарифов (сертификат исключён в отдельный блок) -->
     <ul class="promos">
@@ -62,23 +77,6 @@
     <p>{% cms_text "promotions_page-3535fea44523" %}</p>
     {% endif %}
 
-    {% if certificate %}
-    <section class="promo-certificate-wide" aria-labelledby="promo-certificate-title">
-      <div class="promo-certificate-wide__photo" role="img" aria-label="Здесь будет фотография сертификата в конверте на дереве">
-        <span>Фото сертификата<br>в конверте на дереве</span>
-      </div>
-      <div class="promo-certificate-wide__copy">
-        <h2 id="promo-certificate-title">Подарочный сертификат</h2>
-        <p>Два дня тишины вместо очередной вещи. Электронный — пришлём на почту за час, бумажный — отдадим в конверте при встрече.</p>
-        <ul class="promo-certificate-wide__details">
-          <li>Номинал уточняйте при заказе</li>
-          <li>Срок действия уточняйте при заказе</li>
-          <li>Электронный и бумажный</li>
-        </ul>
-        <a class="btn promo-certificate-wide__cta" href="?promotion=podarochnyy-sertifikat#promotion-request" data-promotion-request-open data-form-type="certificate" data-topic="Подарочный сертификат">Заказать сертификат</a>
-      </div>
-    </section>
-    {% endif %}
 
     {% if duration_discounts %}
     <section class="duration-discounts" aria-labelledby="duration-discounts-title">
@@ -99,7 +97,14 @@
   <div class="container">
     <h2 id="promotion-request-title" data-promotion-request-title>{{ promotion_request_topic|default:'Оставить заявку' }}</h2>
     <div data-promotion-form="feedback">{% include "forms/request_form.html" with form=promotion_feedback_form form_type="feedback" submit_label="Отправить заявку" %}</div>
-    <div data-promotion-form="certificate">{% include "forms/request_form.html" with form=promotion_certificate_form form_type="certificate" submit_label="Заказать сертификат" %}</div>
+    <div class="certificate-request" data-promotion-form="certificate">
+      {% if certificate %}
+        <div class="certificate-request__preview">
+          <img src="{% static 'img/gift-certificate.jpg' %}" width="768" height="1364" alt="Подарочный сертификат «Лучший сезон»" loading="lazy">
+        </div>
+      {% endif %}
+      {% include "forms/request_form.html" with form=promotion_certificate_form form_type="certificate" submit_label="Заказать сертификат" %}
+    </div>
   </div>
 </section>
 <dialog class="booking-modal promotion-request-modal" data-promotion-request-modal aria-labelledby="promotion-request-title">

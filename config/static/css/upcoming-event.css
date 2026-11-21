@@ -1,0 +1,59 @@
+.events-card {
+  display: grid;
+  max-width: 996px;
+  margin-inline: auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 358px);
+  gap: 24px 32px;
+  align-items: stretch;
+  padding: 32px;
+  border-radius: 20px;
+  background: #fff;
+  color: #494949;
+  font-family: var(--font-body);
+}
+.events-card h3 { margin: 24px 0 16px; font-size: clamp(26px, 3vw, 32px); line-height: 1.05; color: #494949; font-family: var(--font-heading); font-weight: 400; }
+.events-card__date {
+  display: inline-block;
+  margin: 0;
+  padding: 10px 24px;
+  border-radius: 10px;
+  background: #847f57;
+  color: #fff;
+  font-size: 24px;
+  line-height: 29px;
+}
+.events-card__description { margin: 0 0 24px; font-size: 18px; line-height: 22px; }
+.events-card__actions { display: flex; flex-wrap: wrap; gap: 14px; }
+.events-card__actions .btn {
+  min-height: 40px;
+  padding: 8px 23px;
+  font-size: 16px;
+  font-weight: 400;
+  white-space: normal;
+  text-align: center;
+}
+.events-card__actions .btn--outline { background: transparent; }
+.events-card__media { position: relative; min-height: 331px; overflow: hidden; border-radius: 20px; background: #d9d9d9; }
+.events-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.events-card__meta { grid-column: 1 / -1; margin: 0; padding: 10px 16px; border-radius: 10px; background: #e9d8ca; font-size: 16px; line-height: 20px; text-align: center; }
+
+@media (min-width: 960px) {
+  .events-card__actions .btn--primary { min-width: 278px; }
+  .events-card__actions .btn--outline { min-width: 187px; }
+}
+
+@media (min-width: 760px) and (max-width: 959px) {
+  .events-card { grid-template-columns: minmax(0, 1fr) minmax(0, 38%); }
+}
+
+@media (max-width: 759px) {
+  .events-card { grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 20px; }
+  .events-card__media { min-height: 0; aspect-ratio: 360 / 331; }
+  .events-card__date { padding: 8px 16px; font-size: 19px; line-height: 1.2; }
+  .events-card__description { font-size: 16px; line-height: 1.35; }
+}
+
+.home-after-hero .home-upcoming-event {
+  position: relative;
+  padding-block: clamp(32px, 5vw, 72px);
+}

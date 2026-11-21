@@ -8,6 +8,9 @@
    <ul data-chips-for="season"><li data-tags="summer autumn">…</li></ul>
    <p data-chips-empty="season" hidden>Ничего не нашли</p>   — необязательно
 
+   Несколько имён в data-chips-for объединяют фильтры по И. Для отдельных
+   наборов тегов используются data-tags-<имя>, для общего набора — data-tags.
+
    Пустой data-chip — «всё». Выбор пишется в адрес (?season=summer), чтобы
    ссылкой можно было поделиться. Лишние элементы гаснут 0,2 с и скрываются.
    Поиск без учёта регистра и «ё/е», работает вместе с чипом. */
@@ -29,10 +32,16 @@
       });
     }
     var shown = 0;
-    Array.prototype.forEach.call(document.querySelectorAll('[data-chips-for="' + name + '"] [data-tags]'), function (item) {
-      var byChip = !current.chip || (" " + item.getAttribute("data-tags") + " ").indexOf(" " + current.chip + " ") !== -1;
-      var byText = !current.query || norm(item.textContent).indexOf(current.query) !== -1;
-      var match = byChip && byText;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-chips-for~="' + name + '"] [data-tags]'), function (item) {
+      var names = item.closest("[data-chips-for]").getAttribute("data-chips-for").split(/\s+/);
+      var match = names.every(function (key) {
+        var filter = state[key];
+        if (!filter) return true;
+        var tags = item.getAttribute("data-tags-" + key);
+        if (tags === null) tags = item.getAttribute("data-tags");
+        return (!filter.chip || tags.split(/\s+/).indexOf(filter.chip) !== -1) &&
+          (!filter.query || norm(item.textContent).indexOf(filter.query) !== -1);
+      });
       clearTimeout(item._chipTimer);
       if (match) {
         // Пункты FAQ чередуют тёмный и оливковый фон — пересчитываем по видимым.
@@ -61,8 +70,12 @@
         item._chipTimer = setTimeout(function () { item.hidden = true; }, FADE_MS);
       }
     });
-    var empty = document.querySelector('[data-chips-empty="' + name + '"]');
+    var list = document.querySelector('[data-chips-for~="' + name + '"]');
+    var result = list && list.getAttribute("data-chips-result") || name;
+    var empty = document.querySelector('[data-chips-empty="' + result + '"]');
     if (empty) empty.hidden = shown > 0;
+    var count = document.querySelector('[data-chips-count="' + result + '"]');
+    if (count) count.textContent = shown;
   }
 
   function remember(name, value) {
@@ -96,6 +109,17 @@
     input.addEventListener("input", function () {
       state[name].query = norm(input.value);
       apply(name, true);
+    });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-chips-reset]"), function (button) {
+    button.addEventListener("click", function () {
+      var names = button.getAttribute("data-chips-reset").split(/\s+/);
+      names.forEach(function (name) {
+        state[name].chip = "";
+        remember(name, "");
+      });
+      names.forEach(function (name) { apply(name, false); });
     });
   });
 })();

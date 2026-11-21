@@ -25,3 +25,24 @@
 
 /* 20.10: на 700–1279 длинные адреса и e-mail в таблице давали прокрутку на 5 px. */
 @media (max-width: 1279px) { .legal-document th, .legal-document td { overflow-wrap: anywhere; } }
+
+.page-head.legal-page-head--full h1 {
+  font-size: clamp(22px, 4vw, 48px);
+  font-weight: 500;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.legal-document__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.legal-document__meta a { flex-shrink: 0; }
+.legal-document__meta span { text-align: right; }
+.legal-document--marketing h2 {
+  margin: 0 0 1.1em;
+  font: 600 1em/1.65 var(--font-body);
+  line-height: inherit;
+  letter-spacing: inherit;
+}

@@ -193,16 +193,32 @@ class EventsAndSnippetsTests(TestCase):
 
     def test_events_split_by_last_day(self):
         import datetime
-        from django.utils import timezone
+        from unittest.mock import patch
+
         from core.dop_pages import context_for
         from core.models import ContentPage, Event
-        today = timezone.localdate()
+
+        today = datetime.date(2027, 2, 1)
         Event.objects.create(title='Йога', date=today - datetime.timedelta(days=2), end_date=today)
         Event.objects.create(title='Новый год', date=today + datetime.timedelta(days=30))
         Event.objects.create(title='Флористика', date=today - datetime.timedelta(days=5))
-        context = context_for(ContentPage(title='М', slug='meropriyatiya'), RequestFactory().get('/'))
+        with patch("django.utils.timezone.localdate", return_value=today):
+            context = context_for(ContentPage(title='М', slug='meropriyatiya'), RequestFactory().get('/'))
         self.assertEqual([e.title for e in context['upcoming']], ['Йога', 'Новый год'])
         self.assertEqual(context['archive'][0]['title'], 'Флористика')
+
+    def test_archive_keeps_empty_category_and_its_own_copy(self):
+        from core.dop_pages import context_for
+        from core.models import ContentPage
+
+        page = ContentPage(title="Мероприятия", slug="meropriyatiya")
+        context = context_for(page, RequestFactory().get("/?archive=birthday"))
+        panels = {panel["key"]: panel for panel in context["archive_panels"]}
+        self.assertEqual(context["active_archive"], "birthday")
+        self.assertEqual(panels["birthday"]["title"], "Дни рождения в Сезоне")
+        self.assertEqual(panels["birthday"]["photos"], [None, None, None])
+        self.assertEqual(panels["birthday"]["video_slot"], "events-birthday")
+        self.assertTrue(all(photo["static_image"] for photo in panels["new-year"]["photos"]))
 
 
 MEDIA_TMP_VIDEO = tempfile.mkdtemp()

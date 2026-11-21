@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.fields import RichTextField
@@ -217,6 +218,10 @@ class HousePage(Page):
             heading="Первый экран и бронирование",
         ),
         InlinePanel("gallery_images", label="Фото галереи", min_num=0),
+        InlinePanel(
+            "winter_mosaic_images", label="Зимние фото мозаики (ноябрь — февраль)",
+            max_num=5, help_text="Загрузите пять разных фото в порядке плиток. До заполнения используется обычная мозаика.",
+        ),
         FieldPanel("description"),
         MultiFieldPanel(
             [
@@ -336,7 +341,10 @@ class HousePage(Page):
 
     @property
     def remaining_gallery_images(self):
-        shown = {image.pk for image in self.mosaic_images}
+        return self.gallery_after_mosaic(self.mosaic_images)
+
+    def gallery_after_mosaic(self, mosaic):
+        shown = {image.pk for image in mosaic}
         remaining = []
         for item in self.gallery_images.all():
             if item.image_id not in shown:
@@ -450,13 +458,18 @@ class HousePage(Page):
         )
 
     def get_context(self, request):
-        from houses.booking import calendar_months, quote
-
         context = super().get_context(request)
-        # Календарь и расчёт приходят с сервера: без JS страница остаётся
-        # рабочей, а с JS скрипт только переспрашивает те же endpoint'ы.
-        context["calendar"] = calendar_months(self)
-        context["quote"] = quote(self)
+        mosaic = self.mosaic_images
+        if self.pk and timezone.localdate().month in (11, 12, 1, 2):
+            winter = {
+                item.image_id: item.image
+                for item in self.winter_mosaic_images.select_related("image").all()
+                if item.image_id
+            }
+            if len(winter) >= self.MOSAIC_IMAGES:
+                mosaic = list(winter.values())[:self.MOSAIC_IMAGES]
+        context["house_mosaic"] = mosaic
+        context["house_gallery_rest"] = self.gallery_after_mosaic(mosaic) if self.pk else []
         return context
 
     @property
@@ -490,6 +503,17 @@ class HouseGalleryImage(Orderable):
 
     def __str__(self):
         return self.caption or f"Фото {self.sort_order}"
+
+
+class HouseWinterMosaicImage(Orderable):
+    page = ParentalKey(
+        HousePage, on_delete=models.CASCADE, related_name="winter_mosaic_images",
+    )
+    image = models.ForeignKey(
+        "wagtailimages.Image", verbose_name="Фото", on_delete=models.CASCADE, related_name="+",
+    )
+
+    panels = [FieldPanel("image")]
 
 
 class HouseSleepingPlace(Orderable):
