@@ -22,6 +22,10 @@ REMOTE, BRANCH = "amvera", "master"
 EXCLUDE = [
     "tmp", "visual_qa", "output", "design", "claude", ".claude",
     ".uv-cache-audit", "venv", ".venv", "Claude outputs",
+    # Материалы разработки и локальные инструменты остаются в GitHub.
+    "docs", ":(top,glob)*.md", "kontur-widget-fix.patch",
+    ".env.example", ".gitignore", "deploy.bat", "deploy_amvera.py", "check_media.sh",
+    "config/static/img/guest-archive",
     ":(glob)config/static/img/content-gallery/*/originals/**",
 ]
 
@@ -45,7 +49,7 @@ def main():
         git("rm", "--cached", "-r", "-q", "--ignore-unmatch", "--", *EXCLUDE, env=env)
         tree = git("write-tree", env=env)
         size = sum(int(line.split()[3]) for line in git("ls-tree", "-r", "-l", tree).splitlines() if line.split()[3] != "-")
-    print(f"Снимок {head[:7]} «{subject}»: {size / 1048576:.0f} МБ")
+    print(f"Снимок {head[:7]} «{subject}»: дерево {tree}, {size:,} байт")
 
     git("fetch", "-q", REMOTE, BRANCH)
     remote = git("rev-parse", f"{REMOTE}/{BRANCH}")
