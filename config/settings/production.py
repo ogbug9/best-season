@@ -24,6 +24,7 @@ WAGTAILADMIN_BASE_URL = config(
 # Иначе каждая пересборка стирает всё, что залил редактор: репозиторий
 # при деплое разворачивается заново, а /data переживает пересборку.
 MEDIA_ROOT = config("MEDIA_ROOT", default="/data/media")
+STATIC_ROOT = config("STATIC_ROOT", default="/data/static")
 
 # Манифест с хешами в именах, как и раньше, плюс заранее сжатые .gz:
 # Amvera не сжимает ответы сама, а main.css без сжатия весит 230 КБ

@@ -11,6 +11,7 @@ import subprocess
 import sys
 
 os.environ.setdefault("PYTHONUNBUFFERED", "1")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
 
 
 def run(*args, required=True):
