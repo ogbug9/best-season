@@ -20,7 +20,8 @@ import tempfile
 
 REMOTE, BRANCH = "amvera", "master"
 EXCLUDE = [
-    "tmp", "visual_qa", "output", "design", "claude", "Claude outputs",
+    "tmp", "visual_qa", "output", "design", "claude", ".claude",
+    ".uv-cache-audit", "venv", ".venv", "Claude outputs",
     ":(glob)config/static/img/content-gallery/*/originals/**",
 ]
 
