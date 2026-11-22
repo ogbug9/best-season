@@ -137,11 +137,11 @@
   .contacts-comparison div { grid-template-columns: 1fr; gap: 4px; }
 }
 
-:is(.page-reviews, .page-gallery, .page-contacts) main :is(h1, h2, h3) {
+:is(.page-reviews, .page-contacts) main :is(h1, h2, h3) {
   text-wrap: balance;
   hyphens: none;
 }
-.page-gallery .page-head h1, .page-reviews .page-head h1 {
+.page-reviews .page-head h1 {
   max-width: 20ch;
   margin-inline: auto;
   font-size: clamp(2.25rem, 5vw, 5rem);
@@ -150,17 +150,7 @@
 .page-contacts .contact-tiles li:has([data-copy]) { display: grid; align-content: start; gap: .5rem; }
 .page-contacts .contact-tiles [data-copy] { justify-self: start; }
 .guest-map-links { margin-block: 1rem; }
-#photo-archive { scroll-margin-top: 7rem; }
-.page-gallery .guest-card h3 a { text-underline-offset: .16em; }
 .page-reviews .reviews { align-items: start; }
-@media (max-width: 650px) {
-  .guest-filter { display: block; text-align: left; }
-  .guest-filter p { margin-bottom: .5rem; }
-  .guest-filter .chips { justify-content: flex-start; }
-}
-
-.page-gallery [data-next-batch], .page-gallery [data-more-photos][hidden] { display: none; }
-.page-gallery [data-more-photos] { margin-top: var(--s-4); }
 
 .page-reviews .reviews__item {
   gap: .75rem;

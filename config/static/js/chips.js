@@ -18,12 +18,6 @@
   "use strict";
   var FADE_MS = 200;
   var state = {};
-  var galleryLimit = 24;
-  var morePhotos = document.querySelector("[data-more-photos]");
-  if (morePhotos) morePhotos.addEventListener("click", function () {
-    galleryLimit += 24;
-    apply("season", true);
-  });
 
   function norm(text) {
     return (text || "").toLowerCase().replace(/ё/g, "е").replace(/\s+/g, " ").trim();
@@ -59,10 +53,6 @@
           matchesQuery(item, filter.query);
       });
       clearTimeout(item._chipTimer);
-      if (morePhotos && item.closest('[data-chips-result="gallery"]')) {
-        item.toggleAttribute("data-filtered-out", !match);
-        item.toggleAttribute("data-next-batch", match && shown >= galleryLimit);
-      }
       if (match) {
         // Пункты FAQ чередуют тёмный и оливковый фон — пересчитываем по видимым.
         if (item.classList.contains("faq__item")) {
@@ -95,7 +85,6 @@
     var empty = document.querySelector('[data-chips-empty="' + result + '"]');
     if (empty) empty.hidden = shown > 0;
     var count = document.querySelector('[data-chips-count="' + result + '"]');
-    if (result === "gallery" && morePhotos) morePhotos.hidden = shown <= galleryLimit;
     if (count) {
       count.textContent = shown;
       var noun = count.nextElementSibling;
@@ -129,7 +118,6 @@
     group.addEventListener("click", function (event) {
       var chip = event.target.closest("[data-chip]");
       if (!chip || !group.contains(chip)) return;
-      galleryLimit = 24;
       state[name].chip = chip.getAttribute("data-chip");
       apply(name, false);
       remember(name, state[name].chip);
@@ -147,7 +135,6 @@
 
   Array.prototype.forEach.call(document.querySelectorAll("[data-chips-reset]"), function (button) {
     button.addEventListener("click", function () {
-      galleryLimit = 24;
       var names = button.getAttribute("data-chips-reset").split(/\s+/);
       names.forEach(function (name) {
         state[name].chip = "";

@@ -6,7 +6,8 @@
 {% block content %}
 <section class="section page-head">
   <div class="container container--narrow center">
-    <h1>Так это выглядит. Без декораций и улучшений.</h1>
+    {% include "includes/in_progress_note.html" %}
+    <h1>Так это выглядит.<br>Без декораций и улучшений.</h1>
   </div>
   {% comment %}Слот Gallery hero: подтвердить горизонтальный кадр поляны в золотой час.{% endcomment %}
   <div class="guest-photo guest-photo--wide">
@@ -44,7 +45,7 @@
   </div>
 </section>
 
-<section class="section" id="photo-archive" aria-label="Фотографии галереи">
+<section class="section" aria-label="Фотографии галереи">
   <div class="container">
     <div class="gallery-page__filters">
       {% for name, label, options in gallery_filters %}
@@ -59,17 +60,17 @@
       {% endfor %}
     </div>
     <div class="guest-filter-status">
-      <p role="status"><span data-chips-count="gallery">{{ gallery_items|length }}</span> <span data-forms="фотография|фотографии|фотографий">фотографий</span></p>
+      <p role="status"><span data-chips-count="gallery">{{ gallery_items|length }}</span> фотографий</p>
       <button type="button" class="filter-chip" data-chips-reset="season what house">Показать всё</button>
     </div>
     <p class="center" data-chips-empty="gallery"{% if gallery_items %} hidden{% endif %}>На это сочетание кадров пока нет. Попробуйте снять один из фильтров</p>
     <ul class="mosaic mosaic--photos gallery" data-gallery data-chips-for="season what house" data-chips-result="gallery">
       {% for item in gallery_items %}
-        <li class="mosaic__item{% if item.large %} mosaic__item--large{% endif %}" data-tags="" data-tags-season="{% if item.tags %}{{ item.tags.season|join:' ' }}{% else %}{{ item.season }}{% endif %}" data-tags-what="{% if item.tags %}{{ item.tags.what|join:' ' }}{% else %}{{ item.category }}{% endif %}" data-tags-house="{% if item.tags %}{{ item.tags.house|join:' ' }}{% else %}{{ item.house.slug }}{% endif %}" data-reveal>
+        <li class="mosaic__item{% if item.large %} mosaic__item--large{% endif %}" data-tags="" data-tags-season="{{ item.season }}" data-tags-what="{{ item.category }}" data-tags-house="{{ item.house.slug }}" data-reveal>
           {% if item.static_image %}
             {% static item.static_image as photo_url %}
-            <a class="gallery__link" href="{{ photo_url }}" data-gallery-item data-full="{{ photo_url }}" data-caption="{{ item.alt }}"{% if item.house %} data-link="{% pageurl item.house %}" data-link-label="Смотреть {{ item.house.title }}"{% endif %}>
-              <img src="{% if item.thumbnail %}{% static item.thumbnail %}{% else %}{{ photo_url }}{% endif %}" alt="{{ item.alt }}" loading="lazy" decoding="async">
+            <a class="gallery__link" href="{{ photo_url }}" data-gallery-item data-full="{{ photo_url }}" data-caption="{{ item.alt }}">
+              <img src="{{ photo_url }}" alt="{{ item.alt }}" loading="lazy">
             </a>
           {% else %}
           <a class="gallery__link" href="{% full_image_url item.image 'jpeg' %}" data-gallery-item data-full="{% full_image_url item.image %}"
@@ -80,7 +81,6 @@
         </li>
       {% endfor %}
     </ul>
-    <div class="center"><button class="btn btn--outline" type="button" data-more-photos hidden>Показать ещё фотографии</button></div>
   </div>
 </section>
 
@@ -92,13 +92,13 @@
       <p>{{ lead }}</p>
     </div>
     <div class="guest-grid">
-      {% for name, description, photo, query in cards %}
+      {% for name, description, photo in cards %}
         <article class="guest-card">
           <div class="guest-photo">
             {% if photo.static_image %}<img src="{% static photo.static_image %}" alt="" loading="lazy">
             {% else %}{% picture photo.image preset="card" alt="" %}{% endif %}
           </div>
-          <h3><a href="?{{ query }}#photo-archive">{{ name }}</a></h3>
+          <h3>{{ name }}</h3>
           <p>{{ description }}</p>
         </article>
       {% endfor %}
